@@ -1,0 +1,84 @@
+<p-toast position="top-right"></p-toast>
+<section>
+    <div class="card">
+        
+        <p-card>
+            <ng-container>
+                <ngx-spinner
+                    size="medium"
+                    color="#fff"
+                    bdColor="rgba(51,51,51,0.3)"
+                    type="ball-scale-multiple"
+                    [fullScreen]="false"
+                >
+                    <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+                </ngx-spinner>
+            </ng-container>
+            <h2>
+                <img src="/assets/img/logo.png">
+            </h2>
+            <p-divider></p-divider>
+            <div class="form-inputs">
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-user"></i>
+                    </span>
+                    <input
+                        type="text"
+                        pInputText
+                        [class.ng-invalid]="!isValid(username)"
+                        [class.ng-dirty]="!isValid(username)"
+                        (onChange)="onValueUpdate()"
+                        [(ngModel)]="username"
+                        placeholder="მომხმარებელი"
+                    >
+                </div>
+
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-lock"></i>
+                    </span>
+                    <input
+                        type="password"
+                        pInputText
+                        [class.ng-invalid]="!isValid(password)"
+                        [class.ng-dirty]="!isValid(password)"
+                        (onChange)="onValueUpdate()"
+                        [(ngModel)]="password"
+                        placeholder="პაროლი"
+                    >
+                </div>
+
+                <!-- <div class="p-inputgroup right">
+                    <p-checkbox
+                        name="ADASD"
+                        label="დამიმახსოვრე"
+                        value="val1"
+                    ></p-checkbox>
+                </div> -->
+
+                <div class="p-inputgroup right">
+                    <div
+                        class="g-recaptcha"
+                        [attr.data-sitekey]="googleKey"
+                    ></div>
+                </div>
+
+            </div>
+            <p-divider></p-divider>
+            <div class="form-actions">
+                <span>
+                    <button
+                        pButton
+                        (click)="onSubmit()"
+                        type="button"
+                        label="ავტორიზაცია"
+                        class="p-button-outlined p-button-lg"
+                    >
+                    </button>
+                </span>
+            </div>
+
+        </p-card>
+    </div>
+</section>

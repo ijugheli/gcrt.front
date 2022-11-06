@@ -1,0 +1,41 @@
+.dynamic-input {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+}
+/* .dynamic-input .p-inputtext-lg {
+    min-width:100px;
+} */
+.dynamic-input .dynamic-input-label {
+    font-size: 16px;
+    margin: 0px 16px 0px 0px;
+    font-family: 'light';
+    letter-spacing: 1.2px;
+    font-style: oblique;
+    text-align: right;
+    width: 30%;
+}
+.p-inputgroup {
+    height: 100%;
+    width: 70%;
+}
+.pi-exclamation-triangle {
+    color: #ff0000b8;
+    font-size: 1.25rem;
+}
+/* .dynamic-input .p-inputtext:enabled:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.15rem #bffecf;
+    border-color: #46AB44;
+}
+.p-inputtext:enabled:hover {
+    border-color: #46AB44;
+}
+.p-inputtext:enabled:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #bfdbfe;
+    border-color: #46AB44;
+} */

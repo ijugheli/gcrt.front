@@ -28,22 +28,28 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/saga-green/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
             ],
-            "scripts": []
+            "scripts": ["node_modules/quill/dist/quill.js"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "32kb"
                 }
               ],
               "fileReplacements": [
@@ -72,8 +78,12 @@
               "browserTarget": "project:build:production"
             },
             "development": {
-              "browserTarget": "project:build:development"
+              "browserTarget": "project:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
+          },
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
           },
           "defaultConfiguration": "development"
         },
@@ -96,9 +106,15 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/saga-green/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
             ],
-            "scripts": []
+            "scripts": ["node_modules/quill/dist/quill.js"]
           }
         }
       }

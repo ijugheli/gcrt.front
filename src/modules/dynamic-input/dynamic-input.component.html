@@ -1,0 +1,170 @@
+<!-- class="ng-invalid ng-dirty" -->
+<div class="dynamic-input">
+    <ng-container *ngIf="viewType != null">
+        <div class="dynamic-input-label">{{property.title}}</div>
+        <ng-container *ngIf="viewType == 'input'">
+            <div class="p-inputgroup">
+                <span
+                    class="p-inputgroup-addon"
+                    *ngIf="property.is_mandatory"
+                >
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-pencil"></i>
+                </span>
+
+                <ng-container *ngIf="dataType == 'string'">
+                    <input
+                        type="text"
+                        id="float-input"
+                        class="p-inputtext-md"
+                        [class.ng-invalid]="!isValid()"
+                        [class.ng-dirty]="!isValid()"
+                        pInputText
+                        [(ngModel)]="currentValue"
+                        (ngModelChange)="onUpdate(currentValue)"
+                        placeholder
+                        [style]="{'width':'300px', 'height' : '100%'}"
+                    >
+                </ng-container>
+
+                <ng-container *ngIf="dataType == 'int'">
+                    <p-inputNumbe
+                        type="text"
+                        id="float-input"
+                        mode="decimal"
+                        class="p-inputtext-md"
+                        [class.ng-invalid]="!isValid()"
+                        [class.ng-dirty]="!isValid()"
+                        pInputText
+                        [(ngModel)]="currentValue"
+                        (ngModelChange)="onUpdate(currentValue)"
+                        placeholder
+                        [style]="{'width':'300px', 'height' : '100%'}"
+                    ></p-inputNumbe>
+                </ng-container>
+
+                <ng-container *ngIf="dataType == 'double'">
+                    <p-inputNumber
+                        type="text"
+                        id="float-input"
+                        mode="decimal"
+                        [maxFractionDigits]="2"
+                        class="p-inputtext-md"
+                        [class.ng-invalid]="!isValid()"
+                        [class.ng-dirty]="!isValid()"
+                        pInputText
+                        [(ngModel)]="currentValue"
+                        (ngModelChange)="onUpdate(currentValue)"
+                        placeholder
+                        [style]="{'width':'300px', 'height' : '100%'}"
+                    ></p-inputNumber>
+                </ng-container>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'checkbox' || viewType == 'toggle'">
+
+            <div class="p-inputgroup">
+                <p-inputSwitch
+                    [(ngModel)]="currentValue"
+                    [class.ng-invalid]="!isValid()"
+                    [class.ng-dirty]="!isValid()"
+                    (ngModelChange)="onUpdate(currentValue)"
+                ></p-inputSwitch>
+            </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'datepicker'">
+
+            <div class="p-inputgroup">
+                <span
+                    class="p-inputgroup-addon"
+                    *ngIf="property.is_mandatory"
+                >
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-calendar-plus"></i>
+                </span>
+                <p-calendar
+                    [(ngModel)]="currentValue"
+                    [class.ng-invalid]="!isValid()"
+                    [class.ng-dirty]="!isValid()"
+                    (ngModelChange)="onUpdate(currentValue)"
+                    [style]="{'width':'300px', 'height' : '100%'}"
+                ></p-calendar>
+            </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'select'">
+            <div class="p-inputgroup">
+                <span
+                    class="p-inputgroup-addon"
+                    *ngIf="property.is_mandatory"
+                >
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-list"></i>
+                </span>
+                <p-dropdown
+                    [options]="options"
+                    [(ngModel)]="selected"
+                    [class.ng-invalid]="!isValid()"
+                    [class.ng-dirty]="!isValid()"
+                    optionLabel="name"
+                    [style]="{'width':'300px', 'height' : '100%'}"
+                    (ngModelChange)="onUpdate(selected)"
+                ></p-dropdown>
+                <!-- <p-multiSelect
+                    [options]="options"
+                    [(ngModel)]="selected"
+                    [class.ng-invalid]="!isValid()"
+                    [class.ng-dirty]="!isValid()"
+                    (ngModelChange)="onUpdate(selected)"
+                    optionLabel="name"
+                    [style]="{'width':'300px', 'height' : '100%'}"
+                ></p-multiSelect> -->
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'multiselect'">
+            <div class="p-inputgroup">
+                <span
+                    class="p-inputgroup-addon"
+                    *ngIf="property.is_mandatory"
+                >
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-list"></i>
+                </span>
+                <p-multiSelect
+                    [options]="options"
+                    [(ngModel)]="selected"
+                    [class.ng-invalid]="!isValid()"
+                    [class.ng-dirty]="!isValid()"
+                    (ngModelChange)="onUpdate(selected)"
+                    optionLabel="name"
+                    [style]="{'width':'300px', 'height' : '100%'}"
+                ></p-multiSelect>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'textarea'">
+            <p-editor
+                [(ngModel)]="currentValue"
+                (ngModelChange)="onUpdate(currentValue)"
+                [class.ng-invalid]="!isValid()"
+                [class.ng-dirty]="!isValid()"
+                [style]="{'width':'650px', 'height' : '250px'}"
+            ></p-editor>
+        </ng-container>
+
+    </ng-container>
+</div>

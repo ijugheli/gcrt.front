@@ -1,0 +1,232 @@
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-toast></p-toast>
+<div class="table-container">
+    <ng-container>
+        <ngx-spinner *ngIf="!loaded"
+            bdColor="rgba(51,51,51,0.1)"
+            size="medium"
+            color="#fff"
+            type="ball-scale-multiple"
+            [fullScreen]="false"
+        >
+            <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+        </ngx-spinner>
+    </ng-container>
+    <ng-container>
+        <p-table
+            [value]="rows"
+            dataKey="id"
+            styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            responsiveLayout="scroll"
+            currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+            [rowsPerPageOptions]="[10,25,50]"
+            [(selection)]="selectedRows"
+            (onRowSelect)="onRowSelect($event)"
+            (onRowUnselect)="onRowUnselect($event)"
+        >
+
+            <ng-template pTemplate="caption">
+                <div class="header">
+                    <ul class="list">
+                        <ng-container *ngFor="let setting of settings | keyvalue">
+                            <li *ngIf="setting.value.align == 'left'">
+                                <button
+                                    (click)="onSettingClick(setting.value.name)"
+                                    type="button"
+                                    class="border-btn"
+                                    [class.disabled]="!isSettingEnabled(setting.value.name)"
+                                >
+                                    <i class="{{ setting.value.icon }}"></i>
+                                    {{setting.value.title}}
+                                </button>
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <div class="dropdown">
+                        <ul class="list">
+                            <ng-container *ngFor="let setting of settings | keyvalue">
+                                <li *ngIf="setting.value.align == 'right'">
+                                    <button
+                                        (click)="onSettingClick(setting.value.name)"
+                                        type="button"
+                                        class="border-btn"
+                                        [class.disabled]="!isSettingEnabled(setting.value.name)"
+                                    >
+                                        <i class="{{ setting.value.icon }}"></i>
+                                        {{setting.value.title}}
+                                    </button>
+                                </li>
+                            </ng-container>
+                            <p-multiSelect
+                                [options]="originalProps"
+                                [(ngModel)]="properties"
+                                optionLabel="header"
+                                selectedItemsLabel="არჩეულია {0} ველი"
+                                [style]="{minWidth: '200px'}"
+                                placeholder="აირჩიეთ ველები"
+                            ></p-multiSelect>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3rem"></th>
+                    <th
+                        class="head-item"
+                        *ngFor="let property of properties"
+                    >
+                        {{property.title}}
+                    </th>
+
+                </tr>
+                <tr>
+                    <th style="width: 3rem">
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+
+                    <th
+                        class="head-item"
+                        *ngFor="let property of properties"
+                    >
+                        <ng-container *ngIf="isStringFilter(property)">
+                            <p-columnFilter
+                                [matchModeOptions]="filterOptions['string']"
+                                class="p-inputtext-sm"
+                                type="text"
+                                field="{{ property.id }}"
+                            ></p-columnFilter>
+                        </ng-container>
+
+                        <ng-container *ngIf="isDateFilter(property)">
+                            <p-columnFilter
+                                [matchModeOptions]="filterOptions['date']"
+                                matchMode="custom-dateIs"
+                                type="date"
+                                field="date"
+                            ></p-columnFilter>
+                        </ng-container>
+
+                        <ng-container *ngIf="isSelectFilter(property)">
+                            <p-columnFilter
+                                field="{{property.id}}"
+                                matchMode="in"
+                                [showMenu]="false"
+                            >
+                                <ng-template pTemplate="group">
+                                    <p-multiSelect
+                                        [ngModel]="property.options.list"
+                                        appendTo="body"
+                                        [options]="property.options.list"
+                                        (onFilter)="filter($event)"
+                                        placeholder="ყველა"
+                                        optionLabel="typeID"
+                                    >
+                                        <ng-template
+                                            let-option
+                                            pTemplate="item"
+                                        >
+                                            <div class="p-multiselect-typeID-option">
+                                                <span class="ml-1">{{ option }}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </ng-container>
+
+                    </th>
+
+                    <!-- <th class="head-item">
+                    <p-columnFilter
+                        [matchModeOptions]="filterOptions['integer']"
+                        matchMode="custom-equals"
+                        type="text"
+                        field="id"
+                    ></p-columnFilter>
+                </th>
+                <th class="head-item">
+                    <p-columnFilter
+                        [matchModeOptions]="filterOptions['string']"
+                        matchMode="custom-contains"
+                        type="text"
+                        field="title"
+                    ></p-columnFilter>
+                </th>
+                <th class="head-item">
+                    <p-columnFilter
+                        [matchModeOptions]="filterOptions['string']"
+                        matchMode="custom-contains"
+                        type="text"
+                        field="description"
+                    ></p-columnFilter>
+                </th>
+                <th class="head-item">
+                    <p-columnFilter
+                        [matchModeOptions]="filterOptions['date']"
+                        matchMode="custom-dateIs"
+                        type="date"
+                        field="date"
+                    ></p-columnFilter>
+                </th>
+                <th class="head-item">
+                    <p-columnFilter
+                        field="typeID"
+                        matchMode="in"
+                        [showMenu]="false"
+                    >
+                        <ng-template
+                            pTemplate="group"
+                            let-multiSelectValue
+                            let-filter="filterCallback"
+                        >
+                            <p-multiSelect
+                                [ngModel]="multiSelectValue"
+                                appendTo="body"
+                                [options]="types"
+                                (onFilter)="filter($event)"
+                                placeholder="ყველა"
+                                optionLabel="typeID"
+                            >
+                                <ng-template
+                                    let-option
+                                    pTemplate="item"
+                                >
+                                    <div class="p-multiselect-typeID-option">
+                                        <span class="ml-1">{{ typeDefinitions.get(option) }}</span>
+                                    </div>
+                                </ng-template>
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th> -->
+
+                </tr>
+            </ng-template>
+
+            <ng-template
+                pTemplate="body"
+                let-row
+            >
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="row"></p-tableCheckbox>
+                    </td>
+
+                    <td
+                        class="row-item"
+                        *ngFor="let property of properties"
+                    >
+                        {{row[property.id]}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-container>
+</div>

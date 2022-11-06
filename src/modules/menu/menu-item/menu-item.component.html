@@ -1,0 +1,37 @@
+<li [class.active]="dropdownOpened">
+    <ng-container *ngIf="!hasChildren()">
+        <a href="{{ item.action }}" [class.active-link]="active" >
+            <div
+                class="frame"
+                *ngIf="item.img"
+            >
+                <img src="assets/img/{{item.img}}.svg">
+            </div>
+            {{ item.title }}
+        </a>
+    </ng-container>
+    <ng-container *ngIf="hasChildren()">
+        <button
+            class="drop"
+            (click)="toggleDropdown()"
+        >
+            <div class="frame">
+                <img
+                    src="assets/img/{{ item.img }}.svg"
+                    alt
+                >
+            </div>
+            {{ item.title }}
+            <img
+                src="assets/img/arrow-down.svg"
+                alt
+                class="arrow"
+            >
+        </button>
+        <ul class="sub-list">
+            <li *ngFor="let subItem of item.children">
+                <a href="#">{{ subItem.title }}</a>
+            </li>
+        </ul>
+    </ng-container>
+</li>

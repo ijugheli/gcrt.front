@@ -1,0 +1,50 @@
+.card {
+    width: 500px;
+    text-align: center;
+    margin: 100px auto;
+}
+
+h2 {
+    font-family: light;
+    font-weight: bold;
+    margin: 0px 0px 20px 0px;
+}
+
+.form-inputs {
+    margin-top: 20px
+}
+
+.p-inputgroup {
+    margin: 20px 0px;
+}
+
+.p-inputgroup.right{
+    flex-direction: row-reverse;
+}
+
+section {
+    width: 100%;
+    background: #afcdd2;
+    height: 100vh;
+}
+
+
+button span {
+    font-family: light;
+}
+
+.form-actions {
+    width: 100%;
+    text-align: right;
+}
+
+button:first-child {
+    margin-right: 10px;
+}
+
+
+.form-container {
+    position: relative;
+    width: 100%;
+    min-height:300px
+}

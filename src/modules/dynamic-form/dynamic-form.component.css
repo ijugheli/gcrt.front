@@ -1,0 +1,24 @@
+button span {
+    font-family: light;
+}
+
+.form-actions {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+button:first-child {
+    margin-right: 10px;
+}
+
+.pi {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.form-container {
+    position: relative;
+    width: 100%;
+    min-height:300px
+}

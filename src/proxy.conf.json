@@ -1,0 +1,6 @@
+{
+    "/api/attrs": {
+      "target": "http://localhost:8000/attrs/",
+      "secure": false
+    }
+  }
