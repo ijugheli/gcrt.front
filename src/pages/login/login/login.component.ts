@@ -21,27 +21,22 @@ export class LoginComponent implements OnInit {
   public password: string = '';
   public validation: boolean = false;
 
-  constructor(private userService: UserService, private authService: AuthService, private spinner: NgxSpinnerService,
-    private messageService: MessageService, public router: Router) {
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private spinner: NgxSpinnerService,
+    private messageService: MessageService,
+    public router: Router
+  ) {
   }
 
   ngOnInit() {
-    // if (this.authService.isAuthenticated()) {
-    //   this.router.navigate(['home']);
-    // }
-
-    let that = this;
-    setTimeout(() => { that.showCaptcha = true; }, 1000)
+    setTimeout(() => {
+      this.showCaptcha = true;
+    }, 500);
   }
 
   showResponse(d: any) {
-    console.log('RESPONSE FROM CAPTCHA');
-    console.log(d);
-    console.log('RESPONSE FROM CAPTCHA');
-  }
-
-  onCancel() {
-
   }
 
   onValueUpdate() {
@@ -65,13 +60,18 @@ export class LoginComponent implements OnInit {
     this.spinner.show();
 
     this.userService.login(info).subscribe((authData) => {
+
       this.spinner.hide();
       this.messageService.add({
         severity: 'success',
         summary: 'ავტორიზაცია წარმატებით დასრულდა!',
         detail: 'გთხოვთ დაელოდოთ...'
       });
+
       this.authService.authorize(authData);
+      setTimeout(() => {
+        this.router.navigate(['/manage/5'])
+      }, 100);
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({
@@ -83,8 +83,6 @@ export class LoginComponent implements OnInit {
 
     });
   }
-
-
 
   isValid(v: string) {
     if (!this.validation) {
