@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { UserService } from 'src/services/user.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
@@ -22,7 +21,6 @@ export class LoginComponent implements OnInit {
   public validation: boolean = false;
 
   constructor(
-    private userService: UserService,
     private authService: AuthService,
     private spinner: NgxSpinnerService,
     private messageService: MessageService,
@@ -31,9 +29,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.showCaptcha = true;
-    }, 500);
+    if (this.authService.isAuthenticated()) {
+      window.location.href = '/home';
+    }
   }
 
   showResponse(d: any) {
@@ -59,8 +57,7 @@ export class LoginComponent implements OnInit {
 
     this.spinner.show();
 
-    this.userService.login(info).subscribe((authData) => {
-
+    this.authService.login(info).subscribe((authData) => {
       this.spinner.hide();
       this.messageService.add({
         severity: 'success',
@@ -69,9 +66,7 @@ export class LoginComponent implements OnInit {
       });
 
       this.authService.authorize(authData);
-      setTimeout(() => {
-        this.router.navigate(['/manage/5'])
-      }, 100);
+      window.location.href = '/home';
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({
@@ -80,7 +75,7 @@ export class LoginComponent implements OnInit {
         detail: 'მომხმარებელი ან პაროლი არასწორია. სცადეთ განსხვავებული კომბინაცია.'
       });
     }, () => {
-
+      this.spinner.hide();
     });
   }
 

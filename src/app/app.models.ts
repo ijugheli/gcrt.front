@@ -1,3 +1,5 @@
+import { HttpHeaders } from "@angular/common/http";
+
 export class AttrProperty {
     public id: number | null = null;
     public p_id: number | null = null;
@@ -13,7 +15,7 @@ export class AttrProperty {
     public update_date: string | null = null;
 
     public order_id: number | null = null;
-    public source : any = null;
+    public source: any = null;
 
 }
 
@@ -48,4 +50,24 @@ export class AttrValue {
     public update_date: string | null = null;
 
     public order_id: number | null = null;
+}
+
+export class User {
+    public id!: number;
+    public name!: string;
+    public lastname!: string;
+    public phone!: string;
+    public address!: string;
+    public email!: string;
+}
+
+export class GuardedService {
+    public headers: HttpHeaders;
+
+    constructor(token: string) {
+        this.headers = new HttpHeaders({
+            'Content-Type': 'application/json; charset=utf-8',
+            'Authorization': 'Bearer ' + token
+        });
+    }
 }

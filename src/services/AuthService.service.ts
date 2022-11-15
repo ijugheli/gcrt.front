@@ -1,9 +1,21 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable()
 export class AuthService {
-  constructor() { }
+
+  public urls: any = {
+    'login': 'http://localhost:8000/user/login',
+    'logout': 'http://localhost:8000/user/logout',
+    'refresh': 'http://localhost:8000/user/refresh',
+    'profile': 'http://localhost:8000/user/profile',
+    'list' : 'http://localhost:8000/user/list'
+  };
+  
+  constructor(private http: HttpClient) {
+
+  }
+
   public isAuthenticated(): boolean {
     const auth = localStorage.getItem('auth')
     if (auth == null) {
@@ -21,9 +33,8 @@ export class AuthService {
     if (auth == null) {
       return false;
     }
-    
+
     const info = JSON.parse(auth);
-    console.log(info.access_token);
 
     return info.access_token;
   }
@@ -40,5 +51,16 @@ export class AuthService {
     }
 
     localStorage.setItem("auth", JSON.stringify(o));
+  }
+
+  
+  public login(info: any) {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
+    return this.http.post(this.urls['login'], info, { headers: headers });
+  }
+
+  public logout() {
+    localStorage.removeItem('auth');
+    window.location.href = '/login';
   }
 }

@@ -10,20 +10,24 @@ import { IMenuItem } from 'src/app/app.interfaces';
 export class MenuItemComponent implements OnInit {
   @Input() item!: IMenuItem;
   public attrID: any;
-  public active: boolean = false;
   public dropdownOpened: boolean = false;
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.attrID = this.route.snapshot.paramMap.get('attr_id');
-    if (this.attrID == null) {
-      return;
+    this.dropdownOpened = this.childSelected();
+  }
+
+  public onClick() {
+    this.item.onClick();
+  }
+
+  public childSelected() {
+    if (!this.hasChildren()) {
+      return false;
     }
 
-    if (this.attrID == this.item.id) {
-      this.active = true;
-    }
+    return this.item.children?.some((i) => i.active) ? true : false;
   }
 
   public hasChildren() {

@@ -40,6 +40,7 @@ export interface IMenuItem {
     id : number;
     title: string;
     img: string;
-    action: string;
+    active?: boolean;
+    onClick?: any;
     children?: IMenuItem[];
 }

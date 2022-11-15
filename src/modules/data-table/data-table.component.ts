@@ -11,9 +11,6 @@ import { AttributesService } from '../../services/Attributes.service';
 import { AttrValue, AttrProperty } from '../../app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
-
-
-
 class Column {
   filterType?: number = 1;
   property?: AttrProperty;
@@ -66,6 +63,7 @@ export class DataTableComponent implements OnInit {
   public rows: any[] = [];
   public propMap: any[] = [];
 
+
   constructor(
     private confirmationService: ConfirmationService,
     private filterService: FilterService,
@@ -116,22 +114,18 @@ export class DataTableComponent implements OnInit {
         if (!prop.source)
           return prop;
 
-
         for (let i = 0; i < prop.source.length; i++) {
           let item = prop.source[i];
           prop.options.list.push(item.value);
         }
         prop.optValues = prop.source.map((item: any) => item.id);
 
-
         return prop;
       });
 
     this.properties = this.originalProps.filter((i) => i.has_filter > 0);
-    console.log(this.properties);
   }
-
-
+  
   private parseRows(data: any) {
     if (!data || !data['rows']) {
       return;
@@ -139,11 +133,6 @@ export class DataTableComponent implements OnInit {
     this.originalRows = data['rows'];
     this.rows = data['rows'];
   }
-
-
-
-
-
 
   public isStringFilter(property: AttrProperty): boolean {
     if (!property.id) return false;
@@ -186,42 +175,17 @@ export class DataTableComponent implements OnInit {
     console.log('Filtering String');
   }
 
-
-
-
-
-
-
-
-
-
-  filter(e: any) {
+  public filter(e: any) {
     console.log('Filter');
     console.log(e);
     console.log('Filter');
   }
-
 
   public filterCallback(e: any) {
     console.log('Filter Callback');
     console.log(e);
     console.log('Filter Callback');
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   private initializeFilterOptions() {
     //String Services
@@ -269,8 +233,6 @@ export class DataTableComponent implements OnInit {
     });
     // this.filterService.register('custom-lessThen', (value: any, filter: any): boolean => this.filterService.filters.dateBefore(value, filter));
   }
-
-
 
   //Action Settings related.
   public isSettingEnabled(action: string): boolean {
@@ -340,8 +302,6 @@ export class DataTableComponent implements OnInit {
     });
   }
 
-
-
   private add() {
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
       data: { attrID: this.attrID },
@@ -355,8 +315,6 @@ export class DataTableComponent implements OnInit {
     });
   }
 
-
-
   public onRowSelect(event: any) {
     console.log(this.selectedRows);
   }
@@ -364,33 +322,6 @@ export class DataTableComponent implements OnInit {
   public onRowUnselect(event: any) {
     console.log(this.selectedRows);
   }
-
-  confirm() {
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //Export Related
   exportPdf() {

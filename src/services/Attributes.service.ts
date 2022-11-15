@@ -1,31 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Attribute } from 'src/app/app.models';
+import { Attribute, GuardedService } from 'src/app/app.models';
 import { AuthService } from './AuthService.service';
 import { ThisReceiver } from '@angular/compiler';
-
-
-class GuardedService {
-  public headers: HttpHeaders;
-
-  constructor(token: string) {
-    this.headers = new HttpHeaders({
-      'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': 'Bearer ' + token
-    });
-  }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttributesService extends GuardedService {
+  // public urls: any = {
+  //   'list': 'https://gcrt.live/api/attrs/',
+  //   'details': 'https://gcrt.live/api/attrs/{attr_id}',
+  //   'full': 'https://gcrt.live/api/attrs/{attr_id}/values',
+  //   'addValueCollection': 'https://gcrt.live/api/attrs/{attr_id}/values/add',
+  //   'delete': 'https://gcrt.live/api/attrs/{attr_id}/values/remove',
+  // };
+
   public urls: any = {
-    'list': 'https://gcrt.live/api/attrs/',
-    'details': 'https://gcrt.live/api/attrs/{attr_id}',
-    'full': 'https://gcrt.live/api/attrs/{attr_id}/values',
-    'addValueCollection': 'https://gcrt.live/api/attrs/{attr_id}/values/add',
-    'delete': 'https://gcrt.live/api/attrs/{attr_id}/values/remove',
+    'list': 'http://localhost:8000/attrs/',
+    'details': 'http://localhost:8000/attrs/{attr_id}',
+    'full': 'http://localhost:8000/attrs/{attr_id}/values',
+    'addValueCollection': 'http://localhost:8000/attrs/{attr_id}/values/add',
+    'delete': 'http://localhost:8000/attrs/{attr_id}/values/remove',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {

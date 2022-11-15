@@ -1,6 +1,14 @@
 import { reverseMap } from "./app.func";
 import { IActionItem, IMenuItem } from "./app.interfaces";
 
+export const API_URL = 'http://localhost:8000';
+// export const API_URL = 'https://gcrt.live';
+
+
+
+
+
+
 export const VIEW_TYPES: Map<number, string> = new Map([
   [1, 'input'],
   [2, 'textarea'],
@@ -22,7 +30,6 @@ export const VIEW_TYPE_TITLES = reverseMap(VIEW_TYPES);
 
 export const VIEW_TYPE_ID = (type: string) => VIEW_TYPE_TITLES.get(type);
 
-
 export const DATA_TYPES: Map<number, string> = new Map([
   [1, 'string'],
   [2, 'int'],
@@ -35,8 +42,6 @@ export const DATA_TYPES: Map<number, string> = new Map([
 export const DATA_TYPE_TITLES = reverseMap(DATA_TYPES);
 
 export const DATA_TYPE_ID = (type: string) => DATA_TYPE_TITLES.get(type);
-
-
 
 export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(
   [['edit', {
@@ -105,72 +110,6 @@ export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(
   ],
 );
 
-export const MENU_ITEMS: IMenuItem[] = [
-  {
-    id : 1,
-    title: 'მომხმარებლები',
-    img: 'client',
-    action: '',
-  },
-  {
-    id : 2,
-    title: 'კლიენტი',
-    img: 'client',
-    action: '',
-  },
-  {
-    id : 3,
-    title: 'ქეისი',
-    img: 'case',
-    action: '',
-  },
-  {
-    id  : 4,
-    title: 'ადმინისტრირება',
-    img: 'setting',
-    action: '',
-    children: [
-      {
-        id : 1,
-        title: 'პროექტები',
-        img: '',
-        action: '',
-      },
-      {
-        id : 2,
-        title: 'რეგიონები',
-        img: '',
-        action: '',
-      },
-      {
-        id : 3,
-        title: 'ფილიალები',
-        img: '',
-        action: '',
-      },
-    ],
-  },
-  {
-    id : 5,
-    title: 'რეპორტები',
-    img: 'reports',
-    action: '',
-  },
-  {
-    id : 6,
-    title: 'პაროლის ცვლილება',
-    img: 'setting',
-    action: '',
-  },
-  {
-    id : 7,
-    title: 'გასვლა',
-    img: 'logout',
-    action: '',
-  },
-];
-
-
 export const ACTION_SETTINGS = {
   'string': [
     { label: 'შეიცავს', value: 'custom-contains' },
@@ -179,7 +118,6 @@ export const ACTION_SETTINGS = {
     { label: 'არ უდრის', value: 'custom-notEquals' },
     { label: 'იწყება', value: 'custom-startsWith' },
     { label: 'მთავრდება', value: 'custom-endsWith' },
-
   ],
   'integer': [
     { label: 'უდრის', value: 'custom-equals' },

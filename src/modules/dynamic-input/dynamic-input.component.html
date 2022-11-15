@@ -30,7 +30,7 @@
                 </ng-container>
 
                 <ng-container *ngIf="dataType == 'int'">
-                    <p-inputNumbe
+                    <p-inputNumber
                         type="text"
                         id="float-input"
                         mode="decimal"
@@ -42,7 +42,7 @@
                         (ngModelChange)="onUpdate(currentValue)"
                         placeholder
                         [style]="{'width':'300px', 'height' : '100%'}"
-                    ></p-inputNumbe>
+                    ></p-inputNumber>
                 </ng-container>
 
                 <ng-container *ngIf="dataType == 'double'">

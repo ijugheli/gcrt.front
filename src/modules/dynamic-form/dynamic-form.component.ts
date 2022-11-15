@@ -81,8 +81,6 @@ export class DynamicFormComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log('------REQUESST------');
-
     if (!this.validate()) {
       return;
     }
@@ -108,14 +106,16 @@ export class DynamicFormComponent implements OnInit {
       if (!property.id)
         continue;
 
-      return !property.is_mandatory ||
+      let isValid = !property.is_mandatory ||
         (property.is_mandatory &&
           this.values.get(property.id) != null);
+      
+      if(!isValid) 
+        return false;      
     }
 
-    return false;
+    return true;
   }
-
 
   public onCancel() {
     this.ref.close();

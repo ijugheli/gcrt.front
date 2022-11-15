@@ -5,18 +5,26 @@ import { MainComponent } from 'src/pages/main/main/main.component';
 
 import { HomeComponent } from '../pages/home/home.component';
 import { AttributePageComponent } from '../pages/attribute-page/attribute-page.component';
-import { 
-  AuthGuardService as AuthGuard 
-} from 'src/services/AuthGuardService.service';
+import { AuthGuardService as AuthGuard } from 'src/services/AuthGuardService.service';
+import { ReportsComponent } from 'src/pages/reports/reports.component';
+import { UsersComponent } from '../pages/users/users.component';
+import { ChangePasswordComponent } from '../pages/change-password/change-password.component';
+import { ManageUserComponent } from 'src/pages/manage-user/manage-user.component';
+
 const routes: Routes = [
-  { path: '', redirectTo: '/manage/1', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  { 
-    path: 'manage/:attr_id', 
-    component: AttributePageComponent, 
-    canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'main', component: MainComponent }
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  {
+    path: 'manage/:attr_id',
+    component: AttributePageComponent,
+    canActivate: [AuthGuard]
+  },
+  { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+  { path: 'users/add', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'users/edit/:user_id', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
@@ -24,6 +32,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-
 
 }

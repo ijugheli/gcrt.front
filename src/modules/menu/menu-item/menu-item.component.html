@@ -1,6 +1,9 @@
 <li [class.active]="dropdownOpened">
     <ng-container *ngIf="!hasChildren()">
-        <a href="{{ item.action }}" [class.active-link]="active" >
+        <a
+            (click)="item.onClick()"
+            [class.active-link]="item.active"
+        >
             <div
                 class="frame"
                 *ngIf="item.img"
@@ -28,9 +31,17 @@
                 class="arrow"
             >
         </button>
-        <ul class="sub-list">
+        <ul
+            class="sub-list"
+            *ngIf="item.children && item.children.length"
+        >
             <li *ngFor="let subItem of item.children">
-                <a href="#">{{ subItem.title }}</a>
+                <a
+                    (click)="subItem.onClick()"
+                    [class.active-link]="subItem.active"
+                >
+                    {{ subItem.title }}
+                </a>
             </li>
         </ul>
     </ng-container>

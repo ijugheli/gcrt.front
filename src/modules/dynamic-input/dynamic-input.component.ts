@@ -50,7 +50,7 @@ export class DynamicInputComponent implements OnInit {
     }
 
     let object = this.generateValueObject(value);
-    console.log(object);
+    
     this.onChange.emit(object);
   }
 
@@ -63,6 +63,7 @@ export class DynamicInputComponent implements OnInit {
     o.order_id = this.property.order_id;
     o.related_value_id = null;
 
+
     //Value Related
     o.value_integer = null;
     o.value_decimal = null;
@@ -70,6 +71,7 @@ export class DynamicInputComponent implements OnInit {
     o.value_json = null;
     o.insert_date = null;
     o.update_date = null;
+
 
     //Normal input related -> string|integer|decimal
     if (viewTypeID == VIEW_TYPE_ID('input')) {
@@ -98,9 +100,7 @@ export class DynamicInputComponent implements OnInit {
       viewTypeID == VIEW_TYPE_ID('multiselect') ||
       viewTypeID == VIEW_TYPE_ID('treeselect') ||
       viewTypeID == VIEW_TYPE_ID('tableselect')) {
-      // value = value.map((item: any) => {
-      //   return item.code;
-      // });
+
       o.value_json = JSON.stringify(value);
     }
 

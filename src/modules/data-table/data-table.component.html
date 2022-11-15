@@ -1,8 +1,12 @@
-<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog
+    header="Confirmation"
+    icon="pi pi-exclamation-triangle"
+></p-confirmDialog>
 <p-toast></p-toast>
 <div class="table-container">
     <ng-container>
-        <ngx-spinner *ngIf="!loaded"
+        <ngx-spinner
+            *ngIf="!loaded"
             bdColor="rgba(51,51,51,0.1)"
             size="medium"
             color="#fff"
@@ -27,7 +31,6 @@
             (onRowSelect)="onRowSelect($event)"
             (onRowUnselect)="onRowUnselect($event)"
         >
-
             <ng-template pTemplate="caption">
                 <div class="header">
                     <ul class="list">

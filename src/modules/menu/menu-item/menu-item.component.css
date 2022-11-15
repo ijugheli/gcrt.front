@@ -1,3 +1,6 @@
 .active-link {
     color: #46AB44 !important;
 }
+ a {
+    cursor: pointer;
+}

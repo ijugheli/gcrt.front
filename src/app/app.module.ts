@@ -14,6 +14,10 @@ import { AttributePageModule } from 'src/pages/attribute-page/attribute-page.mod
 import { AuthGuardService } from 'src/services/AuthGuardService.service';
 import { AuthService } from 'src/services/AuthService.service';
 import { LoginModule } from '../pages/login/login/login.module';
+import { ReportsModule } from '../pages/reports/reports.module';
+import { UsersModule } from '../pages/users/users.module';
+import { ChangePasswordModule } from '../pages/change-password/change-password.module';
+import { ManageUserModule } from '../pages/manage-user/manage-user.module';
 
 
 @NgModule({
@@ -28,8 +32,12 @@ import { LoginModule } from '../pages/login/login/login.module';
     AttributePageModule,
     HomeModule,
     LoginModule,
+    ReportsModule,
+    UsersModule,
+    ChangePasswordModule,
     TableModule,
     ConfirmDialogModule,
+    ManageUserModule,
     AppRoutingModule,
   ],
   providers: [ConfirmationService, AuthGuardService, AuthService],
