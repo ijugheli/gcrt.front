@@ -1,15 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { API_URL } from 'src/app/app.config';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable()
 export class AuthService {
 
   public urls: any = {
-    'login': 'http://localhost:8000/user/login',
-    'logout': 'http://localhost:8000/user/logout',
-    'refresh': 'http://localhost:8000/user/refresh',
-    'profile': 'http://localhost:8000/user/profile',
-    'list' : 'http://localhost:8000/user/list'
+    'login': API_URL + '/user/login',
+    'logout': API_URL + '/user/logout',
+    'refresh': API_URL + '/user/refresh',
+    'profile': API_URL + '/user/profile',
+    'list' : API_URL + '/user/list'
   };
   
   constructor(private http: HttpClient) {
@@ -52,7 +53,6 @@ export class AuthService {
 
     localStorage.setItem("auth", JSON.stringify(o));
   }
-
   
   public login(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');

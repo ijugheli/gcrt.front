@@ -3,6 +3,57 @@
     icon="pi pi-exclamation-triangle"
 ></p-confirmDialog>
 <p-toast></p-toast>
+
+<p-overlayPanel #op>
+    <ng-template pTemplate>
+        <div class="grid p-fluid table-settings">
+            <div class="col-12 md:col-4">
+                <div class="p-inputgroup">
+                    <p-multiSelect
+                        [options]="originalProps"
+                        [(ngModel)]="properties"
+                        optionLabel="title"
+                        selectedItemsLabel="{0} აქტიური ველი"
+                        [style]="{minWidth: '250px'}"
+                        placeholder="აქტიური ველები"
+                        [showHeader]="false"
+                    ></p-multiSelect>
+                </div>
+            </div>
+            <p-divider></p-divider>
+
+            <div class="col-12 md:col-4">
+                <div class="p-inputgroup switch-input-group">
+                    <span>სორტირება</span>
+                    <p-inputSwitch [(ngModel)]="tableSettings['sort']"></p-inputSwitch>
+                </div>
+            </div>
+            <p-divider></p-divider>
+            <div class="col-12 md:col-4">
+                <div class="p-inputgroup switch-input-group">
+                    <span>მონაც. დასახელებები</span>
+                    <p-inputSwitch [(ngModel)]="tableSettings['header']"></p-inputSwitch>
+                </div>
+            </div>
+            <p-divider></p-divider>
+            <div class="col-12 md:col-4">
+                <div class="p-inputgroup switch-input-group">
+                    <span>ფილტრაცია</span>
+                    <p-inputSwitch [(ngModel)]="tableSettings['filter']"></p-inputSwitch>
+                </div>
+            </div>
+            <p-divider></p-divider>
+            <div class="col-12 md:col-4">
+                <div class="p-inputgroup switch-input-group">
+                    <span>მულტი ჩან. მართვა</span>
+                    <p-inputSwitch [(ngModel)]="tableSettings['multi']"></p-inputSwitch>
+                </div>
+            </div>
+
+        </div>
+    </ng-template>
+</p-overlayPanel>
+
 <div class="table-container">
     <ng-container>
         <ngx-spinner
@@ -18,6 +69,7 @@
     </ng-container>
     <ng-container>
         <p-table
+            sortMode="single"
             [value]="rows"
             dataKey="id"
             styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
@@ -34,7 +86,51 @@
             <ng-template pTemplate="caption">
                 <div class="header">
                     <ul class="list">
-                        <ng-container *ngFor="let setting of settings | keyvalue">
+                        <!-- SETTINGS -->
+                        <li>
+                            <button
+                                (click)="onSettingClick('add')"
+                                type="button"
+                                class="border-btn"
+                                [class.disabled]="!isSettingEnabled('add')"
+                            >
+                                <i class="pi pi-plus-circle"></i>
+                                დამატება
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                (click)="onSettingClick('edit')"
+                                type="button"
+                                class="border-btn"
+                                [class.disabled]="!isSettingEnabled('edit')"
+                            >
+                                <i class="pi pi-pencil"></i>
+                                რედაქტირება
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                (click)="onSettingClick('delete')"
+                                type="button"
+                                class="border-btn"
+                                [class.disabled]="!isSettingEnabled('delete')"
+                            >
+                                <i class="pi pi-trash"></i>
+                                წაშლა
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                (click)="reload()"
+                                type="button"
+                                class="border-btn icon-only-btn"
+                                [class.disabled]="!isSettingEnabled('reload')"
+                            >
+                                <i class="pi pi-refresh"></i>
+                            </button>
+                        </li>
+                        <!-- <ng-container *ngFor="let setting of settings | keyvalue">
                             <li *ngIf="setting.value.align == 'left'">
                                 <button
                                     (click)="onSettingClick(setting.value.name)"
@@ -46,11 +142,62 @@
                                     {{setting.value.title}}
                                 </button>
                             </li>
-                        </ng-container>
+                        </ng-container> -->
                     </ul>
+                    <!-- EXPORT IMPORT RELOAD -->
                     <div class="dropdown">
                         <ul class="list">
-                            <ng-container *ngFor="let setting of settings | keyvalue">
+                            <li>
+                                <button
+                                    (click)="onSettingClick('pdf')"
+                                    type="button"
+                                    class="border-btn icon-only-btn"
+                                    [class.disabled]="!isSettingEnabled('pdf')"
+                                >
+                                    <i class="pi pi-file-pdf"></i>
+                                    Export PDF
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    (click)="onSettingClick('xls')"
+                                    type="button"
+                                    class="border-btn icon-only-btn"
+                                    [class.disabled]="!isSettingEnabled('xls')"
+                                >
+                                    <i class="pi pi-file-excel"></i>
+                                    Export XLS
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    (click)="op.show($event)"
+                                    type="button"
+                                    class="border-btn icon-only-btn"
+                                >
+                                    <i class="pi pi-cog"></i>
+
+                                </button>
+                                <!-- <p-toggleButton
+                                    onLabel="დასახელებები"
+                                    offLabel="დასახელებები"
+                                    onIcon="pi pi-check"
+                                    offIcon="pi pi-times"
+                                    (click)="op.show($event)"
+                                    [(ngModel)]="showHeader"
+                                ></p-toggleButton> -->
+                                <!-- <button
+                                    (click)="onSettingClick('xls')"
+                                    type="button"
+                                    class="border-btn icon-only-btn"
+                                    [class.disabled]="!isSettingEnabled('xls')"
+                                >
+                                    <i class="pi pi-file-excel"></i>
+                                    Export XLS
+                                </button> -->
+                            </li>
+
+                            <!-- <ng-container *ngFor="let setting of settings | keyvalue">
                                 <li *ngIf="setting.value.align == 'right'">
                                     <button
                                         (click)="onSettingClick(setting.value.name)"
@@ -62,15 +209,16 @@
                                         {{setting.value.title}}
                                     </button>
                                 </li>
-                            </ng-container>
-                            <p-multiSelect
+                            </ng-container> -->
+                            <!-- <p-multiSelect
                                 [options]="originalProps"
                                 [(ngModel)]="properties"
-                                optionLabel="header"
-                                selectedItemsLabel="არჩეულია {0} ველი"
+                                optionLabel="title"
+                                selectedItemsLabel="{0} ველი"
                                 [style]="{minWidth: '200px'}"
                                 placeholder="აირჩიეთ ველები"
-                            ></p-multiSelect>
+                                [showHeader]="false"
+                            ></p-multiSelect> -->
 
                         </ul>
                     </div>
@@ -79,63 +227,101 @@
             </ng-template>
 
             <ng-template pTemplate="header">
-                <tr>
-                    <th style="width: 3rem"></th>
-                    <th
-                        class="head-item"
-                        *ngFor="let property of properties"
-                    >
-                        {{property.title}}
-                    </th>
+                <!-- HEADER -->
+                <tr *ngIf="tableSettings['header']">
+
+                    <ng-container *ngIf="tableSettings['multi']">
+                        <th style="width: 3rem"></th>
+                    </ng-container>
+                    <ng-container *ngIf="tableSettings['sort']">
+                        <th
+                            class="head-item"
+                            pSortableColumn="{{property.id}}"
+                            *ngFor="let property of properties"
+                        >
+                            {{property.title}}
+                            <p-sortIcon field="{{property.id}}"></p-sortIcon>
+
+                        </th>
+                    </ng-container>
+
+                    <ng-container *ngIf="!tableSettings['sort']">
+                        <th
+                            class="head-item"
+                            *ngFor="let property of properties"
+                        >
+                            {{property.title}}
+                        </th>
+                    </ng-container>
 
                 </tr>
-                <tr>
-                    <th style="width: 3rem">
-                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                    </th>
+                <!-- FILTERS -->
+                <tr *ngIf="tableSettings['filter']">
+
+                    <ng-container *ngIf="tableSettings['multi']">
+                        <th style="width: 3rem; text-align:left !important; padding:5px !important">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                    </ng-container>
 
                     <th
                         class="head-item"
                         *ngFor="let property of properties"
                     >
-                        <ng-container *ngIf="isStringFilter(property)">
+                        <!-- Sting Filter -->
+                        <ng-container *ngIf="property.hasStringFilter()">
                             <p-columnFilter
                                 [matchModeOptions]="filterOptions['string']"
                                 class="p-inputtext-sm"
+                                [showMatchModes]="false"
+                                [showOperator]="false"
+                                [showAddButton]="false"
                                 type="text"
+                                display="row"
+                                [showClearButton]="false"
                                 field="{{ property.id }}"
                             ></p-columnFilter>
                         </ng-container>
-
-                        <ng-container *ngIf="isDateFilter(property)">
+                        <!-- Date Filter -->
+                        <ng-container *ngIf="property.hasDateFilter()">
                             <p-columnFilter
                                 [matchModeOptions]="filterOptions['date']"
                                 matchMode="custom-dateIs"
+                                [showClearButton]="false"
+                                [showOperator]="false"
+                                [showAddButton]="false"
+                                placeholder="აირჩიეთ თარიღი"
+                                display="menu"
                                 type="date"
-                                field="date"
+                                field="{{ property.id }}"
                             ></p-columnFilter>
                         </ng-container>
-
-                        <ng-container *ngIf="isSelectFilter(property)">
+                        <!-- Select Filter -->
+                        <ng-container *ngIf="property.hasSelectFilter()">
                             <p-columnFilter
                                 field="{{property.id}}"
                                 matchMode="in"
+                                [showClearButton]="false"
                                 [showMenu]="false"
                             >
                                 <ng-template pTemplate="group">
                                     <p-multiSelect
-                                        [ngModel]="property.options.list"
+                                        [(ngModel)]="property.selectedOptions"
+                                        (onChange)="onSelectChange(property)"
+                                        [options]="property.options"
                                         appendTo="body"
-                                        [options]="property.options.list"
-                                        (onFilter)="filter($event)"
-                                        placeholder="ყველა"
-                                        optionLabel="typeID"
+                                        [filter]="false"
+                                        [filterBy]="property.id"
+                                        [showToggleAll]="false"
+                                        [showHeader]="false"
+                                        [maxSelectedLabels]="1"
+                                        [selectedItemsLabel]="'{0} მნიშვნელობა'"
                                     >
                                         <ng-template
                                             let-option
                                             pTemplate="item"
                                         >
-                                            <div class="p-multiselect-typeID-option">
+                                            <div class="p-multiselect-option">
                                                 <span class="ml-1">{{ option }}</span>
                                             </div>
                                         </ng-template>
@@ -143,10 +329,52 @@
                                 </ng-template>
                             </p-columnFilter>
                         </ng-container>
-
                     </th>
+                </tr>
+            </ng-template>
 
-                    <!-- <th class="head-item">
+            <ng-template
+                pTemplate="body"
+                let-row
+            >
+                <tr>
+                    <ng-container *ngIf="tableSettings['multi']">
+                        <td>
+                            <p-tableCheckbox [value]="row"></p-tableCheckbox>
+                        </td>
+                    </ng-container>
+
+                    <td
+                        class="row-item"
+                        *ngFor="let property of properties"
+                    >
+
+                        <ng-container *ngIf="property.isDate()">
+                            {{row[property.id] |  date:'d/M/yy H:mm' }}
+                        </ng-container>
+                        <ng-container *ngIf="property.isString() && !property.isSelect()">{{row[property.id]}}</ng-container>
+                        <ng-container *ngIf="property.isSelect()">
+                            <ng-container *ngFor="let tag of row[property.id]">
+                                <div class="tag-item">
+                                    <!-- <p-chip label="{{tag}}"></p-chip> -->
+                                    <p-tag
+                                        value="{{tag}}"
+                                        styleClass="p-tag-item"
+                                        class="p-tag-rounded"
+                                        severity="success"
+                                    ></p-tag>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-container>
+</div>
+
+<!-- <th class="head-item">
                     <p-columnFilter
                         [matchModeOptions]="filterOptions['integer']"
                         matchMode="custom-equals"
@@ -209,27 +437,3 @@
                         </ng-template>
                     </p-columnFilter>
                 </th> -->
-
-                </tr>
-            </ng-template>
-
-            <ng-template
-                pTemplate="body"
-                let-row
-            >
-                <tr>
-                    <td>
-                        <p-tableCheckbox [value]="row"></p-tableCheckbox>
-                    </td>
-
-                    <td
-                        class="row-item"
-                        *ngFor="let property of properties"
-                    >
-                        {{row[property.id]}}
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </ng-container>
-</div>

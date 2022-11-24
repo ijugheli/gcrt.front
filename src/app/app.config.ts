@@ -2,12 +2,7 @@ import { reverseMap } from "./app.func";
 import { IActionItem, IMenuItem } from "./app.interfaces";
 
 export const API_URL = 'http://localhost:8000';
-// export const API_URL = 'https://gcrt.live';
-
-
-
-
-
+// export const API_URL = 'https://gcrt.live/api';
 
 export const VIEW_TYPES: Map<number, string> = new Map([
   [1, 'input'],
@@ -71,15 +66,15 @@ export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(
     activeOnSingle: true,
     activeDefault: false,
   } as IActionItem],
-  ['csv', {
-    name: 'csv',
-    title: 'Export CSV',
-    icon: 'pi pi-file',
-    align: 'right',
-    activeOnMulti: true,
-    activeOnSingle: true,
-    activeDefault: true,
-  } as IActionItem],
+  // ['csv', {
+  //   name: 'csv',
+  //   title: 'Export CSV',
+  //   icon: 'pi pi-file',
+  //   align: 'right',
+  //   activeOnMulti: true,
+  //   activeOnSingle: true,
+  //   activeDefault: true,
+  // } as IActionItem],
   ['pdf', {
     name: 'pdf',
     title: 'Export PDF',

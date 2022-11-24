@@ -10,6 +10,15 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DynamicFormModule } from '../dynamic-form/dynamic-form.module';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ToastModule } from 'primeng/toast';
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+
+import { InputSwitchModule } from 'primeng/inputswitch';
+
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DividerModule } from 'primeng/divider';
+
 
 @NgModule({
   imports: [
@@ -18,8 +27,14 @@ import { ToastModule } from 'primeng/toast';
     FormsModule,
     DynamicDialogModule,
     MultiSelectModule,
+    ToggleButtonModule,
+    OverlayPanelModule,
     DynamicFormModule,
+    InputSwitchModule,
+    DividerModule,
     ConfirmDialogModule,
+    ChipModule,
+    TagModule,
     ToastModule,
     NgxSpinnerModule
   ],

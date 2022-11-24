@@ -1,19 +1,19 @@
 import { Attribute, Component, Input, OnInit } from '@angular/core';
 import { ConfirmationService, FilterService, SelectItem } from 'primeng/api';
 import * as FileSaver from 'file-saver';
-import autoTable from 'jspdf-autotable';
+import autoTable, { RowInput } from 'jspdf-autotable';
 import { DialogService } from 'primeng/dynamicdialog';
 import { DynamicFormComponent } from '../dynamic-form/dynamic-form.component';
 import { IActionItem, RowItem } from 'src/app/app.interfaces';
 import { ACTION_SETTINGS, DATA_TYPE_ID, TABLE_SETTINGS, VIEW_TYPE_ID } from 'src/app/app.config';
 import { DUMMY_USERS, STAFF_TYPES } from 'src/app/app.seeds';
 import { AttributesService } from '../../services/Attributes.service';
-import { AttrValue, AttrProperty } from '../../app/app.models';
+import { AttrValue, Property, AttrProperty } from '../../app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 class Column {
   filterType?: number = 1;
-  property?: AttrProperty;
+  property?: Property;
   rows?: any[];
 }
 
@@ -63,6 +63,15 @@ export class DataTableComponent implements OnInit {
   public rows: any[] = [];
   public propMap: any[] = [];
 
+  public showHeader = false;
+
+  public tableSettings = {
+    'sort': true,
+    'filter': true,
+    'multi': true,
+    'header': true
+  }
+
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -98,34 +107,17 @@ export class DataTableComponent implements OnInit {
     }
 
     for (let i in data['properties']) {
-      this.propMap[data['properties'][i]['id']] = data['properties'][i];
+      this.propMap[data['properties'][i]['id']] = new Property(data['properties'][i] as AttrProperty);
     }
 
     this.originalProps = data['properties']
       .filter((i: any) => i.type == 1)
       .sort((a: any, b: any) => a.order_id > b.order_id ? 1 : -1)
-      .map((prop: any) => {
-        prop['field'] = 'name';
-        prop['header'] = prop.title;
-        prop.options = {
-          'list': [],
-          'values': {}
-        };
-        if (!prop.source)
-          return prop;
-
-        for (let i = 0; i < prop.source.length; i++) {
-          let item = prop.source[i];
-          prop.options.list.push(item.value);
-        }
-        prop.optValues = prop.source.map((item: any) => item.id);
-
-        return prop;
-      });
+      .map((prop: any) => new Property(prop as AttrProperty));
 
     this.properties = this.originalProps.filter((i) => i.has_filter > 0);
   }
-  
+
   private parseRows(data: any) {
     if (!data || !data['rows']) {
       return;
@@ -134,59 +126,41 @@ export class DataTableComponent implements OnInit {
     this.rows = data['rows'];
   }
 
-  public isStringFilter(property: AttrProperty): boolean {
-    if (!property.id) return false;
-
-    let viewTypeID = this.propMap[property.id].input_view_type;
-    let dataTypeID = this.propMap[property.id].input_data_type;
-
-    return (dataTypeID == DATA_TYPE_ID('string')) &&
-      viewTypeID != VIEW_TYPE_ID('select') &&
-      viewTypeID != VIEW_TYPE_ID('multiselect');
-  }
-
-  public isDateFilter(property: AttrProperty): boolean {
-    if (!property.id) return false;
-
-    let viewTypeID = this.propMap[property.id].input_view_type;
-    let dataTypeID = this.propMap[property.id].input_data_type;
-
-    return (dataTypeID == DATA_TYPE_ID('date')) ||
-      viewTypeID == VIEW_TYPE_ID('datetime');
-  }
-
-  public isSelectFilter(property: AttrProperty): boolean {
-    if (!property.id) return false;
-
-    let viewTypeID = this.propMap[property.id].input_view_type;
-    let dataTypeID = this.propMap[property.id].input_data_type;
-    if (!this.propMap[property.id].source)
-
-      return false;
-    return (dataTypeID == DATA_TYPE_ID('select')) ||
-      viewTypeID == VIEW_TYPE_ID('multiselect');
-  }
-
-  public filterString(e: any, a: any, b: any) {
-    console.log('Filtering String');
-    console.log(e);
-    console.log(a);
-    console.log(b);
-    console.log('Filtering String');
+  public reload() {
+    window.location.reload();
   }
 
   public filter(e: any) {
-    console.log('Filter');
+    console.log('Filtering select filter');
     console.log(e);
     console.log('Filter');
   }
 
-  public filterCallback(e: any) {
-    console.log('Filter Callback');
-    console.log(e);
-    console.log('Filter Callback');
+  public onSelectChange(prop: Property) {
+    if (!prop.hasSelectedOptions()) {
+      this.rows = this.originalRows;
+      return;
+    }
+
+    this.rows = this.rows.filter((row) => {
+      if (!prop.id || !row.hasOwnProperty(prop.id)) {
+        return false;
+      }
+
+      let propertyValue = row[prop.id];
+
+      if (!propertyValue || !propertyValue.length) {
+        return false;
+      }
+
+      return propertyValue.some(
+        (value: string) => prop.selectedOptions.indexOf(value) > -1
+      );
+    });
+
   }
 
+  //Row controls and Filtering
   private initializeFilterOptions() {
     //String Services
     this.filterService.register('custom-contains', (value: any, filter: any): boolean => this.filterService.filters.contains(value, filter));
@@ -234,6 +208,13 @@ export class DataTableComponent implements OnInit {
     // this.filterService.register('custom-lessThen', (value: any, filter: any): boolean => this.filterService.filters.dateBefore(value, filter));
   }
 
+  public onRowSelect(event: any) {
+    console.log(this.selectedRows);
+  }
+
+  public onRowUnselect(event: any) {
+    console.log(this.selectedRows);
+  }
   //Action Settings related.
   public isSettingEnabled(action: string): boolean {
     if (!this.settings.has(action)) {
@@ -268,8 +249,7 @@ export class DataTableComponent implements OnInit {
     return typeof this.selectedRows == 'object' && this.selectedRows.length == 1;
   }
 
-  onSettingClick(setting: string): void {
-    console.log(setting);
+  public onSettingClick(setting: string): void {
     if (setting == 'add') {
       this.add();
     }
@@ -277,6 +257,85 @@ export class DataTableComponent implements OnInit {
     if (setting == 'delete') {
       this.delete();
     }
+
+    if (setting == 'pdf') {
+      console.log('HERE');
+      this.exportPdf();
+    }
+
+    if (setting == 'xls') {
+      this.exportExcel();
+    }
+  }
+
+  //Export Related
+  public exportPdf() {
+    let columns = [this.properties.map((item) => item.title)];
+    let body = Object.values(this.originalRows).map<RowInput>((item) => Object.values(item));
+
+    import("jspdf").then(jsPDF => {
+      import("jspdf-autotable").then(x => {
+        const doc = new jsPDF.default('l', 'mm', 'a4');
+        doc.addFont("assets/fonts/helvetica-neue-lt-geo-55-roman.ttf", "roman", "normal");
+        autoTable(doc, {
+          head: columns,
+          body: body,
+          styles: {
+            font: 'roman',
+            fontStyle: 'bold',
+          }
+        });
+        doc.setFont("roman");
+        doc.save('rows.pdf');
+      })
+    })
+  }
+
+  public exportExcel() {
+    let body = this.originalRows.map<RowInput>((item: { [key: number]: string | string[] }) => {
+      let row: { [key: string]: string | string[] } = {};
+      for (let i in item) {
+        if (!this.propMap[i])
+          continue;
+        let prop: Property = this.propMap[i];
+        let value: string = (prop.isSelect() && item[i].length > 0)
+          ? (Array.from(item[i])).join(',')
+          : item[i] as string;
+        row[this.propMap[i].title] = value;
+      }
+      return row;
+    });
+
+    import("xlsx").then(xlsx => {
+      const worksheet = xlsx.utils.json_to_sheet(body);
+      const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+      const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+      this.saveAsExcelFile(excelBuffer, "rows");
+    });
+  }
+
+  public saveAsExcelFile(buffer: any, fileName: string): void {
+    let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    let EXCEL_EXTENSION = '.xlsx';
+    const data: Blob = new Blob([buffer], {
+      type: EXCEL_TYPE
+    });
+    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+  }
+
+
+  //Action Methods
+  private add() {
+    const dialogReference = this.dialogService.open(DynamicFormComponent, {
+      data: { attrID: this.attrID },
+      header: 'დამატება',
+      width: '60%',
+      position: 'top'
+    });
+
+    dialogReference.onClose.subscribe((d: any) => {
+      this.load();
+    });
   }
 
   private delete() {
@@ -302,126 +361,7 @@ export class DataTableComponent implements OnInit {
     });
   }
 
-  private add() {
-    const dialogReference = this.dialogService.open(DynamicFormComponent, {
-      data: { attrID: this.attrID },
-      header: 'დამატება',
-      width: '60%',
-      position: 'top'
-    });
 
-    dialogReference.onClose.subscribe((d: any) => {
-      this.load();
-    });
-  }
-
-  public onRowSelect(event: any) {
-    console.log(this.selectedRows);
-  }
-
-  public onRowUnselect(event: any) {
-    console.log(this.selectedRows);
-  }
-
-  //Export Related
-  exportPdf() {
-    let columns = [['დასახელება', 'აღწერა', 'თარიღი']];
-    let body = this.rows.map((i) => [i.title, i.description, i.date])
-
-    import("jspdf").then(jsPDF => {
-      import("jspdf-autotable").then(x => {
-        const doc = new jsPDF.default('l', 'mm', 'a4');
-        // doc.addFileToVFS("assets/fonts/helvetica-neue-lt-geo-55-roman.ttf", myFont);
-        // doc.addFont("MyFont.ttf", "MyFont", "normal");
-        // doc.setFont("MyFont");
-
-        //         autoTable(doc, {
-        //           head: columns,
-        //           body: body,
-        //           styles: {
-        //             font: "sans-serif",
-        // fontStyle: 'bold',
-        //           },
-        //           didDrawCell: (data) => {
-        //             console.log(data);
-        //           },
-        //         });
-
-        //         doc.save('rows.pdf');
-      })
-    })
-  }
-
-
-  exportExcel() {
-    import("xlsx").then(xlsx => {
-      const worksheet = xlsx.utils.json_to_sheet(this.rows);
-      const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "rows");
-    });
-  }
-
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE
-    });
-    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-  }
-
-
-
-  // private parseRows(data: any): void {
-  //   // console.log(data);
-  //   if (!data || !data['rows']) {
-  //     return;
-  //   }
-
-  //   let rows = data['rows'];
-  //   for (let i in data['rows']) {
-  //     let cRow = {
-  //       'id': i,
-  //       'propMap': data['rows'][i]
-  //     }
-  //     this.rows.push(cRow);
-  //   }
-  // }
-
-
-
-  // public rowValue(row: any, propertyID: any) {
-  //   console.log(row);
-  //   console.log(row.propMap);
-  //   console.log(propertyID);
-  //   row = row.propMap[propertyID];
-  //   if (row == undefined || row == null) {
-  //     return '';
-  //   }
-
-  //   let viewTypeID = this.propMap[propertyID].input_view_type;
-  //   let dataTypeID = this.propMap[propertyID].input_data_type;
-
-  //   if (viewTypeID == VIEW_TYPE_ID('select') ||
-  //     viewTypeID == VIEW_TYPE_ID('multiselect') ||
-  //     viewTypeID == VIEW_TYPE_ID('treeselect') ||
-  //     viewTypeID == VIEW_TYPE_ID('tableselect')) {
-  //     return row.selected.join(', ');
-  //   }
-
-  //   if (viewTypeID == VIEW_TYPE_ID('textarea') ||
-  //     viewTypeID == VIEW_TYPE_ID('editable-textarea')) {
-  //     // console.log(row);
-  //     return row.value_text == null ? '' : row.value_text.replace(/<\/?[^>]+(>|$)/g, "");
-  //   }
-
-  //   if (dataTypeID == DATA_TYPE_ID('string')) return row.value_string;
-  //   if (dataTypeID == DATA_TYPE_ID('date')) return row.value_date;
-  //   if (dataTypeID == DATA_TYPE_ID('datetime')) return row.value_date;
-  //   if (dataTypeID == DATA_TYPE_ID('boolean')) return row.value_boolean == 1 ? 'კი' : 'არა';
-
-  // }
 
 
 

@@ -1,6 +1,25 @@
 import { HttpHeaders } from "@angular/common/http";
+import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
 
 export class AttrProperty {
+    public id: number | null = null;
+    public p_id: number | null = null;
+    public attr_id: number | null = null;
+    public source_attr_id: number | null = null;
+    public type: number | null = null;
+    public title: string | null = null;
+    public input_data_type: number | null = null;
+    public input_view_type: number | null = null;
+    public is_mandatory: boolean = false;
+    public has_filter: boolean = false;
+
+    public insert_date: string | null = null;
+    public update_date: string | null = null;
+
+    public order_id: number | null = null;
+    public source: any = null;
+}
+export class Property {
     public id: number | null = null;
     public p_id: number | null = null;
     public attr_id: number | null = null;
@@ -16,8 +35,82 @@ export class AttrProperty {
 
     public order_id: number | null = null;
     public source: any = null;
+    public has_filter: any = false;
 
+    public options: any[] = [];
+    public selectedOptions: any[] = [];
+
+    public constructor(o: AttrProperty) {
+        this.id = o.id;
+        this.p_id = o.p_id;
+        this.attr_id = o.attr_id;
+        this.source_attr_id = o.source_attr_id;
+        this.type = o.type;
+        this.title = o.title;
+        this.input_data_type = o.input_data_type;
+        this.input_view_type = o.input_view_type;
+        this.is_mandatory = o.is_mandatory;
+        this.insert_date = o.insert_date;
+        this.update_date = o.update_date;
+        this.order_id = o.order_id;
+        this.source = o.source;
+        this.has_filter = o.has_filter;
+
+        if (!this.source)
+            return;
+
+        for (let i = 0; i < this.source.length; i++) {
+            let item = this.source[i];
+            this.options.push(item.value);
+        }
+
+        this.selectedOptions = [];
+    }
+
+    public isDate() {
+        return this.input_data_type == DATA_TYPE_ID('date');
+    }
+
+    public isString() {
+        return this.input_data_type == DATA_TYPE_ID('string');
+    }
+
+    public isSelect() {
+        return this.input_view_type == VIEW_TYPE_ID('select') ||
+            this.input_view_type == VIEW_TYPE_ID('multiselect');
+    }
+
+    public hasSelectedOptions() {
+        return this.isSelect() && this.selectedOptions != null && this.selectedOptions.length > 0;
+    }
+
+    public hasStringFilter(): boolean {
+        let viewTypeID = this.input_view_type;
+        let dataTypeID = this.input_data_type;
+
+        return (dataTypeID == DATA_TYPE_ID('string')) &&
+            viewTypeID != VIEW_TYPE_ID('select') &&
+            viewTypeID != VIEW_TYPE_ID('multiselect');
+    }
+
+    public hasDateFilter(): boolean {
+        let viewTypeID = this.input_view_type;
+        let dataTypeID = this.input_data_type;
+
+        return (dataTypeID == DATA_TYPE_ID('date')) ||
+            viewTypeID == VIEW_TYPE_ID('datetime');
+    }
+
+    public hasSelectFilter(): boolean {
+        let viewTypeID = this.input_view_type;
+
+        if (!this.source)
+            return false;
+
+        return this.isSelect();
+    }
 }
+
 
 export class Attribute {
     public id: number | null = null;
