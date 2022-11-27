@@ -11,6 +11,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
 import {DropdownModule} from 'primeng/dropdown';
+import {TreeSelectModule} from 'primeng/treeselect';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import {DropdownModule} from 'primeng/dropdown';
     EditorModule,
     FormsModule,
     InputTextModule,
+    TreeSelectModule,
     InputSwitchModule,
     InputNumberModule,
     DropdownModule,

@@ -25,7 +25,7 @@
                         [(ngModel)]="currentValue"
                         (ngModelChange)="onUpdate(currentValue)"
                         placeholder
-                        [style]="{'width':'300px', 'height' : '100%'}"
+                        [style]="{'width':'400px', 'height' : '100%'}"
                     >
                 </ng-container>
 
@@ -41,7 +41,7 @@
                         [(ngModel)]="currentValue"
                         (ngModelChange)="onUpdate(currentValue)"
                         placeholder
-                        [style]="{'width':'300px', 'height' : '100%'}"
+                        [style]="{'width':'400px', 'height' : '100%'}"
                     ></p-inputNumber>
                 </ng-container>
 
@@ -58,7 +58,7 @@
                         [(ngModel)]="currentValue"
                         (ngModelChange)="onUpdate(currentValue)"
                         placeholder
-                        [style]="{'width':'300px', 'height' : '100%'}"
+                        [style]="{'width':'400px', 'height' : '100%'}"
                     ></p-inputNumber>
                 </ng-container>
 
@@ -95,7 +95,7 @@
                     [class.ng-invalid]="!isValid()"
                     [class.ng-dirty]="!isValid()"
                     (ngModelChange)="onUpdate(currentValue)"
-                    [style]="{'width':'300px', 'height' : '100%'}"
+                    [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-calendar>
             </div>
 
@@ -112,13 +112,15 @@
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-list"></i>
                 </span>
+                
                 <p-dropdown
                     [options]="options"
+                    placeholder="აირჩიეთ {{property.title}}"
                     [(ngModel)]="selected"
                     [class.ng-invalid]="!isValid()"
                     [class.ng-dirty]="!isValid()"
                     optionLabel="name"
-                    [style]="{'width':'300px', 'height' : '100%'}"
+                    [style]="{'width':'400px', 'height' : '100%'}"
                     (ngModelChange)="onUpdate(selected)"
                 ></p-dropdown>
                 <!-- <p-multiSelect
@@ -128,7 +130,7 @@
                     [class.ng-dirty]="!isValid()"
                     (ngModelChange)="onUpdate(selected)"
                     optionLabel="name"
-                    [style]="{'width':'300px', 'height' : '100%'}"
+                    [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-multiSelect> -->
             </div>
         </ng-container>
@@ -151,8 +153,29 @@
                     [class.ng-dirty]="!isValid()"
                     (ngModelChange)="onUpdate(selected)"
                     optionLabel="name"
-                    [style]="{'width':'300px', 'height' : '100%'}"
+                    [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-multiSelect>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="viewType == 'treeselect'">
+            <div class="p-inputgroup">
+                <span
+                    class="p-inputgroup-addon"
+                    *ngIf="property.is_mandatory"
+                >
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-list"></i>
+                </span>
+                <p-treeSelect
+                    [(ngModel)]="selected"
+                    (ngModelChange)="onUpdate(selected)"
+                    [options]="tree"
+                    optionLabel="name"
+                    [style]="{'width':'400px', 'height' : '100%'}"
+                ></p-treeSelect>
             </div>
         </ng-container>
 

@@ -1,0 +1,88 @@
+<div class="header">
+    <ul class="list">
+        <!-- SETTINGS -->
+        <li>
+            <button
+                (click)="onSettingClick('add')"
+                type="button"
+                class="border-btn"
+                [class.disabled]="!isSettingEnabled('add')"
+            >
+                <i class="pi pi-plus-circle"></i>
+                დამატება
+            </button>
+        </li>
+        <li>
+            <button
+                (click)="onSettingClick('edit')"
+                type="button"
+                class="border-btn"
+                [class.disabled]="!isSettingEnabled('edit')"
+            >
+                <i class="pi pi-pencil"></i>
+                რედაქტირება
+            </button>
+        </li>
+        <li>
+            <button
+                (click)="onSettingClick('delete')"
+                type="button"
+                class="border-btn"
+                [class.disabled]="!isSettingEnabled('delete')"
+            >
+                <i class="pi pi-trash"></i>
+                წაშლა
+            </button>
+        </li>
+        <li>
+            <button
+                (click)="reload()"
+                type="button"
+                class="border-btn icon-only-btn"
+                [class.disabled]="!isSettingEnabled('reload')"
+            >
+                <i class="pi pi-refresh"></i>
+            </button>
+        </li>
+    </ul>
+    <!-- EXPORT IMPORT RELOAD -->
+    <div class="dropdown">
+        <ul class="list">
+            <li>
+                <button
+                    (click)="onSettingClick('pdf')"
+                    type="button"
+                    class="border-btn icon-only-btn"
+                    [class.disabled]="!isSettingEnabled('pdf')"
+                >
+                    <i class="pi pi-file-pdf"></i>
+                    Export PDF
+                </button>
+            </li>
+            <li>
+                <button
+                    (click)="onSettingClick('xls')"
+                    type="button"
+                    class="border-btn icon-only-btn"
+                    [class.disabled]="!isSettingEnabled('xls')"
+                >
+                    <i class="pi pi-file-excel"></i>
+                    Export XLS
+                </button>
+            </li>
+            <li>
+                <button
+                    (click)="op.show($event)"
+                    type="button"
+                    class="border-btn icon-only-btn"
+                >
+                    <i class="pi pi-cog"></i>
+
+                </button>
+
+            </li>
+
+        </ul>
+    </div>
+
+</div>

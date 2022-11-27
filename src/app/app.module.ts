@@ -18,7 +18,7 @@ import { ReportsModule } from '../pages/reports/reports.module';
 import { UsersModule } from '../pages/users/users.module';
 import { ChangePasswordModule } from '../pages/change-password/change-password.module';
 import { ManageUserModule } from '../pages/manage-user/manage-user.module';
-
+import { TreeTableModule } from 'primeng/treetable';
 
 @NgModule({
   declarations: [
@@ -30,6 +30,8 @@ import { ManageUserModule } from '../pages/manage-user/manage-user.module';
     HttpClientModule,
     MenuModule,
     AttributePageModule,
+    TableModule,
+    TreeTableModule,
     HomeModule,
     LoginModule,
     ReportsModule,

@@ -4,6 +4,9 @@ import { DATA_TYPES, VIEW_TYPES, VIEW_TYPE_ID } from 'src/app/app.config';
 import { City } from 'src/app/app.interfaces';
 import { AttrProperty, AttrValue } from '../../app/app.models';
 import { DATA_TYPE_ID } from '../../app/app.config';
+import { TreeNode } from 'primeng/api';
+import { parse, stringify, toJSON, fromJSON } from 'flatted';
+import { clone } from 'src/app/app.func';
 
 /**
  * Text Input
@@ -20,6 +23,7 @@ import { DATA_TYPE_ID } from '../../app/app.config';
 export class DynamicInputComponent implements OnInit {
   @Input('property') public property!: AttrProperty;
   @Input('validation') public validation: boolean = false;
+  @Input('initialValue') public initialValue: any;
   @Output('onChange') public onChange = new EventEmitter<AttrValue | null>();
 
   public viewType: any | null = null;
@@ -29,18 +33,59 @@ export class DynamicInputComponent implements OnInit {
   public currentValue: any;
 
   public options: any[];
+  public tree: any;
 
-  public selected: any[] | null = null;
+  public selected: any[] = [];
+  public treeSelected: any[] = [];
 
   constructor() {
-    this.options = [
-    ];
+    this.options = [];
   }
 
   ngOnInit() {
+
     this.initViewType();
     this.initDataType();
     this.parseSource();
+    this.loadInitialValue();
+  }
+
+  private loadInitialValue() {
+    if (this.initialValue == null) {
+      return;
+    }
+
+    if (this.isTree()) {
+      this.selected = JSON.parse(this.initialValue);
+      this.onUpdate(this.selected);
+      return;
+    }
+
+    if (this.isSelect()) {
+      this.selected = JSON.parse(this.initialValue);
+      this.selected = this.viewType == 'multiselect' ? Array.from(this.selected) : this.selected;
+      this.onUpdate(this.selected);
+      return;
+    }
+
+    if (this.property.input_data_type == DATA_TYPE_ID('date') ||
+      this.property.input_data_type == DATA_TYPE_ID('datetime')) {
+      this.currentValue = new Date(this.initialValue);
+      this.onUpdate(this.currentValue);
+      return;
+    }
+
+    if (this.property.input_data_type == DATA_TYPE_ID('boolean')) {
+      this.currentValue = this.initialValue != null && this.initialValue == 1 ? true : false;
+      this.onUpdate(this.currentValue);
+      return;
+    }
+
+    this.currentValue = this.initialValue;
+
+    this.onUpdate(this.currentValue);
+
+    return;
   }
 
   public onUpdate(value: any) {
@@ -50,7 +95,7 @@ export class DynamicInputComponent implements OnInit {
     }
 
     let object = this.generateValueObject(value);
-    
+
     this.onChange.emit(object);
   }
 
@@ -98,15 +143,28 @@ export class DynamicInputComponent implements OnInit {
     //Selects Related -> JSON
     else if (viewTypeID == VIEW_TYPE_ID('select') ||
       viewTypeID == VIEW_TYPE_ID('multiselect') ||
-      viewTypeID == VIEW_TYPE_ID('treeselect') ||
       viewTypeID == VIEW_TYPE_ID('tableselect')) {
 
       o.value_json = JSON.stringify(value);
+    } else if (viewTypeID == VIEW_TYPE_ID('treeselect')) {
+      const sanitizedJSON = Object.assign({}, value);
+
+      if (sanitizedJSON.parent) {
+        if (sanitizedJSON.parent.children) {
+          for (let i = 0; i < sanitizedJSON.parent.children.length; i++) {
+            sanitizedJSON.parent.children[i]['parent'] = null;
+          }
+        }
+      }
+
+      console.log(sanitizedJSON);
+
+      o.value_json = JSON.stringify(sanitizedJSON);
     }
 
     return o;
   }
-
+  
   private initViewType() {
     this.viewTypeID = this.property.input_view_type as number;
     this.viewType = VIEW_TYPES.has(this.viewTypeID)
@@ -122,26 +180,41 @@ export class DynamicInputComponent implements OnInit {
   }
 
   public parseSource() {
-    if (this.property.source_attr_id == null ||
-      !this.property.source ||
-      this.property.source.length <= 0) {
+    if (this.property.source_attr_id == null) {
       return;
     }
 
     //@TODO handles only value_string for selects and subselects.
+    if (this.property.tree != null) {
+      this.tree = this.parseTree(this.property.tree);
+      // return;
+    }
+
+
     this.options = this.property.source.map((item: any) => {
       return { name: item.value, id: item.id };
     });
-    // console.log(this.o);
+
+    console.log(this.options);
+  }
+
+  private parseTree(tree: any) {
+    return (Array.from(Object.values(tree)) as TreeNode[]).map((node: any) => {
+      if (node.children) {
+        node.children = this.parseTree(node.children);
+      }
+      node.name = node.label;
+      node.id = node.data.value_id;
+      return node;
+    }) as TreeNode[];
   }
 
   public isValid() {
     if (!this.validation || !this.property.is_mandatory) {
       return true;
     }
-
     if (this.isSelect()) {
-      return this.selected && this.selected.length;
+      return this.selected != null && Object.values(this.selected).length > 0;
     }
 
     return this.currentValue != null && this.currentValue != '';
@@ -149,6 +222,10 @@ export class DynamicInputComponent implements OnInit {
 
   public isSelect() {
     return this.viewType == 'multiselect' || this.viewType == 'select';
+  }
+
+  public isTree() {
+    return this.viewType == 'treeselect';
   }
 
 }

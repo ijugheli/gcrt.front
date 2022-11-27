@@ -8,14 +8,18 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { NgxSpinnerModule } from "ngx-spinner";
+import {MenuModule} from 'primeng/menu';
+import {CardModule} from 'primeng/card';
 
 @NgModule({
   imports: [
     CommonModule,
     TabViewModule,
+    CardModule,
     FieldsetModule,
     ProgressBarModule,
     ButtonModule,
+    MenuModule,
     DividerModule,
     DynamicInputModule,
     NgxSpinnerModule

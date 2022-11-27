@@ -1,24 +1,26 @@
 .dynamic-input {
-    margin: 10px;
+    margin: 5px;
     display: flex;
     align-items: center;
-    padding: 10px 0px;
+    padding: 5px 0px;
 }
 /* .dynamic-input .p-inputtext-lg {
     min-width:100px;
 } */
 .dynamic-input .dynamic-input-label {
-    font-size: 16px;
-    margin: 0px 16px 0px 0px;
-    font-family: 'light';
-    letter-spacing: 1.2px;
-    font-style: oblique;
-    text-align: right;
-    width: 30%;
+    font-size: 14px;
+    margin: 0px 5px 0px 0px;
+    font-family: 'roman';
+    width:250px !important;
+    text-overflow: ellipsis;
+    /* font-style: oblique; */
+    /* letter-spacing: 1.2px; */
+    /* text-align: right; */
+    /* width: 30%; */
 }
 .p-inputgroup {
     height: 100%;
-    width: 70%;
+    width: auto;
 }
 .pi-exclamation-triangle {
     color: #ef0000bd;

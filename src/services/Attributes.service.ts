@@ -12,10 +12,13 @@ export class AttributesService extends GuardedService {
 
   public urls: any = {
     'list': API_URL + '/attrs/',
-    'details': API_URL + '/attrs/{attr_id}',
+    'withProperties': API_URL + '/attrs/{attr_id}',
+    'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
     'full': API_URL + '/attrs/{attr_id}/values',
     'addValueCollection': API_URL + '/attrs/{attr_id}/values/add',
+    'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
     'delete': API_URL + '/attrs/{attr_id}/values/remove',
+    'editValueItem': API_URL + '/attrs/values/edit',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -35,10 +38,28 @@ export class AttributesService extends GuardedService {
   }
 
   public attribute(attrID: number) {
-    return this.http.get<Attribute>(this.urls['details'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+    return this.http.get<Attribute>(this.urls['withProperties'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+  }
+
+  public attributeWithValue(attrID: number, valueID: number) {
+    return this.http.get<Attribute>(this.urls['withValue']
+      .replace('{attr_id}', attrID.toString())
+      .replace('{value_id}', valueID), { headers: this.headers }
+    );
   }
 
   public addValueCollection(attrID: number, values: any) {
     return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
   }
+
+  public editValueCollection(attrID: number, valueID: number, values: any) {
+    return this.http.post(this.urls['editValueCollection']
+      .replace('{attr_id}', attrID.toString())
+      .replace('{value_id}', valueID.toString()), values, { headers: this.headers });
+  }
+
+  public editValueItem(values: any) {
+    return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
+  }
+
 }

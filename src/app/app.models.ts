@@ -18,6 +18,8 @@ export class AttrProperty {
 
     public order_id: number | null = null;
     public source: any = null;
+    public tree : any = null;
+    public sourceAttribute: any = null;
 }
 export class Property {
     public id: number | null = null;
@@ -39,6 +41,8 @@ export class Property {
 
     public options: any[] = [];
     public selectedOptions: any[] = [];
+    public tree : any = null;
+    public sourceAttribute: any = null;
 
     public constructor(o: AttrProperty) {
         this.id = o.id;
@@ -54,7 +58,16 @@ export class Property {
         this.update_date = o.update_date;
         this.order_id = o.order_id;
         this.source = o.source;
+        this.tree = o.tree;
+        this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter;
+
+        if(this.tree != null) {
+
+            this.options = this.tree;
+            this.selectedOptions = [];
+            return;
+        }
 
         if (!this.source)
             return;
@@ -69,6 +82,14 @@ export class Property {
 
     public isDate() {
         return this.input_data_type == DATA_TYPE_ID('date');
+    }
+
+    public isNumber() {
+        return this.input_data_type == DATA_TYPE_ID('int') || this.input_data_type == DATA_TYPE_ID('double');
+    }
+
+    public isBoolean() {
+        return this.input_data_type == DATA_TYPE_ID('boolean');
     }
 
     public isString() {

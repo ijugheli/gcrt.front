@@ -38,6 +38,39 @@ export const DATA_TYPE_TITLES = reverseMap(DATA_TYPES);
 
 export const DATA_TYPE_ID = (type: string) => DATA_TYPE_TITLES.get(type);
 
+export const ATTR_TYPES: Map<string, number> = new Map([
+  ['standard', 1],
+  ['tree', 2],
+  ['entity', 3],
+]);
+
+
+
+export const ACTION_SETTINGS = {
+  'string': [
+    { label: 'შეიცავს', value: 'custom-contains' },
+    { label: 'არ შეიცავს', value: 'custom-notContains' },
+    { label: 'უდრის', value: 'custom-equals' },
+    { label: 'არ უდრის', value: 'custom-notEquals' },
+    { label: 'იწყება', value: 'custom-startsWith' },
+    { label: 'მთავრდება', value: 'custom-endsWith' },
+  ],
+  'integer': [
+    { label: 'უდრის', value: 'custom-equals' },
+    { label: 'არ უდრის', value: 'custom-notEquals' },
+    { label: 'მეტია', value: 'custom-greaterThen' },
+    { label: 'ნაკლებია', value: 'custom-lessThen' },
+  ],
+  'date': [
+    { label: 'თარიღი უდრის', value: 'custom-dateIs' },
+    { label: 'თარიღი არ უდრის', value: 'custom-dateIsNot' },
+    { label: 'თარიღი მეტია', value: 'custom-dateAfter' },
+    { label: 'თარიღი ნაკლებია', value: 'custom-dateBefore' },
+  ]
+}
+
+
+//DEPRECATED
 export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(
   [['edit', {
     name: 'edit',
@@ -104,26 +137,3 @@ export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(
   } as IActionItem],
   ],
 );
-
-export const ACTION_SETTINGS = {
-  'string': [
-    { label: 'შეიცავს', value: 'custom-contains' },
-    { label: 'არ შეიცავს', value: 'custom-notContains' },
-    { label: 'უდრის', value: 'custom-equals' },
-    { label: 'არ უდრის', value: 'custom-notEquals' },
-    { label: 'იწყება', value: 'custom-startsWith' },
-    { label: 'მთავრდება', value: 'custom-endsWith' },
-  ],
-  'integer': [
-    { label: 'უდრის', value: 'custom-equals' },
-    { label: 'არ უდრის', value: 'custom-notEquals' },
-    { label: 'მეტია', value: 'custom-greaterThen' },
-    { label: 'ნაკლებია', value: 'custom-lessThen' },
-  ],
-  'date': [
-    { label: 'თარიღი უდრის', value: 'custom-dateIs' },
-    { label: 'თარიღი არ უდრის', value: 'custom-dateIsNot' },
-    { label: 'თარიღი მეტია', value: 'custom-dateAfter' },
-    { label: 'თარიღი ნაკლებია', value: 'custom-dateBefore' },
-  ]
-}

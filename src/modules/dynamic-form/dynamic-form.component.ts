@@ -5,6 +5,8 @@ import { AttrValue, AttrProperty } from '../../app/app.models';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { NgxSpinnerService } from "ngx-spinner";
+import { MenuItem } from 'primeng/api/menuitem';
+import { DATA_TYPE_ID } from '../../app/app.config';
 
 
 @Component({
@@ -15,10 +17,15 @@ import { NgxSpinnerService } from "ngx-spinner";
 export class DynamicFormComponent implements OnInit {
 
   public attrID = 5; //Project
+  public valueID: number | null = 0;
+  public initialValuesProvided: boolean = false;
+
+
   public properties: AttrProperty[] = [];
   public sections: any[] = [];
 
   public values: Map<number, AttrValue | null> = new Map();
+  public initialValues: any = {};
   public fields: Map<number, AttrValue | null> = new Map();
 
   public validation = false;
@@ -34,11 +41,27 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.attrID = this.config.data.attrID;
+    this.valueID = this.config.data?.valueID;
+    this.initialValuesProvided = this.valueID != null;
     this.load();
+
   }
 
   private load() {
     this.spinner.show();
+
+    if (this.valueID != null) {
+      this.attrsService.attributeWithValue(this.attrID, this.valueID)
+        .subscribe((data: any) => {
+          this.properties = data.properties;
+          this.initValues(data.properties);
+          this.parseProperties(data.properties);
+          this.setInitialValues(data.values);
+          this.spinner.hide();
+        });
+      return;
+    }
+
     this.attrsService.attribute(this.attrID)
       .subscribe((data: any) => {
         this.properties = data.properties;
@@ -46,22 +69,24 @@ export class DynamicFormComponent implements OnInit {
         this.parseProperties(data.properties);
         this.spinner.hide();
       });
+
+
+
   }
 
-  public onValueUpdate(propertyID: number, e: AttrValue | null) {
-    this.validation = false;
-    if (!propertyID || !this.values.has(propertyID)) {
-      return;
-    }
 
-    this.values.set(propertyID, e);
-    // console.log(this.values);
-  }
-
+  //Initializers
   private initValues(properties: any[]) {
     properties.forEach((property: AttrProperty) => {
       if (property.id) this.values.set(property.id, null);
     });
+  }
+
+  private setInitialValues(values: any) {
+    for (let propertyID in values) {
+      this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
+    }
+    console.log(this.initialValues);
   }
 
   private parseProperties(properties: any[]) {
@@ -80,12 +105,40 @@ export class DynamicFormComponent implements OnInit {
       });
   }
 
+
+
+
+
+
+
+
+  ////////////////////////////////////Form Related////////////////////////////////////
+  public onValueUpdate(propertyID: number, e: AttrValue | null) {
+    this.validation = false;
+    if (!propertyID || !this.values.has(propertyID)) {
+      return;
+    }
+    // console.log(e);
+    this.values.set(propertyID, e);
+  }
   public onSubmit() {
     if (!this.validate()) {
       return;
     }
 
-    this.spinner.show();
+    if (this.valueID != null) {
+      this.spinner.show();
+      this.attrsService
+        .editValueCollection(this.attrID, this.valueID, Array.from(this.values.entries()))
+        .subscribe((data) => {
+          this.spinner.hide();
+          this.ref.close();
+        });
+
+      return;
+    }
+
+
     this.attrsService
       .addValueCollection(this.attrID, Array.from(this.values.entries()))
       .subscribe((data) => {
@@ -106,12 +159,20 @@ export class DynamicFormComponent implements OnInit {
       if (!property.id)
         continue;
 
-      let isValid = !property.is_mandatory ||
+      console.log(this.values);
+      let isValid = property.input_data_type == DATA_TYPE_ID('boolean') || property.type == 2 || !property.is_mandatory ||
         (property.is_mandatory &&
           this.values.get(property.id) != null);
-      
-      if(!isValid) 
-        return false;      
+
+      if (property.is_mandatory && !isValid && property.input_data_type !== DATA_TYPE_ID('boolean')) {
+        console.log(property.title);
+        console.log(this.values.get(property.id));
+        console.log(property);
+      }
+
+      if (!isValid)
+        return false;
+      // return isValid;
     }
 
     return true;

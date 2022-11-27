@@ -1,5 +1,5 @@
 import { Attribute, Component, Input, OnInit } from '@angular/core';
-import { ConfirmationService, FilterService, SelectItem } from 'primeng/api';
+import { ConfirmationService, FilterService, MenuItem, SelectItem } from 'primeng/api';
 import * as FileSaver from 'file-saver';
 import autoTable, { RowInput } from 'jspdf-autotable';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -11,11 +11,11 @@ import { AttributesService } from '../../services/Attributes.service';
 import { AttrValue, Property, AttrProperty } from '../../app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
-class Column {
-  filterType?: number = 1;
-  property?: Property;
-  rows?: any[];
-}
+import { ATTR_TYPES } from '../../app/app.config';
+
+
+import { TreeNode } from 'primeng/api';
+
 
 @Component({
   selector: 'data-table',
@@ -72,6 +72,10 @@ export class DataTableComponent implements OnInit {
     'header': true
   }
 
+  public isTree = false;
+  public tree: TreeNode[] = [];
+  public selectedNode: TreeNode | null = null;
+  public items: MenuItem[] = [];
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -86,7 +90,27 @@ export class DataTableComponent implements OnInit {
   ngOnInit() {
     this.initializeFilterOptions();
     this.attrID = parseInt(this.attrID);
+    this.initState();
     this.load();
+    this.loadContextMenu();
+  }
+
+  private initState() {
+  }
+
+  private loadContextMenu() {
+    this.items = [
+      {
+        label: 'View', icon: 'pi pi-search', command: (event) => {
+          console.log('View');
+        }
+      },
+      {
+        label: 'Toggle', icon: 'pi pi-sort', command: (event) => {
+          console.log('HERE');
+        }
+      }
+    ];
   }
 
   private load() {
@@ -96,9 +120,33 @@ export class DataTableComponent implements OnInit {
       .subscribe((data: any) => {
         this.spinner.hide();
         this.loaded = true;
+        this.processAttribute(data);
         this.parseProperties(data);
         this.parseRows(data);
       });
+  }
+
+  private processAttribute(data: any) {
+    this.isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
+    this.parseProperties(data);
+    if (this.isTree) {
+
+      this.tree = this.parseTree(data['tree']);
+      console.log(this.tree);
+      return;
+    }
+
+    this.parseRows(data);
+  }
+
+  private parseTree(tree: any) {
+    return (Array.from(Object.values(tree)) as TreeNode[]).map((node: any) => {
+      if (node.children) {
+        node.children = this.parseTree(node.children);
+      }
+
+      return node;
+    });
   }
 
   private parseProperties(data: any) {
@@ -254,6 +302,10 @@ export class DataTableComponent implements OnInit {
       this.add();
     }
 
+    if (setting == 'edit') {
+      this.edit();
+    }
+
     if (setting == 'delete') {
       this.delete();
     }
@@ -328,7 +380,30 @@ export class DataTableComponent implements OnInit {
   private add() {
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
       data: { attrID: this.attrID },
-      header: 'დამატება',
+      header: 'მნიშვნელობის დამატება',
+      dismissableMask: true,
+      maximizable: true,
+      width: '60%',
+      position: 'top'
+    });
+
+    dialogReference.onClose.subscribe((d: any) => {
+      this.load();
+    });
+  }
+
+  private edit() {
+    if (!this.selectedRows || this.selectedRows.length > 1) {
+      return;
+    }
+
+    let valueID = this.selectedRows[0]['valueID'];
+
+    const dialogReference = this.dialogService.open(DynamicFormComponent, {
+      data: { attrID: this.attrID, valueID: valueID },
+      header: 'მნიშვნელობის რედაქტირება',
+      dismissableMask: true,
+      maximizable: true,
       width: '60%',
       position: 'top'
     });
@@ -358,6 +433,27 @@ export class DataTableComponent implements OnInit {
       }, reject: () => {
 
       }
+    });
+  }
+
+
+  onTreeCellChange(value: any, propertyID: any, row: any) {
+    value = typeof value === 'string' ? value : value.target.value;
+    const data = {
+      'value_id': row['value_id'],
+      'attr_id': this.attrID,
+      'property_id': propertyID,
+      'value': value
+      // 'value': value
+    };
+
+    this.spinner.show();
+    this.attrsService.editValueItem(data).subscribe((response) => {
+      this.messageService.add({ severity: 'success', summary: 'მნიშვნელობა წარმატებით შეიცვალა.' });
+      this.spinner.hide();
+    }, (err) => {
+      this.messageService.add({ severity: 'warning', summary: 'მნიშვნელობა ვერ შეიცვალა. სცადეთ თავიდან.' });
+      this.spinner.hide();
     });
   }
 
