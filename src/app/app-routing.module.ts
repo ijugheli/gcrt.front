@@ -10,6 +10,7 @@ import { ReportsComponent } from 'src/pages/reports/reports.component';
 import { UsersComponent } from '../pages/users/users.component';
 import { ChangePasswordComponent } from '../pages/change-password/change-password.component';
 import { ManageUserComponent } from 'src/pages/manage-user/manage-user.component';
+import { AttributeFormComponent } from '../pages/attribute-form/attribute-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -18,6 +19,16 @@ const routes: Routes = [
   {
     path: 'manage/:attr_id',
     component: AttributePageComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'edit/:attr_id/:value_id',
+    component: AttributeFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add/:attr_id',
+    component: AttributeFormComponent,
     canActivate: [AuthGuard]
   },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },

@@ -1,0 +1,42 @@
+button span {
+    font-family: light;
+}
+
+.form-actions {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+button:first-child {
+    margin-right: 10px;
+}
+
+.pi {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.form-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    border-top: 1px solid #dee2e6;
+    padding-top: 10px;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    font-weight: normal;
+}
+
+.manage-form-container .left-panel {
+    width: 20% !important;
+    vertical-align: top !important;
+    display: inline-block !important;
+}
+
+.manage-form-container .tabview-panel {
+    width: 80% !important;
+    vertical-align: top !important;
+    display: inline-block !important;
+}

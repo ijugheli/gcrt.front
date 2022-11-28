@@ -15,6 +15,7 @@ import { ATTR_TYPES } from '../../app/app.config';
 
 
 import { TreeNode } from 'primeng/api';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -25,6 +26,7 @@ import { TreeNode } from 'primeng/api';
 })
 export class DataTableComponent implements OnInit {
   @Input('attrID') public attrID!: any;
+  @Input('valueID') public valueID!: any;
   /**
    * List of existing rows.
    */
@@ -76,12 +78,14 @@ export class DataTableComponent implements OnInit {
   public tree: TreeNode[] = [];
   public selectedNode: TreeNode | null = null;
   public items: MenuItem[] = [];
+  public attribute: any;
 
   constructor(
     private confirmationService: ConfirmationService,
     private filterService: FilterService,
     private messageService: MessageService,
     private attrsService: AttributesService,
+    private router: Router,
     public dialogService: DialogService,
     private spinner: NgxSpinnerService) {
 
@@ -116,10 +120,29 @@ export class DataTableComponent implements OnInit {
   private load() {
     this.loaded = false;
     this.spinner.show();
+
+    if (this.valueID != null) {
+      console.log('VALUUEE');
+      console.log(this.valueID);
+      this.attrsService.related(this.attrID, this.valueID)
+        .subscribe((data: any) => {
+          this.spinner.hide();
+          this.loaded = true;
+          this.attribute = data;
+          this.processAttribute(data);
+          this.parseProperties(data);
+          this.parseRows(data);
+        });
+      return;
+    }
+
+
+
     this.attrsService.full(this.attrID)
       .subscribe((data: any) => {
         this.spinner.hide();
         this.loaded = true;
+        this.attribute = data;
         this.processAttribute(data);
         this.parseProperties(data);
         this.parseRows(data);
@@ -127,6 +150,10 @@ export class DataTableComponent implements OnInit {
   }
 
   private processAttribute(data: any) {
+    if (!data || typeof data['type'] == 'undefined' || data['type'] == undefined) {
+      return;
+    }
+
     this.isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
     this.parseProperties(data);
     if (this.isTree) {
@@ -375,11 +402,24 @@ export class DataTableComponent implements OnInit {
     FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 
+  private isEntity() {
+    if (this.attribute == null || this.attribute.type == null) {
+      return false;
+    }
+
+    return this.attribute.type === ATTR_TYPES.get('entity');
+  }
 
   //Action Methods
   private add() {
+    if (this.isEntity()) {
+      this.router.navigateByUrl('/add/' + this.attrID);
+      return;
+    }
+
+
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
-      data: { attrID: this.attrID },
+      data: { attrID: this.attrID, relatedValueID: this.valueID },
       header: 'მნიშვნელობის დამატება',
       dismissableMask: true,
       maximizable: true,
@@ -399,8 +439,12 @@ export class DataTableComponent implements OnInit {
 
     let valueID = this.selectedRows[0]['valueID'];
 
+    if (this.isEntity()) {
+      this.router.navigateByUrl('/edit/' + this.attrID + '/' + valueID);
+      return;
+    }
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
-      data: { attrID: this.attrID, valueID: valueID },
+      data: { attrID: this.attrID, valueID: valueID, relatedValueID: this.valueID },
       header: 'მნიშვნელობის რედაქტირება',
       dismissableMask: true,
       maximizable: true,

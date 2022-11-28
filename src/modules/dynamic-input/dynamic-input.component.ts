@@ -157,14 +157,12 @@ export class DynamicInputComponent implements OnInit {
         }
       }
 
-      console.log(sanitizedJSON);
-
       o.value_json = JSON.stringify(sanitizedJSON);
     }
 
     return o;
   }
-  
+
   private initViewType() {
     this.viewTypeID = this.property.input_view_type as number;
     this.viewType = VIEW_TYPES.has(this.viewTypeID)

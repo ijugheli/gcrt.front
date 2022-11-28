@@ -38,7 +38,6 @@ import { InputTextModule } from 'primeng/inputtext';
     ContextMenuModule,
     ToggleButtonModule,
     OverlayPanelModule,
-    DynamicFormModule,
     InputSwitchModule,
     InputTextModule,
     DividerModule,

@@ -1,24 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Attribute } from 'src/app/app.models';
-import { AttributesService } from '../../services/Attributes.service';
-import { AttrValue, AttrProperty } from '../../app/app.models';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { NgxSpinnerService } from "ngx-spinner";
-import { MenuItem } from 'primeng/api/menuitem';
-import { DATA_TYPE_ID } from '../../app/app.config';
-
+import { DATA_TYPE_ID } from 'src/app/app.config';
+import { AttrProperty, AttrValue } from 'src/app/app.models';
+import { AttributesService } from 'src/services/Attributes.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'dynamic-form',
-  templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.css']
+  selector: 'app-attribute-form',
+  templateUrl: './attribute-form.component.html',
+  styleUrls: ['./attribute-form.component.css']
 })
-export class DynamicFormComponent implements OnInit {
+export class AttributeFormComponent implements OnInit {
 
-  public attrID = 5; //Project
+
+  public attrID : any; //Project
   public valueID: number | null = 0;
-  public relatedValueID: number | null = null;
   public initialValuesProvided: boolean = false;
 
 
@@ -27,7 +24,7 @@ export class DynamicFormComponent implements OnInit {
 
   public children: any[] = [];
 
-  public values: Map<number | string, AttrValue | null | number> = new Map();
+  public values: Map<number, AttrValue | null> = new Map();
   public initialValues: any = {};
   public fields: Map<number, AttrValue | null> = new Map();
 
@@ -37,15 +34,24 @@ export class DynamicFormComponent implements OnInit {
 
   constructor(
     private attrsService: AttributesService,
-    public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
+    public activatedRoute : ActivatedRoute,
+    public router : Router,
     private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
-    this.attrID = this.config.data.attrID;
-    this.valueID = this.config.data?.valueID;
-    this.relatedValueID = this.config.data?.relatedValueID;
+    let attrID: any = this.activatedRoute.snapshot.paramMap.get('attr_id');
+    this.attrID = attrID == null ? null : parseInt(attrID);
+
+    let valueID: any = this.activatedRoute.snapshot.paramMap.get('value_id');
+    this.valueID = valueID == null ? null : parseInt(valueID);
+
+    if(!this.attrID || this.attrID == null) {
+      this.router.navigateByUrl('/');
+    }
+
+    // this.attrID = this.config.data.attrID;
+    // this.valueID = this.config.data?.valueID;
     this.initialValuesProvided = this.valueID != null;
     this.load();
 
@@ -83,7 +89,7 @@ export class DynamicFormComponent implements OnInit {
     if (this.children.length > 0) {
       this.children.splice(0, 0, {
         'title': 'მონაცემები',
-        'id': 3
+        'id' : 3
       })
     }
 
@@ -121,6 +127,13 @@ export class DynamicFormComponent implements OnInit {
       });
   }
 
+
+
+
+
+
+
+
   ////////////////////////////////////Form Related////////////////////////////////////
   public onValueUpdate(propertyID: number, e: AttrValue | null) {
     this.validation = false;
@@ -135,18 +148,13 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
 
-    if (this.relatedValueID != null) {
-      this.values.set('related_value_id', this.relatedValueID);
-    }
-
-    const object = Array.from(this.values.entries());
     if (this.valueID != null) {
       this.spinner.show();
       this.attrsService
-        .editValueCollection(this.attrID, this.valueID, object)
+        .editValueCollection(this.attrID, this.valueID, Array.from(this.values.entries()))
         .subscribe((data) => {
           this.spinner.hide();
-          this.ref.close();
+          // this.ref.close();
         });
 
       return;
@@ -154,10 +162,10 @@ export class DynamicFormComponent implements OnInit {
 
 
     this.attrsService
-      .addValueCollection(this.attrID, object)
+      .addValueCollection(this.attrID, Array.from(this.values.entries()))
       .subscribe((data) => {
         this.spinner.hide();
-        this.ref.close();
+        // this.ref.close();
       });
   }
 
@@ -193,7 +201,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
   public onCancel() {
-    this.ref.close();
+    // this.ref.close();
   }
 
 }

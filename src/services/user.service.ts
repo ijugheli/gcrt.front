@@ -55,7 +55,7 @@ export class UserService extends GuardedService {
     const auth = localStorage.getItem('auth');
 
     if (auth == null) {
-      return;
+      return null;
     }
 
     const info = JSON.parse(auth);

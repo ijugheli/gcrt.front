@@ -13,27 +13,6 @@
 
     <ng-container *ngIf="properties != null && properties.length > 0">
         <div class="manage-form-container">
-            <!-- <span class="left-panel">
-                <p-menu [model]="items"></p-menu>
-            </span>
-            <span class="tabview-panel">
-                <p-tabView>
-                    <p-tabPanel
-                        [header]="section.title"
-                        *ngFor="let section of sections; let i = index"
-                        [selected]="i == 0"
-                    >
-                        <ng-container *ngFor="let property of section.properties">
-                            <dynamic-input
-                                (onChange)="onValueUpdate(property.id, $event)"
-                                [property]="property"
-                                [validation]="validation"
-                            ></dynamic-input>
-                        </ng-container>
-                    </p-tabPanel>
-                </p-tabView>
-            </span> -->
-
             <p-tabView>
                 <p-tabPanel
                     [header]="section.title"
@@ -61,6 +40,14 @@
                     </ng-container>
 
                 </p-tabPanel>
+                <!-- <p-tabPanel
+                    [header]="subAttribute.title"
+                    *ngFor="let subAttribute of children; let i = index"
+                    [selected]="i == 0"
+                >
+                    <data-table [attrID]="subAttribute.id"></data-table>
+
+                </p-tabPanel> -->
             </p-tabView>
         </div>
 
@@ -90,3 +77,24 @@
         </div>
     </ng-container>
 </div>
+
+<!-- <span class="left-panel">
+                <p-menu [model]="items"></p-menu>
+            </span>
+            <span class="tabview-panel">
+                <p-tabView>
+                    <p-tabPanel
+                        [header]="section.title"
+                        *ngFor="let section of sections; let i = index"
+                        [selected]="i == 0"
+                    >
+                        <ng-container *ngFor="let property of section.properties">
+                            <dynamic-input
+                                (onChange)="onValueUpdate(property.id, $event)"
+                                [property]="property"
+                                [validation]="validation"
+                            ></dynamic-input>
+                        </ng-container>
+                    </p-tabPanel>
+                </p-tabView>
+            </span> -->

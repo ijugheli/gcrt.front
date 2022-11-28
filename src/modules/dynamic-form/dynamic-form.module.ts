@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { DynamicFormComponent } from './dynamic-form.component';
 import { TabViewModule } from 'primeng/tabview';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -10,16 +11,23 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { NgxSpinnerModule } from "ngx-spinner";
 import {MenuModule} from 'primeng/menu';
 import {CardModule} from 'primeng/card';
-
+import { DataTableModule } from '../data-table/data-table.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 @NgModule({
   imports: [
     CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
     TabViewModule,
     CardModule,
     FieldsetModule,
     ProgressBarModule,
+    DataTableModule,
     ButtonModule,
     MenuModule,
+    OverlayPanelModule,
     DividerModule,
     DynamicInputModule,
     NgxSpinnerModule

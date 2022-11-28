@@ -10,7 +10,7 @@
     [showCloseIcon]="true"
 >
     <ng-template pTemplate>
-        <div class="grid p-fluid table-settings">
+        <div class="grid p-fluid table-settings" style="width: 300px;">
             <div class="col-12 md:col-4">
                 <div class="p-inputgroup">
                     <p-multiSelect
@@ -27,7 +27,7 @@
             <p-divider></p-divider>
 
             <div class="col-12 md:col-4">
-                <div class="p-inputgroup switch-input-group">
+                <div class="p-inputgroup switch-input-group ">
                     <span>სორტირება</span>
                     <p-inputSwitch [(ngModel)]="tableSettings['sort']"></p-inputSwitch>
                 </div>

@@ -136,6 +136,7 @@ export class Property {
 export class Attribute {
     public id: number | null = null;
     public p_id: number | null = null;
+    public count: number | null = null;
     public type: number | null = null;
     public status_id: number | null = null;
     public title: string | null = null;

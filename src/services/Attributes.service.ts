@@ -15,6 +15,7 @@ export class AttributesService extends GuardedService {
     'withProperties': API_URL + '/attrs/{attr_id}',
     'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
     'full': API_URL + '/attrs/{attr_id}/values',
+    'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
     'addValueCollection': API_URL + '/attrs/{attr_id}/values/add',
     'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
     'delete': API_URL + '/attrs/{attr_id}/values/remove',
@@ -31,6 +32,13 @@ export class AttributesService extends GuardedService {
 
   public delete(attrID: number, values: any) {
     return this.http.post(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+  }
+
+  public related(attrID: number, valueID: number) {
+    console.log('VALUE IS');
+    console.log(valueID);
+    console.log('VALUE IS');
+    return this.http.get<Attribute[]>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
   }
 
   public full(attrID: number) {

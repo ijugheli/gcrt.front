@@ -19,6 +19,7 @@ import { UsersModule } from '../pages/users/users.module';
 import { ChangePasswordModule } from '../pages/change-password/change-password.module';
 import { ManageUserModule } from '../pages/manage-user/manage-user.module';
 import { TreeTableModule } from 'primeng/treetable';
+import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { TreeTableModule } from 'primeng/treetable';
     HttpClientModule,
     MenuModule,
     AttributePageModule,
+    AttributeFormModule,
     TableModule,
     TreeTableModule,
     HomeModule,

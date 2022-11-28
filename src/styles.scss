@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeflex/primeflex.css";
 html {
     scroll-behavior: smooth;
     line-height: 1.15;
@@ -1627,34 +1628,34 @@ p-sorticon i {
 }
 
 
-.p-tabview-title {
+.manage-form-container .p-tabview-title {
     font-weight: normal !important;
     font-size:14px !important;
     font-family: 'roman' !important;
 }
 
-.p-tabview-nav-container {
+.manage-form-container .p-tabview-nav-container {
     position: relative !important;
     width: 20% !important;
     display: inline-block !important;
     vertical-align: top !important;
 }
 
-.p-tabview .p-tabview-panels {
+.manage-form-container .p-tabview .p-tabview-panels {
     display: inline-block !important;
     width: 80% !important;
     padding-top:0px !important;
 }
 
-.p-tabview .p-tabview-nav {
+.manage-form-container .p-tabview .p-tabview-nav {
     flex-direction: column !important;
 }
 
-.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+.manage-form-container .p-tabview .p-tabview-nav li .p-tabview-nav-link {
     border-width: 0 2px 0 0  !important;
 }
 
-.p-tabview-nav-content {
+.manage-form-container .p-tabview-nav-content {
     margin-top:20px;
     background: #ffffff !important;
     color: #495057 !important;
@@ -1662,21 +1663,19 @@ p-sorticon i {
     border-radius: 6px !important;
 }
 
-.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+.manage-form-container .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
     background: #ffffff;
     border-color: #4CAF50 !important;
     color: #4CAF50 !important;
 }
 
-.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link span{
-
+.manage-form-container .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link span{
     color: #4CAF50 !important;
 }
 
-.p-tabview .p-tabview-nav li {
+.manage-form-container .p-tabview .p-tabview-nav li {
     margin-right: 0;
 }
-
 
 .p-treeselect {
     width:400px !important;
@@ -1689,4 +1688,26 @@ p-sorticon i {
     font-size:11px !important;
     font-family: 'roman';
 }
+
+.menu-leaf > a > span {
+    font-size: 14px !important;
+}
+
+.main-menu-list > li > a{
+    padding:10px;
+    font-size:14px;
+}
+.menu-leaf  {
+    padding:5px 5px 5px 10px !important
+}
+
+.main-menu-list > li > a span {
+    font-family: 'roman' !important;
+}
+
+.p-divider.p-divider-horizontal {
+    margin: 0.2rem 0 !important;
+    padding: 0 0.2rem !important;
+}
+
 

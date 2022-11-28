@@ -3,146 +3,9 @@ import { IMenuItem } from 'src/app/app.interfaces';
 import { AttributesService } from 'src/services/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/services/AuthService.service';
+import { UserService } from 'src/services/user.service';
+import { User } from 'src/app/app.models';
 
-// const MENU_ITEMS: IMenuItem[] = [
-//   {
-//     id: 1,
-//     title: 'სისტემის მომხმარებლები',
-//     img: 'client',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-//   {
-//     id: 1,
-//     title: 'კლიენტი',
-//     img: 'client',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-//   {
-//     id: 1,
-//     title: 'ქეისი',
-//     img: 'case',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-//   {
-//     id: 1,
-//     title: 'რეპორტინგი',
-//     img: 'reports',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-//   {
-//     id: 1,
-//     title: 'მონაცემების მართვა',
-//     img: 'setting',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     },
-//     children: [
-//       {
-//         id: 1,
-//         title: 'პროექტი',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 2,
-//         title: 'დონორი',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'ფილიალი',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'პარტნიორი ორგანიზაციები',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'ეროვნება',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'განათლება',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'ოჯახური მდგომარეობა',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//       {
-//         id: 3,
-//         title: 'ლოკაცია(ქვეყანა/რეგიონი/რაიონი)',
-//         img: '',
-//         action: '',
-//         onClick: (router: Router) => {
-//           router.navigate(['/manage/1']);
-//         }
-//       },
-//     ],
-//   },
-//   {
-//     id: 6,
-//     title: 'პაროლის ცვლილება',
-//     img: 'setting',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-//   {
-//     id: 7,
-//     title: 'გასვლა',
-//     img: 'logout',
-//     action: '',
-//     onClick: (router: Router) => {
-//       router.navigate(['/manage/1']);
-//     }
-//   },
-// ];
 @Component({
   selector: 'left-menu',
   templateUrl: './menu.component.html',
@@ -150,23 +13,34 @@ import { AuthService } from 'src/services/AuthService.service';
 })
 export class MenuComponent implements OnInit {
   // public items: IMenuItem[] = MENU_ITEMS as IMenuItem[];
-  public items: IMenuItem[] = [];
+  public items: any[] = [];
 
-  public attrs: any[] = [];
+
+  public objects: any[] = [];
+  public trees: any[] = [];
+  public attributes: any[] = [];
+
+  public user : User | null = null;
 
   constructor(
     private attrsService: AttributesService,
     private activatedRoute: ActivatedRoute,
+    private userService: UserService,
     private authService: AuthService,
     private router: Router) {
   }
 
   ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.user = this.userService.me();
+    console.log(this.user);
+    this.loadAttrs();
+
     // this.items = MENU_ITEMS.map((attr) => this.asMenuItem(attr));
     this.items = [
       {
         id: 1,
-        title: 'სისტემის მომხმარებლები',
+        label: 'სისტემის მომხმარებლები',
         img: 'client',
         active: ((): boolean => {
           return this.activatedRoute.snapshot.url.toString() == 'users';
@@ -177,17 +51,16 @@ export class MenuComponent implements OnInit {
       },
       {
         id: 1,
-        title: 'კლიენტი',
+        label: 'კლიენტი',
         img: 'client',
         active: this.isAttrPageActive(11),
         onClick: () => {
-          console.log('HERE');
           window.location.href = '/manage/11';
         }
       },
       {
         id: 1,
-        title: 'ქეისი',
+        label: 'ქეისი',
         img: 'case',
         active: this.isAttrPageActive(12),
         onClick: () => {
@@ -196,7 +69,7 @@ export class MenuComponent implements OnInit {
       },
       {
         id: 1,
-        title: 'რეპორტინგი',
+        label: 'რეპორტინგი',
         img: 'reports',
         active: ((): boolean => {
           return this.activatedRoute.snapshot.url.toString() == 'reports';
@@ -207,14 +80,14 @@ export class MenuComponent implements OnInit {
       },
       {
         id: 1,
-        title: 'მონაცემების მართვა',
+        label: 'მონაცემების მართვა',
         img: 'setting',
         active: false,
         onClick: () => { },
         children: [
           {
             id: 1,
-            title: 'პროექტი',
+            label: 'პროექტი',
             img: '',
             active: this.isAttrPageActive(5),
             onClick: () => {
@@ -223,7 +96,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 2,
-            title: 'დონორი',
+            label: 'დონორი',
             img: '',
             active: this.isAttrPageActive(3),
             onClick: () => {
@@ -232,7 +105,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'ფილიალი',
+            label: 'ფილიალი',
             img: '',
             active: this.isAttrPageActive(4),
             onClick: () => {
@@ -241,7 +114,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'პარტნიორი ორგანიზაციები',
+            label: 'პარტნიორი ორგანიზაციები',
             img: '',
             active: this.isAttrPageActive(1),
             onClick: () => {
@@ -250,7 +123,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'ეროვნება',
+            label: 'ეროვნება',
             img: '',
             active: this.isAttrPageActive(7),
             onClick: () => {
@@ -259,7 +132,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'განათლება',
+            label: 'განათლება',
             img: '',
             active: this.isAttrPageActive(8),
             onClick: () => {
@@ -268,7 +141,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'ოჯახური მდგომარეობა',
+            label: 'ოჯახური მდგომარეობა',
             img: '',
             active: this.isAttrPageActive(9),
             onClick: () => {
@@ -277,7 +150,7 @@ export class MenuComponent implements OnInit {
           },
           {
             id: 3,
-            title: 'ლოკაცია(ქვეყანა/რეგიონი/რაიონი)',
+            label: 'ლოკაცია(ქვეყანა/რეგიონი/რაიონი)',
             img: '',
             active: this.isAttrPageActive(10),
             onClick: () => {
@@ -288,7 +161,7 @@ export class MenuComponent implements OnInit {
       },
       {
         id: 6,
-        title: 'პაროლის ცვლილება',
+        label: 'პაროლის ცვლილება',
         img: 'setting',
         active: ((): boolean => {
           return this.activatedRoute.snapshot.url.toString() == 'change-password';
@@ -299,7 +172,7 @@ export class MenuComponent implements OnInit {
       },
       {
         id: 7,
-        title: 'გასვლა',
+        label: 'გასვლა',
         img: 'logout',
         active: false,
         onClick: () => {
@@ -307,6 +180,45 @@ export class MenuComponent implements OnInit {
         }
       },
     ];
+  }
+
+  private loadAttrs() {
+    // this.attrsService.list().subscribe((response) => {})
+
+    this.attrsService.list().subscribe((d) => {
+      this.attributes = d.filter((i: any) => {
+        return i['type'] == 1;
+      }).map((attr) => {
+        return {
+          id: attr.id,
+          count: attr.count,
+          title: attr.title,
+          action: '/manage/' + attr.id,
+        };
+      });
+
+      this.trees = d.filter((i: any) => {
+        return i['type'] == 2;
+      }).map((attr) => {
+        return {
+          id: attr.id,
+          title: attr.title,
+          count: attr.count,
+          action: '/manage/' + attr.id,
+        };
+      });
+
+      this.objects = d.filter((i: any) => {
+        return i['type'] == 3;
+      }).map((attr) => {
+        return {
+          id: attr.id,
+          title: attr.title,
+          count: attr.count,
+          action: '/manage/' + attr.id,
+        };
+      });
+    });
   }
 
   private isAttrPageActive(attrID: number): boolean {
@@ -322,6 +234,10 @@ export class MenuComponent implements OnInit {
     }
 
     return false;
+  }
+
+  public navigate(attrID : number){
+    window.location.href = '/manage/' + attrID; 
   }
 
   // private asMenuItem(attr: IMenuItem): IMenuItem {
