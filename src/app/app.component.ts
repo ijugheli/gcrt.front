@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'project';
+  public menuExists: boolean = true;
+
+  constructor(private activatedRoute: ActivatedRoute) {
+    console.log(activatedRoute.snapshot);
+    if (window.location.href.toString().indexOf('login') > -1) {
+      this.menuExists = false;
+    }
+  }
 }

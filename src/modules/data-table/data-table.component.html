@@ -4,13 +4,58 @@
 ></p-confirmDialog>
 <p-toast></p-toast>
 
+<div
+    class="surface-section heading-section"
+    *ngIf="attribute != null"
+>
+    <div class="border-bottom-1 surface-border">
+        <div class="text-3xl font-medium align-items-center">
+
+            <p-inplace
+                styleClass="heading-section-title"
+                #ttl
+            >
+                <ng-template pTemplate="display">{{ title }}</ng-template>
+                <ng-template pTemplate="content">
+                    <input
+                        type="text"
+                        closable="closable"
+                        [(ngModel)]="title"
+                        (keydown.enter)="updateTitle(); ttl.deactivate()"
+                        closeIcon="pi pi-times"
+                        pInputText
+                    >
+                    <button
+                        type="button"
+                        (click)="updateTitle(); ttl.deactivate()"
+                        class="icon-border-btn"
+                    >
+                        <i class="pi pi-check"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="title = attribute.title; ttl.deactivate()"
+                        class="icon-border-btn"
+                    >
+                        <i class="pi pi-times"></i>
+                    </button>
+                </ng-template>
+            </p-inplace>
+            <!-- <span class="text-base font-normal ml-3 text-600">79 Unread</span> -->
+        </div>
+    </div>
+</div>
 <p-overlayPanel
     #op
     [dismissable]="true"
     [showCloseIcon]="true"
 >
     <ng-template pTemplate>
-        <div class="grid p-fluid table-settings" style="width: 300px;">
+        <div
+            class="grid p-fluid table-settings"
+            style="width: 300px;"
+        >
             <div class="col-12 md:col-4">
                 <div class="p-inputgroup">
                     <p-multiSelect
@@ -76,10 +121,16 @@
         <p-treeTable
             #tt
             [value]="tree"
-            [(contextMenuSelection)]="selectedNode"
-            [contextMenu]="cm"
-            dataKey="id"
+            dataKey="value_id"
             [columns]="properties"
+            [paginator]="true"
+            [rows]="10"
+            (onNodeExpand)="onNodeExpand($event)"
+            [loading]="loading"
+            [autoLayout]="true"
+            currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+            [rowsPerPageOptions]="[10,25,50]"
+            [showCurrentPageReport]="true"
             styleClass="p-treetable-gridlines p-treetable-striped p-treetable-sm"
         >
             <ng-template
@@ -94,6 +145,8 @@
                     >
                         {{property.title}}
                     </th>
+
+                    <th class="head-item"></th>
                 </tr>
             </ng-template>
             <p-contextMenu
@@ -194,9 +247,31 @@
                                     style="width:50%;font-size:12px;"
                                 >
                             </ng-template>
-                            <ng-template pTemplate="output">{{rowData[property.id]}}</ng-template>
+                            <ng-template
+                                pTemplate="output"
+                                *ngIf="rowData[property.id]"
+                            >
+                                {{rowData[property.id]}}
+                            </ng-template>
+
                         </p-treeTableCellEditor>
                         <!-- {{rowData[property.id]}} -->
+                    </td>
+                    <td class="row-item">
+                        <button
+                            (click)="add(rowData)"
+                            type="button"
+                            class="icon-border-btn"
+                        >
+                            <i class="pi pi-plus-circle"></i>
+                        </button>
+                        <button
+                            type="button"
+                            (click)="delete(rowData)"
+                            class="icon-border-btn"
+                        >
+                            <i class="pi pi-trash"></i>
+                        </button>
                     </td>
                 </tr>
             </ng-template>
@@ -211,10 +286,10 @@
             styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
             [paginator]="true"
             [rows]="10"
-            [showCurrentPageReport]="true"
-            responsiveLayout="scroll"
             currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
             [rowsPerPageOptions]="[10,25,50]"
+            [showCurrentPageReport]="true"
+            responsiveLayout="scroll"
             [(selection)]="selectedRows"
             (onRowSelect)="onRowSelect($event)"
             (onRowUnselect)="onRowUnselect($event)"

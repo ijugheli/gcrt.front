@@ -182,6 +182,10 @@ export class MenuComponent implements OnInit {
     ];
   }
 
+  public logout() {
+    this.authService.logout();
+  }
+
   private loadAttrs() {
     // this.attrsService.list().subscribe((response) => {})
 

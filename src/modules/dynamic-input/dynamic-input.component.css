@@ -4,19 +4,13 @@
     align-items: center;
     padding: 5px 0px;
 }
-/* .dynamic-input .p-inputtext-lg {
-    min-width:100px;
-} */
+
 .dynamic-input .dynamic-input-label {
     font-size: 14px;
     margin: 0px 5px 0px 0px;
     font-family: 'roman';
     width:250px !important;
     text-overflow: ellipsis;
-    /* font-style: oblique; */
-    /* letter-spacing: 1.2px; */
-    /* text-align: right; */
-    /* width: 30%; */
 }
 .p-inputgroup {
     height: 100%;
@@ -25,18 +19,3 @@
 .pi-exclamation-triangle {
     color: #ef0000bd;
 }
-/* .dynamic-input .p-inputtext:enabled:focus {
-    outline: 0 none;
-    outline-offset: 0;
-    box-shadow: 0 0 0 0.15rem #bffecf;
-    border-color: #46AB44;
-}
-.p-inputtext:enabled:hover {
-    border-color: #46AB44;
-}
-.p-inputtext:enabled:focus {
-    outline: 0 none;
-    outline-offset: 0;
-    box-shadow: 0 0 0 0.2rem #bfdbfe;
-    border-color: #46AB44;
-} */

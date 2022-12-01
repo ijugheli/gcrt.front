@@ -151,6 +151,7 @@ export class Attribute {
 export class AttrValue {
     public id: number | null = null;
     public value_id: number | null = null;
+    public p_value_id: number | null = null;
     public attr_id: number | null = null;
     public property_id: number | null = null;
     public related_value_id: number | null = null;
@@ -163,7 +164,6 @@ export class AttrValue {
     public value_date: string | null = null;
     public insert_date: string | null = null;
     public update_date: string | null = null;
-
     public order_id: number | null = null;
 }
 

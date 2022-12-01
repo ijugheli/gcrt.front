@@ -19,6 +19,32 @@
                     *ngFor="let section of sections; let i = index"
                     [selected]="i == 0"
                 >
+                    <ng-container *ngIf="preDefined != null && i == 0">
+                        <ng-container *ngFor="let item of preDefined">
+                            <div class="dynamic-input">
+                                <div class="dynamic-input-label">მშობელი</div>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">
+                                        <i class="pi pi-exclamation-triangle"></i>
+                                    </span>
+                                    <span class="p-inputgroup-addon">
+                                        <i class="pi pi-lock"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        id="float-input"
+                                        class="p-inputtext-md"
+                                        pInputText
+                                        [(ngModel)]="item['label']"
+                                        [disabled]="true"
+                                        placeholder
+                                        [style]="{'width':'400px', 'height' : '100%'}"
+                                    >
+                                </div>
+                            </div>
+
+                        </ng-container>
+                    </ng-container>
                     <ng-container *ngIf="initialValuesProvided">
                         <ng-container *ngFor="let property of section.properties">
                             <dynamic-input

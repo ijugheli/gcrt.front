@@ -1,17 +1,4 @@
-<!-- <main>
-    <left-menu></left-menu>
-    <router-outlet></router-outlet>
-</main> -->
-
-
 <main>
-    <left-menu></left-menu>
+    <left-menu *ngIf="menuExists"></left-menu>
     <router-outlet></router-outlet>
-    <!-- <section>
-        <div style="text-align:center; margin : 60px auto;">
-            <h2>
-                მთავარი გვერდის ფუნქციონალი დროებით გათიშულია.
-            </h2>
-        </div>
-    </section> -->
 </main>

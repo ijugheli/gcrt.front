@@ -31,6 +31,7 @@ export class DataTableComponent implements OnInit {
    * List of existing rows.
    */
 
+  public title: any;
 
   public selectedColumns: any;
   /**
@@ -80,6 +81,9 @@ export class DataTableComponent implements OnInit {
   public items: MenuItem[] = [];
   public attribute: any;
 
+  public loading: boolean = false;
+  public totalRecords = 1000;
+
   constructor(
     private confirmationService: ConfirmationService,
     private filterService: FilterService,
@@ -94,59 +98,33 @@ export class DataTableComponent implements OnInit {
   ngOnInit() {
     this.initializeFilterOptions();
     this.attrID = parseInt(this.attrID);
-    this.initState();
     this.load();
-    this.loadContextMenu();
-  }
-
-  private initState() {
-  }
-
-  private loadContextMenu() {
-    this.items = [
-      {
-        label: 'View', icon: 'pi pi-search', command: (event) => {
-          console.log('View');
-        }
-      },
-      {
-        label: 'Toggle', icon: 'pi pi-sort', command: (event) => {
-          console.log('HERE');
-        }
-      }
-    ];
   }
 
   private load() {
-    this.loaded = false;
-    this.spinner.show();
-
+    this.showLoader();
     if (this.valueID != null) {
-      console.log('VALUUEE');
-      console.log(this.valueID);
-      this.attrsService.related(this.attrID, this.valueID)
-        .subscribe((data: any) => {
-          this.spinner.hide();
-          this.loaded = true;
-          this.attribute = data;
-          this.processAttribute(data);
-          this.parseProperties(data);
-          this.parseRows(data);
-        });
+      this.attrsService
+        .related(this.attrID, this.valueID)
+        .subscribe((d) => this.receiveResponse(d));
       return;
     }
 
+    this.attrsService
+      .full(this.attrID)
+      .subscribe((d) => this.receiveResponse(d));
+  }
 
 
-    this.attrsService.full(this.attrID)
-      .subscribe((data: any) => {
-        this.spinner.hide();
-        this.loaded = true;
-        this.attribute = data;
-        this.processAttribute(data);
-        this.parseProperties(data);
-        this.parseRows(data);
-      });
+
+  private receiveResponse(response: any) {
+    this.attribute = response;
+    this.title = this.attribute.title
+    this.processAttribute(response);
+    this.parseProperties(response);
+    this.parseRows(response);
+    this.hideLoader();
+    console.log(this.attribute);
   }
 
   private processAttribute(data: any) {
@@ -155,11 +133,11 @@ export class DataTableComponent implements OnInit {
     }
 
     this.isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
-    this.parseProperties(data);
-    if (this.isTree) {
 
+    this.parseProperties(data);
+
+    if (this.isTree) {
       this.tree = this.parseTree(data['tree']);
-      console.log(this.tree);
       return;
     }
 
@@ -167,13 +145,17 @@ export class DataTableComponent implements OnInit {
   }
 
   private parseTree(tree: any) {
-    return (Array.from(Object.values(tree)) as TreeNode[]).map((node: any) => {
-      if (node.children) {
-        node.children = this.parseTree(node.children);
-      }
+    return (Array.from(Object.values(tree)) as TreeNode[])
+      .filter((item) => {
+        return item.data != undefined && item.data != null;
+      })
+      .map((node: any) => {
+        if (node.children) {
+          node.children = this.parseTree(node.children);
+        }
 
-      return node;
-    });
+        return node;
+      });
   }
 
   private parseProperties(data: any) {
@@ -201,14 +183,18 @@ export class DataTableComponent implements OnInit {
     this.rows = data['rows'];
   }
 
-  public reload() {
-    window.location.reload();
-  }
+  public onNodeExpand(event: any) {
+    const node = event.node;
+    if (node.children.length > 0) {
+      return;
+    }
 
-  public filter(e: any) {
-    console.log('Filtering select filter');
-    console.log(e);
-    console.log('Filter');
+    this.loading = true;
+    this.attrsService.treeNodes(this.attrID, node.data.value_id).subscribe((items) => {
+      node.children = this.parseTree(items);
+      this.tree = [...this.tree];
+      this.loading = false;
+    });
   }
 
   public onSelectChange(prop: Property) {
@@ -411,15 +397,31 @@ export class DataTableComponent implements OnInit {
   }
 
   //Action Methods
-  private add() {
+  public add(row: any = null) {
     if (this.isEntity()) {
       this.router.navigateByUrl('/add/' + this.attrID);
       return;
     }
 
+    let preDefined;
+
+    if (row !== undefined && row != null) {
+      preDefined = [
+        {
+          'key': 'p_value_id',
+          'value': row['value_id'],
+          'label': Object.values(row)[0],
+          'type': 'apply' //apply/append
+        }
+      ];
+    }
 
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
-      data: { attrID: this.attrID, relatedValueID: this.valueID },
+      data: {
+        attrID: this.attrID,
+        relatedValueID: this.valueID,
+        preDefined: preDefined
+      },
       header: 'მნიშვნელობის დამატება',
       dismissableMask: true,
       maximizable: true,
@@ -457,12 +459,16 @@ export class DataTableComponent implements OnInit {
     });
   }
 
-  private delete() {
-    if (!this.selectedRows || this.selectedRows == null || this.selectedRows.length <= 0) {
+  public delete(row: any = null) {
+    let rows = (row != null && row['value_id'])
+      ? [{ 'valueID': row['value_id'] }]
+      : this.selectedRows;
+
+    if (!rows || rows == null || rows <= 0) {
       return;
     }
 
-    let valueIDs = Array.from(this.selectedRows.map((i: any) => i.valueID));
+    let valueIDs = Array.from(rows.map((i: any) => i.valueID));
 
     this.confirmationService.confirm({
       header: 'ჩანაწერების წაშლა',
@@ -501,8 +507,26 @@ export class DataTableComponent implements OnInit {
     });
   }
 
+  public reload() {
+    window.location.reload();
+  }
 
+  private showLoader() {
+    this.loaded = false;
+    this.spinner.show();
+  }
 
+  private hideLoader() {
+    this.spinner.hide();
+    this.loaded = true;
+  }
 
+  public updateTitle() {
+    this.attrsService.setTitle(this.attrID, { title: this.title }).subscribe((response) => { 
+      this.messageService.add({ severity: 'success', summary: 'მნიშვნელობა წარმატებით შეიცვალა.' });
+    }, (error) => { 
+      this.messageService.add({ severity: 'warning', summary: 'მნიშვნელობა ვერ შეიცვალა. სცადეთ თავიდან.' });
+    });
+  }
 
 }

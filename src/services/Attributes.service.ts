@@ -16,6 +16,8 @@ export class AttributesService extends GuardedService {
     'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
     'full': API_URL + '/attrs/{attr_id}/values',
     'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
+    'tree': API_URL + '/attrs/{attr_id}/values/tree/{value_id}',
+    'title': API_URL + '/attrs/{attr_id}/title',
     'addValueCollection': API_URL + '/attrs/{attr_id}/values/add',
     'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
     'delete': API_URL + '/attrs/{attr_id}/values/remove',
@@ -56,8 +58,19 @@ export class AttributesService extends GuardedService {
     );
   }
 
+  public treeNodes(attrID: number, valueID: number) {
+    return this.http.get<Attribute>(this.urls['tree']
+      .replace('{attr_id}', attrID.toString())
+      .replace('{value_id}', valueID.toString()), { headers: this.headers }
+    );
+  }
+
   public addValueCollection(attrID: number, values: any) {
     return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+  }
+
+  public setTitle(attrID: number, values: any) {
+    return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
   }
 
   public editValueCollection(attrID: number, valueID: number, values: any) {

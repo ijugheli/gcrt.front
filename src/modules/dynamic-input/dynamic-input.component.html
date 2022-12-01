@@ -173,6 +173,7 @@
                     [(ngModel)]="selected"
                     (ngModelChange)="onUpdate(selected)"
                     [options]="tree"
+                    (onNodeExpand)="onNodeExpand($event)"
                     optionLabel="name"
                     [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-treeSelect>

@@ -15,9 +15,12 @@ import { DATA_TYPE_ID } from '../../app/app.config';
   styleUrls: ['./dynamic-form.component.css']
 })
 export class DynamicFormComponent implements OnInit {
-
+  //@TODO initialize attrID properly
   public attrID = 5; //Project
+  //Value for editing 
   public valueID: number | null = 0;
+  //Parent value for tree nodes
+  public preDefined: any[] | null = null;
   public relatedValueID: number | null = null;
   public initialValuesProvided: boolean = false;
 
@@ -43,12 +46,21 @@ export class DynamicFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    //Attribute ID for form generation
     this.attrID = this.config.data.attrID;
+    //ValueID for editing mode.
     this.valueID = this.config.data?.valueID;
+    //preDefined for adding/editing tree values.
+    this.preDefined = this.config.data?.preDefined;
+    console.log('DEfined');
+    console.log(this.preDefined);
+    console.log('DEfined');
+    //Related value ID for sub entities
     this.relatedValueID = this.config.data?.relatedValueID;
+    //if we are in editing mode we should have initial values provided
     this.initialValuesProvided = this.valueID != null;
-    this.load();
 
+    this.load();
   }
 
   private load() {
@@ -102,23 +114,35 @@ export class DynamicFormComponent implements OnInit {
     for (let propertyID in values) {
       this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
     }
-    console.log(this.initialValues);
   }
 
   private parseProperties(properties: any[]) {
     this.sections = properties
       .sort((a, b) => a.order_id > b.order_id ? 1 : -1)
-      .filter((i) => i.p_id == 0)
-      .map((section) => {
-        section['properties'] = properties
-          .filter((j) => j.p_id == section.id)
-          .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
+      .filter((i) => i.type == 2);
 
-        if (section['properties'].length == 0) {
-          section['properties'] = [section];
-        }
-        return section;
-      });
+    if (this.sections.length <= 0) {
+      this.sections = [
+        {
+          'properties': properties.sort((a, b) => a.order_id > b.order_id ? 1 : -1),
+          'title': 'მახასიათებლები',
+        },
+      ];
+      return;
+
+    }
+    this.sections = this.sections.map((section) => {
+      section['properties'] = properties
+        .filter((j) => j.p_id == section.id)
+        .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
+      //Adds input if there is no subs
+      if (section['properties'].length == 0) {
+        section['properties'] = [section];
+      }
+      return section;
+    });
+
+    // if(this.sections.length)
   }
 
   ////////////////////////////////////Form Related////////////////////////////////////
@@ -127,19 +151,50 @@ export class DynamicFormComponent implements OnInit {
     if (!propertyID || !this.values.has(propertyID)) {
       return;
     }
-    // console.log(e);
+
     this.values.set(propertyID, e);
   }
+
+  private applyField(field: any) {
+    this.values.forEach((value: any, key) => {
+      if (value && field && field['key'] && field['value'])
+        value[field['key']] = field['value'];
+      this.values.set(key, value);
+    });
+  }
+
+  private appendField(field: any) {
+    this.values.set(field['key'], field.value);
+  }
+
+  private appendPreDefined() {
+    if (this.preDefined == null) {
+      return;
+    }
+    for (let i = 0; i < this.preDefined.length; i++) {
+      let item = this.preDefined[i];
+      if (item['type'] == 'apply') this.applyField(item);
+      if (item['type'] == 'append') this.appendField(item);
+    }
+
+  }
+
+  private appendRelated() {
+    if (this.relatedValueID != null) {
+      this.values.set('related_value_id', this.relatedValueID);
+    }
+  }
+
+
   public onSubmit() {
     if (!this.validate()) {
       return;
     }
 
-    if (this.relatedValueID != null) {
-      this.values.set('related_value_id', this.relatedValueID);
-    }
-
+    this.appendRelated();
+    this.appendPreDefined();
     const object = Array.from(this.values.entries());
+
     if (this.valueID != null) {
       this.spinner.show();
       this.attrsService
@@ -184,9 +239,7 @@ export class DynamicFormComponent implements OnInit {
         console.log(property);
       }
 
-      if (!isValid)
-        return false;
-      // return isValid;
+      return isValid;
     }
 
     return true;

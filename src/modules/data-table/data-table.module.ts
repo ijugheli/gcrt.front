@@ -24,10 +24,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import {ContextMenuModule } from 'primeng/primeng';
 import { InputTextModule } from 'primeng/inputtext';
+import {InplaceModule} from 'primeng/inplace';
+
+
+
+
 @NgModule({
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    InplaceModule,
     CommonModule,
     TableModule,
     FormsModule,

@@ -7,6 +7,7 @@ import { DATA_TYPE_ID } from '../../app/app.config';
 import { TreeNode } from 'primeng/api';
 import { parse, stringify, toJSON, fromJSON } from 'flatted';
 import { clone } from 'src/app/app.func';
+import { AttributesService } from '../../services/Attributes.service';
 
 /**
  * Text Input
@@ -38,7 +39,10 @@ export class DynamicInputComponent implements OnInit {
   public selected: any[] = [];
   public treeSelected: any[] = [];
 
-  constructor() {
+  public loading: boolean = false;
+
+
+  constructor(private attrsService: AttributesService) {
     this.options = [];
   }
 
@@ -48,6 +52,25 @@ export class DynamicInputComponent implements OnInit {
     this.initDataType();
     this.parseSource();
     this.loadInitialValue();
+  }
+
+  public onNodeExpand(event: any) {
+    const node = event.node;
+    if (node.children.length > 0) {
+      return;
+    }
+
+    if (this.property.source_attr_id == null) {
+      return;
+    }
+
+    this.loading = true;
+    this.attrsService.treeNodes(this.property.source_attr_id, node.data.value_id).subscribe((items) => {
+      node.children = this.parseTree(items);
+      this.tree = [...this.tree];
+      this.loading = false;
+      node.expanded = true;
+    });
   }
 
   private loadInitialValue() {
@@ -185,9 +208,7 @@ export class DynamicInputComponent implements OnInit {
     //@TODO handles only value_string for selects and subselects.
     if (this.property.tree != null) {
       this.tree = this.parseTree(this.property.tree);
-      // return;
     }
-
 
     this.options = this.property.source.map((item: any) => {
       return { name: item.value, id: item.id };
@@ -197,15 +218,22 @@ export class DynamicInputComponent implements OnInit {
   }
 
   private parseTree(tree: any) {
-    return (Array.from(Object.values(tree)) as TreeNode[]).map((node: any) => {
-      if (node.children) {
-        node.children = this.parseTree(node.children);
-      }
-      node.name = node.label;
-      node.id = node.data.value_id;
-      return node;
-    }) as TreeNode[];
+    return (Array.from(Object.values(tree)) as TreeNode[])
+      .filter((item) => {
+        return item.data != undefined && item.data != null;
+      })
+      .map((node: any) => {
+        if (node.children) {
+          node.children = this.parseTree(node.children);
+        }
+        node.label;
+        node.id = node.data.value_id;
+
+        return node;
+      });
   }
+
+
 
   public isValid() {
     if (!this.validation || !this.property.is_mandatory) {

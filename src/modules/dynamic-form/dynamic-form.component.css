@@ -1,21 +1,21 @@
 button span {
-    font-family: light;
+    font-family: 'roman' !important;
 }
 
 .form-actions {
     width: 100%;
     text-align: right;
-    margin-bottom: 20px;
+    margin: 10px 0px 0px 0px;
 }
 
 button:first-child {
     margin-right: 10px;
 }
-
+/* 
 .pi {
     margin-right: 10px;
     font-size: 1.2rem;
-}
+} */
 
 .form-container {
     position: relative;
@@ -39,4 +39,27 @@ button:first-child {
     width: 80% !important;
     vertical-align: top !important;
     display: inline-block !important;
+}
+
+.dynamic-input {
+    margin: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 5px 0px !important;
+}
+
+.dynamic-input .dynamic-input-label {
+    font-size: 14px !important;
+    margin: 0px 5px 0px 0px!important;
+    font-family: 'roman';
+    width:250px !important;
+    text-overflow: ellipsis !important;
+}
+.p-inputgroup {
+    height: 100% !important;
+    width: auto !important;
+}
+
+.pi-exclamation-triangle {
+    color: #ef0000bd !important;
 }

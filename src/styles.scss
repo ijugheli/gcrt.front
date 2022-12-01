@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "primeflex/primeflex.css";
+
 html {
     scroll-behavior: smooth;
     line-height: 1.15;
@@ -1192,6 +1193,35 @@ section {
     }
 }
 
+
+.icon-border-btn {
+    border: $border;
+    display: inline-block;
+    margin: 0px 2px;
+    align-items: center;
+    justify-content: center;
+    padding: 7px;
+    font-size: 12px;
+    border-radius: 5px;
+    transition: 0.2s;
+    color: $grey;
+
+    &:hover {
+        border: 1px solid $grey;
+    }
+
+    &.active {
+        border: 1px solid #46AB44;
+        background-color: rgba(#46AB44, 0.10);
+    }
+}
+
+
+
+
+
+
+
 .sm-btn {
     border: 1.5px solid #6E747B;
     border-radius: 5px;
@@ -1630,7 +1660,7 @@ p-sorticon i {
 
 .manage-form-container .p-tabview-title {
     font-weight: normal !important;
-    font-size:14px !important;
+    font-size: 14px !important;
     font-family: 'roman' !important;
 }
 
@@ -1644,7 +1674,7 @@ p-sorticon i {
 .manage-form-container .p-tabview .p-tabview-panels {
     display: inline-block !important;
     width: 80% !important;
-    padding-top:0px !important;
+    padding-top: 0px !important;
 }
 
 .manage-form-container .p-tabview .p-tabview-nav {
@@ -1652,11 +1682,11 @@ p-sorticon i {
 }
 
 .manage-form-container .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    border-width: 0 2px 0 0  !important;
+    border-width: 0 2px 0 0 !important;
 }
 
 .manage-form-container .p-tabview-nav-content {
-    margin-top:20px;
+    margin-top: 20px;
     background: #ffffff !important;
     color: #495057 !important;
     box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%) !important;
@@ -1669,7 +1699,7 @@ p-sorticon i {
     color: #4CAF50 !important;
 }
 
-.manage-form-container .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link span{
+.manage-form-container .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link span {
     color: #4CAF50 !important;
 }
 
@@ -1678,30 +1708,32 @@ p-sorticon i {
 }
 
 .p-treeselect {
-    width:400px !important;
+    width: 400px !important;
 }
+
 .p-tree {
     padding: 5px !important;
 }
 
 .p-tree .p-tree-container .p-treenode {
-    font-size:11px !important;
+    font-size: 11px !important;
     font-family: 'roman';
 }
 
-.menu-leaf > a > span {
+.menu-leaf>a>span {
     font-size: 14px !important;
 }
 
-.main-menu-list > li > a{
-    padding:10px;
-    font-size:14px;
-}
-.menu-leaf  {
-    padding:5px 5px 5px 10px !important
+.main-menu-list>li>a {
+    padding: 10px;
+    font-size: 14px;
 }
 
-.main-menu-list > li > a span {
+.menu-leaf {
+    padding: 5px 5px 5px 10px !important
+}
+
+.main-menu-list>li>a span {
     font-family: 'roman' !important;
 }
 
@@ -1710,4 +1742,16 @@ p-sorticon i {
     padding: 0 0.2rem !important;
 }
 
+.heading-section>div {
+    padding: 20px !important;
+}
 
+.heading-section .heading-section-title {
+    display: inline-block !important;
+
+    font-size: 1.75rem !important;
+}
+
+.heading-section .heading-section-title div {
+    font-family: 'roman' !important;
+}
