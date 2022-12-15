@@ -24,9 +24,39 @@ export class AttributesService extends GuardedService {
     'editValueItem': API_URL + '/attrs/values/edit',
   };
 
+
+  private attrs : any;
+
   constructor(private http: HttpClient, private auth: AuthService) {
+    console.log('Service Generated');
     super(auth.getToken());
+    this.load();
   }
+
+  private load() {
+    this.http.get(this.urls['list'], { headers: this.headers }).subscribe((d) => {
+      console.log(d);
+    }, (e) => {
+
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Individual Requests
 
   public list() {
     return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });

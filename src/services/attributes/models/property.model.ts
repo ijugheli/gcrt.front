@@ -1,40 +1,19 @@
-import { HttpHeaders } from "@angular/common/http";
-import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
+import { DATA_TYPE_ID, PROPERTY_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config";
+import { IProperty } from "../interfaces/property.interface";
 
 
-
-export class AttrProperty {
-    public id: number | null = null;
+export class MProperty {
+    public id: number;
     public p_id: number | null = null;
-    public attr_id: number | null = null;
+    public attr_id: number;
     public source_attr_id: number | null = null;
-    public type: number | null = null;
-    public title: string | null = null;
-    public input_data_type: number | null = null;
-    public input_view_type: number | null = null;
-    public is_mandatory: boolean = false;
-    public has_filter: boolean = false;
-
-    public insert_date: string | null = null;
-    public update_date: string | null = null;
-
-    public order_id: number | null = null;
-    public source: any = null;
-    public tree : any = null;
-    public sourceAttribute: any = null;
-}
-export class Property {
-    public id: number | null = null;
-    public p_id: number | null = null;
-    public attr_id: number | null = null;
-    public source_attr_id: number | null = null;
-    public type: number | null = null;
-    public title: string | null = null;
-    public input_data_type: number | null = null;
-    public input_view_type: number | null = null;
+    public type: Number;
+    public title: string;
+    public input_data_type: number;
+    public input_view_type: number;
     public is_mandatory: boolean = false;
 
-    public insert_date: string | null = null;
+    public insert_date: string;
     public update_date: string | null = null;
 
     public order_id: number | null = null;
@@ -43,10 +22,10 @@ export class Property {
 
     public options: any[] = [];
     public selectedOptions: any[] = [];
-    public tree : any = null;
+    public tree: any = null;
     public sourceAttribute: any = null;
 
-    public constructor(o: AttrProperty) {
+    public constructor(o: IProperty) {
         this.id = o.id;
         this.p_id = o.p_id;
         this.attr_id = o.attr_id;
@@ -64,7 +43,7 @@ export class Property {
         this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter;
 
-        if(this.tree != null) {
+        if (this.tree != null) {
 
             this.options = this.tree;
             this.selectedOptions = [];
@@ -103,6 +82,10 @@ export class Property {
             this.input_view_type == VIEW_TYPE_ID('multiselect');
     }
 
+    public isSection() {
+        return this.type == PROPERTY_TYPE_ID('section');
+    }
+
     public hasSelectedOptions() {
         return this.isSelect() && this.selectedOptions != null && this.selectedOptions.length > 0;
     }
@@ -132,59 +115,17 @@ export class Property {
 
         return this.isSelect();
     }
-}
 
-
-export class Attribute {
-    public id: number | null = null;
-    public p_id: number | null = null;
-    public count: number | null = null;
-    public type: number | null = null;
-    public status_id: number | null = null;
-    public title: string | null = null;
-
-    public properties: AttrProperty[] = [];
-
-    public test() {
-        console.log('Test');
+    public hasParent() {
+        return this.p_id != null && this.p_id > 0;
     }
-}
 
-export class AttrValue {
-    public id: number | null = null;
-    public value_id: number | null = null;
-    public p_value_id: number | null = null;
-    public attr_id: number | null = null;
-    public property_id: number | null = null;
-    public related_value_id: number | null = null;
-    public value_text: string | null = null;
-    public value_integer: number | null = null;
-    public value_boolean: number | null = null;
-    public value_decimal: number | null = null;
-    public value_string: string | null = null;
-    public value_json: string | null = null;
-    public value_date: string | null = null;
-    public insert_date: string | null = null;
-    public update_date: string | null = null;
-    public order_id: number | null = null;
-}
+    public parentID(): number {
+        if (!this.hasParent() || this.p_id == null) {
+            return 0;
+        }
 
-export class User {
-    public id!: number;
-    public name!: string;
-    public lastname!: string;
-    public phone!: string;
-    public address!: string;
-    public email!: string;
-}
-
-export class GuardedService {
-    public headers: HttpHeaders;
-
-    constructor(token: string) {
-        this.headers = new HttpHeaders({
-            'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': 'Bearer ' + token
-        });
+        return this.p_id;
     }
-}
+} 
+

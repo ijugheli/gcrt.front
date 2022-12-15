@@ -7,7 +7,7 @@ import { DATA_TYPE_ID } from '../../app/app.config';
 import { TreeNode } from 'primeng/api';
 import { parse, stringify, toJSON, fromJSON } from 'flatted';
 import { clone } from 'src/app/app.func';
-import { AttributesService } from '../../services/Attributes.service';
+import { AttributesService } from '../../services/attributes/Attributes.service';
 
 /**
  * Text Input

@@ -3,7 +3,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DATA_TYPE_ID } from 'src/app/app.config';
 import { AttrProperty, AttrValue } from 'src/app/app.models';
-import { AttributesService } from 'src/services/Attributes.service';
+import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AttributeFormComponent implements OnInit {
 
 
-  public attrID : any; //Project
+  public attrID: any; //Project
   public valueID: number | null = 0;
   public initialValuesProvided: boolean = false;
 
@@ -34,8 +34,8 @@ export class AttributeFormComponent implements OnInit {
 
   constructor(
     private attrsService: AttributesService,
-    public activatedRoute : ActivatedRoute,
-    public router : Router,
+    public activatedRoute: ActivatedRoute,
+    public router: Router,
     private spinner: NgxSpinnerService
   ) { }
 
@@ -46,15 +46,12 @@ export class AttributeFormComponent implements OnInit {
     let valueID: any = this.activatedRoute.snapshot.paramMap.get('value_id');
     this.valueID = valueID == null ? null : parseInt(valueID);
 
-    if(!this.attrID || this.attrID == null) {
+    if (!this.attrID || this.attrID == null) {
       this.router.navigateByUrl('/');
     }
 
-    // this.attrID = this.config.data.attrID;
-    // this.valueID = this.config.data?.valueID;
     this.initialValuesProvided = this.valueID != null;
     this.load();
-
   }
 
   private load() {
@@ -89,7 +86,7 @@ export class AttributeFormComponent implements OnInit {
     if (this.children.length > 0) {
       this.children.splice(0, 0, {
         'title': 'მონაცემები',
-        'id' : 3
+        'id': 3
       })
     }
 

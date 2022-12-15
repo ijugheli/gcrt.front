@@ -43,6 +43,14 @@ export const ATTR_TYPES: Map<string, number> = new Map([
   ['tree', 2],
   ['entity', 3],
 ]);
+ 
+export const PROPERTY_TYPES: Map<string, number> = new Map([
+  ['input', 1],
+  ['section', 2],
+  ['entity', 3],
+]);
+
+export const PROPERTY_TYPE_ID = (type: string) => PROPERTY_TYPES.get(type);
 
 
 

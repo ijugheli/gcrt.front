@@ -2,16 +2,16 @@ export const reverseMap = (m: Map<number, string>) => {
     return new Map(Array.from(m, entry => [entry[1], entry[0]]));
 }
 
-export const validateEmail = (email : string) => {
+export const validateEmail = (email: string) => {
     return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
 
 
-export const clone = (obj : any) : any => {
+export const clone = (obj: any): any => {
     var copy;
 
     // Handle the 3 simple types, and null or undefined
@@ -35,7 +35,7 @@ export const clone = (obj : any) : any => {
 
     // Handle Object
     if (obj instanceof Object) {
-        let c : { [key: string]: any} = {} ;
+        let c: { [key: string]: any } = {};
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) c[attr] = clone(obj[attr]);
         }
@@ -43,4 +43,10 @@ export const clone = (obj : any) : any => {
     }
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+
+export const storageItemExists = (key: string) => {
+    const items = localStorage.getItem(key)
+    return items != null && items !== undefined;
 }

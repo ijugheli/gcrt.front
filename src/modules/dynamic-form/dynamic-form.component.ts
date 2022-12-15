@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Attribute } from 'src/app/app.models';
-import { AttributesService } from '../../services/Attributes.service';
+import { AttributesService } from '../../services/attributes/Attributes.service';
 import { AttrValue, AttrProperty } from '../../app/app.models';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';

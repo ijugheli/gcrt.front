@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IMenuItem } from 'src/app/app.interfaces';
-import { AttributesService } from 'src/services/Attributes.service';
+import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/services/AuthService.service';
 import { UserService } from 'src/services/user.service';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AttributesService } from '../../services/Attributes.service';
+import { AttributesService } from '../../services/attributes/Attributes.service';
 
 @Component({
   selector: 'app-home',

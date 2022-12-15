@@ -7,7 +7,7 @@ import { DynamicFormComponent } from '../dynamic-form/dynamic-form.component';
 import { IActionItem, RowItem } from 'src/app/app.interfaces';
 import { ACTION_SETTINGS, DATA_TYPE_ID, TABLE_SETTINGS, VIEW_TYPE_ID } from 'src/app/app.config';
 import { DUMMY_USERS, STAFF_TYPES } from 'src/app/app.seeds';
-import { AttributesService } from '../../services/Attributes.service';
+import { AttributesService } from '../../services/attributes/Attributes.service';
 import { AttrValue, Property, AttrProperty } from '../../app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
