@@ -10,8 +10,14 @@ import { CalendarModule } from 'primeng/calendar';
 import { AccordionModule } from 'primeng/accordion';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
-import {DropdownModule} from 'primeng/dropdown';
-import {TreeSelectModule} from 'primeng/treeselect';
+import { DropdownModule } from 'primeng/dropdown';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { PlainInputComponent } from './plain-input/plain-input.component';
+import { SelectInputComponent } from './select-input/select-input.component';
+import { SwitchInputComponent } from './switch-input/switch-input.component';
+import { MultiselectInputComponent } from './multiselect-input/multiselect-input.component';
+import { DateInputComponent } from './date-input/date-input.component';
+import { TreeselectInputComponent } from './treeselect-input/treeselect-input.component';
 
 @NgModule({
   imports: [
@@ -23,9 +29,15 @@ import {TreeSelectModule} from 'primeng/treeselect';
     TreeSelectModule,
     InputSwitchModule,
     InputNumberModule,
+    PlainInputComponent,
     DropdownModule,
     AccordionModule,
-    CalendarModule
+    CalendarModule,
+    SelectInputComponent,
+    SwitchInputComponent,
+    MultiselectInputComponent,
+    DateInputComponent,
+    TreeselectInputComponent
   ],
   exports: [
     DynamicInputComponent

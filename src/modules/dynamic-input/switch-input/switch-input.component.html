@@ -1,0 +1,10 @@
+<ng-container *ngIf="initialized">
+    <div class="p-inputgroup">
+        <p-inputSwitch
+            [(ngModel)]="value"
+            [class.ng-invalid]="!valid()"
+            [class.ng-dirty]="!valid()"
+            (ngModelChange)="onUpdate()"
+        ></p-inputSwitch>
+    </div>
+</ng-container>

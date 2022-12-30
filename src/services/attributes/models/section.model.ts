@@ -6,7 +6,6 @@ export class MAttributeSection {
     public children!: MProperty[]; // It might not be needed
     public properties!: MProperty[];
 
-
     public set(data: { title: string, propertyID?: number, property?: MProperty }) {
         this.title = data.title;
         this.propertyID = data.propertyID;
@@ -33,8 +32,4 @@ export class MAttributeSection {
         this.properties = props;
         return this;
     }
-
-
-
-
 }

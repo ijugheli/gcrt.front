@@ -28,6 +28,9 @@ button:first-child {
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
     font-weight: normal;
 }
+.manage-form-container  {
+    min-height : 60vh !important;
+}
 
 .manage-form-container .left-panel {
     width: 20% !important;

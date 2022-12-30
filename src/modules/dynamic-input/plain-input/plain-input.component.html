@@ -1,0 +1,71 @@
+<ng-container *ngIf="initialized">
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-pencil"></i>
+        </span>
+        <ng-container *ngIf="property.isString()">
+            <input
+                type="text"
+                id="float-input"
+                class="p-inputtext-md"
+                [class.ng-invalid]="!valid()"
+                [class.ng-dirty]="!valid()"
+                pInputText
+                [(ngModel)]="value"
+                (ngModelChange)="onUpdate()"
+                placeholder
+                [style]=style
+            >
+        </ng-container>
+
+        <ng-container *ngIf="property.isInteger()">
+            <p-inputNumber
+                type="text"
+                id="float-input"
+                mode="decimal"
+                class="p-inputtext-md"
+                [class.ng-invalid]="!valid()"
+                [class.ng-dirty]="!valid()"
+                pInputText
+                [(ngModel)]="value"
+                (ngModelChange)="onUpdate()"
+                placeholder
+                [style]=style
+            ></p-inputNumber>
+        </ng-container>
+
+        <ng-container *ngIf="property.isDouble()">
+            <p-inputNumber
+                type="text"
+                id="float-input"
+                mode="decimal"
+                [maxFractionDigits]="2"
+                class="p-inputtext-md"
+                [class.ng-invalid]="!valid()"
+                [class.ng-dirty]="!valid()"
+                pInputText
+                [(ngModel)]="value"
+                (ngModelChange)="onUpdate()"
+                placeholder
+                [style]=style
+            ></p-inputNumber>
+        </ng-container>
+
+        <ng-container *ngIf="property.isTextarea()">
+            <p-editor
+                [(ngModel)]="value"
+                (ngModelChange)="onUpdate()"
+                [class.ng-invalid]="!valid()"
+                [class.ng-dirty]="!valid()"
+                [style]="{'width':'650px', 'height' : '250px'}"
+            ></p-editor>
+        </ng-container>
+
+    </div>
+</ng-container>

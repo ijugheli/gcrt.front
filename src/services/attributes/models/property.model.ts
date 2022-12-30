@@ -1,5 +1,6 @@
 import { DATA_TYPE_ID, PROPERTY_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config";
 import { IProperty } from "../interfaces/property.interface";
+import { MAttribute } from "./attribute.model";
 
 
 export class MProperty {
@@ -16,14 +17,19 @@ export class MProperty {
     public insert_date: string;
     public update_date: string | null = null;
 
-    public order_id: number | null = null;
+    public order_id: number;
     public source: any = null;
     public has_filter: any = false;
 
-    public options: any[] = [];
-    public selectedOptions: any[] = [];
+
     public tree: any = null;
     public sourceAttribute: any = null;
+
+    public is_primary: boolean = false;
+
+
+    public options: any[] = [];
+    public selectedOptions: any[] = [];
 
     public constructor(o: IProperty) {
         this.id = o.id;
@@ -42,6 +48,8 @@ export class MProperty {
         this.tree = o.tree;
         this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter;
+        this.is_primary = o.is_primary;
+
 
         if (this.tree != null) {
 
@@ -49,16 +57,12 @@ export class MProperty {
             this.selectedOptions = [];
             return;
         }
+    }
 
-        if (!this.source)
-            return;
-
-        for (let i = 0; i < this.source.length; i++) {
-            let item = this.source[i];
-            this.options.push(item.value);
-        }
-
-        this.selectedOptions = [];
+    public withSource(source: MAttribute) {
+        this.source = source;
+        return this;
+        // this.options = source.options;
     }
 
     public isDate() {
@@ -66,7 +70,15 @@ export class MProperty {
     }
 
     public isNumber() {
-        return this.input_data_type == DATA_TYPE_ID('int') || this.input_data_type == DATA_TYPE_ID('double');
+        return this.isInteger() || this.isDouble();
+    }
+
+    public isInteger() {
+        return this.input_data_type == DATA_TYPE_ID('int');
+    }
+
+    public isDouble() {
+        return this.input_data_type == DATA_TYPE_ID('double')
     }
 
     public isBoolean() {
@@ -80,6 +92,10 @@ export class MProperty {
     public isSelect() {
         return this.input_view_type == VIEW_TYPE_ID('select') ||
             this.input_view_type == VIEW_TYPE_ID('multiselect');
+    }
+
+    public isTextarea() {
+        return this.input_view_type == VIEW_TYPE_ID('textarea');
     }
 
     public isSection() {
@@ -120,6 +136,10 @@ export class MProperty {
         return this.p_id != null && this.p_id > 0;
     }
 
+    public hasSource() {
+        return this.source_attr_id != null && this.source_attr_id > 0;
+    }
+
     public parentID(): number {
         if (!this.hasParent() || this.p_id == null) {
             return 0;
@@ -127,5 +147,6 @@ export class MProperty {
 
         return this.p_id;
     }
-} 
+
+}
 

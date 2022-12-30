@@ -9,11 +9,12 @@ export interface IProperty {
     input_view_type: number;
     is_mandatory: boolean;
     has_filter: boolean;
+    is_primary: boolean;
 
     insert_date: string;
     update_date: string | null;
 
-    order_id: number | null;
+    order_id: number;
     source: any;
     tree: any;
     sourceAttribute: any;

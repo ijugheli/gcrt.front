@@ -1,0 +1,20 @@
+<ng-container *ngIf="initialized">
+  <div class="p-inputgroup">
+      <span
+          class="p-inputgroup-addon"
+          *ngIf="property.is_mandatory"
+      >
+          <i class="pi pi-exclamation-triangle"></i>
+      </span>
+      <span class="p-inputgroup-addon">
+          <i class="pi pi-calendar-plus"></i>
+      </span>
+      <p-calendar
+          [(ngModel)]="value"
+          [class.ng-invalid]="!valid()"
+          [class.ng-dirty]="!valid()"
+          (ngModelChange)="onUpdate()"
+          [style]=style
+      ></p-calendar>
+  </div>
+</ng-container>

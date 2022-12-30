@@ -6,11 +6,14 @@ import { API_URL } from 'src/app/app.config';
 import { AuthService } from '../AuthService.service';
 import { IAttribute } from './interfaces/attribute.interface';
 import { first } from 'rxjs';
-import { MAttribute, MAttributeTab } from './models/attribute.model';
+import { MAttribute } from './models/attribute.model';
 import { IProperty } from './interfaces/property.interface';
 import { MProperty } from './models/property.model';
 import { storageItemExists } from '../../app/app.func';
 import { MAttributeSection } from './models/section.model';
+import { MAttributeTab } from './models/tab.model';
+import { MPropertyValue } from './models/property.value.model';
+import { MValue } from './models/value.model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +23,7 @@ export class AttributesService extends GuardedService {
     private cacheKey = 'props';
     public attributes: Map<number, MAttribute> = new Map();
     public properties: Map<number, MProperty> = new Map();
-
+    public values: Map<number, MPropertyValue> = new Map();
 
     public urls: any = {
         'static': API_URL + '/attrs/static',
@@ -81,6 +84,9 @@ export class AttributesService extends GuardedService {
         this.appendChildren();
         this.appendSections();
         this.appendTabs();
+        this.appendValues();
+        this.appendSources();
+        console.log(this.values);
     }
 
     private parseProperties(data: IAttribute[]) {
@@ -129,6 +135,30 @@ export class AttributesService extends GuardedService {
         });
     }
 
+    private appendValues() {
+        this.attributes.forEach((attribute: MAttribute) => {
+            if (!attribute.hasValues()) {
+                return;
+            }
+
+            attribute.values.forEach((value: MPropertyValue) => {
+                this.values.set(value.id, value.setProperty(this.properties.get(value.id)));
+            });
+        });
+    }
+
+    public appendSources() {
+        this.properties.forEach((property: MProperty) => {
+            if (!property.hasSource() || !property.source_attr_id) {
+                return;
+            }
+
+            let attribute = this.find(property.source_attr_id);
+            if (attribute) 
+                property = property.withSource(attribute);
+        });
+    }
+
     private appendTabs() {
         this.attributes.forEach((attribute: MAttribute) => {
             let initial = (new MAttributeTab()).set({
@@ -154,7 +184,14 @@ export class AttributesService extends GuardedService {
                     return;
                 }
 
-                let props: MProperty[] = attribute.properties.filter((property: MProperty) => !property.isSection() && property.parentID() == propertyID);
+                let props: MProperty[] =
+                    attribute.properties
+                        .filter((prop: MProperty) => {
+                            return !prop.isSection() && prop.parentID() == property.id;
+                        })
+                        .sort((a: MProperty, b: MProperty) => {
+                            return a.order_id > b.order_id ? 1 : -1;
+                        });
                 attribute.appendSection((new MAttributeSection(property)).setProps(props));
             });
 
@@ -163,18 +200,28 @@ export class AttributesService extends GuardedService {
                     title: 'მახასიათებლები',
                 }).setProps(attribute.properties));
             }
+
+            attribute.sections = attribute.sections.sort((a: MAttributeSection, b: MAttributeSection) => {
+                return !(!a.property || !b.property)
+                    ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
+                    : 1;
+            });
         });
     }
     //Loader/Parser Methods
 
     //ORM Methods
 
-    public find(attrID: number) {
+    public find(attrID: number): MAttribute | null {
+        console.log(attrID);
+        console.log(this.attributes);
         if (!this.attributes.has(attrID)) {
-            return false;
+            return null;
         }
 
-        return this.attributes.get(attrID);
+        let attribute = this.attributes.get(attrID);
+
+        return attribute ? attribute : null;
     }
 
     public property(propertyID: number) {
@@ -184,11 +231,6 @@ export class AttributesService extends GuardedService {
 
         return this.properties.get(propertyID);
     }
-
-
-    //   public 
-
-
 
 
 

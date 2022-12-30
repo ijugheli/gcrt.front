@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Attribute } from 'src/app/app.models';
 import { AttributesService } from '../../services/attributes/Attributes.service';
-import { AttrValue, AttrProperty } from '../../app/app.models';
+import { AttrValue } from '../../app/app.models';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { NgxSpinnerService } from "ngx-spinner";
-import { MenuItem } from 'primeng/api/menuitem';
 import { DATA_TYPE_ID } from '../../app/app.config';
+import { MProperty } from '../../services/attributes/models/property.model';
+import { FormService } from '../../services/form.service';
 
 
 @Component({
@@ -25,7 +26,6 @@ export class DynamicFormComponent implements OnInit {
   public initialValuesProvided: boolean = false;
 
 
-  public properties: AttrProperty[] = [];
   public sections: any[] = [];
 
   public children: any[] = [];
@@ -38,11 +38,15 @@ export class DynamicFormComponent implements OnInit {
 
   value: number = 0;
 
+
+  public properties: MProperty[] = [];
+
   constructor(
     private attrsService: AttributesService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private form : FormService,
   ) { }
 
   ngOnInit() {
@@ -64,7 +68,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
   private load() {
-    this.spinner.show();
+    // this.spinner.show();
 
     if (this.valueID != null) {
       this.attrsService.attributeWithValue(this.attrID, this.valueID)
@@ -76,11 +80,21 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
 
-    this.attrsService.attribute(this.attrID)
-      .subscribe((data: any) => {
-        this.initializeAttribute(data);
-        this.spinner.hide();
-      });
+
+
+    let attribute = this.attrsService.find(this.attrID);
+    if (attribute == null) return;
+
+    this.properties = attribute.properties;
+    this.sections = attribute.sections;
+    console.log(this.sections);
+    // this.spinner.hide();
+    // console.log(attribute. );
+    // this.attrsService.attribute(this.attrID)
+    //   .subscribe((data: any) => {
+    //     this.initializeAttribute(data);
+    //     this.spinner.hide();
+    //   });
   }
 
   private initializeAttribute(data: any) {
@@ -102,10 +116,9 @@ export class DynamicFormComponent implements OnInit {
     console.log(this.children);
   }
 
-
   //Initializers
   private initValues(properties: any[]) {
-    properties.forEach((property: AttrProperty) => {
+    properties.forEach((property: MProperty) => {
       if (property.id) this.values.set(property.id, null);
     });
   }
@@ -186,7 +199,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
 
-  public onSubmit() {
+  public onSubmit() {  
     if (!this.validate()) {
       return;
     }
@@ -218,12 +231,13 @@ export class DynamicFormComponent implements OnInit {
 
   private validate(): boolean {
     this.validation = true;
+    this.form.enableValidation();
     return this.isFormValid();
   }
 
   private isFormValid(): boolean {
     for (let k = 0; k < this.properties.length; k++) {
-      let property = this.properties[k] as AttrProperty;
+      let property = this.properties[k] as MProperty;
 
       if (!property.id)
         continue;

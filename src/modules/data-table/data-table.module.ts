@@ -26,9 +26,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
 import {InplaceModule} from 'primeng/inplace';
 
-
-
-
 @NgModule({
   imports: [
     BrowserModule,

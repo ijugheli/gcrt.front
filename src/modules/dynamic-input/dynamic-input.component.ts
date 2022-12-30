@@ -8,6 +8,8 @@ import { TreeNode } from 'primeng/api';
 import { parse, stringify, toJSON, fromJSON } from 'flatted';
 import { clone } from 'src/app/app.func';
 import { AttributesService } from '../../services/attributes/Attributes.service';
+import { PlainInputComponent } from './plain-input/plain-input.component';
+import { MProperty } from 'src/services/attributes/models/property.model';
 
 /**
  * Text Input
@@ -19,10 +21,11 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 @Component({
   selector: 'dynamic-input',
   templateUrl: './dynamic-input.component.html',
-  styleUrls: ['./dynamic-input.component.css']
+  styleUrls: ['./dynamic-input.component.css'],
 })
 export class DynamicInputComponent implements OnInit {
-  @Input('property') public property!: AttrProperty;
+  // @Input('property') public property!: AttrProperty;
+  @Input('property') public property!: MProperty;
   @Input('validation') public validation: boolean = false;
   @Input('initialValue') public initialValue: any;
   @Output('onChange') public onChange = new EventEmitter<AttrValue | null>();
@@ -130,6 +133,7 @@ export class DynamicInputComponent implements OnInit {
     o.property_id = this.property.id;
     o.order_id = this.property.order_id;
     o.related_value_id = null;
+    
 
 
     //Value Related
@@ -210,9 +214,10 @@ export class DynamicInputComponent implements OnInit {
       this.tree = this.parseTree(this.property.tree);
     }
 
-    this.options = this.property.source.map((item: any) => {
-      return { name: item.value, id: item.id };
-    });
+    // if (this.property.source)
+    //   this.options = this.property.source.map((item: any) => {
+    //     return { name: item.value, id: item.id };
+    //   });
 
     console.log(this.options);
   }
@@ -232,8 +237,6 @@ export class DynamicInputComponent implements OnInit {
         return node;
       });
   }
-
-
 
   public isValid() {
     if (!this.validation || !this.property.is_mandatory) {

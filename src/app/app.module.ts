@@ -20,6 +20,7 @@ import { ChangePasswordModule } from '../pages/change-password/change-password.m
 import { ManageUserModule } from '../pages/manage-user/manage-user.module';
 import { TreeTableModule } from 'primeng/treetable';
 import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
+import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
 
 @NgModule({
   declarations: [
@@ -39,9 +40,11 @@ import { AttributeFormModule } from '../pages/attribute-form/attribute-form.modu
     ReportsModule,
     UsersModule,
     ChangePasswordModule,
+    DynamicFormModule,
     TableModule,
     ConfirmDialogModule,
     ManageUserModule,
+
     AppRoutingModule,
   ],
   providers: [ConfirmationService, AuthGuardService, AuthService],

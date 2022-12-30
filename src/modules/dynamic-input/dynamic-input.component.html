@@ -2,8 +2,9 @@
 <div class="dynamic-input">
     <ng-container *ngIf="viewType != null">
         <div class="dynamic-input-label">{{property.title}}</div>
-        <ng-container *ngIf="viewType == 'input'">
-            <div class="p-inputgroup">
+        <ng-container *ngIf="viewType == 'input' || viewType == 'textarea'">
+            <plain-input [property]="property"></plain-input>
+            <!-- <div class="p-inputgroup">
                 <span
                     class="p-inputgroup-addon"
                     *ngIf="property.is_mandatory"
@@ -62,25 +63,25 @@
                     ></p-inputNumber>
                 </ng-container>
 
-            </div>
+            </div> -->
         </ng-container>
 
         <ng-container *ngIf="viewType == 'checkbox' || viewType == 'toggle'">
 
-            <div class="p-inputgroup">
+            <!-- <div class="p-inputgroup">
                 <p-inputSwitch
                     [(ngModel)]="currentValue"
                     [class.ng-invalid]="!isValid()"
                     [class.ng-dirty]="!isValid()"
                     (ngModelChange)="onUpdate(currentValue)"
                 ></p-inputSwitch>
-            </div>
+            </div> -->
 
         </ng-container>
 
         <ng-container *ngIf="viewType == 'datepicker'">
-
-            <div class="p-inputgroup">
+            <date-input [property]="property"></date-input>
+            <!-- <div class="p-inputgroup">
                 <span
                     class="p-inputgroup-addon"
                     *ngIf="property.is_mandatory"
@@ -97,12 +98,13 @@
                     (ngModelChange)="onUpdate(currentValue)"
                     [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-calendar>
-            </div>
+            </div> -->
 
         </ng-container>
 
         <ng-container *ngIf="viewType == 'select'">
-            <div class="p-inputgroup">
+            <select-input [property]="property"></select-input>
+            <!-- <div class="p-inputgroup">
                 <span
                     class="p-inputgroup-addon"
                     *ngIf="property.is_mandatory"
@@ -123,20 +125,12 @@
                     [style]="{'width':'400px', 'height' : '100%'}"
                     (ngModelChange)="onUpdate(selected)"
                 ></p-dropdown>
-                <!-- <p-multiSelect
-                    [options]="options"
-                    [(ngModel)]="selected"
-                    [class.ng-invalid]="!isValid()"
-                    [class.ng-dirty]="!isValid()"
-                    (ngModelChange)="onUpdate(selected)"
-                    optionLabel="name"
-                    [style]="{'width':'400px', 'height' : '100%'}"
-                ></p-multiSelect> -->
-            </div>
+            </div> -->
         </ng-container>
 
         <ng-container *ngIf="viewType == 'multiselect'">
-            <div class="p-inputgroup">
+            <multiselect-input [property]="property"></multiselect-input>
+            <!-- <div class="p-inputgroup">
                 <span
                     class="p-inputgroup-addon"
                     *ngIf="property.is_mandatory"
@@ -155,11 +149,12 @@
                     optionLabel="name"
                     [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-multiSelect>
-            </div>
+            </div> -->
         </ng-container>
 
         <ng-container *ngIf="viewType == 'treeselect'">
-            <div class="p-inputgroup">
+            <treeselect-input [property]="property"></treeselect-input>
+            <!-- <div class="p-inputgroup">
                 <span
                     class="p-inputgroup-addon"
                     *ngIf="property.is_mandatory"
@@ -177,10 +172,10 @@
                     optionLabel="name"
                     [style]="{'width':'400px', 'height' : '100%'}"
                 ></p-treeSelect>
-            </div>
+            </div> -->
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'textarea'">
+        <!-- <ng-container *ngIf="viewType == 'textarea'">
             <p-editor
                 [(ngModel)]="currentValue"
                 (ngModelChange)="onUpdate(currentValue)"
@@ -188,7 +183,7 @@
                 [class.ng-dirty]="!isValid()"
                 [style]="{'width':'650px', 'height' : '250px'}"
             ></p-editor>
-        </ng-container>
+        </ng-container> -->
 
     </ng-container>
 </div>

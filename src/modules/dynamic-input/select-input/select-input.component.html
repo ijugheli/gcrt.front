@@ -1,0 +1,25 @@
+<ng-container *ngIf="initialized">
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+        </span>
+
+        <p-dropdown
+            [options]="property.source.options"
+            placeholder="აირჩიეთ {{property.title}}"
+            [(ngModel)]="selected"
+            [class.ng-invalid]="!valid()"
+            [class.ng-dirty]="!valid()"
+            optionLabel="name"
+            [style]=style
+            (ngModelChange)="onUpdate()"
+        ></p-dropdown>
+    </div>
+
+</ng-container>
