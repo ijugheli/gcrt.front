@@ -25,8 +25,6 @@ export class MPropertyValue {
 
     public property?: MProperty;
 
- 
-
 
     public constructor(value?: IPropertyValue) {
         if (value == null) {

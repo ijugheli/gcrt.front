@@ -11,7 +11,6 @@ import { MPropertyValue } from 'src/services/attributes/models/property.value.mo
   selector: 'date-input',
   templateUrl: './date-input.component.html',
   styleUrls: ['./date-input.component.css'],
-  providers: [FormService],
   imports: [CommonModule, FormsModule, CalendarModule],
 })
 export class DateInputComponent implements OnInit {

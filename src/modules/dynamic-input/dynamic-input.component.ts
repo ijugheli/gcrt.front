@@ -50,6 +50,9 @@ export class DynamicInputComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Provided Property in dynamic input is');
+    console.log(this.property);
+    console.log('Provided Property in dynamic input is');
 
     this.initViewType();
     this.initDataType();
@@ -133,7 +136,7 @@ export class DynamicInputComponent implements OnInit {
     o.property_id = this.property.id;
     o.order_id = this.property.order_id;
     o.related_value_id = null;
-    
+    // o.RelatedValueID = 123;
 
 
     //Value Related

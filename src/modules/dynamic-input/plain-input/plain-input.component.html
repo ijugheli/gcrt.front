@@ -1,5 +1,20 @@
 <ng-container *ngIf="initialized">
-    <div class="p-inputgroup">
+    <div
+        class="p-inputgroup"
+        *ngIf="property.isTextarea()"
+    >
+        <p-editor
+            [(ngModel)]="value"
+            (ngModelChange)="onUpdate()"
+            [class.ng-invalid]="!valid()"
+            [class.ng-dirty]="!valid()"
+            [style]="{'width':'650px', 'height' : '250px'}"
+        ></p-editor>
+    </div>
+    <div
+        class="p-inputgroup"
+        *ngIf="!property.isTextarea()"
+    >
         <span
             class="p-inputgroup-addon"
             *ngIf="property.is_mandatory"
@@ -55,16 +70,6 @@
                 placeholder
                 [style]=style
             ></p-inputNumber>
-        </ng-container>
-
-        <ng-container *ngIf="property.isTextarea()">
-            <p-editor
-                [(ngModel)]="value"
-                (ngModelChange)="onUpdate()"
-                [class.ng-invalid]="!valid()"
-                [class.ng-dirty]="!valid()"
-                [style]="{'width':'650px', 'height' : '250px'}"
-            ></p-editor>
         </ng-container>
 
     </div>

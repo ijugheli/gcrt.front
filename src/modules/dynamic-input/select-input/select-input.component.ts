@@ -11,8 +11,7 @@ import { FormService } from 'src/services/form.service';
   selector: 'select-input',
   templateUrl: './select-input.component.html',
   styleUrls: ['./select-input.component.css'],
-  imports: [CommonModule, FormsModule, DropdownModule],
-  providers: [FormService]
+  imports: [CommonModule, FormsModule, DropdownModule]
 })
 export class SelectInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
@@ -27,16 +26,19 @@ export class SelectInputComponent implements OnInit {
 
   }
 
+
   ngOnInit() {
     if (!this.property || this.property == null) {
       return;
     }
 
     this.initialized = true;
-    console.log(this.property);
   }
 
   public valid() {
+    console.log('Validating Select Inputs');
+    console.log(this.selected);
+    console.log(this.form.validation);
     if (!this.form.validation) {
       return true;
     }

@@ -11,7 +11,6 @@ import { FormService } from 'src/services/form.service';
   selector: 'switch-input',
   templateUrl: './switch-input.component.html',
   styleUrls: ['./switch-input.component.css'],
-  providers : [FormService],
   imports: [CommonModule, FormsModule, InputSwitchModule],
 
 })

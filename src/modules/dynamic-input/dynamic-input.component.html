@@ -1,189 +1,215 @@
 <!-- class="ng-invalid ng-dirty" -->
 <div class="dynamic-input">
-    <ng-container *ngIf="viewType != null">
+    <ng-container *ngIf="property != null">
         <div class="dynamic-input-label">{{property.title}}</div>
-        <ng-container *ngIf="viewType == 'input' || viewType == 'textarea'">
-            <plain-input [property]="property"></plain-input>
-            <!-- <div class="p-inputgroup">
-                <span
-                    class="p-inputgroup-addon"
-                    *ngIf="property.is_mandatory"
-                >
-                    <i class="pi pi-exclamation-triangle"></i>
-                </span>
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-pencil"></i>
-                </span>
 
-                <ng-container *ngIf="dataType == 'string'">
-                    <input
-                        type="text"
-                        id="float-input"
-                        class="p-inputtext-md"
-                        [class.ng-invalid]="!isValid()"
-                        [class.ng-dirty]="!isValid()"
-                        pInputText
-                        [(ngModel)]="currentValue"
-                        (ngModelChange)="onUpdate(currentValue)"
-                        placeholder
-                        [style]="{'width':'400px', 'height' : '100%'}"
-                    >
-                </ng-container>
-
-                <ng-container *ngIf="dataType == 'int'">
-                    <p-inputNumber
-                        type="text"
-                        id="float-input"
-                        mode="decimal"
-                        class="p-inputtext-md"
-                        [class.ng-invalid]="!isValid()"
-                        [class.ng-dirty]="!isValid()"
-                        pInputText
-                        [(ngModel)]="currentValue"
-                        (ngModelChange)="onUpdate(currentValue)"
-                        placeholder
-                        [style]="{'width':'400px', 'height' : '100%'}"
-                    ></p-inputNumber>
-                </ng-container>
-
-                <ng-container *ngIf="dataType == 'double'">
-                    <p-inputNumber
-                        type="text"
-                        id="float-input"
-                        mode="decimal"
-                        [maxFractionDigits]="2"
-                        class="p-inputtext-md"
-                        [class.ng-invalid]="!isValid()"
-                        [class.ng-dirty]="!isValid()"
-                        pInputText
-                        [(ngModel)]="currentValue"
-                        (ngModelChange)="onUpdate(currentValue)"
-                        placeholder
-                        [style]="{'width':'400px', 'height' : '100%'}"
-                    ></p-inputNumber>
-                </ng-container>
-
-            </div> -->
+        <ng-container *ngIf="property.isTextarea()">
+            <plain-input [property]="property" (onChange)="onUpdate($event)"></plain-input>
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'checkbox' || viewType == 'toggle'">
-
-            <!-- <div class="p-inputgroup">
-                <p-inputSwitch
-                    [(ngModel)]="currentValue"
-                    [class.ng-invalid]="!isValid()"
-                    [class.ng-dirty]="!isValid()"
-                    (ngModelChange)="onUpdate(currentValue)"
-                ></p-inputSwitch>
-            </div> -->
-
+        <ng-container *ngIf="property.isString() && property.isInput()">
+            <plain-input [property]="property" (onChange)="onUpdate($event)"></plain-input>
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'datepicker'">
-            <date-input [property]="property"></date-input>
-            <!-- <div class="p-inputgroup">
-                <span
-                    class="p-inputgroup-addon"
-                    *ngIf="property.is_mandatory"
-                >
-                    <i class="pi pi-exclamation-triangle"></i>
-                </span>
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-calendar-plus"></i>
-                </span>
-                <p-calendar
-                    [(ngModel)]="currentValue"
-                    [class.ng-invalid]="!isValid()"
-                    [class.ng-dirty]="!isValid()"
-                    (ngModelChange)="onUpdate(currentValue)"
-                    [style]="{'width':'400px', 'height' : '100%'}"
-                ></p-calendar>
-            </div> -->
+        <ng-container *ngIf="property.isCheckbox()"></ng-container>
 
+        <ng-container *ngIf="property.isDatepicker()">
+            <date-input [property]="property" (onChange)="onUpdate($event)"></date-input>
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'select'">
-            <select-input [property]="property"></select-input>
-            <!-- <div class="p-inputgroup">
-                <span
-                    class="p-inputgroup-addon"
-                    *ngIf="property.is_mandatory"
-                >
-                    <i class="pi pi-exclamation-triangle"></i>
-                </span>
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-list"></i>
-                </span>
-                
-                <p-dropdown
-                    [options]="options"
-                    placeholder="აირჩიეთ {{property.title}}"
-                    [(ngModel)]="selected"
-                    [class.ng-invalid]="!isValid()"
-                    [class.ng-dirty]="!isValid()"
-                    optionLabel="name"
-                    [style]="{'width':'400px', 'height' : '100%'}"
-                    (ngModelChange)="onUpdate(selected)"
-                ></p-dropdown>
-            </div> -->
+        <ng-container *ngIf="property.isSelect()">
+            <select-input [property]="property" (onChange)="onUpdate($event)"></select-input>
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'multiselect'">
-            <multiselect-input [property]="property"></multiselect-input>
-            <!-- <div class="p-inputgroup">
-                <span
-                    class="p-inputgroup-addon"
-                    *ngIf="property.is_mandatory"
-                >
-                    <i class="pi pi-exclamation-triangle"></i>
-                </span>
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-list"></i>
-                </span>
-                <p-multiSelect
-                    [options]="options"
-                    [(ngModel)]="selected"
-                    [class.ng-invalid]="!isValid()"
-                    [class.ng-dirty]="!isValid()"
-                    (ngModelChange)="onUpdate(selected)"
-                    optionLabel="name"
-                    [style]="{'width':'400px', 'height' : '100%'}"
-                ></p-multiSelect>
-            </div> -->
+        <ng-container *ngIf="property.isMultiselect()">
+            <multiselect-input [property]="property" (onChange)="onUpdate($event)"></multiselect-input>
         </ng-container>
 
-        <ng-container *ngIf="viewType == 'treeselect'">
-            <treeselect-input [property]="property"></treeselect-input>
-            <!-- <div class="p-inputgroup">
-                <span
-                    class="p-inputgroup-addon"
-                    *ngIf="property.is_mandatory"
-                >
-                    <i class="pi pi-exclamation-triangle"></i>
-                </span>
-                <span class="p-inputgroup-addon">
-                    <i class="pi pi-list"></i>
-                </span>
-                <p-treeSelect
-                    [(ngModel)]="selected"
-                    (ngModelChange)="onUpdate(selected)"
-                    [options]="tree"
-                    (onNodeExpand)="onNodeExpand($event)"
-                    optionLabel="name"
-                    [style]="{'width':'400px', 'height' : '100%'}"
-                ></p-treeSelect>
-            </div> -->
+        <ng-container *ngIf="property.isTreeselect() || property.isTreetable()">
+            <treeselect-input [property]="property" (onChange)="onUpdate($event)"></treeselect-input>
         </ng-container>
+    </ng-container>
 
-        <!-- <ng-container *ngIf="viewType == 'textarea'">
-            <p-editor
-                [(ngModel)]="currentValue"
-                (ngModelChange)="onUpdate(currentValue)"
+</div>
+
+<!-- <ng-container *ngIf="viewType == 'input' || viewType == 'textarea'">
+    <plain-input [property]="property"></plain-input>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-pencil"></i>
+        </span>
+
+        <ng-container *ngIf="dataType == 'string'">
+            <input
+                type="text"
+                id="float-input"
+                class="p-inputtext-md"
                 [class.ng-invalid]="!isValid()"
                 [class.ng-dirty]="!isValid()"
-                [style]="{'width':'650px', 'height' : '250px'}"
-            ></p-editor>
-        </ng-container> -->
+                pInputText
+                [(ngModel)]="currentValue"
+                (ngModelChange)="onUpdate(currentValue)"
+                placeholder
+                [style]="{'width':'400px', 'height' : '100%'}"
+            >
+        </ng-container>
 
-    </ng-container>
-</div>
+        <ng-container *ngIf="dataType == 'int'">
+            <p-inputNumber
+                type="text"
+                id="float-input"
+                mode="decimal"
+                class="p-inputtext-md"
+                [class.ng-invalid]="!isValid()"
+                [class.ng-dirty]="!isValid()"
+                pInputText
+                [(ngModel)]="currentValue"
+                (ngModelChange)="onUpdate(currentValue)"
+                placeholder
+                [style]="{'width':'400px', 'height' : '100%'}"
+            ></p-inputNumber>
+        </ng-container>
+
+        <ng-container *ngIf="dataType == 'double'">
+            <p-inputNumber
+                type="text"
+                id="float-input"
+                mode="decimal"
+                [maxFractionDigits]="2"
+                class="p-inputtext-md"
+                [class.ng-invalid]="!isValid()"
+                [class.ng-dirty]="!isValid()"
+                pInputText
+                [(ngModel)]="currentValue"
+                (ngModelChange)="onUpdate(currentValue)"
+                placeholder
+                [style]="{'width':'400px', 'height' : '100%'}"
+            ></p-inputNumber>
+        </ng-container>
+
+    </div>
+</ng-container>
+
+<ng-container *ngIf="viewType == 'checkbox' || viewType == 'toggle'">
+
+   <div class="p-inputgroup">
+        <p-inputSwitch
+            [(ngModel)]="currentValue"
+            [class.ng-invalid]="!isValid()"
+            [class.ng-dirty]="!isValid()"
+            (ngModelChange)="onUpdate(currentValue)"
+        ></p-inputSwitch>
+    </div>
+
+</ng-container>
+
+<ng-container *ngIf="viewType == 'datepicker'">
+    <date-input [property]="property"></date-input>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-calendar-plus"></i>
+        </span>
+        <p-calendar
+            [(ngModel)]="currentValue"
+            [class.ng-invalid]="!isValid()"
+            [class.ng-dirty]="!isValid()"
+            (ngModelChange)="onUpdate(currentValue)"
+            [style]="{'width':'400px', 'height' : '100%'}"
+        ></p-calendar>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="viewType == 'select'">
+    <select-input [property]="property"></select-input>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+        </span>
+        
+        <p-dropdown
+            [options]="options"
+            placeholder="აირჩიეთ {{property.title}}"
+            [(ngModel)]="selected"
+            [class.ng-invalid]="!isValid()"
+            [class.ng-dirty]="!isValid()"
+            optionLabel="name"
+            [style]="{'width':'400px', 'height' : '100%'}"
+            (ngModelChange)="onUpdate(selected)"
+        ></p-dropdown>
+    </div> 
+</ng-container>
+
+<ng-container *ngIf="viewType == 'multiselect'">
+    <multiselect-input [property]="property"></multiselect-input>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+        </span>
+        <p-multiSelect
+            [options]="options"
+            [(ngModel)]="selected"
+            [class.ng-invalid]="!isValid()"
+            [class.ng-dirty]="!isValid()"
+            (ngModelChange)="onUpdate(selected)"
+            optionLabel="name"
+            [style]="{'width':'400px', 'height' : '100%'}"
+        ></p-multiSelect>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="viewType == 'treeselect'">
+    <treeselect-input [property]="property"></treeselect-input>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+        </span>
+        <p-treeSelect
+            [(ngModel)]="selected"
+            (ngModelChange)="onUpdate(selected)"
+            [options]="tree"
+            (onNodeExpand)="onNodeExpand($event)"
+            optionLabel="name"
+            [style]="{'width':'400px', 'height' : '100%'}"
+        ></p-treeSelect>
+    </div> 
+</ng-container>
+
+<ng-container *ngIf="viewType == 'textarea'">
+    <p-editor
+        [(ngModel)]="currentValue"
+        (ngModelChange)="onUpdate(currentValue)"
+        [class.ng-invalid]="!isValid()"
+        [class.ng-dirty]="!isValid()"
+        [style]="{'width':'650px', 'height' : '250px'}"
+    ></p-editor>
+</ng-container> -->

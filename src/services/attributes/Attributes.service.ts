@@ -154,7 +154,7 @@ export class AttributesService extends GuardedService {
             }
 
             let attribute = this.find(property.source_attr_id);
-            if (attribute) 
+            if (attribute)
                 property = property.withSource(attribute);
         });
     }
@@ -211,10 +211,9 @@ export class AttributesService extends GuardedService {
     //Loader/Parser Methods
 
     //ORM Methods
-
     public find(attrID: number): MAttribute | null {
-        console.log(attrID);
-        console.log(this.attributes);
+        // console.log(attrID);
+        // console.log(this.attributes);
         if (!this.attributes.has(attrID)) {
             return null;
         }

@@ -2,7 +2,6 @@ import { DATA_TYPE_ID, PROPERTY_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config
 import { IProperty } from "../interfaces/property.interface";
 import { MAttribute } from "./attribute.model";
 
-
 export class MProperty {
     public id: number;
     public p_id: number | null = null;
@@ -52,17 +51,17 @@ export class MProperty {
 
 
         if (this.tree != null) {
-
             this.options = this.tree;
             this.selectedOptions = [];
+
             return;
         }
     }
 
     public withSource(source: MAttribute) {
         this.source = source;
+
         return this;
-        // this.options = source.options;
     }
 
     public isDate() {
@@ -90,12 +89,39 @@ export class MProperty {
     }
 
     public isSelect() {
-        return this.input_view_type == VIEW_TYPE_ID('select') ||
-            this.input_view_type == VIEW_TYPE_ID('multiselect');
+        return this.input_view_type == VIEW_TYPE_ID('select');
+    }
+
+    public isMultiselect() {
+        return this.input_view_type == VIEW_TYPE_ID('multiselect');
+    }
+
+    public isTreeselect() {
+        return this.input_view_type == VIEW_TYPE_ID('treeselect');
+    }
+
+    public isTreetable() {
+        return this.input_view_type == VIEW_TYPE_ID('treetable');
+    }
+
+    public isCheckbox() {
+        return this.input_view_type == VIEW_TYPE_ID('checkbox') ||
+            this.input_view_type == VIEW_TYPE_ID('toggle');
+    }
+
+    public isDatepicker() {
+        // console.log([VIEW_TYPE_ID('datepicker'), VIEW_TYPE_ID('datetimepicker'), VIEW_TYPE_ID('timepicker')]);
+        return [VIEW_TYPE_ID('datepicker'), VIEW_TYPE_ID('datetimepicker'), VIEW_TYPE_ID('timepicker')]
+            .indexOf(this.input_view_type) > -1;
+    }
+
+    public isInput() {
+        return this.input_view_type == VIEW_TYPE_ID('input');
     }
 
     public isTextarea() {
-        return this.input_view_type == VIEW_TYPE_ID('textarea');
+        return [VIEW_TYPE_ID('textarea'), VIEW_TYPE_ID('editable-textarea')]
+            .indexOf(this.input_view_type) > -1;
     }
 
     public isSection() {

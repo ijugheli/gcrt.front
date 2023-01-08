@@ -46,7 +46,7 @@ export class DynamicFormComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private spinner: NgxSpinnerService,
-    private form : FormService,
+    private form: FormService,
   ) { }
 
   ngOnInit() {
@@ -56,9 +56,13 @@ export class DynamicFormComponent implements OnInit {
     this.valueID = this.config.data?.valueID;
     //preDefined for adding/editing tree values.
     this.preDefined = this.config.data?.preDefined;
-    console.log('DEfined');
-    console.log(this.preDefined);
-    console.log('DEfined');
+
+    if (this.preDefined) {
+      console.log('Predefined Value for Dynamic form');
+      console.log(this.preDefined);
+      console.log('Predefined Value for Dynamic form');
+    }
+
     //Related value ID for sub entities
     this.relatedValueID = this.config.data?.relatedValueID;
     //if we are in editing mode we should have initial values provided
@@ -70,6 +74,7 @@ export class DynamicFormComponent implements OnInit {
   private load() {
     // this.spinner.show();
 
+    //For editing provided value.
     if (this.valueID != null) {
       this.attrsService.attributeWithValue(this.attrID, this.valueID)
         .subscribe((data: any) => {
@@ -80,14 +85,18 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
 
-
-
     let attribute = this.attrsService.find(this.attrID);
     if (attribute == null) return;
 
     this.properties = attribute.properties;
     this.sections = attribute.sections;
-    console.log(this.sections);
+
+    if (this.sections) {
+      console.log('Current sections are');
+      console.log(this.sections);
+      console.log('Current sections are');
+    }
+
     // this.spinner.hide();
     // console.log(attribute. );
     // this.attrsService.attribute(this.attrID)
@@ -199,7 +208,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
 
-  public onSubmit() {  
+  public onSubmit() {
     if (!this.validate()) {
       return;
     }
@@ -208,25 +217,28 @@ export class DynamicFormComponent implements OnInit {
     this.appendPreDefined();
     const object = Array.from(this.values.entries());
 
-    if (this.valueID != null) {
-      this.spinner.show();
-      this.attrsService
-        .editValueCollection(this.attrID, this.valueID, object)
-        .subscribe((data) => {
-          this.spinner.hide();
-          this.ref.close();
-        });
 
-      return;
-    }
+    console.log(object);
+
+    // if (this.valueID != null) {
+    //   this.spinner.show();
+    //   this.attrsService
+    //     .editValueCollection(this.attrID, this.valueID, object)
+    //     .subscribe((data) => {
+    //       this.spinner.hide();
+    //       this.ref.close();
+    //     });
+
+    //   return;
+    // }
 
 
-    this.attrsService
-      .addValueCollection(this.attrID, object)
-      .subscribe((data) => {
-        this.spinner.hide();
-        this.ref.close();
-      });
+    // this.attrsService
+    //   .addValueCollection(this.attrID, object)
+    //   .subscribe((data) => {
+    //     this.spinner.hide();
+    //     this.ref.close();
+    //   });
   }
 
   private validate(): boolean {
@@ -242,15 +254,16 @@ export class DynamicFormComponent implements OnInit {
       if (!property.id)
         continue;
 
-      console.log(this.values);
-      let isValid = property.input_data_type == DATA_TYPE_ID('boolean') || property.type == 2 || !property.is_mandatory ||
+      // console.log(this.values);
+      let isValid = 
+      property.input_data_type == DATA_TYPE_ID('boolean') || property.type == 2 || !property.is_mandatory ||
         (property.is_mandatory &&
           this.values.get(property.id) != null);
 
       if (property.is_mandatory && !isValid && property.input_data_type !== DATA_TYPE_ID('boolean')) {
-        console.log(property.title);
-        console.log(this.values.get(property.id));
-        console.log(property);
+        // console.log(property.title);
+        // console.log(this.values.get(property.id));
+        // console.log(property);
       }
 
       return isValid;

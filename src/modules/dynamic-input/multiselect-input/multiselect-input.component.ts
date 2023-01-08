@@ -11,7 +11,6 @@ import { MProperty } from 'src/services/attributes/models/property.model';
   selector: 'multiselect-input',
   templateUrl: './multiselect-input.component.html',
   styleUrls: ['./multiselect-input.component.css'],
-  providers: [FormService],
   imports: [CommonModule, FormsModule, MultiSelectModule]
 })
 export class MultiselectInputComponent implements OnInit {

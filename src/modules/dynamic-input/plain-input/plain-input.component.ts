@@ -6,13 +6,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CommonModule } from '@angular/common';
 import { FormService } from 'src/services/form.service';
+import { EditorModule } from 'primeng/editor';
 
 @Component({
   standalone: true,
   selector: 'plain-input',
   templateUrl: './plain-input.component.html',
   styleUrls: ['./plain-input.component.css'],
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule],
+  imports: [CommonModule, FormsModule, EditorModule,  InputTextModule, InputNumberModule],
 })
 export class PlainInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
@@ -29,6 +30,10 @@ export class PlainInputComponent implements OnInit {
   ngOnInit() {
     if (!this.property || this.property == null) {
       return;
+    }
+
+    if(this.property.isTextarea()) {
+      console.log('SHOULD BE RENDERING TEXTAREA');
     }
 
     this.initialized = true;
