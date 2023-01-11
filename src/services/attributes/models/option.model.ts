@@ -5,7 +5,7 @@ export class MOption {
 
     public name!: string;
     public id!: number;
-    public value!: MPropertyValue;
+    public value?: MPropertyValue;
 
 
     constructor(value: MPropertyValue) {

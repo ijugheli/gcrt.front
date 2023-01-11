@@ -7,7 +7,7 @@ export class MProperty {
     public p_id: number | null = null;
     public attr_id: number;
     public source_attr_id: number | null = null;
-    public type: Number;
+    public type: number;
     public title: string;
     public input_data_type: number;
     public input_view_type: number;
@@ -65,7 +65,7 @@ export class MProperty {
     }
 
     public isDate() {
-        return this.input_data_type == DATA_TYPE_ID('date');
+        return [DATA_TYPE_ID('date'), DATA_TYPE_ID('datetime')].indexOf(this.input_data_type) > -1;
     }
 
     public isNumber() {
@@ -126,6 +126,10 @@ export class MProperty {
 
     public isSection() {
         return this.type == PROPERTY_TYPE_ID('section');
+    }
+
+    public mandatory() {
+        return this.is_mandatory;
     }
 
     public hasSelectedOptions() {

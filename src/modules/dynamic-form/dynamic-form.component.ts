@@ -8,6 +8,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { DATA_TYPE_ID } from '../../app/app.config';
 import { MProperty } from '../../services/attributes/models/property.model';
 import { FormService } from '../../services/form.service';
+import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class DynamicFormComponent implements OnInit {
 
   public children: any[] = [];
 
-  public values: Map<number | string, AttrValue | null | number> = new Map();
+  public values: Map<number | string, MPropertyValue | null | number> = new Map();
   public initialValues: any = {};
   public fields: Map<number, AttrValue | null> = new Map();
 
@@ -72,6 +73,8 @@ export class DynamicFormComponent implements OnInit {
   }
 
   private load() {
+
+
     // this.spinner.show();
 
     //For editing provided value.
@@ -85,18 +88,6 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
 
-    let attribute = this.attrsService.find(this.attrID);
-    if (attribute == null) return;
-
-    this.properties = attribute.properties;
-    this.sections = attribute.sections;
-
-    if (this.sections) {
-      console.log('Current sections are');
-      console.log(this.sections);
-      console.log('Current sections are');
-    }
-
     // this.spinner.hide();
     // console.log(attribute. );
     // this.attrsService.attribute(this.attrID)
@@ -104,11 +95,23 @@ export class DynamicFormComponent implements OnInit {
     //     this.initializeAttribute(data);
     //     this.spinner.hide();
     //   });
+
+
+    /////////BODY//////////////
+    let attribute = this.attrsService.find(this.attrID);
+    if (attribute == null) return;
+
+    this.properties = attribute.properties;
+    this.sections = attribute.sections;
+    this.initValues();
+    /////////BODY//////////////
+
+
   }
 
   private initializeAttribute(data: any) {
     this.properties = data.properties;
-    if (data.properties) this.initValues(data.properties);
+    // if (data.properties) this.initValues(data.properties);
     if (data.children) this.initChildren(data.children);
     if (data.properties) this.parseProperties(data.properties);
   }
@@ -126,8 +129,8 @@ export class DynamicFormComponent implements OnInit {
   }
 
   //Initializers
-  private initValues(properties: any[]) {
-    properties.forEach((property: MProperty) => {
+  private initValues() {
+    this.properties.forEach((property: MProperty) => {
       if (property.id) this.values.set(property.id, null);
     });
   }
@@ -168,8 +171,12 @@ export class DynamicFormComponent implements OnInit {
   }
 
   ////////////////////////////////////Form Related////////////////////////////////////
-  public onValueUpdate(propertyID: number, e: AttrValue | null) {
+  public onValueUpdate(propertyID: number, e: MPropertyValue | null) {
     this.validation = false;
+    console.log('Provided Value is');
+    console.log(propertyID);
+    console.log(e);
+    console.log('Provided Value is');
     if (!propertyID || !this.values.has(propertyID)) {
       return;
     }
@@ -209,16 +216,21 @@ export class DynamicFormComponent implements OnInit {
 
 
   public onSubmit() {
+    console.log('Submitted Values are');
+    console.log(this.values);
+    console.log('Submitted Values are');
+    this.form.enableValidation();
     if (!this.validate()) {
       return;
     }
 
-    this.appendRelated();
-    this.appendPreDefined();
+    // this.appendRelated();
+    // this.appendPreDefined();
     const object = Array.from(this.values.entries());
 
 
     console.log(object);
+    // return;
 
     // if (this.valueID != null) {
     //   this.spinner.show();
@@ -232,44 +244,28 @@ export class DynamicFormComponent implements OnInit {
     //   return;
     // }
 
-
-    // this.attrsService
-    //   .addValueCollection(this.attrID, object)
-    //   .subscribe((data) => {
-    //     this.spinner.hide();
-    //     this.ref.close();
-    //   });
+    this.spinner.show();
+    this.attrsService
+      .addValueCollection(this.attrID, object)
+      .subscribe((data) => {
+        this.spinner.hide();
+        this.ref.close();
+      });
   }
 
   private validate(): boolean {
-    this.validation = true;
-    this.form.enableValidation();
-    return this.isFormValid();
-  }
+    let invalids = this.properties.filter((property: MProperty) => {
+      if (property.isSection()) return false;
+      if (!property.mandatory()) return false;
 
-  private isFormValid(): boolean {
-    for (let k = 0; k < this.properties.length; k++) {
-      let property = this.properties[k] as MProperty;
+      return this.values.get(property.id) === null;
+    });
 
-      if (!property.id)
-        continue;
+    console.log('Invalids');
+    console.log(invalids);
+    console.log('Invalids');
 
-      // console.log(this.values);
-      let isValid = 
-      property.input_data_type == DATA_TYPE_ID('boolean') || property.type == 2 || !property.is_mandatory ||
-        (property.is_mandatory &&
-          this.values.get(property.id) != null);
-
-      if (property.is_mandatory && !isValid && property.input_data_type !== DATA_TYPE_ID('boolean')) {
-        // console.log(property.title);
-        // console.log(this.values.get(property.id));
-        // console.log(property);
-      }
-
-      return isValid;
-    }
-
-    return true;
+    return invalids.length <= 0;
   }
 
   public onCancel() {

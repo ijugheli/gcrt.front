@@ -10,6 +10,7 @@ import { clone } from 'src/app/app.func';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { PlainInputComponent } from './plain-input/plain-input.component';
 import { MProperty } from 'src/services/attributes/models/property.model';
+import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
 
 /**
  * Text Input
@@ -28,20 +29,18 @@ export class DynamicInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Input('validation') public validation: boolean = false;
   @Input('initialValue') public initialValue: any;
-  @Output('onChange') public onChange = new EventEmitter<AttrValue | null>();
+  // @Output('onChange') public onChange = new EventEmitter<AttrValue | null>();
+  @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
 
   public viewType: any | null = null;
   public viewTypeID: number | null = null;
   public dataType: any | null = null;
   public dataTypeID: number | null = null;
   public currentValue: any;
-
   public options: any[];
   public tree: any;
-
   public selected: any[] = [];
   public treeSelected: any[] = [];
-
   public loading: boolean = false;
 
 
@@ -59,6 +58,17 @@ export class DynamicInputComponent implements OnInit {
     this.parseSource();
     this.loadInitialValue();
   }
+
+
+
+
+  public onUpdate(propertyValue: MPropertyValue |  null) {
+    console.log('Dynamic input received update');
+    console.log(propertyValue);
+    console.log('Dynamic input received update');
+    this.onChange.emit(propertyValue);
+  }
+
 
   public onNodeExpand(event: any) {
     const node = event.node;
@@ -79,54 +89,6 @@ export class DynamicInputComponent implements OnInit {
     });
   }
 
-  private loadInitialValue() {
-    if (this.initialValue == null) {
-      return;
-    }
-
-    if (this.isTree()) {
-      this.selected = JSON.parse(this.initialValue);
-      this.onUpdate(this.selected);
-      return;
-    }
-
-    if (this.isSelect()) {
-      this.selected = JSON.parse(this.initialValue);
-      this.selected = this.viewType == 'multiselect' ? Array.from(this.selected) : this.selected;
-      this.onUpdate(this.selected);
-      return;
-    }
-
-    if (this.property.input_data_type == DATA_TYPE_ID('date') ||
-      this.property.input_data_type == DATA_TYPE_ID('datetime')) {
-      this.currentValue = new Date(this.initialValue);
-      this.onUpdate(this.currentValue);
-      return;
-    }
-
-    if (this.property.input_data_type == DATA_TYPE_ID('boolean')) {
-      this.currentValue = this.initialValue != null && this.initialValue == 1 ? true : false;
-      this.onUpdate(this.currentValue);
-      return;
-    }
-
-    this.currentValue = this.initialValue;
-
-    this.onUpdate(this.currentValue);
-
-    return;
-  }
-
-  public onUpdate(value: any) {
-    if (value == null || value == '') {
-      this.onChange.emit(null);
-      return;
-    }
-
-    let object = this.generateValueObject(value);
-
-    this.onChange.emit(object);
-  }
 
   private generateValueObject(value: any) {
     let viewTypeID = this.property.input_view_type;
@@ -258,6 +220,47 @@ export class DynamicInputComponent implements OnInit {
 
   public isTree() {
     return this.viewType == 'treeselect';
+  }
+
+
+  private loadInitialValue() {
+
+
+    if (this.initialValue == null) {
+      return;
+    }
+
+    // if (this.isTree()) {
+    //   this.selected = JSON.parse(this.initialValue);
+    //   this.onUpdate(this.selected);
+    //   return;
+    // }
+
+    // if (this.isSelect()) {
+    //   this.selected = JSON.parse(this.initialValue);
+    //   this.selected = this.viewType == 'multiselect' ? Array.from(this.selected) : this.selected;
+    //   this.onUpdate(this.selected);
+    //   return;
+    // }
+
+    if (this.property.input_data_type == DATA_TYPE_ID('date') ||
+      this.property.input_data_type == DATA_TYPE_ID('datetime')) {
+      this.currentValue = new Date(this.initialValue);
+      this.onUpdate(this.currentValue);
+      return;
+    }
+
+    if (this.property.input_data_type == DATA_TYPE_ID('boolean')) {
+      this.currentValue = this.initialValue != null && this.initialValue == 1 ? true : false;
+      this.onUpdate(this.currentValue);
+      return;
+    }
+
+    this.currentValue = this.initialValue;
+
+    this.onUpdate(this.currentValue);
+
+    return;
   }
 
 }

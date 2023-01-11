@@ -32,10 +32,6 @@ export class PlainInputComponent implements OnInit {
       return;
     }
 
-    if(this.property.isTextarea()) {
-      console.log('SHOULD BE RENDERING TEXTAREA');
-    }
-
     this.initialized = true;
   }
 
@@ -52,8 +48,10 @@ export class PlainInputComponent implements OnInit {
     if (!this.form.validation) {
       return true;
     }
-
-    return this.value != null && this.value != '';
+    
+    return  this.value !== null && 
+            this.value !== '' && 
+            this.value !== undefined;
   }
 
 }

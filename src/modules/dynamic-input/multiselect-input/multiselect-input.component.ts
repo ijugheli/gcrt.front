@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
 import { MProperty } from 'src/services/attributes/models/property.model';
+import { MOption } from 'src/services/attributes/models/option.model';
 
 @Component({
   standalone: true,
@@ -17,7 +18,7 @@ export class MultiselectInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
 
-  public selected: any[] = [];
+  public selected: MOption | MOption[] | null = null;
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
   public options: any[] = [];
@@ -42,7 +43,12 @@ export class MultiselectInputComponent implements OnInit {
 
 
   public onUpdate() {
+    if (!this.valid()) {
+      this.onChange.emit(null);
+      return;
+    }
 
+    this.onChange.emit(MPropertyValue.from(this.property, this.selected));
   }
 
 }

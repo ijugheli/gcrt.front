@@ -282,14 +282,14 @@ export class AttributesService extends GuardedService {
         );
     }
 
-    public addValueCollection(attrID: number, values: any) {
-        return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
-    }
-
     public setTitle(attrID: number, values: any) {
         return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
     }
 
+    public addValueCollection(attrID: number, values: any) {
+        return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+    }
+    
     public editValueCollection(attrID: number, valueID: number, values: any) {
         return this.http.post(this.urls['editValueCollection']
             .replace('{attr_id}', attrID.toString())

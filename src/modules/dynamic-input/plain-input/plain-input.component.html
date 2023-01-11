@@ -3,13 +3,35 @@
         class="p-inputgroup"
         *ngIf="property.isTextarea()"
     >
-        <p-editor
+        <!-- <p-editor
             [(ngModel)]="value"
             (ngModelChange)="onUpdate()"
             [class.ng-invalid]="!valid()"
             [class.ng-dirty]="!valid()"
             [style]="{'width':'650px', 'height' : '250px'}"
-        ></p-editor>
+        ></p-editor> -->
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-pencil"></i>
+        </span>
+        <textarea
+            rows="5"
+            cols="50"
+            class="p-inputtext-md"
+            [class.ng-invalid]="!valid()"
+            [class.ng-dirty]="!valid()"
+            pInputTextarea
+            [(ngModel)]="value"
+            (ngModelChange)="onUpdate()"
+            placeholder
+            [style]=style
+        >
+        </textarea>
     </div>
     <div
         class="p-inputgroup"

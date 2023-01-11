@@ -10,7 +10,7 @@
           <i class="pi pi-list"></i>
       </span>
       <p-multiSelect
-          [options]="options"
+          [options]="property.source.options"
           [(ngModel)]="selected"
           [class.ng-invalid]="!valid()"
           [class.ng-dirty]="!valid()"

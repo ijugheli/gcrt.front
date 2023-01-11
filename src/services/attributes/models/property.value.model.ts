@@ -1,5 +1,6 @@
 import { DATA_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config";
 import { IPropertyValue } from "../interfaces/property.value.interface";
+import { MOption } from "./option.model";
 import { MProperty } from './property.model';
 
 export class MPropertyValue {
@@ -62,67 +63,85 @@ export class MPropertyValue {
 
 
     public static from(property: MProperty, value: any) { //: MPropertyValue
-        let viewTypeID = property.input_view_type;
-        let dataTypeID = property.input_data_type;
-        let o = new MPropertyValue();
-        o.attr_id = property.attr_id;
-        o.property_id = property.id;
-        o.order_id = property.order_id;
-        o.related_value_id = null;
+        let propertyValue = new MPropertyValue();
+        propertyValue.attr_id = property.attr_id;
+        propertyValue.property_id = property.id;
+        propertyValue.order_id = property.order_id;
+        propertyValue.related_value_id = null;
 
 
         //Value Related
-        o.value_integer = null;
-        o.value_decimal = null;
-        o.value_date = null;
-        o.value_json = null;
-        o.insert_date = null;
-        o.update_date = null;
-
+        propertyValue.value_integer = null;
+        propertyValue.value_decimal = null;
+        propertyValue.value_date = null;
+        propertyValue.value_json = null;
+        propertyValue.insert_date = null;
+        propertyValue.update_date = null;
 
         //Normal input related -> string|integer|decimal
-        if (viewTypeID == VIEW_TYPE_ID('input')) {
-            if (dataTypeID == DATA_TYPE_ID('string')) o.value_string = value;
-            if (dataTypeID == DATA_TYPE_ID('int')) o.value_integer = value;
-            if (dataTypeID == DATA_TYPE_ID('double')) o.value_decimal = value;
-        }
-        //Checkbox Related.
-        if (viewTypeID == VIEW_TYPE_ID('checkbox') ||
-            viewTypeID == VIEW_TYPE_ID('toggle')) {
-            if (dataTypeID == DATA_TYPE_ID('boolean')) o.value_boolean = value;
-        }
-        //Dates Related -> date
-        else if (viewTypeID == VIEW_TYPE_ID('datepicker') ||
-            viewTypeID == VIEW_TYPE_ID('datetimepicker')) {
-            if (dataTypeID == DATA_TYPE_ID('date')) o.value_date = value;
-            if (dataTypeID == DATA_TYPE_ID('datetime')) o.value_date = value;
-        }
-        //Textarea related -> text
-        else if (viewTypeID == VIEW_TYPE_ID('textarea') ||
-            viewTypeID == VIEW_TYPE_ID('editable-textarea')) {
-            o.value_text = value;
-        }
-        //Selects Related -> JSON
-        else if (viewTypeID == VIEW_TYPE_ID('select') ||
-            viewTypeID == VIEW_TYPE_ID('multiselect') ||
-            viewTypeID == VIEW_TYPE_ID('tableselect')) {
+        if (property.isInput()) {
+            if (property.isString()) propertyValue.value_string = value;
+            if (property.isInteger()) propertyValue.value_integer = value;
+            if (property.isDouble()) propertyValue.value_decimal = value;
 
-            o.value_json = JSON.stringify(value);
-        } else if (viewTypeID == VIEW_TYPE_ID('treeselect')) {
-            const sanitizedJSON = Object.assign({}, value);
+            return propertyValue;
+        }
 
-            if (sanitizedJSON.parent) {
-                if (sanitizedJSON.parent.children) {
-                    for (let i = 0; i < sanitizedJSON.parent.children.length; i++) {
-                        sanitizedJSON.parent.children[i]['parent'] = null;
-                    }
+        console.log('Transforming Property');
+        console.log(property);
+        console.log('Transforming Property');
+
+        if (property.isCheckbox() && property.isBoolean()) {
+            propertyValue.value_boolean = value;
+
+            return propertyValue;
+        }
+
+        if (property.isDatepicker() && property.isDate()) {
+            propertyValue.value_date = value;
+            return propertyValue;
+        }
+
+        if (property.isTextarea()) {
+            propertyValue.value_text = value;
+
+            return propertyValue;
+        }
+
+        if (property.isSelect() || property.isMultiselect()) {
+            delete value.value;
+            if(Array.isArray(value)) {
+                value.map((item : MOption) => {
+                    delete item.value;
+                    return item;
+                })
+            }
+            propertyValue.value_json = JSON.stringify(value);
+
+            return propertyValue;
+        }
+
+        if (property.isTreeselect()) {
+            const sanitizedJSON = MPropertyValue.normalizeTreeParents(Object.assign({}, value));
+
+            propertyValue.value_json = JSON.stringify(sanitizedJSON);
+
+            return propertyValue;
+        }
+
+        return propertyValue;
+    }
+
+    private static normalizeTreeParents(tree: any) {
+        if (tree.parent) {
+            if (tree.parent.children) {
+                for (let i = 0; i < tree.parent.children.length; i++) {
+                    tree.parent.children[i]['parent'] = null;
                 }
             }
-
-            o.value_json = JSON.stringify(sanitizedJSON);
         }
 
-        return o;
+        return tree;
     }
 
 

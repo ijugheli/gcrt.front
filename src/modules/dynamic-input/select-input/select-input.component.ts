@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { MOption } from 'src/services/attributes/models/option.model';
 import { MProperty } from 'src/services/attributes/models/property.model';
 import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
 import { FormService } from 'src/services/form.service';
@@ -17,7 +18,7 @@ export class SelectInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
 
-  public selected: any[] = [];
+  public selected: MOption | null = null;
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
   public options: any[] = [];
@@ -36,9 +37,6 @@ export class SelectInputComponent implements OnInit {
   }
 
   public valid() {
-    console.log('Validating Select Inputs');
-    console.log(this.selected);
-    console.log(this.form.validation);
     if (!this.form.validation) {
       return true;
     }
@@ -48,7 +46,12 @@ export class SelectInputComponent implements OnInit {
 
 
   public onUpdate() {
+    if (!this.valid()) {
+      this.onChange.emit(null);
+      return;
+    }
 
+    this.onChange.emit(MPropertyValue.from(this.property, this.selected));
   }
 
 

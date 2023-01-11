@@ -1759,3 +1759,7 @@ p-sorticon i {
 .p-tabview-title { 
     white-space: normal !important; 
 }
+
+textarea.ng-dirty.ng-invalid {
+    border-color: #f44336 !important;
+}
