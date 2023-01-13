@@ -16,6 +16,7 @@ export class MAttribute {
     public type: number;
     public lazy: boolean = false;
     public status_id: number | null = null;
+    public status: boolean = true;
     public title: string | null = null;
     public children: MAttribute[] = [];
     public properties: MProperty[] = [];
@@ -27,12 +28,17 @@ export class MAttribute {
 
     public options: MOption[] = [];
 
+
+    //Front Structure
+    public expanded: boolean = false;
+
     public constructor(o: IAttribute) {
         this.id = o.id;
         this.p_id = o.p_id;
         this.count = o.count;
         this.type = o.type;
         this.status_id = o.status_id;
+        this.status = this.status_id == 1;
         this.title = o.title;
         this.lazy = o.lazy;
         if (o.values && o.values.length > 0) {
@@ -117,5 +123,13 @@ export class MAttribute {
     public isEntity() {
         return this.type === ATTR_TYPE_ID('entity')
     }
+
+    public isTree() {
+        return this.type === ATTR_TYPE_ID('tree')
+    } 
+    
+    public isStandard() {
+        return this.type === ATTR_TYPE_ID('standard')
+    } 
 
 }
