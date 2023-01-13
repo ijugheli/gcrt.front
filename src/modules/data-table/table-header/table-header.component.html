@@ -1,6 +1,5 @@
 <div class="header">
     <ul class="list">
-        <!-- SETTINGS -->
         <li>
             <button
                 (click)="onSettingClick('add')"
@@ -45,7 +44,7 @@
             </button>
         </li>
     </ul>
-    <!-- EXPORT IMPORT RELOAD -->
+    
     <div class="dropdown">
         <ul class="list">
             <li>
@@ -71,17 +70,15 @@
                 </button>
             </li>
             <li>
+                <!-- (click)="op.show($event)" -->
                 <button
-                    (click)="op.show($event)"
                     type="button"
                     class="border-btn icon-only-btn"
                 >
                     <i class="pi pi-cog"></i>
 
                 </button>
-
             </li>
-
         </ul>
     </div>
 

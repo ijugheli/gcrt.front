@@ -1546,16 +1546,16 @@ section {
 
 //////////TABLE RELATED///////////////
 
-.p-datatable .p-datatable-tbody>tr>td,
-.p-treetable .p-treetable-tbody>tr>td {
+.p-datatable .p-datatable-tbody > tr > td,
+.p-treetable .p-treetable-tbody > tr > td {
     font-size: 12px !important;
     padding: 4px !important;
     text-align: center !important;
     vertical-align: middle !important;
 }
 
-.p-datatable .p-datatable-tbody>tr>td,
-.p-treetable .p-treetable-tbody>tr>td {
+.p-datatable .p-datatable-tbody > tr > td,
+.p-treetable .p-treetable-tbody > tr > td {
     font-size: 12px !important;
     padding: 4px !important;
     text-align: left !important;
@@ -1580,14 +1580,28 @@ section {
     transition: background-color 150ms linear;
 }
 
-.p-datatable.p-datatable-sm .p-datatable-thead>tr>th,
-.p-treetable.p-treetable-sm .p-treetable-thead>tr>th {
+.p-datatable.p-datatable-sm .p-datatable-thead tr th,
+.p-treetable.p-treetable-sm .p-treetable-thead tr th {
     padding: 5px 10px !important;
     font-size: 12px !important;
     text-align: left !important;
     position: relative !important;
 }
 
+.p-datatable-gridlines .p-datatable-thead  tr  th {
+    border-width: 1px 1px 1px 1px !important;
+    
+}
+.p-datatable .p-datatable-thead  tr  th {
+    text-align: left;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    border-width: 0 0 1px 0;
+    font-weight: 600;
+    color: #495057;
+    background: #f8f9fa;
+    transition: box-shadow 0.2s;
+}
 
 
 

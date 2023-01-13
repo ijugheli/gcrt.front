@@ -25,6 +25,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import {ContextMenuModule } from 'primeng/primeng';
 import { InputTextModule } from 'primeng/inputtext';
 import {InplaceModule} from 'primeng/inplace';
+import { TableDisplayComponent } from './table-display/table-display.component';
+import { TableHeaderComponent } from './table-header/table-header.component';
+import { TableSettingsComponent } from './table-settings/table-settings.component';
+import { TableFiltersComponent } from './table-filters/table-filters.component';
 
 @NgModule({
   imports: [
@@ -53,6 +57,6 @@ import {InplaceModule} from 'primeng/inplace';
   ],
   providers: [ConfirmationService],
   exports: [DataTableComponent],
-  declarations: [DataTableComponent],
+  declarations: [DataTableComponent, TableFiltersComponent, TableDisplayComponent, TableSettingsComponent, TableHeaderComponent],
 })
 export class DataTableModule { }

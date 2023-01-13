@@ -16,6 +16,8 @@ import { ATTR_TYPES } from '../../app/app.config';
 
 import { TreeNode } from 'primeng/api';
 import { Router } from '@angular/router';
+import { RecordsService } from '../../services/attributes/Records.service';
+import { MAttribute } from 'src/services/attributes/models/attribute.model';
 
 
 @Component({
@@ -88,7 +90,8 @@ export class DataTableComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private filterService: FilterService,
     private messageService: MessageService,
-    private attrsService: AttributesService,
+    private attributes: AttributesService,
+    private records: RecordsService,
     private router: Router,
     public dialogService: DialogService,
     private spinner: NgxSpinnerService) {
@@ -101,16 +104,22 @@ export class DataTableComponent implements OnInit {
     this.load();
   }
 
+  public attr?: MAttribute;
+
+
   private load() {
     this.showLoader();
     if (this.valueID != null) {
-      this.attrsService
+      this.attributes
         .related(this.attrID, this.valueID)
         .subscribe((d) => this.receiveResponse(d));
       return;
     }
 
-    this.attrsService
+    this.attr = this.attributes.get(this.attrID);
+    // let records = this.records.get(this.attrID);
+
+    this.attributes
       .full(this.attrID)
       .subscribe((d) => this.receiveResponse(d));
   }
@@ -190,7 +199,7 @@ export class DataTableComponent implements OnInit {
     }
 
     this.loading = true;
-    this.attrsService.treeNodes(this.attrID, node.data.value_id).subscribe((items) => {
+    this.attributes.treeNodes(this.attrID, node.data.value_id).subscribe((items) => {
       node.children = this.parseTree(items);
       this.tree = [...this.tree];
       this.loading = false;
@@ -476,7 +485,7 @@ export class DataTableComponent implements OnInit {
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერების წაშლა?',
       accept: () => {
-        this.attrsService.delete(this.attrID, JSON.stringify(valueIDs)).subscribe((d) => {
+        this.attributes.delete(this.attrID, JSON.stringify(valueIDs)).subscribe((d) => {
           this.messageService.add({ severity: 'success', summary: 'შერჩეული ჩანაწერების წაშლა წარმატებით დასრულდა' });
           this.load();
         });
@@ -498,7 +507,7 @@ export class DataTableComponent implements OnInit {
     };
 
     this.spinner.show();
-    this.attrsService.editValueItem(data).subscribe((response) => {
+    this.attributes.editValueItem(data).subscribe((response) => {
       this.messageService.add({ severity: 'success', summary: 'მნიშვნელობა წარმატებით შეიცვალა.' });
       this.spinner.hide();
     }, (err) => {
@@ -522,9 +531,9 @@ export class DataTableComponent implements OnInit {
   }
 
   public updateTitle() {
-    this.attrsService.setTitle(this.attrID, { title: this.title }).subscribe((response) => { 
+    this.attributes.setTitle(this.attrID, { title: this.title }).subscribe((response) => {
       this.messageService.add({ severity: 'success', summary: 'მნიშვნელობა წარმატებით შეიცვალა.' });
-    }, (error) => { 
+    }, (error) => {
       this.messageService.add({ severity: 'warning', summary: 'მნიშვნელობა ვერ შეიცვალა. სცადეთ თავიდან.' });
     });
   }

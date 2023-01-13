@@ -44,7 +44,6 @@ import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module'
     TableModule,
     ConfirmDialogModule,
     ManageUserModule,
-
     AppRoutingModule,
   ],
   providers: [ConfirmationService, AuthGuardService, AuthService],

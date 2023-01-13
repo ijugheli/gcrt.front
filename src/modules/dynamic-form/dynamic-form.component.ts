@@ -9,6 +9,7 @@ import { DATA_TYPE_ID } from '../../app/app.config';
 import { MProperty } from '../../services/attributes/models/property.model';
 import { FormService } from '../../services/form.service';
 import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
+import { RecordsService } from '../../services/attributes/Records.service';
 
 
 @Component({
@@ -43,7 +44,8 @@ export class DynamicFormComponent implements OnInit {
   public properties: MProperty[] = [];
 
   constructor(
-    private attrsService: AttributesService,
+    private attributes: AttributesService,
+    private records: RecordsService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private spinner: NgxSpinnerService,
@@ -79,7 +81,7 @@ export class DynamicFormComponent implements OnInit {
 
     //For editing provided value.
     if (this.valueID != null) {
-      this.attrsService.attributeWithValue(this.attrID, this.valueID)
+      this.attributes.attributeWithValue(this.attrID, this.valueID)
         .subscribe((data: any) => {
           this.initializeAttribute(data);
           if (data.values) this.setInitialValues(data.values);
@@ -98,7 +100,7 @@ export class DynamicFormComponent implements OnInit {
 
 
     /////////BODY//////////////
-    let attribute = this.attrsService.find(this.attrID);
+    let attribute = this.attributes.find(this.attrID);
     if (attribute == null) return;
 
     this.properties = attribute.properties;
@@ -244,13 +246,25 @@ export class DynamicFormComponent implements OnInit {
     //   return;
     // }
 
+    // this.attributes
+    //   .addValueCollection(this.attrID, object)
+    //   .subscribe((data) => {
+    //     this.spinner.hide();
+    //     this.ref.close();
+    //   });
+
     this.spinner.show();
-    this.attrsService
-      .addValueCollection(this.attrID, object)
-      .subscribe((data) => {
-        this.spinner.hide();
-        this.ref.close();
-      });
+    this.records.add(this.attrID, object, (response? : any) => {
+      console.log('Called Caller');
+    });
+    this.spinner.hide();
+    // this.records
+    //   .add(this.attrID, object)
+    //   .subscribe((data) => {
+    //     this.spinner.hide();
+    //     this.ref.close();
+    //   });
+
   }
 
   private validate(): boolean {

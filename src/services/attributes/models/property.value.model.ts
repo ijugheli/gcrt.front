@@ -1,4 +1,4 @@
-import { DATA_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config";
+
 import { IPropertyValue } from "../interfaces/property.value.interface";
 import { MOption } from "./option.model";
 import { MProperty } from './property.model';
@@ -25,7 +25,6 @@ export class MPropertyValue {
     public original!: IPropertyValue;
 
     public property?: MProperty;
-
 
     public constructor(value?: IPropertyValue) {
         if (value == null) {
@@ -87,10 +86,6 @@ export class MPropertyValue {
             return propertyValue;
         }
 
-        console.log('Transforming Property');
-        console.log(property);
-        console.log('Transforming Property');
-
         if (property.isCheckbox() && property.isBoolean()) {
             propertyValue.value_boolean = value;
 
@@ -143,6 +138,7 @@ export class MPropertyValue {
 
         return tree;
     }
+    
 
 
 

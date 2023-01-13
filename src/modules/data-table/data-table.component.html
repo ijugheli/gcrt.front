@@ -4,11 +4,13 @@
 ></p-confirmDialog>
 <p-toast></p-toast>
 
+<!-- ATTRIBUTE TITLE BLOCK -->
 <div
     class="surface-section heading-section"
     *ngIf="attribute != null"
 >
     <div class="border-bottom-1 surface-border">
+
         <div class="text-3xl font-medium align-items-center">
 
             <p-inplace
@@ -46,6 +48,8 @@
         </div>
     </div>
 </div>
+<!-- ATTRIBUTE TITLE BLOCK -->
+<!-- SETTINGS OVERLAY BLOCK -->
 <p-overlayPanel
     #op
     [dismissable]="true"
@@ -102,6 +106,7 @@
         </div>
     </ng-template>
 </p-overlayPanel>
+<!-- SETTINGS OVERLAY BLOCK -->
 
 <div class="table-container">
     <ng-container>
@@ -279,7 +284,8 @@
     </ng-container>
 
     <ng-container *ngIf="!isTree">
-        <p-table
+        <datatable-table-display [attribute]="attr"></datatable-table-display>
+        <!-- <p-table`
             sortMode="single"
             [value]="rows"
             dataKey="id"
@@ -297,7 +303,7 @@
             <ng-template pTemplate="caption">
                 <div class="header">
                     <ul class="list">
-                        <!-- SETTINGS -->
+
                         <li>
                             <button
                                 (click)="onSettingClick('add')"
@@ -342,7 +348,7 @@
                             </button>
                         </li>
                     </ul>
-                    <!-- EXPORT IMPORT RELOAD -->
+
                     <div class="dropdown">
                         <ul class="list">
                             <li>
@@ -384,7 +390,7 @@
             </ng-template>
 
             <ng-template pTemplate="header">
-                <!-- HEADER -->
+
                 <tr *ngIf="tableSettings['header']">
 
                     <ng-container *ngIf="tableSettings['multi']">
@@ -412,7 +418,7 @@
                     </ng-container>
 
                 </tr>
-                <!-- FILTERS -->
+
                 <tr *ngIf="tableSettings['filter']">
 
                     <ng-container *ngIf="tableSettings['multi']">
@@ -425,7 +431,7 @@
                         class="head-item"
                         *ngFor="let property of properties"
                     >
-                        <!-- Sting Filter -->
+
                         <ng-container *ngIf="property.hasStringFilter()">
                             <p-columnFilter
                                 [matchModeOptions]="filterOptions['string']"
@@ -439,7 +445,7 @@
                                 field="{{ property.id }}"
                             ></p-columnFilter>
                         </ng-container>
-                        <!-- Date Filter -->
+
                         <ng-container *ngIf="property.hasDateFilter()">
                             <p-columnFilter
                                 [matchModeOptions]="filterOptions['date']"
@@ -453,7 +459,7 @@
                                 field="{{ property.id }}"
                             ></p-columnFilter>
                         </ng-container>
-                        <!-- Select Filter -->
+
                         <ng-container *ngIf="property.hasSelectFilter()">
                             <p-columnFilter
                                 field="{{property.id}}"
@@ -539,6 +545,6 @@
                     </td>
                 </tr>
             </ng-template>
-        </p-table>
+        </p-table> -->
     </ng-container>
 </div>

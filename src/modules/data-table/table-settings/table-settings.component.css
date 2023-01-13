@@ -1,0 +1,64 @@
+
+.head-item {
+    font-family: roman !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    font-size: 14px !important;
+    width: auto !important;
+}
+
+li button {
+    font-family: roman;
+}
+
+.border-btn.disabled {
+    background-color: #80808033;
+    border: 1px solid #80808033;
+    cursor: auto;
+}
+
+
+.row-item tr td button {
+    margin: 0px 5px 0px 5px;
+}
+
+.table-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+.p-table {
+    min-height: 500px;
+}
+
+.tag-item {
+    margin: 5px 0px !important;
+}
+
+
+.row-item {
+    padding: 4px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.p-tag-item {
+    background: black !important;
+    color: #ffffff;
+    font-size: 11px !important;
+    font-weight: 700;
+    padding: 0.25rem 0.4rem;
+    border-radius: 3px;
+}
+
+.icon-only-btn i{
+    margin:0px !important;
+}
+
+.p-togglebutton.p-button.p-highlight {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: #ffffff;
+}
+

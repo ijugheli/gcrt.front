@@ -4,8 +4,9 @@ import { MPropertyValue } from './property.value.model';
 import { MAttributeSection } from './section.model';
 import { MAttributeTab } from './tab.model';
 import { IPropertyValue } from '../interfaces/property.value.interface';
-import { MValue } from './value.model';
+import { MRecord } from './record.model';
 import { MOption } from './option.model';
+import { ATTR_TYPE_ID } from '../../../app/app.config';
 
 
 export class MAttribute {
@@ -18,12 +19,13 @@ export class MAttribute {
     public title: string | null = null;
     public children: MAttribute[] = [];
     public properties: MProperty[] = [];
+    public columns : MProperty[] = []; //Filtered and ordered properties
     public tabs: MAttributeTab[] = [];
     public sections: MAttributeSection[] = [];
     public values: MPropertyValue[] = [];
-    public rows: Map<number, MValue> = new Map();
+    public rows: Map<number, MRecord> = new Map();
 
-    public options : MOption[] = [];
+    public options: MOption[] = [];
 
     public constructor(o: IAttribute) {
         this.id = o.id;
@@ -38,13 +40,19 @@ export class MAttribute {
                 (item: IPropertyValue) => new MPropertyValue(item)
             ));
         }
+
+        if (o.options && o.options.length > 0) {
+            this.withOptions(o.options.map(
+                (item: IPropertyValue) => new MPropertyValue(item)
+            ));
+        }
     }
 
     public withValues(values: MPropertyValue[]) {
         this.values = values;
         this.values.forEach((value) => {
             if (!this.rows.has(value.value_id)) {
-                this.rows.set(value.value_id, new MValue(value));
+                this.rows.set(value.value_id, (new MRecord()).append(value));
             }
 
             this.rows.get(value.value_id)?.append(value);
@@ -55,7 +63,7 @@ export class MAttribute {
 
 
     public withOptions(values: MPropertyValue[]) {
-        this.options = this.values.map((value : MPropertyValue) => new MOption(value));
+        this.options = values.map((value: MPropertyValue) => new MOption(value));
     }
 
     public extractProps(o: IAttribute) {
@@ -68,6 +76,10 @@ export class MAttribute {
 
     public withProps(properties: MProperty[]) {
         this.properties = properties;
+    }
+
+    public withColumns(columns : MProperty[]) {
+        this.columns = columns;
     }
 
     public appendChild(attibute: MAttribute) {
@@ -100,6 +112,10 @@ export class MAttribute {
 
     public hasValues() {
         return this.values.length > 0;
+    }
+
+    public isEntity() {
+        return this.type === ATTR_TYPE_ID('entity')
     }
 
 }

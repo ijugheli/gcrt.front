@@ -1,0 +1,73 @@
+<ng-container *ngIf="table.settings['multi']">
+    <th style="width: 3rem; text-align:left !important; padding:5px !important">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+    </th>
+</ng-container>
+
+<th
+    class="head-item"
+    *ngFor="let property of attribute?.columns"
+>
+    <!-- Sting Filter -->
+    <ng-container *ngIf="property.hasStringFilter()">
+        <p-columnFilter
+            [matchModeOptions]="table.filterOptions['string']"
+            class="p-inputtext-sm"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false"
+            type="text"
+            display="row"
+            [showClearButton]="false"
+            field="{{ property.id }}"
+        ></p-columnFilter>
+    </ng-container>
+    <!-- Date Filter -->
+    <ng-container *ngIf="property.hasDateFilter()">
+        <p-columnFilter
+            [matchModeOptions]="table.filterOptions.filterOptions['date']"
+            matchMode="custom-dateIs"
+            [showClearButton]="false"
+            [showOperator]="false"
+            [showAddButton]="false"
+            placeholder="აირჩიეთ თარიღი"
+            display="menu"
+            type="date"
+            field="{{ property.id }}"
+        ></p-columnFilter>
+    </ng-container>
+    <!-- Select Filter -->
+    <ng-container *ngIf="property.hasSelectFilter()">
+        <p-columnFilter
+            field="{{property.id}}"
+            matchMode="in"
+            [showClearButton]="false"
+            [showMenu]="false"
+        >
+            <ng-template pTemplate="group">
+                <p-multiSelect
+                    [(ngModel)]="selected"
+                    (onChange)="onSelectChange(property)"
+                    [options]="property.source.options"
+                    optionLabel="name"
+                    appendTo="body"
+                    [filter]="false"
+                    [filterBy]="property.id.toString()"
+                    [showToggleAll]="false"
+                    [showHeader]="false"
+                    [maxSelectedLabels]="1"
+                    [selectedItemsLabel]="'{0} მნიშვნელობა'"
+                >
+                    <ng-template
+                        let-option
+                        pTemplate="item"
+                    >
+                        <div class="p-multiselect-option">
+                            <span class="ml-1">{{ option.name }}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+            </ng-template>
+        </p-columnFilter>
+    </ng-container>
+</th>

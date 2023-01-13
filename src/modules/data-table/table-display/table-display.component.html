@@ -1,0 +1,91 @@
+<ng-container *ngIf="rows">
+    <p-table
+        sortMode="single"
+        [value]="rows"
+        dataKey="id"
+        styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+        [paginator]="true"
+        [rows]="10"
+        currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [showCurrentPageReport]="true"
+        responsiveLayout="scroll"
+        [(selection)]="selected"
+        (onRowSelect)="onRowSelect($event)"
+        (onRowUnselect)="onRowUnselect($event)"
+    >
+        <ng-template
+            pTemplate="caption"
+            *ngIf="attribute"
+        >
+            <datatable-header [attribute]="attribute"></datatable-header>
+        </ng-template>
+
+        <ng-template
+            pTemplate="header"
+            *ngIf="attribute"
+        >
+            <tr
+                *ngIf="table.settings['header']"
+                [attribute]="attribute"
+                datatable-captions
+            ></tr>
+
+            <tr
+                *ngIf="table.settings['filter']"
+                [attribute]="attribute"
+                datatable-filters
+            ></tr>
+        </ng-template>
+
+        <ng-template
+            pTemplate="body"
+            let-row
+        >
+            <tr>
+                <ng-container *ngIf="table.settings">
+                    <td>
+                        <p-tableCheckbox [value]="row"></p-tableCheckbox>
+                    </td>
+                </ng-container>
+                <td
+                    class="row-item"
+                    *ngFor="let property of attribute?.columns"
+                >
+                    <ng-container *ngIf="property.isDate()">
+                        {{row[property.id] |  date:'d/M/yy H:mm' }}
+                    </ng-container>
+                    <ng-container *ngIf="property.isBoolean()">
+                        <ng-container *ngIf="row[property.id] == 0">
+                            <i
+                                class="pi pi-check-square"
+                                style="color:#689f38; font-size:1.3rem"
+                            ></i>
+                        </ng-container>
+                        <ng-container *ngIf="row[property.id] == 1">
+                            <i
+                                class="pi pi-times-circle"
+                                style="color:#ff0c00a6; font-size:1.3rem"
+                            ></i>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="property.isNumber()">{{row[property.id]}}</ng-container>
+                    <ng-container *ngIf="property.isString() && !property.isSelect() && !property.isMultiselect()">{{row[property.id]}}</ng-container>
+                    <ng-container *ngIf="property.isSelect() || property.isMultiselect()">
+                        <ng-container *ngFor="let tag of row[property.id]">
+                            <div class="tag-item">
+                                <p-tag
+                                    value="{{tag}}"
+                                    styleClass="p-tag-item"
+                                    class="p-tag-rounded"
+                                    severity="success"
+                                ></p-tag>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</ng-container>

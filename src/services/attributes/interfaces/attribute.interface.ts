@@ -12,4 +12,5 @@ export interface IAttribute {
     title: string;
     properties: IProperty[];
     values: IPropertyValue[];
+    options : IPropertyValue[];
 }
