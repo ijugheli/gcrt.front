@@ -120,6 +120,12 @@ export class AttributesService extends GuardedService {
         return this.properties.get(propertyID);
     }
 
+    public asList(): MAttribute[] {
+        return Array.from(this.attributes.values());
+    }
+
+
+
 
 
 
