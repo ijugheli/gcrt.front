@@ -11,6 +11,7 @@ import { UsersComponent } from '../pages/users/users.component';
 import { ChangePasswordComponent } from '../pages/change-password/change-password.component';
 import { ManageUserComponent } from 'src/pages/manage-user/manage-user.component';
 import { AttributeFormComponent } from '../pages/attribute-form/attribute-form.component';
+import { AttributesStructureComponent } from '../pages/attributes-structure/attributes-structure.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -19,6 +20,11 @@ const routes: Routes = [
   {
     path: 'manage/:attr_id',
     component: AttributePageComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'structure/:attr_id',
+    component: AttributesStructureComponent,
     canActivate: [AuthGuard]
   },
   {

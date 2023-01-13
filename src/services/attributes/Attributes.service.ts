@@ -85,6 +85,9 @@ export class AttributesService extends GuardedService {
         this.appendTabs();
         this.appendValues();
         this.appendSources();
+        console.log('Initial Attributes');
+        console.log(this.attributes);
+        console.log('Initial Attributes');
         console.log(this.values);
     }
 
