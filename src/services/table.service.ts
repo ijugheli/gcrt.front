@@ -13,6 +13,7 @@ import { DynamicFormComponent } from 'src/modules/dynamic-form/dynamic-form.comp
 import autoTable, { RowInput } from 'jspdf-autotable';
 import * as FileSaver from 'file-saver';
 import { IActionItem } from 'src/app/app.interfaces';
+import { FormService } from './form.service';
 
 @Injectable({
   providedIn: 'any',
@@ -44,6 +45,7 @@ export class DataTableService {
     private dialog: DialogService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
+    private form: FormService,
   ) {
     this.initializeFilterOptions();
   }
@@ -104,6 +106,17 @@ export class DataTableService {
     this.records = [...this.originalRecords];
   }
 
+  private reload() {
+    this.form.clear();
+    this.loadRecords();
+  }
+
+
+  public refresh() {
+    window.location.reload();
+  }
+
+
 
   public onAddRecord() {
     if (this.attribute?.isEntity()) {
@@ -138,17 +151,19 @@ export class DataTableService {
     });
 
     dialogReference.onClose.subscribe((d: any) => {
-      //Nothing to do?
-      // this.load();
+      this.reload();
     });
   }
 
   public onEditRecord() {
-    if (!this.selected || this.selected.length > 1) {
+    if (!this.selected || this.selected.length > 1 || this.selected.length <= 0) {
       return;
     }
 
-    let valueID = this.selected[0]['valueID'];
+    let record: MRecord = this.selected[0];
+    let valueID = record.valueID;
+
+    this.form.withRecord(record);
 
     if (this.attribute?.isEntity()) {
       this.router.navigateByUrl('/edit/' + this.attribute.id + '/' + valueID);
@@ -170,8 +185,8 @@ export class DataTableService {
     });
 
     dialogReference.onClose.subscribe((d: any) => {
-      //Nothing to do?
-      // this.load();
+      this.selected = [];
+      this.reload();
     });
   }
 
@@ -331,10 +346,6 @@ export class DataTableService {
 
 
 
-
-  public reload() {
-    window.location.reload();
-  }
 
 
 

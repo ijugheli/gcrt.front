@@ -13,7 +13,6 @@ import { DataTableService } from 'src/services/table.service';
 export class TableDisplayComponent implements OnInit {
   @Input('attribute') public attribute?: MAttribute;
 
-  public list: MRecord[] = [];
   constructor(
     public table: DataTableService,
   ) {

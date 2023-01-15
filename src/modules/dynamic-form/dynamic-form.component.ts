@@ -43,6 +43,9 @@ export class DynamicFormComponent implements OnInit {
 
   public properties: MProperty[] = [];
 
+
+  public mode = 'add';
+
   constructor(
     private attributes: AttributesService,
     private records: RecordsService,
@@ -69,26 +72,51 @@ export class DynamicFormComponent implements OnInit {
     //Related value ID for sub entities
     this.relatedValueID = this.config.data?.relatedValueID;
     //if we are in editing mode we should have initial values provided
-    this.initialValuesProvided = this.valueID != null;
+    // this.initialValuesProvided = this.valueID != null;
+    this.initialValuesProvided = this.form.record != null && this.form.record != undefined;
 
     this.load();
   }
 
   private load() {
 
+    /////////BODY//////////////
+    let attribute = this.attributes.find(this.attrID);
+    if (attribute == null) return;
+
+    this.properties = attribute.properties;
+    this.sections = attribute.sections;
+
+    /////////BODY//////////////
+
+    if (this.form.record) {
+      this.mode = 'edit';
+      for (let propID in this.form.record.propValueMap) {
+        let propertyID = parseInt(propID);
+        const simpleValue = this.form.record.formValueMap[propertyID];
+        const value = this.form.record.map.get(propertyID);
+        if (!value || !simpleValue) continue;
+
+        this.initialValues[propertyID] = simpleValue;
+        this.values.set(propertyID, value);
+      }
+    } else {
+      this.initValues();
+    }
+
 
     // this.spinner.show();
 
     //For editing provided value.
-    if (this.valueID != null) {
-      this.attributes.attributeWithValue(this.attrID, this.valueID)
-        .subscribe((data: any) => {
-          this.initializeAttribute(data);
-          if (data.values) this.setInitialValues(data.values);
-          this.spinner.hide();
-        });
-      return;
-    }
+    // if (this.valueID != null) {
+    //   this.attributes.attributeWithValue(this.attrID, this.valueID)
+    //     .subscribe((data: any) => {
+    //       this.initializeAttribute(data);
+    //       if (data.values) this.setInitialValues(data.values);
+    //       this.spinner.hide();
+    //     });
+    //   return;
+    // }
 
     // this.spinner.hide();
     // console.log(attribute. );
@@ -99,24 +127,17 @@ export class DynamicFormComponent implements OnInit {
     //   });
 
 
-    /////////BODY//////////////
-    let attribute = this.attributes.find(this.attrID);
-    if (attribute == null) return;
 
-    this.properties = attribute.properties;
-    this.sections = attribute.sections;
-    this.initValues();
-    /////////BODY//////////////
 
 
   }
 
-  private initializeAttribute(data: any) {
-    this.properties = data.properties;
-    // if (data.properties) this.initValues(data.properties);
-    if (data.children) this.initChildren(data.children);
-    if (data.properties) this.parseProperties(data.properties);
-  }
+  // private initializeAttribute(data: any) {
+  //   this.properties = data.properties;
+  //   // if (data.properties) this.initValues(data.properties);
+  //   if (data.children) this.initChildren(data.children);
+  //   if (data.properties) this.parseProperties(data.properties);
+  // }
 
   private initChildren(children: any[]) {
     this.children = children;
@@ -137,53 +158,57 @@ export class DynamicFormComponent implements OnInit {
     });
   }
 
-  private setInitialValues(values: any) {
-    for (let propertyID in values) {
-      this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
-    }
-  }
+  // private setInitialValues(values: any) {
+  // for (let propertyID in values) {
+  //   this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
+  // }
+  // }
 
-  private parseProperties(properties: any[]) {
-    this.sections = properties
-      .sort((a, b) => a.order_id > b.order_id ? 1 : -1)
-      .filter((i) => i.type == 2);
+  // private parseProperties(properties: any[]) {
+  //   this.sections = properties
+  //     .sort((a, b) => a.order_id > b.order_id ? 1 : -1)
+  //     .filter((i) => i.type == 2);
 
-    if (this.sections.length <= 0) {
-      this.sections = [
-        {
-          'properties': properties.sort((a, b) => a.order_id > b.order_id ? 1 : -1),
-          'title': 'მახასიათებლები',
-        },
-      ];
-      return;
+  //   if (this.sections.length <= 0) {
+  //     this.sections = [
+  //       {
+  //         'properties': properties.sort((a, b) => a.order_id > b.order_id ? 1 : -1),
+  //         'title': 'მახასიათებლები',
+  //       },
+  //     ];
+  //     return;
 
-    }
-    this.sections = this.sections.map((section) => {
-      section['properties'] = properties
-        .filter((j) => j.p_id == section.id)
-        .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
-      //Adds input if there is no subs
-      if (section['properties'].length == 0) {
-        section['properties'] = [section];
-      }
-      return section;
-    });
+  //   }
+  //   this.sections = this.sections.map((section) => {
+  //     section['properties'] = properties
+  //       .filter((j) => j.p_id == section.id)
+  //       .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
+  //     //Adds input if there is no subs
+  //     if (section['properties'].length == 0) {
+  //       section['properties'] = [section];
+  //     }
+  //     return section;
+  //   });
 
-    // if(this.sections.length)
-  }
+  //   // if(this.sections.length)
+  // }
 
   ////////////////////////////////////Form Related////////////////////////////////////
   public onValueUpdate(propertyID: number, e: MPropertyValue | null) {
     this.validation = false;
-    console.log('Provided Value is');
+    console.log('-------------------------Value Updated---------------------------');
     console.log(propertyID);
     console.log(e);
-    console.log('Provided Value is');
+    console.log(this.values);
+    console.log(this.values.has(propertyID));
+    console.log('-------------------------Value Updated---------------------------');
+
     if (!propertyID || !this.values.has(propertyID)) {
       return;
     }
 
     this.values.set(propertyID, e);
+    console.log(this.values);
   }
 
   private applyField(field: any) {
@@ -217,10 +242,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
 
-  public onSubmit() {
-    console.log('Submitted Values are');
-    console.log(this.values);
-    console.log('Submitted Values are');
+  public async onSubmit() {
     this.form.enableValidation();
     if (!this.validate()) {
       return;
@@ -231,7 +253,26 @@ export class DynamicFormComponent implements OnInit {
     const object = Array.from(this.values.entries());
 
 
-    console.log(object);
+    if (this.mode == 'edit' && this.form.record) {
+      this.spinner.show();
+      await this.records.edit(this.attrID, this.form.record.valueID, object, () => {
+        console.log('Edited');
+        this.ref.close();
+        this.spinner.hide();
+      });
+      return;
+    }
+
+    this.spinner.show();
+    await this.records.add(this.attrID, object, (response?: any) => {
+      this.ref.close();
+      this.spinner.hide();
+    });
+
+
+
+
+
     // return;
 
     // if (this.valueID != null) {
@@ -253,11 +294,7 @@ export class DynamicFormComponent implements OnInit {
     //     this.ref.close();
     //   });
 
-    this.spinner.show();
-    this.records.add(this.attrID, object, (response? : any) => {
-      console.log('Called Caller');
-    });
-    this.spinner.hide();
+
     // this.records
     //   .add(this.attrID, object)
     //   .subscribe((data) => {

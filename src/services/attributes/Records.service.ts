@@ -66,18 +66,30 @@ export class RecordsService extends GuardedService {
     }
 
     private save(response: any) {
+        console.log("Trying To save", response);
         if (!response || !response.hasOwnProperty('record') || !response.record) {
             return;
         }
 
-        const record: MRecord = (new MRecord()).append(response.record as MPropertyValue[]);
+        const record: MRecord = (new MRecord()).append(this.generateRecord(response.record));
 
         this.records.set(record.valueID, record);
 
         return this;
     }
 
+    private generateRecord(record: IPropertyValue[]) {
+        return record.map((value: IPropertyValue) => {
+            const propValue = new MPropertyValue(value);
+            const prop = this.attributes.property(propValue.property_id)
+            if (prop) propValue.setProperty(prop);
+            return propValue;
+        });
+    }
 
+    // public set(recordID : number, values : MPropertyValue[]) {
+    //     this.save();
+    // }
 
     public async get(attrID: number, func?: Function) {
         const records: MRecord[] = [];
@@ -91,8 +103,8 @@ export class RecordsService extends GuardedService {
                 console.log('Records for ' + attrID + '-----');
 
                 for (let record of response.data as IRecord[]) {
-                    const valueModels = (record.values as IPropertyValue[]).map((value: IPropertyValue) => new MPropertyValue(value));
-                    const recordModel = (new MRecord(record.valueID, record.attrID)).append(valueModels);
+                    const generated = this.generateRecord(record.values as IPropertyValue[]);
+                    const recordModel = (new MRecord(record.valueID, record.attrID)).append(generated);
                     records.push(recordModel);
                 }
 

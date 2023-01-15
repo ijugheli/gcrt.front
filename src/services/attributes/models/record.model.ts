@@ -1,4 +1,5 @@
 import { MAttribute } from "./attribute.model";
+import { MOption } from "./option.model";
 import { MPropertyValue } from './property.value.model';
 
 export class MRecord {
@@ -8,7 +9,8 @@ export class MRecord {
     public attribute!: MAttribute;
     public values!: MPropertyValue[];
     public map: Map<number, MPropertyValue> = new Map();
-    public propValueMap: {[index:number]:string|string[]} = {};
+    public propValueMap: { [index: number]: string | string[] } = {};
+    public formValueMap: { [index: number]: any } = {};
 
     constructor(valueID?: number, attrID?: number) {
         if (valueID) this.valueID = valueID;
@@ -42,6 +44,7 @@ export class MRecord {
             this.attrID = value.attr_id;
 
         this.generatePropValueMap();
+        this.generateFormValueMap();
 
         return this;
     }
@@ -51,6 +54,52 @@ export class MRecord {
             this.propValueMap[k] = v.value;
         });
     }
+
+    private generateFormValueMap() {
+        this.map.forEach((v, k) => {
+            this.formValueMap[k] = this.loadInitialValue(v);
+        });
+    }
+
+    private loadInitialValue(propertyValue: MPropertyValue) {
+        if (propertyValue.value == null) {
+            return undefined;
+        }
+
+        // if (this.isTree()) {
+        //   this.selected = JSON.parse(this.initialValue);
+        //   this.onUpdate(this.selected);
+        //   return;
+        // }
+
+
+        if (propertyValue.property?.isSelect() || propertyValue.property?.isMultiselect()) {
+            let selected = JSON.parse(propertyValue.value_json as string);
+            selected = propertyValue.property.isMultiselect()
+                ? Array.from(selected) as MOption[]
+                : selected as MOption;
+
+            return selected;
+        }
+
+        if (propertyValue.property?.isDate()) {
+            return new Date(propertyValue.value);
+        }
+
+        if (propertyValue.property?.isBoolean()) {
+            return propertyValue.value != null && propertyValue.value == 1 ? true : false;
+            return;
+        }
+
+        return propertyValue.value;
+
+    }
+
+
+
+
+
+
 
     public getTitle() {
         let value = this.values.find((item: MPropertyValue) => item.property?.is_primary);

@@ -17,8 +17,9 @@ import { FormService } from 'src/services/form.service';
 export class SelectInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
+  @Input('selected') public selected?: MOption[];
 
-  public selected: MOption | null = null;
+  // public selected: MOption | null = null;
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
   public options: any[] = [];
@@ -27,8 +28,10 @@ export class SelectInputComponent implements OnInit {
 
   }
 
-
   ngOnInit() {
+    console.log('Generated Select input');
+    console.log(this.selected);
+
     if (!this.property || this.property == null) {
       return;
     }
@@ -46,6 +49,7 @@ export class SelectInputComponent implements OnInit {
 
 
   public onUpdate() {
+    console.log(this.selected);
     if (!this.valid()) {
       this.onChange.emit(null);
       return;

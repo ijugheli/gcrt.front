@@ -1,22 +1,23 @@
 <ng-container *ngIf="initialized">
-  <div class="p-inputgroup">
-      <span
-          class="p-inputgroup-addon"
-          *ngIf="property.is_mandatory"
-      >
-          <i class="pi pi-exclamation-triangle"></i>
-      </span>
-      <span class="p-inputgroup-addon">
-          <i class="pi pi-list"></i>
-      </span>
-      <p-multiSelect
-          [options]="property.source.options"
-          [(ngModel)]="selected"
-          [class.ng-invalid]="!valid()"
-          [class.ng-dirty]="!valid()"
-          (ngModelChange)="onUpdate()"
-          optionLabel="name"
-          [style]="{'width':'400px', 'height' : '100%'}"
-      ></p-multiSelect>
-  </div>
+    <div class="p-inputgroup">
+        <span
+            class="p-inputgroup-addon"
+            *ngIf="property.is_mandatory"
+        >
+            <i class="pi pi-exclamation-triangle"></i>
+        </span>
+        <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+        </span>
+        <p-multiSelect
+            [options]="property.source.options"
+            [(ngModel)]="selected"
+            [class.ng-invalid]="!valid()"
+            [class.ng-dirty]="!valid()"
+            (ngModelChange)="onUpdate()"
+            optionLabel="name"
+            dataKey="id"
+            [style]="{'width':'400px', 'height' : '100%'}"
+        ></p-multiSelect>
+    </div>
 </ng-container>

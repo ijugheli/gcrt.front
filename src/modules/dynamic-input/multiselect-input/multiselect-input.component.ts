@@ -17,8 +17,9 @@ import { MOption } from 'src/services/attributes/models/option.model';
 export class MultiselectInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
+  @Input('selected') public selected: MOption | MOption[] | null = null;
 
-  public selected: MOption | MOption[] | null = null;
+  // public selected: MOption | MOption[] | null = null;
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
   public options: any[] = [];

@@ -85,10 +85,6 @@ export class AttributesService extends GuardedService {
         this.appendTabs();
         this.appendValues();
         this.appendSources();
-        console.log('Initial Attributes');
-        console.log(this.attributes);
-        console.log('Initial Attributes');
-        console.log(this.values);
     }
 
 
@@ -137,9 +133,6 @@ export class AttributesService extends GuardedService {
     }
 
     public related(attrID: number, valueID: number) {
-        console.log('VALUE IS');
-        console.log(valueID);
-        console.log('VALUE IS');
         return this.http.get<Attribute[]>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
     }
 

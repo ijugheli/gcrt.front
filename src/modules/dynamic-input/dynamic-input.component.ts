@@ -29,7 +29,6 @@ export class DynamicInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Input('validation') public validation: boolean = false;
   @Input('initialValue') public initialValue: any;
-  // @Output('onChange') public onChange = new EventEmitter<AttrValue | null>();
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
 
   public viewType: any | null = null;
@@ -49,23 +48,15 @@ export class DynamicInputComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Provided Property in dynamic input is');
-    console.log(this.property);
-    console.log('Provided Property in dynamic input is');
-
     this.initViewType();
     this.initDataType();
     this.parseSource();
-    this.loadInitialValue();
   }
 
 
 
 
   public onUpdate(propertyValue: MPropertyValue |  null) {
-    console.log('Dynamic input received update');
-    console.log(propertyValue);
-    console.log('Dynamic input received update');
     this.onChange.emit(propertyValue);
   }
 
@@ -90,70 +81,70 @@ export class DynamicInputComponent implements OnInit {
   }
 
 
-  private generateValueObject(value: any) {
-    let viewTypeID = this.property.input_view_type;
-    let dataTypeID = this.property.input_data_type;
-    let o = new AttrValue();
-    o.attr_id = this.property.attr_id;
-    o.property_id = this.property.id;
-    o.order_id = this.property.order_id;
-    o.related_value_id = null;
-    // o.RelatedValueID = 123;
+  // private generateValueObject(value: any) {
+  //   let viewTypeID = this.property.input_view_type;
+  //   let dataTypeID = this.property.input_data_type;
+  //   let o = new AttrValue();
+  //   o.attr_id = this.property.attr_id;
+  //   o.property_id = this.property.id;
+  //   o.order_id = this.property.order_id;
+  //   o.related_value_id = null;
+  //   // o.RelatedValueID = 123;
 
 
-    //Value Related
-    o.value_integer = null;
-    o.value_decimal = null;
-    o.value_date = null;
-    o.value_json = null;
-    o.insert_date = null;
-    o.update_date = null;
+  //   //Value Related
+  //   o.value_integer = null;
+  //   o.value_decimal = null;
+  //   o.value_date = null;
+  //   o.value_json = null;
+  //   o.insert_date = null;
+  //   o.update_date = null;
 
 
-    //Normal input related -> string|integer|decimal
-    if (viewTypeID == VIEW_TYPE_ID('input')) {
-      if (dataTypeID == DATA_TYPE_ID('string')) o.value_string = value;
-      if (dataTypeID == DATA_TYPE_ID('int')) o.value_integer = value;
-      if (dataTypeID == DATA_TYPE_ID('double')) o.value_decimal = value;
-    }
-    //Checkbox Related.
-    if (viewTypeID == VIEW_TYPE_ID('checkbox') ||
-      viewTypeID == VIEW_TYPE_ID('toggle')) {
-      if (dataTypeID == DATA_TYPE_ID('boolean')) o.value_boolean = value;
-    }
-    //Dates Related -> date
-    else if (viewTypeID == VIEW_TYPE_ID('datepicker') ||
-      viewTypeID == VIEW_TYPE_ID('datetimepicker')) {
-      if (dataTypeID == DATA_TYPE_ID('date')) o.value_date = value;
-      if (dataTypeID == DATA_TYPE_ID('datetime')) o.value_date = value;
-    }
-    //Textarea related -> text
-    else if (viewTypeID == VIEW_TYPE_ID('textarea') ||
-      viewTypeID == VIEW_TYPE_ID('editable-textarea')) {
-      o.value_text = value;
-    }
-    //Selects Related -> JSON
-    else if (viewTypeID == VIEW_TYPE_ID('select') ||
-      viewTypeID == VIEW_TYPE_ID('multiselect') ||
-      viewTypeID == VIEW_TYPE_ID('tableselect')) {
+  //   //Normal input related -> string|integer|decimal
+  //   if (viewTypeID == VIEW_TYPE_ID('input')) {
+  //     if (dataTypeID == DATA_TYPE_ID('string')) o.value_string = value;
+  //     if (dataTypeID == DATA_TYPE_ID('int')) o.value_integer = value;
+  //     if (dataTypeID == DATA_TYPE_ID('double')) o.value_decimal = value;
+  //   }
+  //   //Checkbox Related.
+  //   if (viewTypeID == VIEW_TYPE_ID('checkbox') ||
+  //     viewTypeID == VIEW_TYPE_ID('toggle')) {
+  //     if (dataTypeID == DATA_TYPE_ID('boolean')) o.value_boolean = value;
+  //   }
+  //   //Dates Related -> date
+  //   else if (viewTypeID == VIEW_TYPE_ID('datepicker') ||
+  //     viewTypeID == VIEW_TYPE_ID('datetimepicker')) {
+  //     if (dataTypeID == DATA_TYPE_ID('date')) o.value_date = value;
+  //     if (dataTypeID == DATA_TYPE_ID('datetime')) o.value_date = value;
+  //   }
+  //   //Textarea related -> text
+  //   else if (viewTypeID == VIEW_TYPE_ID('textarea') ||
+  //     viewTypeID == VIEW_TYPE_ID('editable-textarea')) {
+  //     o.value_text = value;
+  //   }
+  //   //Selects Related -> JSON
+  //   else if (viewTypeID == VIEW_TYPE_ID('select') ||
+  //     viewTypeID == VIEW_TYPE_ID('multiselect') ||
+  //     viewTypeID == VIEW_TYPE_ID('tableselect')) {
 
-      o.value_json = JSON.stringify(value);
-    } else if (viewTypeID == VIEW_TYPE_ID('treeselect')) {
-      const sanitizedJSON = Object.assign({}, value);
+  //     o.value_json = JSON.stringify(value);
+  //   } else if (viewTypeID == VIEW_TYPE_ID('treeselect')) {
+  //     const sanitizedJSON = Object.assign({}, value);
 
-      if (sanitizedJSON.parent) {
-        if (sanitizedJSON.parent.children) {
-          for (let i = 0; i < sanitizedJSON.parent.children.length; i++) {
-            sanitizedJSON.parent.children[i]['parent'] = null;
-          }
-        }
-      }
+  //     if (sanitizedJSON.parent) {
+  //       if (sanitizedJSON.parent.children) {
+  //         for (let i = 0; i < sanitizedJSON.parent.children.length; i++) {
+  //           sanitizedJSON.parent.children[i]['parent'] = null;
+  //         }
+  //       }
+  //     }
 
-      o.value_json = JSON.stringify(sanitizedJSON);
-    }
+  //     o.value_json = JSON.stringify(sanitizedJSON);
+  //   }
 
-    return o;
-  }
+  //   return o;
+  // }
 
   private initViewType() {
     this.viewTypeID = this.property.input_view_type as number;
@@ -223,44 +214,5 @@ export class DynamicInputComponent implements OnInit {
   }
 
 
-  private loadInitialValue() {
-
-
-    if (this.initialValue == null) {
-      return;
-    }
-
-    // if (this.isTree()) {
-    //   this.selected = JSON.parse(this.initialValue);
-    //   this.onUpdate(this.selected);
-    //   return;
-    // }
-
-    // if (this.isSelect()) {
-    //   this.selected = JSON.parse(this.initialValue);
-    //   this.selected = this.viewType == 'multiselect' ? Array.from(this.selected) : this.selected;
-    //   this.onUpdate(this.selected);
-    //   return;
-    // }
-
-    if (this.property.input_data_type == DATA_TYPE_ID('date') ||
-      this.property.input_data_type == DATA_TYPE_ID('datetime')) {
-      this.currentValue = new Date(this.initialValue);
-      this.onUpdate(this.currentValue);
-      return;
-    }
-
-    if (this.property.input_data_type == DATA_TYPE_ID('boolean')) {
-      this.currentValue = this.initialValue != null && this.initialValue == 1 ? true : false;
-      this.onUpdate(this.currentValue);
-      return;
-    }
-
-    this.currentValue = this.initialValue;
-
-    this.onUpdate(this.currentValue);
-
-    return;
-  }
 
 }

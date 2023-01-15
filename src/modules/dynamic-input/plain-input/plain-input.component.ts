@@ -13,13 +13,13 @@ import { EditorModule } from 'primeng/editor';
   selector: 'plain-input',
   templateUrl: './plain-input.component.html',
   styleUrls: ['./plain-input.component.css'],
-  imports: [CommonModule, FormsModule, EditorModule,  InputTextModule, InputNumberModule],
+  imports: [CommonModule, FormsModule, EditorModule, InputTextModule, InputNumberModule],
 })
 export class PlainInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
-
-  public value: any;
+  @Input('value') public value?: any;
+  
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
 
@@ -48,10 +48,10 @@ export class PlainInputComponent implements OnInit {
     if (!this.form.validation) {
       return true;
     }
-    
-    return  this.value !== null && 
-            this.value !== '' && 
-            this.value !== undefined;
+
+    return this.value !== null &&
+      this.value !== '' &&
+      this.value !== undefined;
   }
 
 }

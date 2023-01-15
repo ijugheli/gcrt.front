@@ -16,9 +16,10 @@ import { MPropertyValue } from 'src/services/attributes/models/property.value.mo
 export class DateInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
+  @Input('value') public value?: any;
 
 
-  public value: any;
+  
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
 

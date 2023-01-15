@@ -17,12 +17,12 @@ import { FormService } from 'src/services/form.service';
 export class SwitchInputComponent implements OnInit {
   @Input('property') public property!: MProperty;
   @Output('onChange') public onChange = new EventEmitter<MPropertyValue | null>();
+  @Input('value') public value?: any;
 
-  public value: any;
   public style = { "width": "400px", "height": "100%" };
   public initialized: boolean = false;
-  
-  constructor(private form : FormService) { }
+
+  constructor(private form: FormService) { }
 
   ngOnInit() {
     if (!this.property || this.property == null) {

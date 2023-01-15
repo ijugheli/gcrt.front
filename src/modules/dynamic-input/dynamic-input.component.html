@@ -3,30 +3,59 @@
     <ng-container *ngIf="property != null">
         <div class="dynamic-input-label">{{property.title}}</div>
 
-        <ng-container *ngIf="property.isTextarea()">
-            <plain-input [property]="property" (onChange)="onUpdate($event)"></plain-input>
-        </ng-container>
-
         <ng-container *ngIf="property.isString() && property.isInput()">
-            <plain-input [property]="property" (onChange)="onUpdate($event)"></plain-input>
+            <plain-input
+                [value]="initialValue"
+                [property]="property"
+                (onChange)="onUpdate($event)"
+            ></plain-input>
         </ng-container>
 
-        <ng-container *ngIf="property.isCheckbox()"></ng-container>
+        <ng-container *ngIf="property.isTextarea()">
+            <plain-input
+                [value]="initialValue"
+                [property]="property"
+                (onChange)="onUpdate($event)"
+            ></plain-input>
+        </ng-container>
+
+        <ng-container *ngIf="property.isCheckbox()">
+            <switch-input
+                [value]="initialValue"
+                [property]="property"
+                (onChange)="onUpdate($event)"
+            ></switch-input>
+        </ng-container>
 
         <ng-container *ngIf="property.isDatepicker()">
-            <date-input [property]="property" (onChange)="onUpdate($event)"></date-input>
+            <date-input
+                [value]="initialValue"
+                [property]="property"
+                (onChange)="onUpdate($event)"
+            ></date-input>
         </ng-container>
 
         <ng-container *ngIf="property.isSelect()">
-            <select-input [property]="property" (onChange)="onUpdate($event)"></select-input>
+            <select-input
+                [property]="property"
+                (onChange)="onUpdate($event)"
+                [selected]="initialValue"
+            ></select-input>
         </ng-container>
 
         <ng-container *ngIf="property.isMultiselect()">
-            <multiselect-input [property]="property" (onChange)="onUpdate($event)"></multiselect-input>
+            <multiselect-input
+                [property]="property"
+                (onChange)="onUpdate($event)"
+                [selected]="initialValue"
+            ></multiselect-input>
         </ng-container>
 
         <ng-container *ngIf="property.isTreeselect() || property.isTreetable()">
-            <treeselect-input [property]="property" (onChange)="onUpdate($event)"></treeselect-input>
+            <treeselect-input
+                [property]="property"
+                (onChange)="onUpdate($event)"
+            ></treeselect-input>
         </ng-container>
     </ng-container>
 
