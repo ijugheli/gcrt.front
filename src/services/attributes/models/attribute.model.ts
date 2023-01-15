@@ -32,7 +32,7 @@ export class MAttribute {
     //Front Structure
     public expanded: boolean = false;
 
-    public constructor(o: IAttribute) {
+    public constructor(o: IAttribute) { 
         this.id = o.id;
         this.p_id = o.p_id;
         this.count = o.count;

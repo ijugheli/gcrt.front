@@ -54,7 +54,7 @@
           <!-- <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" /></td>
             <td>{{product.price | currency:'USD'}}</td>
             <td>{{product.category}}</td>
-            <td><p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td>
+            <td><p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td>
             <td><span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span></td> -->
         </tr>
       </ng-template>
@@ -62,7 +62,7 @@
         <tr>
           <td colspan="7">
                   <button
-                  (click) ="addProperty(attribute.id)"
+                  (click) ="toggleProperty(attribute.id)"
                   type="button"
                   class="border-btn"
                   >
@@ -92,6 +92,7 @@
                             <td>
                               <p-dropdown
                                 [options]="DATA_SOURCE_TYPES"
+                                [(ngModel)]="newObject.source"
                                 placeholder="ტიპი"
                                 name="name"
                                 optionLabel="name"
@@ -101,37 +102,45 @@
                               <p-dropdown
                                 [options]="DATA_PROPERTY_TYPES"
                                 placeholder="ტიპი"
+                                [(ngModel)]="newObject.type"
                                 name="name"
                                 optionLabel="title"
+                                [class.ng-dirty]="newObject.type ? true : false"
                               ></p-dropdown>
                               <!-- <ng-container *ngIf="property.isAttr()">ატრიბუტი</ng-container> -->
                             </td>
-                            <td><input type="text" placeholder="დასახელება">
+                            <td><input type="text" placeholder="დასახელება" 
+                              [(ngModel)]="newObject.title" 
+                              >
                             </td>
                             <td>
                               <p-dropdown
                                 [options]="DATA_TYPES"
                                 placeholder="ტიპი"
+                                [(ngModel)]="newObject.data_type"
                                 name="id"
                                 optionLabel="title"
+                                [class.ng-invalid]="newObject.data_type"
+                                [class.ng-dirty]="newObject.data_type"
                             ></p-dropdown>
                             </td>
                             <td>
                               <p-dropdown
                                 [options]="DATA_VIEW_TYPES"
                                 placeholder="ტიპი"
+                                [(ngModel)]="newObject.data_view"
                                 name="id"
                                 optionLabel="title"
                             ></p-dropdown>
                             </td>
                             <td>
-                              <p-inputSwitch></p-inputSwitch>
+                              <p-inputSwitch [(ngModel)]="newObject.is_mandatory"></p-inputSwitch>
                             </td>
                             <td>
-                              <p-inputSwitch></p-inputSwitch>
+                              <p-inputSwitch [(ngModel)]="newObject.has_filter"></p-inputSwitch>
                             </td>
                             <td>
-                              <p-inputSwitch></p-inputSwitch>
+                              <p-inputSwitch [(ngModel)]="newObject.is_primary"></p-inputSwitch>
                             </td>
                             <td>
                               <button

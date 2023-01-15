@@ -7,16 +7,18 @@ import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { DataTableModule } from "../../modules/data-table/data-table.module";
 @NgModule({
-  imports: [
-    CommonModule,
-    BrowserAnimationsModule,
-    TableModule,
-    FormsModule,
-    InputSwitchModule,
-    ButtonModule,
-    DropdownModule
-  ],
-  declarations: [AttributesStructureComponent]
+    declarations: [AttributesStructureComponent],
+    imports: [
+        CommonModule,
+        BrowserAnimationsModule,
+        TableModule,
+        FormsModule,
+        InputSwitchModule,
+        ButtonModule,
+        DropdownModule,
+        DataTableModule
+    ]
 })
 export class AttributesStructureModule { }

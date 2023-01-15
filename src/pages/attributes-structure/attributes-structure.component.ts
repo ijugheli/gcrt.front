@@ -15,6 +15,7 @@ export class AttributesStructureComponent implements OnInit {
   public addPropertyButton = false;
   public attrID = 0;
   public list: MAttribute[] = [];
+  public addPropertiesData: MProperty = new MProperty();
   public dataTypesMap: any = {
     1: { name: 'string', id: 1, title: 'ტექსტი' },
     2: { name: 'int', id: 2, title: 'მთელი რიცხვი' },
@@ -58,6 +59,35 @@ export class AttributesStructureComponent implements OnInit {
 
   public selectedPropTypes: { [index: number]: any } = {};
 
+
+  public newObject = {
+    'parent_id' : '',
+    'source' : null,
+    'type' : null,
+    'title' : null,
+    'data_type' : null,
+    'data_view' : null,
+    'is_mandatory' : null,
+    'has_filter' : null,
+    'is_primary' : null,
+  };
+
+  private initNewObject() {
+    let cleanObject = {
+      'parent_id' : '',
+      'source' : null,
+      'type' : null,
+      'title' : null,
+      'data_type' : null,
+      'data_view' : null,
+      'is_mandatory' : null,
+      'has_filter' : null,
+      'is_primary' : null,
+    };
+    this.newObject = cleanObject;
+  }
+
+
   constructor(public attributes: AttributesService) { }
 
   ngOnInit() {
@@ -97,8 +127,32 @@ export class AttributesStructureComponent implements OnInit {
   }
 
   addProperty(attrID: any) {
-    this.addPropertyButton = !this.addPropertyButton;
+    // this.addPropertyButton = !this.addPropertyButton;
+    //Add Property Here
     this.attrID = attrID;
+    this.newObject.parent_id = this.attrID.toString();
+    this.validatePropertyForm();
+    if(!this.validatePropertyForm) {
+      console.log('Im here');
+      this.initNewObject();
+    }
+
+  }
+
+  toggleProperty(atrrID: any) {
+    this.addPropertyButton = !this.addPropertyButton;
+ 
+  }
+
+
+  validatePropertyForm() {
+    for(let key in this.newObject) {
+      if(key == null || key == '') {
+        return false;
+      } 
+      
+    }
+    return true;
   }
 
 }
