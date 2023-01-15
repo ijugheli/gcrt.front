@@ -29,7 +29,6 @@ export class MProperty {
 
     public options: any[] = [];
     public selectedOptions: any[] = [];
-
     public constructor(o: IProperty) {
         this.id = o.id;
         this.p_id = o.p_id;
@@ -39,15 +38,15 @@ export class MProperty {
         this.title = o.title;
         this.input_data_type = o.input_data_type;
         this.input_view_type = o.input_view_type;
-        this.is_mandatory = o.is_mandatory;
+        this.is_mandatory = o.is_mandatory == 1;
         this.insert_date = o.insert_date;
         this.update_date = o.update_date;
         this.order_id = o.order_id;
         this.source = o.source;
         this.tree = o.tree;
         this.sourceAttribute = o.sourceAttribute;
-        this.has_filter = o.has_filter;
-        this.is_primary = o.is_primary;
+        this.has_filter = o.has_filter == 1;
+        this.is_primary = o.is_primary == 1;
 
 
         if (this.tree != null) {

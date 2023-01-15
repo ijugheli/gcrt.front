@@ -21,6 +21,7 @@ import { ManageUserModule } from '../pages/manage-user/manage-user.module';
 import { TreeTableModule } from 'primeng/treetable';
 import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
 import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
+import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module'
     ConfirmDialogModule,
     ManageUserModule,
     AppRoutingModule,
+    AttributesStructureModule
   ],
   providers: [ConfirmationService, AuthGuardService, AuthService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -127,10 +127,6 @@ export class AttributesService extends GuardedService {
 
 
 
-
-
-
-
     // Individual Requests
     public list() {
         return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
