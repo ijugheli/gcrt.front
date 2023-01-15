@@ -8,7 +8,7 @@ import { MenuModule } from '../modules/menu/menu.module';
 import { TableModule } from 'primeng/table';
 import { HomeModule } from '../pages/home/home.module';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { HttpClientModule } from '@angular/common/http';
 import { AttributePageModule } from 'src/pages/attribute-page/attribute-page.module';
 import { AuthGuardService } from 'src/services/AuthGuardService.service';
@@ -22,6 +22,7 @@ import { TreeTableModule } from 'primeng/treetable';
 import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
 import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { AttributesStructureModule } from '../pages/attributes-structure/attribu
     AppRoutingModule,
     AttributesStructureModule
   ],
-  providers: [ConfirmationService, AuthGuardService, AuthService],
+  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })

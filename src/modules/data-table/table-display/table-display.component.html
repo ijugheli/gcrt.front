@@ -1,8 +1,8 @@
-<ng-container *ngIf="rows">
+<ng-container *ngIf="table.records">
     <p-table
         sortMode="single"
-        [value]="rows"
-        dataKey="id"
+        [value]="table.records"
+        dataKey="valueID"
         styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
         [paginator]="true"
         [rows]="10"
@@ -10,9 +10,7 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [showCurrentPageReport]="true"
         responsiveLayout="scroll"
-        [(selection)]="selected"
-        (onRowSelect)="onRowSelect($event)"
-        (onRowUnselect)="onRowUnselect($event)"
+        [(selection)]="table.selected"
     >
         <ng-template
             pTemplate="caption"
@@ -43,7 +41,7 @@
             let-row
         >
             <tr>
-                <ng-container *ngIf="table.settings">
+                <ng-container *ngIf="table.settings['multi']">
                     <td>
                         <p-tableCheckbox [value]="row"></p-tableCheckbox>
                     </td>
@@ -53,26 +51,26 @@
                     *ngFor="let property of attribute?.columns"
                 >
                     <ng-container *ngIf="property.isDate()">
-                        {{row[property.id] |  date:'d/M/yy H:mm' }}
+                        {{row.propValueMap[property.id] |  date:'d/M/yy H:mm' }}
                     </ng-container>
                     <ng-container *ngIf="property.isBoolean()">
-                        <ng-container *ngIf="row[property.id] == 0">
+                        <ng-container *ngIf="row.propValueMap[property.id] == 0">
                             <i
                                 class="pi pi-check-square"
                                 style="color:#689f38; font-size:1.3rem"
                             ></i>
                         </ng-container>
-                        <ng-container *ngIf="row[property.id] == 1">
+                        <ng-container *ngIf="row.propValueMap[property.id] == 1">
                             <i
                                 class="pi pi-times-circle"
                                 style="color:#ff0c00a6; font-size:1.3rem"
                             ></i>
                         </ng-container>
                     </ng-container>
-                    <ng-container *ngIf="property.isNumber()">{{row[property.id]}}</ng-container>
-                    <ng-container *ngIf="property.isString() && !property.isSelect() && !property.isMultiselect()">{{row[property.id]}}</ng-container>
+                    <ng-container *ngIf="property.isNumber()">{{row.propValueMap[property.id]}}</ng-container>
+                    <ng-container *ngIf="property.isString() && !property.isSelect() && !property.isMultiselect()">{{row.propValueMap[property.id]}}</ng-container>
                     <ng-container *ngIf="property.isSelect() || property.isMultiselect()">
-                        <ng-container *ngFor="let tag of row[property.id]">
+                        <ng-container *ngFor="let tag of row.propValueMap[property.id]">
                             <div class="tag-item">
                                 <p-tag
                                     value="{{tag}}"

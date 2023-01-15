@@ -4,11 +4,11 @@
 <ng-container *ngIf="table.settings['sort']">
     <th
         class="head-item"
-        pSortableColumn="{{property.id}}"
+        pSortableColumn="propValueMap.{{property.id}}"
         *ngFor="let property of attribute?.columns"
     >
         {{property.title}}
-        <p-sortIcon field="{{property.id}}"></p-sortIcon>
+        <p-sortIcon field="propValueMap.{{property.id}}"></p-sortIcon>
 
     </th>
 </ng-container>

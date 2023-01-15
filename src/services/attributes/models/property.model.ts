@@ -1,6 +1,8 @@
 import { DATA_TYPE_ID, PROPERTY_TYPE_ID, VIEW_TYPE_ID } from "src/app/app.config";
 import { IProperty } from "../interfaces/property.interface";
 import { MAttribute } from "./attribute.model";
+import { MOption } from './option.model';
+import { MPropertyValue } from './property.value.model';
 
 export class MProperty {
     public id: number;
@@ -28,7 +30,9 @@ export class MProperty {
 
 
     public options: any[] = [];
-    public selectedOptions: any[] = [];
+    public selectedOptions: MOption[] = [];
+
+
     public constructor(o: IProperty) {
         this.id = o.id;
         this.p_id = o.p_id;
@@ -175,6 +179,10 @@ export class MProperty {
         }
 
         return this.p_id;
+    }
+
+    public isValueSelected(value: string) {
+        return this.selectedOptions.some((option: MOption) => option.value?.value == value);
     }
 
 }

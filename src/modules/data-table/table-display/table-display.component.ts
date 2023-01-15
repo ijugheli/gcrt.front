@@ -13,33 +13,17 @@ import { DataTableService } from 'src/services/table.service';
 export class TableDisplayComponent implements OnInit {
   @Input('attribute') public attribute?: MAttribute;
 
-  public selected?: MRecord;
-  public rows: { [index: number]: string | string[] }[] = [];
-
+  public list: MRecord[] = [];
   constructor(
-    private records: RecordsService,
     public table: DataTableService,
   ) {
 
   }
 
   ngOnInit() {
-    this.getRows();
+    if (this.attribute)
+      this.table.init(this.attribute?.id);
   }
 
-  private async getRows() {
-    if (!this.attribute) {
-      return;
-    }
 
-    this.rows = (await this.records.get(this.attribute.id)).map((i) => i.propValueMap);
-  }
-
-  public onRowSelect(e: any) {
-
-  }
-
-  public onRowUnselect(e: any) {
-
-  }
 }

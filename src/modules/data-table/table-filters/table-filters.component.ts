@@ -12,20 +12,11 @@ import { DataTableService } from 'src/services/table.service';
 export class TableFiltersComponent implements OnInit {
   @Input('attribute') public attribute?: MAttribute;
 
-  public selected : MOption[] = [];
-
   public columns?: MProperty[] = [];
 
-  constructor(public table : DataTableService) { }
+  constructor(public table: DataTableService) { }
 
   ngOnInit() {
     this.columns = this.attribute?.columns;
-    console.log('From Table Filters');
-    console.log(this.attribute);
-    console.log('From Table Filters');
   }
-  public onSelectChange(prop: any) {
-
-  }
-
 }

@@ -2,10 +2,10 @@
     <ul class="list">
         <li>
             <button
-                (click)="onSettingClick('add')"
+                (click)="table.onAddRecord()"
                 type="button"
                 class="border-btn"
-                [class.disabled]="!isSettingEnabled('add')"
+                [class.disabled]="!table.isSettingEnabled('add')"
             >
                 <i class="pi pi-plus-circle"></i>
                 დამატება
@@ -13,10 +13,10 @@
         </li>
         <li>
             <button
-                (click)="onSettingClick('edit')"
+                (click)="table.onEditRecord()"
                 type="button"
                 class="border-btn"
-                [class.disabled]="!isSettingEnabled('edit')"
+                [class.disabled]="!table.isSettingEnabled('edit')"
             >
                 <i class="pi pi-pencil"></i>
                 რედაქტირება
@@ -24,10 +24,10 @@
         </li>
         <li>
             <button
-                (click)="onSettingClick('delete')"
+                (click)="table.onDeleteRecords()"
                 type="button"
                 class="border-btn"
-                [class.disabled]="!isSettingEnabled('delete')"
+                [class.disabled]="!table.isSettingEnabled('delete')"
             >
                 <i class="pi pi-trash"></i>
                 წაშლა
@@ -35,24 +35,24 @@
         </li>
         <li>
             <button
-                (click)="reload()"
+                (click)="table.reload()"
                 type="button"
                 class="border-btn icon-only-btn"
-                [class.disabled]="!isSettingEnabled('reload')"
+                [class.disabled]="!table.isSettingEnabled('reload')"
             >
                 <i class="pi pi-refresh"></i>
             </button>
         </li>
     </ul>
-    
+
     <div class="dropdown">
         <ul class="list">
             <li>
                 <button
-                    (click)="onSettingClick('pdf')"
+                    (click)="table.onSettingClick('pdf')"
                     type="button"
                     class="border-btn icon-only-btn"
-                    [class.disabled]="!isSettingEnabled('pdf')"
+                    [class.disabled]="!table.isSettingEnabled('pdf')"
                 >
                     <i class="pi pi-file-pdf"></i>
                     Export PDF
@@ -60,10 +60,10 @@
             </li>
             <li>
                 <button
-                    (click)="onSettingClick('xls')"
+                    (click)="table.onSettingClick('xls')"
                     type="button"
                     class="border-btn icon-only-btn"
-                    [class.disabled]="!isSettingEnabled('xls')"
+                    [class.disabled]="!table.isSettingEnabled('xls')"
                 >
                     <i class="pi pi-file-excel"></i>
                     Export XLS

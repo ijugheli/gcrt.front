@@ -19,7 +19,7 @@
             type="text"
             display="row"
             [showClearButton]="false"
-            field="{{ property.id }}"
+            field="propValueMap.{{ property.id }}"
         ></p-columnFilter>
     </ng-container>
     <!-- Date Filter -->
@@ -33,7 +33,7 @@
             placeholder="აირჩიეთ თარიღი"
             display="menu"
             type="date"
-            field="{{ property.id }}"
+            field="propValueMap.{{property.id}}"
         ></p-columnFilter>
     </ng-container>
     <!-- Select Filter -->
@@ -46,8 +46,8 @@
         >
             <ng-template pTemplate="group">
                 <p-multiSelect
-                    [(ngModel)]="selected"
-                    (onChange)="onSelectChange(property)"
+                    [(ngModel)]="property.selectedOptions"
+                    (onChange)="table.onFilter.select(property)"
                     [options]="property.source.options"
                     optionLabel="name"
                     appendTo="body"
