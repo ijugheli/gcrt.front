@@ -4,6 +4,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { DATA_TYPES } from 'src/app/app.config';
 import { reverseMap } from 'src/app/app.func';
 import { MProperty } from 'src/services/attributes/models/property.model';
+import { MOption } from '../../services/attributes/models/option.model';
 
 @Component({
   selector: 'app-attributes-structure',
@@ -11,13 +12,22 @@ import { MProperty } from 'src/services/attributes/models/property.model';
   styleUrls: ['./attributes-structure.component.css']
 })
 export class AttributesStructureComponent implements OnInit {
+  public addPropertyButton = false;
+  public attrID = 0;
   public list: MAttribute[] = [];
+  public addPropertiesData: MProperty = new MProperty();
   public dataTypesMap: any = {
     1: { name: 'string', id: 1, title: 'ტექსტი' },
     2: { name: 'int', id: 2, title: 'მთელი რიცხვი' },
     3: { name: 'double', id: 3, title: 'წილადი რიცხვი' },
     4: { name: 'date', id: 4, title: 'თარიღი' },
     5: { name: 'boolean', id: 5, title: 'კი/არა' },
+  };
+
+
+  public propertyTypeMap: any = {
+    1: { name: 'int', id: 1, title: 'სტანდარტული'},
+    2: { name: 'int', id: 2, title: 'სექცია' },
   };
 
   public viewTypesMap: any = {
@@ -41,9 +51,42 @@ export class AttributesStructureComponent implements OnInit {
 
   public DATA_VIEW_TYPES: any;
 
+  public DATA_SOURCE_TYPES: any;
+
+  public DATA_PROPERTY_TYPES: any;
+
   public selectedPropViewTypes: { [index: number]: any } = {};
 
   public selectedPropTypes: { [index: number]: any } = {};
+
+
+  public newObject = {
+    'parent_id' : '',
+    'source' : null,
+    'type' : null,
+    'title' : null,
+    'data_type' : null,
+    'data_view' : null,
+    'is_mandatory' : null,
+    'has_filter' : null,
+    'is_primary' : null,
+  };
+
+  private initNewObject() {
+    let cleanObject = {
+      'parent_id' : '',
+      'source' : null,
+      'type' : null,
+      'title' : null,
+      'data_type' : null,
+      'data_view' : null,
+      'is_mandatory' : null,
+      'has_filter' : null,
+      'is_primary' : null,
+    };
+    this.newObject = cleanObject;
+  }
+
 
   constructor(public attributes: AttributesService) { }
 
@@ -51,6 +94,8 @@ export class AttributesStructureComponent implements OnInit {
     this.list = this.attributes.asList();
     this.initializeDataTypes();
     this.initializeViewTypes();
+    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
+    this.DATA_SOURCE_TYPES = this.list.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
   }
 
   private initializeDataTypes() {
@@ -73,7 +118,56 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
+  onRowReorder(event: any, id: any, propertyData : any) {
+    this.reorderProperties(propertyData, id);
+
+  }
+
+  addProperty(attrID: any) {
+    // this.addPropertyButton = !this.addPropertyButton;
+    //Add Property Here
+    this.attrID = attrID;
+    this.newObject.parent_id = this.attrID.toString();
+      if(!this.validatePropertyForm()) {
+        this.addRecord(attrID, this.newObject);
+        this.initNewObject();
+      }
+      
+      
+  }
+
+  toggleProperty(atrrID: any) {
+    this.addPropertyButton = !this.addPropertyButton;
+    if(!this.addPropertyButton) { 
+      this.initNewObject();
+    }
+  }
 
 
+  public addRecord(attrID: number, data: any)  {
+    // this.spinner.show();
+    this.attributes.addProperty(attrID, data);
+
+  }
+
+  public reorderProperties(data : any, attrID : number) {
+    let propertyIDs = [];
+    for(let i in data) {
+      propertyIDs.push(data[i]['id']);
+    }
+    this.attributes.reorderProperties(attrID, JSON.stringify(propertyIDs));
+    this.list = this.attributes.asList();
+  }
+
+
+
+  validatePropertyForm() {
+    for(let key in this.newObject) {
+      if(key == null || key == '') {
+        return false;
+      } 
+    }
+    return true;
+  }
 
 }

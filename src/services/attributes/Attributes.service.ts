@@ -28,6 +28,8 @@ export class AttributesService extends GuardedService {
         'static': API_URL + '/attrs/static',
         'list': API_URL + '/attrs/',
         'withProperties': API_URL + '/attrs/{attr_id}',
+        'addProperty' : API_URL +  '/attrs/{attr_id}/properties/add',
+        'reorderProperties' : API_URL +  '/attrs/{attr_id}/properties/reorder', 
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
         'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
@@ -68,7 +70,11 @@ export class AttributesService extends GuardedService {
             return;
         }
 
+        this.requestAttributes();
 
+    }
+
+    private requestAttributes() {
         this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
             this.saveCache(data);
             this.parse(data);
@@ -174,6 +180,31 @@ export class AttributesService extends GuardedService {
 
     public editValueItem(values: any) {
         return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
+    }
+
+
+    public addProperty(attrID: number, values: any, func?: Function) {
+        this.http.post(
+            this.urls['addProperty'].replace('{attr_id}', attrID.toString()
+            ), values, { headers: this.headers }).subscribe((response) => {
+
+                this.requestAttributes();
+                if (func)
+                    func(response);
+            });
+    }
+
+
+
+    public reorderProperties(attrID: number, values: any, func?: Function) {
+        this.http.post(
+            this.urls['reorderProperties'].replace('{attr_id}', attrID.toString()
+            ), values, { headers: this.headers }).subscribe((response) => {
+
+                this.requestAttributes();
+                if (func)
+                    func(response);
+            });
     }
 
 

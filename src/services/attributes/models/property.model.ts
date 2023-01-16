@@ -5,18 +5,18 @@ import { MOption } from './option.model';
 import { MPropertyValue } from './property.value.model';
 
 export class MProperty {
-    public id: number;
+    public id!: number;
     public p_id: number | null = null;
-    public attr_id: number;
+    public attr_id!: number;
     public source_attr_id: number | null = null;
-    public type: number;
-    public title: string;
-    public input_data_type: number;
-    public input_view_type: number;
+    public type!: number;
+    public title!: string;
+    public input_data_type!: number;
+    public input_view_type!: number;
     public is_mandatory: boolean = false;
-    public insert_date: string;
+    public insert_date!: string;
     public update_date: string | null = null;
-    public order_id: number;
+    public order_id!: number;
     public has_filter: any = false;
     public is_primary: boolean = false;
 
@@ -32,8 +32,8 @@ export class MProperty {
     public selectedOptions: MOption[] = [];
 
 
-
-    public constructor(o: IProperty) {
+    public constructor(o?: IProperty) {
+        if(!o) return;
         this.id = o.id;
         this.p_id = o.p_id;
         this.attr_id = o.attr_id;
