@@ -87,8 +87,7 @@ export class MRecord {
         }
 
         if (propertyValue.property?.isBoolean()) {
-            return propertyValue.value != null && propertyValue.value == 1 ? true : false;
-            return;
+            return propertyValue.value != null && propertyValue.value == 1;
         }
 
         return propertyValue.value;
