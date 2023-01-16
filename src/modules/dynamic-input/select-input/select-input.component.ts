@@ -31,6 +31,7 @@ export class SelectInputComponent implements OnInit {
   ngOnInit() {
     console.log('Generated Select input');
     console.log(this.selected);
+    console.log(this.property);
 
     if (!this.property || this.property == null) {
       return;
@@ -49,7 +50,6 @@ export class SelectInputComponent implements OnInit {
 
 
   public onUpdate() {
-    console.log(this.selected);
     if (!this.valid()) {
       this.onChange.emit(null);
       return;

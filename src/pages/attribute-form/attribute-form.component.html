@@ -30,11 +30,13 @@
                     </p-tabPanel>
                 </p-tabView>
 
+
                 <data-table
                     *ngIf=" attribute && !attribute?.hasChildren()"
                     [attrID]="attrID"
                 ></data-table>
             </p-tabPanel>
+
 
             <p-tabPanel header="დამატება">
                 <div class="form-container">
@@ -49,6 +51,7 @@
                             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
                         </ngx-spinner>
                     </ng-container>
+
 
                     <ng-container *ngIf="properties != null && properties.length > 0">
                         <p-tabView *ngIf="attribute?.hasChildren()">
@@ -73,6 +76,7 @@
                             </p-tabPanel>
                         </p-tabView>
 
+
                         <!-- <p-tabView *ngIf="!attribute?.hasChildren()">
                             <p-tabPanel
                                 [header]="subAttribute.title"
@@ -93,6 +97,7 @@
                                 </ng-container>
                             </p-tabPanel>
                         </p-tabView> -->
+
 
                         <div
                             class="manage-form-container"
@@ -132,10 +137,13 @@
                 </div>
             </p-tabPanel>
 
+
         </p-tabView>
+
 
     </p-panel>
 </section>
+
 
 <!-- <div class="manage-form-container">
                             <p-tabView>
@@ -168,6 +176,7 @@
                          
                             </p-tabView>
                         </div> -->
+
 
 <!-- <p-tabPanel
                         [header]="subAttribute.title"

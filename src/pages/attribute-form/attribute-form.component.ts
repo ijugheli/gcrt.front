@@ -14,6 +14,7 @@ import { MAttribute } from '../../services/attributes/models/attribute.model';
 })
 export class AttributeFormComponent implements OnInit {
 
+  public selectedRecord = null;
 
   public attrID: any; //Project
   public valueID: number | null = 0;
@@ -33,7 +34,7 @@ export class AttributeFormComponent implements OnInit {
 
   value: number = 0;
 
-  public attribute? : MAttribute;
+  public attribute?: MAttribute;
 
   public mode = 'add';
 

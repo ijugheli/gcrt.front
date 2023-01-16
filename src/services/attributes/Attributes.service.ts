@@ -232,7 +232,6 @@ export class AttributesService extends GuardedService {
 
     private parseAttributes(data: IAttribute[]) {
         data.forEach((source: IAttribute) => {
-            let attribute: MAttribute = new MAttribute(source);
             let properties: MProperty[] = [];
             let columns: MProperty[] = [];
             //assigns created property objects to properties column; 
@@ -241,14 +240,15 @@ export class AttributesService extends GuardedService {
                 if (!property || property == null || property === undefined) {
                     return;
                 }
-
+                
                 properties.push(property);
             });
-
+            
             properties = properties.sort((a, b) => a.order_id - b.order_id);
             columns = properties.filter((prop) => !prop.isSection());
-
-            attribute.withProps(properties);
+            
+            const attribute: MAttribute = new MAttribute(source, properties);
+            // attribute.withProps(properties);
             attribute.withColumns(columns);
 
             this.attributes.set(attribute.id, attribute);

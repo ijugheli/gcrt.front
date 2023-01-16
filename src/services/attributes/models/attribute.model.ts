@@ -20,7 +20,7 @@ export class MAttribute {
     public title: string | null = null;
     public children: MAttribute[] = [];
     public properties: MProperty[] = [];
-    public columns : MProperty[] = []; //Filtered and ordered properties
+    public columns: MProperty[] = []; //Filtered and ordered properties
     public tabs: MAttributeTab[] = [];
     public sections: MAttributeSection[] = [];
     public values: MPropertyValue[] = [];
@@ -32,7 +32,7 @@ export class MAttribute {
     //Front Structure
     public expanded: boolean = false;
 
-    public constructor(o: IAttribute) { 
+    public constructor(o: IAttribute, properties?: MProperty[]) {
         this.id = o.id;
         this.p_id = o.p_id;
         this.count = o.count;
@@ -41,6 +41,11 @@ export class MAttribute {
         this.status = this.status_id == 1;
         this.title = o.title;
         this.lazy = o.lazy;
+
+        if (properties) {
+            this.properties = properties
+        }
+
         if (o.values && o.values.length > 0) {
             this.withValues(o.values.map(
                 (item: IPropertyValue) => new MPropertyValue(item)
@@ -69,7 +74,9 @@ export class MAttribute {
 
 
     public withOptions(values: MPropertyValue[]) {
-        this.options = values.map((value: MPropertyValue) => new MOption(value));
+        this.options = values
+            .filter((value: MPropertyValue) => (this.properties.some((prop: MProperty) => (value.property_id == prop.id && prop.is_primary))))
+            .map((value: MPropertyValue) => new MOption(value));
     }
 
     public extractProps(o: IAttribute) {
@@ -84,7 +91,7 @@ export class MAttribute {
         this.properties = properties;
     }
 
-    public withColumns(columns : MProperty[]) {
+    public withColumns(columns: MProperty[]) {
         this.columns = columns;
     }
 
@@ -126,10 +133,10 @@ export class MAttribute {
 
     public isTree() {
         return this.type === ATTR_TYPE_ID('tree')
-    } 
-    
+    }
+
     public isStandard() {
         return this.type === ATTR_TYPE_ID('standard')
-    } 
+    }
 
 }
