@@ -118,11 +118,8 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  onRowReorder(event: any, id: any) {
-    //TODO 
-    //Implement Order ID change
-    console.log(event, 'Event We are looking for');
-    console.log(id, 'id We are looking for');
+  onRowReorder(event: any, id: any, propertyData : any) {
+    this.reorderProperties(propertyData, id);
 
   }
 
@@ -131,18 +128,37 @@ export class AttributesStructureComponent implements OnInit {
     //Add Property Here
     this.attrID = attrID;
     this.newObject.parent_id = this.attrID.toString();
-    this.validatePropertyForm();
-    if(!this.validatePropertyForm) {
-      console.log('Im here');
-      this.initNewObject();
-    }
-
+      if(!this.validatePropertyForm()) {
+        this.addRecord(attrID, this.newObject);
+        this.initNewObject();
+      }
+      
+      
   }
 
   toggleProperty(atrrID: any) {
     this.addPropertyButton = !this.addPropertyButton;
- 
+    if(!this.addPropertyButton) { 
+      this.initNewObject();
+    }
   }
+
+
+  public addRecord(attrID: number, data: any)  {
+    // this.spinner.show();
+    this.attributes.addProperty(attrID, data);
+
+  }
+
+  public reorderProperties(data : any, attrID : number) {
+    let propertyIDs = [];
+    for(let i in data) {
+      propertyIDs.push(data[i]['id']);
+    }
+    this.attributes.reorderProperties(attrID, JSON.stringify(propertyIDs));
+    this.list = this.attributes.asList();
+  }
+
 
 
   validatePropertyForm() {
@@ -150,7 +166,6 @@ export class AttributesStructureComponent implements OnInit {
       if(key == null || key == '') {
         return false;
       } 
-      
     }
     return true;
   }

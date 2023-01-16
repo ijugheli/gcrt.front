@@ -120,8 +120,6 @@
                                 [(ngModel)]="newObject.data_type"
                                 name="id"
                                 optionLabel="title"
-                                [class.ng-invalid]="newObject.data_type"
-                                [class.ng-dirty]="newObject.data_type"
                             ></p-dropdown>
                             </td>
                             <td>
@@ -205,7 +203,7 @@
 
 
                 <div class="p-3">
-                    <p-table [value]="attribute.properties" dataKey="id" (onRowReorder)="onRowReorder($event, attribute.id)">
+                    <p-table [value]="attribute.properties" dataKey="id" (onRowReorder)="onRowReorder($event, attribute.id, attribute.properties)">
                         <ng-template pTemplate="header">
                             <tr> 
                                 <th class="pi pi-bars"></th>  
