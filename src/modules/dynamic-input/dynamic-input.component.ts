@@ -11,6 +11,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { PlainInputComponent } from './plain-input/plain-input.component';
 import { MProperty } from 'src/services/attributes/models/property.model';
 import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
+import { FormService } from '../../services/form.service';
 
 /**
  * Text Input
@@ -43,20 +44,33 @@ export class DynamicInputComponent implements OnInit {
   public loading: boolean = false;
 
 
-  constructor(private attrsService: AttributesService) {
+  constructor(
+    public attributes: AttributesService,
+    public form: FormService,
+  ) {
     this.options = [];
   }
 
   ngOnInit() {
-    this.initViewType();
-    this.initDataType();
     this.parseSource();
+  }
+
+  public enabled() {
+    if (!this.property) {
+      return false;
+    }
+
+    if (!this.property.isGenerated()) {
+      return true;
+    }
+
+    return this.form.generatedPropertyEnabled(this.property);
   }
 
 
 
 
-  public onUpdate(propertyValue: MPropertyValue |  null) {
+  public onUpdate(propertyValue: MPropertyValue | null) {
     this.onChange.emit(propertyValue);
   }
 
@@ -72,7 +86,7 @@ export class DynamicInputComponent implements OnInit {
     }
 
     this.loading = true;
-    this.attrsService.treeNodes(this.property.source_attr_id, node.data.value_id).subscribe((items) => {
+    this.attributes.treeNodes(this.property.source_attr_id, node.data.value_id).subscribe((items) => {
       node.children = this.parseTree(items);
       this.tree = [...this.tree];
       this.loading = false;
@@ -81,84 +95,7 @@ export class DynamicInputComponent implements OnInit {
   }
 
 
-  // private generateValueObject(value: any) {
-  //   let viewTypeID = this.property.input_view_type;
-  //   let dataTypeID = this.property.input_data_type;
-  //   let o = new AttrValue();
-  //   o.attr_id = this.property.attr_id;
-  //   o.property_id = this.property.id;
-  //   o.order_id = this.property.order_id;
-  //   o.related_value_id = null;
-  //   // o.RelatedValueID = 123;
 
-
-  //   //Value Related
-  //   o.value_integer = null;
-  //   o.value_decimal = null;
-  //   o.value_date = null;
-  //   o.value_json = null;
-  //   o.insert_date = null;
-  //   o.update_date = null;
-
-
-  //   //Normal input related -> string|integer|decimal
-  //   if (viewTypeID == VIEW_TYPE_ID('input')) {
-  //     if (dataTypeID == DATA_TYPE_ID('string')) o.value_string = value;
-  //     if (dataTypeID == DATA_TYPE_ID('int')) o.value_integer = value;
-  //     if (dataTypeID == DATA_TYPE_ID('double')) o.value_decimal = value;
-  //   }
-  //   //Checkbox Related.
-  //   if (viewTypeID == VIEW_TYPE_ID('checkbox') ||
-  //     viewTypeID == VIEW_TYPE_ID('toggle')) {
-  //     if (dataTypeID == DATA_TYPE_ID('boolean')) o.value_boolean = value;
-  //   }
-  //   //Dates Related -> date
-  //   else if (viewTypeID == VIEW_TYPE_ID('datepicker') ||
-  //     viewTypeID == VIEW_TYPE_ID('datetimepicker')) {
-  //     if (dataTypeID == DATA_TYPE_ID('date')) o.value_date = value;
-  //     if (dataTypeID == DATA_TYPE_ID('datetime')) o.value_date = value;
-  //   }
-  //   //Textarea related -> text
-  //   else if (viewTypeID == VIEW_TYPE_ID('textarea') ||
-  //     viewTypeID == VIEW_TYPE_ID('editable-textarea')) {
-  //     o.value_text = value;
-  //   }
-  //   //Selects Related -> JSON
-  //   else if (viewTypeID == VIEW_TYPE_ID('select') ||
-  //     viewTypeID == VIEW_TYPE_ID('multiselect') ||
-  //     viewTypeID == VIEW_TYPE_ID('tableselect')) {
-
-  //     o.value_json = JSON.stringify(value);
-  //   } else if (viewTypeID == VIEW_TYPE_ID('treeselect')) {
-  //     const sanitizedJSON = Object.assign({}, value);
-
-  //     if (sanitizedJSON.parent) {
-  //       if (sanitizedJSON.parent.children) {
-  //         for (let i = 0; i < sanitizedJSON.parent.children.length; i++) {
-  //           sanitizedJSON.parent.children[i]['parent'] = null;
-  //         }
-  //       }
-  //     }
-
-  //     o.value_json = JSON.stringify(sanitizedJSON);
-  //   }
-
-  //   return o;
-  // }
-
-  private initViewType() {
-    this.viewTypeID = this.property.input_view_type as number;
-    this.viewType = VIEW_TYPES.has(this.viewTypeID)
-      ? VIEW_TYPES.get(this.viewTypeID)
-      : null;
-  }
-
-  private initDataType() {
-    this.dataTypeID = this.property.input_data_type as number;
-    this.dataType = DATA_TYPES.has(this.dataTypeID)
-      ? DATA_TYPES.get(this.dataTypeID)
-      : null;
-  }
 
   public parseSource() {
     if (this.property.source_attr_id == null) {

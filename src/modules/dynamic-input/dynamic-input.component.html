@@ -1,9 +1,9 @@
 <!-- class="ng-invalid ng-dirty" -->
 <div class="dynamic-input">
-    <ng-container *ngIf="property != null">
+    <ng-container *ngIf="enabled()">
         <div class="dynamic-input-label">{{property.title}}</div>
 
-        <ng-container *ngIf="property.isString() && property.isInput()">
+        <ng-container *ngIf="(property.isString() || property.isInteger() || property.isDouble()) && property.isInput()">
             <plain-input
                 [value]="initialValue"
                 [property]="property"

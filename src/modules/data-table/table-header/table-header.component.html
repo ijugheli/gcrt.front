@@ -2,7 +2,7 @@
     <ul class="list">
         <li>
             <button
-                (click)="table.onAddRecord()"
+                (click)="table.onAddRecord(attribute?.id)"
                 type="button"
                 class="border-btn"
                 [class.disabled]="!table.isSettingEnabled('add')"

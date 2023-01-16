@@ -9,14 +9,15 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { NgxSpinnerModule } from "ngx-spinner";
-import {MenuModule} from 'primeng/menu';
-import {CardModule} from 'primeng/card';
+import { MenuModule } from 'primeng/menu';
+import { CardModule } from 'primeng/card';
 import { DataTableModule } from '../data-table/data-table.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {OverlayPanelModule} from 'primeng/overlaypanel';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 @NgModule({
   imports: [
     CommonModule,
@@ -39,6 +40,7 @@ import { FormsModule } from '@angular/forms';
   exports: [
     DynamicFormComponent
   ],
-  declarations: [DynamicFormComponent]
+  declarations: [DynamicFormComponent],
+  providers: [DynamicDialogRef, DynamicDialogConfig]
 })
 export class DynamicFormModule { }

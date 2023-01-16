@@ -45,20 +45,35 @@
 
                         </ng-container>
                     </ng-container>
-                    <ng-container *ngIf="initialValuesProvided">
+
+                    <ng-container *ngIf="form.initialsProvided()">
                         <ng-container *ngFor="let property of section.properties">
+
+                            <!-- <ng-container *ngIf="property.isGenerated()">
+                                <dynamic-input
+                                    (onChange)="form.onValueUpdate(property.id, $event)"
+                                    [initialValue]="form.initials[property.id]"
+                                    [property]="property"
+                                    [validation]="validation"
+                                ></dynamic-input>
+                            </ng-container>
+
+                            <ng-container *ngIf="!property.isGenerated()">
+                                
+                            </ng-container> -->
                             <dynamic-input
-                                (onChange)="onValueUpdate(property.id, $event)"
-                                [initialValue]="initialValues[property.id]"
+                                (onChange)="form.onValueUpdate(property.id, $event)"
+                                [initialValue]="form.initials[property.id]"
                                 [property]="property"
                                 [validation]="validation"
                             ></dynamic-input>
+
                         </ng-container>
                     </ng-container>
-                    <ng-container *ngIf="!initialValuesProvided">
+                    <ng-container *ngIf="!form.initialsProvided()">
                         <ng-container *ngFor="let property of section.properties">
                             <dynamic-input
-                                (onChange)="onValueUpdate(property.id, $event)"
+                                (onChange)="form.onValueUpdate(property.id, $event)"
                                 [property]="property"
                                 [validation]="validation"
                             ></dynamic-input>
@@ -93,7 +108,7 @@
                     pButton
                     (click)="onSubmit()"
                     type="button"
-                    [label]="valueID == null ? 'დამატება' : 'რედაქტირება'"
+                    [label]="form.initialsProvided() ? 'დამატება' : 'რედაქტირება'"
                     class="p-button-outlined p-button-md"
                 >
                     <i class="pi pi-check"></i>
@@ -116,7 +131,7 @@
                     >
                         <ng-container *ngFor="let property of section.properties">
                             <dynamic-input
-                                (onChange)="onValueUpdate(property.id, $event)"
+                                (onChange)="form.onValueUpdate(property.id, $event)"
                                 [property]="property"
                                 [validation]="validation"
                             ></dynamic-input>

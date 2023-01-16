@@ -1,43 +1,143 @@
-<section>
-    <div class="form-container">
-        <ng-container>
-            <ngx-spinner
-                size="medium"
-                color="#fff"
-                bdColor="rgba(51,51,51,0.1)"
-                type="ball-scale-multiple"
-                [fullScreen]="false"
+<section *ngIf="!attribute?.hasChildren()">
+    <data-table
+        [attrID]="attrID"
+        [title-editable]="true"
+    ></data-table>
+</section>
+
+<section *ngIf="attribute?.hasChildren()">
+    <p-panel header="{{attribute?.title}}">
+        <p-tabView>
+            <p-tabPanel
+                header="მართვა"
+                class="management-tab-panel"
             >
-                <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
-            </ngx-spinner>
-        </ng-container>
+                <p-tabView *ngIf="attribute?.hasChildren()">
+                    <p-tabPanel
+                        [header]="subAttribute.title"
+                        *ngFor="let subAttribute of children; let j = index"
+                        [selected]="j == 0"
+                    >
+                        <ng-container *ngIf="j == 0">
+                            <data-table [attrID]="attrID"></data-table>
+                        </ng-container>
+                        <ng-container *ngIf="j > 0">
+                            <data-table
+                                [attrID]="subAttribute.id"
+                                [valueID]="valueID"
+                            ></data-table>
+                        </ng-container>
+                    </p-tabPanel>
+                </p-tabView>
 
-        <ng-container *ngIf="properties != null && properties.length > 0">
-            <!-- <div>
-                <ng-container *ngFor="let child of children">
-                    <p-overlayPanel #op>
-                        <ng-template pTemplate>
-                            {{child.title}} {{child.title}}
-                            <data-table attrID="4"></data-table>
-                        </ng-template>
-                    </p-overlayPanel>
-                    <button
-                        type="text"
-                        pButton
-                        label="Basic"
-                        (click)="op.toggle($event)"
-                    ></button>
-                </ng-container>
-            </div> -->
+                <data-table
+                    *ngIf=" attribute && !attribute?.hasChildren()"
+                    [attrID]="attrID"
+                ></data-table>
+            </p-tabPanel>
 
-            <p-tabView>
-                <p-tabPanel
-                    [header]="subAttribute.title"
-                    *ngFor="let subAttribute of children; let j = index"
-                    [selected]="j == 0"
-                >
-                    <ng-container *ngIf="j == 0">
-                        <div class="manage-form-container">
+            <p-tabPanel header="დამატება">
+                <div class="form-container">
+                    <ng-container>
+                        <ngx-spinner
+                            size="medium"
+                            color="#fff"
+                            bdColor="rgba(51,51,51,0.1)"
+                            type="ball-scale-multiple"
+                            [fullScreen]="false"
+                        >
+                            <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+                        </ngx-spinner>
+                    </ng-container>
+
+                    <ng-container *ngIf="properties != null && properties.length > 0">
+                        <p-tabView *ngIf="attribute?.hasChildren()">
+                            <p-tabPanel
+                                [header]="subAttribute.title"
+                                *ngFor="let subAttribute of children; let j = index"
+                                [selected]="j == 0"
+                            >
+                                <ng-container *ngIf="j == 0">
+                                    <!-- <data-table [attrID]="attrID"></data-table> -->
+                                    <dynamic-form
+                                        [attribute]="attribute"
+                                        *ngIf="attribute"
+                                    ></dynamic-form>
+                                </ng-container>
+                                <ng-container *ngIf="j > 0">
+                                    <data-table
+                                        [attrID]="subAttribute.id"
+                                        [valueID]="valueID"
+                                    ></data-table>
+                                </ng-container>
+                            </p-tabPanel>
+                        </p-tabView>
+
+                        <!-- <p-tabView *ngIf="!attribute?.hasChildren()">
+                            <p-tabPanel
+                                [header]="subAttribute.title"
+                                *ngFor="let subAttribute of children; let j = index"
+                                [selected]="j == 0"
+                            >
+                                <ng-container *ngIf="j == 0">
+                                    <dynamic-form
+                                        [attribute]="attribute"
+                                        *ngIf="attribute"
+                                    ></dynamic-form>
+                                </ng-container>
+                                <ng-container *ngIf="j > 0">
+                                    <data-table
+                                        [attrID]="subAttribute.id"
+                                        [valueID]="valueID"
+                                    ></data-table>
+                                </ng-container>
+                            </p-tabPanel>
+                        </p-tabView> -->
+
+                        <div
+                            class="manage-form-container"
+                            *ngIf="!attribute?.hasChildren()"
+                        >
+                            <dynamic-form
+                                [attribute]="attribute"
+                                *ngIf="attribute"
+                            ></dynamic-form>
+                        </div>
+                        <!-- <p-divider></p-divider>
+
+                        <div class="form-actions">
+                            <span>
+                                <button
+                                    (click)="onCancel()"
+                                    pButton
+                                    type="button"
+                                    label="დახურვა"
+                                    class="p-button-outlined p-button-md"
+                                >
+                                    <i class="pi pi-replay"></i>
+                                </button>
+                                <button
+                                    pButton
+                                    (click)="onSubmit()"
+                                    type="button"
+                                    [label]="valueID == null ? 'დამატება' : 'რედაქტირება'"
+                                    class="p-button-outlined p-button-md"
+                                >
+                                    <i class="pi pi-check"></i>
+                                </button>
+                            </span>
+
+                        </div> -->
+                    </ng-container>
+                </div>
+            </p-tabPanel>
+
+        </p-tabView>
+
+    </p-panel>
+</section>
+
+<!-- <div class="manage-form-container">
                             <p-tabView>
                                 <p-tabPanel
                                     [header]="section.title"
@@ -65,7 +165,11 @@
                                     </ng-container>
 
                                 </p-tabPanel>
-                                <!-- <p-tabPanel
+                         
+                            </p-tabView>
+                        </div> -->
+
+<!-- <p-tabPanel
                         [header]="subAttribute.title"
                         *ngFor="let subAttribute of children; let i = index"
                         [selected]="i == 0"
@@ -73,82 +177,3 @@
                         <data-table [attrID]="subAttribute.id"></data-table>
       
                     </p-tabPanel> -->
-                            </p-tabView>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="j > 0">
-                        <data-table [attrID]="subAttribute.id" [valueID]="valueID"></data-table>
-                    </ng-container>
-
-                </p-tabPanel>
-            </p-tabView>
-
-            <div
-                class="manage-form-container"
-                *ngIf="children.length <= 0"
-            >
-                <p-tabView>
-                    <p-tabPanel
-                        [header]="section.title"
-                        *ngFor="let section of sections; let i = index"
-                        [selected]="i == 0"
-                    >
-                        <ng-container *ngIf="initialValuesProvided">
-                            <ng-container *ngFor="let property of section.properties">
-                                <dynamic-input
-                                    (onChange)="onValueUpdate(property.id, $event)"
-                                    [initialValue]="initialValues[property.id]"
-                                    [property]="property"
-                                    [validation]="validation"
-                                ></dynamic-input>
-                            </ng-container>
-                        </ng-container>
-                        <ng-container *ngIf="!initialValuesProvided">
-                            <ng-container *ngFor="let property of section.properties">
-                                <dynamic-input
-                                    (onChange)="onValueUpdate(property.id, $event)"
-                                    [property]="property"
-                                    [validation]="validation"
-                                ></dynamic-input>
-                            </ng-container>
-                        </ng-container>
-
-                    </p-tabPanel>
-                    <!-- <p-tabPanel
-                  [header]="subAttribute.title"
-                  *ngFor="let subAttribute of children; let i = index"
-                  [selected]="i == 0"
-              >
-                  <data-table [attrID]="subAttribute.id"></data-table>
-
-              </p-tabPanel> -->
-                </p-tabView>
-            </div>
-
-            <p-divider></p-divider>
-            <div class="form-actions">
-                <span>
-                    <button
-                        (click)="onCancel()"
-                        pButton
-                        type="button"
-                        label="დახურვა"
-                        class="p-button-outlined p-button-md"
-                    >
-                        <i class="pi pi-replay"></i>
-                    </button>
-                    <button
-                        pButton
-                        (click)="onSubmit()"
-                        type="button"
-                        [label]="valueID == null ? 'დამატება' : 'რედაქტირება'"
-                        class="p-button-outlined p-button-md"
-                    >
-                        <i class="pi pi-check"></i>
-                    </button>
-                </span>
-
-            </div>
-        </ng-container>
-    </div>
-</section>

@@ -41,8 +41,6 @@ export class RecordsService extends GuardedService {
 
     public attrID?: number;
 
-
-
     public urls: any = {
         'title': API_URL + '/attrs/{attr_id}/title',
         'add': API_URL + '/attrs/{attr_id}/values/add',
@@ -66,13 +64,13 @@ export class RecordsService extends GuardedService {
     }
 
     private save(response: any) {
-        console.log("Trying To save", response);
         if (!response || !response.hasOwnProperty('record') || !response.record) {
             return;
         }
 
         const record: MRecord = (new MRecord()).append(this.generateRecord(response.record));
-
+        let attribute = this.attributes.get(record.attrID);
+        if (attribute) record.withAttribute(attribute);
         this.records.set(record.valueID, record);
 
         return this;
@@ -87,12 +85,9 @@ export class RecordsService extends GuardedService {
         });
     }
 
-    // public set(recordID : number, values : MPropertyValue[]) {
-    //     this.save();
-    // }
-
     public async get(attrID: number, func?: Function) {
         const records: MRecord[] = [];
+        const attribute = this.attributes.get(attrID);
         await this.http.get<APIResponse<MRecord[]>>(
             this.urls['records'].replace('{attr_id}', attrID.toString()
             ), { headers: this.headers }).pipe(first()).toPromise().then((response) => {
@@ -105,6 +100,7 @@ export class RecordsService extends GuardedService {
                 for (let record of response.data as IRecord[]) {
                     const generated = this.generateRecord(record.values as IPropertyValue[]);
                     const recordModel = (new MRecord(record.valueID, record.attrID)).append(generated);
+                    if(attribute) recordModel.withAttribute(attribute);
                     records.push(recordModel);
                 }
 
@@ -118,23 +114,7 @@ export class RecordsService extends GuardedService {
                 console.error(error);
             });
         return records;
-
-        // .subscribe((response) => {
-        //     const records: MRecord[] = [];
-        //     if (!response || !response.hasOwnProperty('records') || !response.records) {
-        //         return;
-        //     }
-        //     for (let record of response) {
-        //         records.push((new MRecord(record.valueID, record.attrID)).append(record.values as MPropertyValue[]));
-        //     }
-        //     console.log('Records for ' + attrID + '-----');
-        //     console.log(response as MRecord[]);
-        //     console.log('Records for ' + attrID + '-----');
-        // });
     }
-
-
-
 
     private record(recordID: number) {
         if (!this.records.has(recordID)) {
@@ -174,8 +154,4 @@ export class RecordsService extends GuardedService {
     public editValueItem(values: any) {
         return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
     }
-
-
-
-
 }

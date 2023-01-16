@@ -14,23 +14,23 @@ export class MProperty {
     public input_data_type: number;
     public input_view_type: number;
     public is_mandatory: boolean = false;
-
     public insert_date: string;
     public update_date: string | null = null;
-
     public order_id: number;
-    public source: any = null;
     public has_filter: any = false;
-
-
-    public tree: any = null;
-    public sourceAttribute: any = null;
-
     public is_primary: boolean = false;
 
+    public sourceAttribute: any = null;
+    public source: any = null;
+    public tree: any = null;
+
+
+    public generated_by: number | null = null;
+    public generation_type: number | null = null;
 
     public options: any[] = [];
     public selectedOptions: MOption[] = [];
+
 
 
     public constructor(o: IProperty) {
@@ -51,7 +51,8 @@ export class MProperty {
         this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter == 1;
         this.is_primary = o.is_primary == 1;
-
+        this.generated_by = o.generated_by;
+        this.generation_type = o.generation_type;
 
         if (this.tree != null) {
             this.options = this.tree;
@@ -66,6 +67,28 @@ export class MProperty {
 
         return this;
     }
+
+
+    public isGenerated() {
+        return this.generated_by != null;
+    }
+
+    public switchGenerated() {
+        return this.generation_type == 1;
+    }
+
+    public singleValueGenerated() {
+        return this.generation_type == 2;
+    }
+
+
+
+
+
+
+
+
+
 
     public isDate() {
         return [DATA_TYPE_ID('date'), DATA_TYPE_ID('datetime')].indexOf(this.input_data_type) > -1;

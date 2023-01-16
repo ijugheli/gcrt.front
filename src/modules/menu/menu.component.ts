@@ -20,7 +20,7 @@ export class MenuComponent implements OnInit {
   public trees: any[] = [];
   public attributes: any[] = [];
 
-  public user : User | null = null;
+  public user: User | null = null;
 
   constructor(
     private attrsService: AttributesService,
@@ -33,7 +33,6 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.user = this.userService.me();
-    console.log(this.user);
     this.loadAttrs();
 
     // this.items = MENU_ITEMS.map((attr) => this.asMenuItem(attr));
@@ -219,7 +218,7 @@ export class MenuComponent implements OnInit {
           id: attr.id,
           title: attr.title,
           count: attr.count,
-          action: '/manage/' + attr.id,
+          action: '/add/' + attr.id,
         };
       });
     });
@@ -240,8 +239,8 @@ export class MenuComponent implements OnInit {
     return false;
   }
 
-  public navigate(attrID : number){
-    window.location.href = '/manage/' + attrID; 
+  public navigate(attrID: number) {
+    window.location.href = '/manage/' + attrID;
   }
 
   // private asMenuItem(attr: IMenuItem): IMenuItem {

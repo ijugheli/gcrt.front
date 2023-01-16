@@ -10,12 +10,12 @@ export interface IProperty {
     is_mandatory: number;
     has_filter: number;
     is_primary: number;
-
     insert_date: string;
     update_date: string | null;
-
     order_id: number;
     source: any;
     tree: any;
     sourceAttribute: any;
+    generated_by: number | null;
+    generation_type: number;
 }

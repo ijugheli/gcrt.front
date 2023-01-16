@@ -118,11 +118,14 @@ export class DataTableService {
 
 
 
-  public onAddRecord() {
-    if (this.attribute?.isEntity()) {
-      this.router.navigateByUrl('/add/' + this.attribute.id);
-      return;
-    }
+  public onAddRecord(attrID?: number) {
+
+    const attribute = (attrID) ? this.attributes.get(attrID) : this.attribute;
+
+    // if (attribute?.isEntity()) {
+    //   this.router.navigateByUrl('/add/' + attribute.id);
+    //   return;
+    // }
 
     let preDefined;
 
@@ -137,9 +140,12 @@ export class DataTableService {
     //   ];
     // }
 
+    if (attribute)
+      this.form.withAttribute(attribute);
+
     const dialogReference = this.dialog.open(DynamicFormComponent, {
       data: {
-        attrID: this.attribute?.id,
+        attrID: attribute?.id,
         // relatedValueID: this.valueID,
         // preDefined: preDefined
       },
@@ -165,10 +171,10 @@ export class DataTableService {
 
     this.form.withRecord(record);
 
-    if (this.attribute?.isEntity()) {
-      this.router.navigateByUrl('/edit/' + this.attribute.id + '/' + valueID);
-      return;
-    }
+    // if (this.attribute?.isEntity()) {
+    //   this.router.navigateByUrl('/edit/' + this.attribute.id + '/' + valueID);
+    //   return;
+    // }
 
     //@TODO uncomment valueID and relatedValueID
     const dialogReference = this.dialog.open(DynamicFormComponent, {

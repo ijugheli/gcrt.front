@@ -14,6 +14,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DividerModule } from 'primeng/divider';
 import { DynamicInputModule } from 'src/modules/dynamic-input/dynamic-input.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
+import { PanelModule } from 'primeng/panel';
 
 @NgModule({
   imports: [
@@ -30,7 +32,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     OverlayPanelModule,
     DividerModule,
     DynamicInputModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    DynamicFormModule,
+    PanelModule,
   ],
   declarations: [AttributeFormComponent]
 })

@@ -31,6 +31,9 @@ export class PlainInputComponent implements OnInit {
     if (!this.property || this.property == null) {
       return;
     }
+    if(this.property.isInteger()) {
+      console.log(this.property);
+    }
 
     this.initialized = true;
   }

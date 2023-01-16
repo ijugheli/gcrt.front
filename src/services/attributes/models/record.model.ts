@@ -92,14 +92,7 @@ export class MRecord {
         }
 
         return propertyValue.value;
-
     }
-
-
-
-
-
-
 
     public getTitle() {
         let value = this.values.find((item: MPropertyValue) => item.property?.is_primary);
@@ -115,5 +108,10 @@ export class MRecord {
         const value = this.map.get(propertyID);
 
         return value ? value.value : undefined;
+    }
+
+    public withAttribute(attribute : MAttribute) {
+        this.attribute = attribute;
+        return this;
     }
 }

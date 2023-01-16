@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Attribute } from 'src/app/app.models';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { AttrValue } from '../../app/app.models';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { NgxSpinnerService } from "ngx-spinner";
-import { DATA_TYPE_ID } from '../../app/app.config';
 import { MProperty } from '../../services/attributes/models/property.model';
 import { FormService } from '../../services/form.service';
 import { MPropertyValue } from 'src/services/attributes/models/property.value.model';
 import { RecordsService } from '../../services/attributes/Records.service';
+import { MAttribute } from '../../services/attributes/models/attribute.model';
 
 
 @Component({
@@ -18,6 +18,7 @@ import { RecordsService } from '../../services/attributes/Records.service';
   styleUrls: ['./dynamic-form.component.css']
 })
 export class DynamicFormComponent implements OnInit {
+  @Input('attribute') public attribute: MAttribute | null = null;
   //@TODO initialize attrID properly
   public attrID = 5; //Project
   //Value for editing 
@@ -52,10 +53,15 @@ export class DynamicFormComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private spinner: NgxSpinnerService,
-    private form: FormService,
+    public form: FormService,
   ) { }
 
   ngOnInit() {
+    if(this.attribute) {
+      this.attrID = this.attribute.id;
+      this.load();
+      return;
+    }
     //Attribute ID for form generation
     this.attrID = this.config.data.attrID;
     //ValueID for editing mode.
@@ -84,60 +90,32 @@ export class DynamicFormComponent implements OnInit {
     let attribute = this.attributes.find(this.attrID);
     if (attribute == null) return;
 
+    // this.form.record ? this.form.withAttribute(attribute);
+
     this.properties = attribute.properties;
     this.sections = attribute.sections;
 
     /////////BODY//////////////
 
-    if (this.form.record) {
-      this.mode = 'edit';
-      for (let propID in this.form.record.propValueMap) {
-        let propertyID = parseInt(propID);
-        const simpleValue = this.form.record.formValueMap[propertyID];
-        const value = this.form.record.map.get(propertyID);
-        if (!value || !simpleValue) continue;
+    // if (this.form.record) {
+    //   this.mode = 'edit';
+    //   for (let propID in this.form.record.propValueMap) {
+    //     let propertyID = parseInt(propID);
+    //     const simpleValue = this.form.record.formValueMap[propertyID];
+    //     const value = this.form.record.map.get(propertyID);
+    //     if (!value || !simpleValue) continue;
 
-        this.initialValues[propertyID] = simpleValue;
-        this.values.set(propertyID, value);
-      }
-    } else {
-      this.initValues();
-    }
-
-
-    // this.spinner.show();
-
-    //For editing provided value.
-    // if (this.valueID != null) {
-    //   this.attributes.attributeWithValue(this.attrID, this.valueID)
-    //     .subscribe((data: any) => {
-    //       this.initializeAttribute(data);
-    //       if (data.values) this.setInitialValues(data.values);
-    //       this.spinner.hide();
-    //     });
-    //   return;
+    //     this.initialValues[propertyID] = simpleValue;
+    //     this.values.set(propertyID, value);
+    //   }
+    // } else {
+    //   this.initValues();
     // }
-
-    // this.spinner.hide();
-    // console.log(attribute. );
-    // this.attrsService.attribute(this.attrID)
-    //   .subscribe((data: any) => {
-    //     this.initializeAttribute(data);
-    //     this.spinner.hide();
-    //   });
-
-
-
 
 
   }
 
-  // private initializeAttribute(data: any) {
-  //   this.properties = data.properties;
-  //   // if (data.properties) this.initValues(data.properties);
-  //   if (data.children) this.initChildren(data.children);
-  //   if (data.properties) this.parseProperties(data.properties);
-  // }
+
 
   private initChildren(children: any[]) {
     this.children = children;
@@ -158,57 +136,23 @@ export class DynamicFormComponent implements OnInit {
     });
   }
 
-  // private setInitialValues(values: any) {
-  // for (let propertyID in values) {
-  //   this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
-  // }
-  // }
 
-  // private parseProperties(properties: any[]) {
-  //   this.sections = properties
-  //     .sort((a, b) => a.order_id > b.order_id ? 1 : -1)
-  //     .filter((i) => i.type == 2);
-
-  //   if (this.sections.length <= 0) {
-  //     this.sections = [
-  //       {
-  //         'properties': properties.sort((a, b) => a.order_id > b.order_id ? 1 : -1),
-  //         'title': 'მახასიათებლები',
-  //       },
-  //     ];
-  //     return;
-
-  //   }
-  //   this.sections = this.sections.map((section) => {
-  //     section['properties'] = properties
-  //       .filter((j) => j.p_id == section.id)
-  //       .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
-  //     //Adds input if there is no subs
-  //     if (section['properties'].length == 0) {
-  //       section['properties'] = [section];
-  //     }
-  //     return section;
-  //   });
-
-  //   // if(this.sections.length)
-  // }
 
   ////////////////////////////////////Form Related////////////////////////////////////
   public onValueUpdate(propertyID: number, e: MPropertyValue | null) {
     this.validation = false;
-    console.log('-------------------------Value Updated---------------------------');
-    console.log(propertyID);
-    console.log(e);
-    console.log(this.values);
-    console.log(this.values.has(propertyID));
-    console.log('-------------------------Value Updated---------------------------');
+    // console.log('-------------------------Value Updated---------------------------');
+    // console.log(propertyID);
+    // console.log(e);
+    // console.log(this.values);
+    // console.log(this.values.has(propertyID));
+    // console.log('-------------------------Value Updated---------------------------');
 
     if (!propertyID || !this.values.has(propertyID)) {
       return;
     }
 
     this.values.set(propertyID, e);
-    console.log(this.values);
   }
 
   private applyField(field: any) {
@@ -243,31 +187,117 @@ export class DynamicFormComponent implements OnInit {
 
 
   public async onSubmit() {
-    this.form.enableValidation();
-    if (!this.validate()) {
-      return;
-    }
-
-    // this.appendRelated();
-    // this.appendPreDefined();
-    const object = Array.from(this.values.entries());
-
-
-    if (this.mode == 'edit' && this.form.record) {
+    await this.form.onSubmit(() => {
       this.spinner.show();
-      await this.records.edit(this.attrID, this.form.record.valueID, object, () => {
-        console.log('Edited');
-        this.ref.close();
-        this.spinner.hide();
-      });
-      return;
-    }
-
-    this.spinner.show();
-    await this.records.add(this.attrID, object, (response?: any) => {
-      this.ref.close();
+    },(response : any) => {
       this.spinner.hide();
+      this.ref.close();
     });
+
+    // this.ref.close();
+    // this.form.enableValidation();
+    // if (!this.validate()) {
+    //   return;
+    // }
+
+    // // this.appendRelated();
+    // // this.appendPreDefined();
+    // const object = Array.from(this.values.entries());
+
+
+    // if (this.mode == 'edit' && this.form.record) {
+    //   this.spinner.show();
+    //   await this.records.edit(this.attrID, this.form.record.valueID, object, () => {
+    //     console.log('Edited');
+    //     this.ref.close();
+    //     this.spinner.hide();
+    //   });
+    //   return;
+    // }
+
+    // this.spinner.show();
+    // await this.records.add(this.attrID, object, (response?: any) => {
+    //   this.ref.close();
+    //   this.spinner.hide();
+    // });
+  }
+
+  private validate(): boolean {
+    let invalids = this.properties.filter((property: MProperty) => {
+      if (property.isSection()) return false;
+      if (!property.mandatory()) return false;
+
+      return this.values.get(property.id) === null;
+    });
+
+    console.log('Invalids');
+    console.log(invalids);
+    console.log('Invalids');
+
+    return invalids.length <= 0;
+  }
+
+  public onCancel() {
+    this.ref.close();
+  }
+
+
+
+
+
+
+
+
+
+    // private initializeAttribute(data: any) {
+  //   this.properties = data.properties;
+  //   // if (data.properties) this.initValues(data.properties);
+  //   if (data.children) this.initChildren(data.children);
+  //   if (data.properties) this.parseProperties(data.properties);
+  // }
+
+    // private setInitialValues(values: any) {
+  // for (let propertyID in values) {
+  //   this.initialValues[propertyID] = values[propertyID][values[propertyID]['value_name']];
+  // }
+  // }
+
+  // private parseProperties(properties: any[]) {
+  //   this.sections = properties
+  //     .sort((a, b) => a.order_id > b.order_id ? 1 : -1)
+  //     .filter((i) => i.type == 2);
+
+  //   if (this.sections.length <= 0) {
+  //     this.sections = [
+  //       {
+  //         'properties': properties.sort((a, b) => a.order_id > b.order_id ? 1 : -1),
+  //         'title': 'მახასიათებლები',
+  //       },
+  //     ];
+  //     return;
+
+  //   }
+  //   this.sections = this.sections.map((section) => {
+  //     section['properties'] = properties
+  //       .filter((j) => j.p_id == section.id)
+  //       .sort((a, b) => a.order_id > b.order_id ? 1 : -1);
+  //     //Adds input if there is no subs
+  //     if (section['properties'].length == 0) {
+  //       section['properties'] = [section];
+  //     }
+  //     return section;
+  //   });
+
+  //   // if(this.sections.length)
+  // }
+
+}
+
+
+
+
+
+
 
 
 
@@ -302,25 +332,27 @@ export class DynamicFormComponent implements OnInit {
     //     this.ref.close();
     //   });
 
-  }
 
-  private validate(): boolean {
-    let invalids = this.properties.filter((property: MProperty) => {
-      if (property.isSection()) return false;
-      if (!property.mandatory()) return false;
 
-      return this.values.get(property.id) === null;
-    });
 
-    console.log('Invalids');
-    console.log(invalids);
-    console.log('Invalids');
+    
+    // this.spinner.show();
 
-    return invalids.length <= 0;
-  }
+    //For editing provided value.
+    // if (this.valueID != null) {
+    //   this.attributes.attributeWithValue(this.attrID, this.valueID)
+    //     .subscribe((data: any) => {
+    //       this.initializeAttribute(data);
+    //       if (data.values) this.setInitialValues(data.values);
+    //       this.spinner.hide();
+    //     });
+    //   return;
+    // }
 
-  public onCancel() {
-    this.ref.close();
-  }
-
-}
+    // this.spinner.hide();
+    // console.log(attribute. );
+    // this.attrsService.attribute(this.attrID)
+    //   .subscribe((data: any) => {
+    //     this.initializeAttribute(data);
+    //     this.spinner.hide();
+    //   });

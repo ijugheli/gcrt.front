@@ -29,6 +29,7 @@ import { MAttribute } from 'src/services/attributes/models/attribute.model';
 export class DataTableComponent implements OnInit {
   @Input('attrID') public attrID!: any;
   @Input('valueID') public valueID!: any;
+  @Input('title-editable') public titleEditable: boolean = false;
   /**
    * List of existing rows.
    */

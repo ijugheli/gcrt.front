@@ -5,6 +5,7 @@ import { DATA_TYPE_ID } from 'src/app/app.config';
 import { AttrProperty, AttrValue } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MAttribute } from '../../services/attributes/models/attribute.model';
 
 @Component({
   selector: 'app-attribute-form',
@@ -32,19 +33,28 @@ export class AttributeFormComponent implements OnInit {
 
   value: number = 0;
 
+  public attribute? : MAttribute;
+
+  public mode = 'add';
+
   constructor(
-    private attrsService: AttributesService,
+    private attributes: AttributesService,
     public activatedRoute: ActivatedRoute,
     public router: Router,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+
   ) { }
 
   ngOnInit() {
     let attrID: any = this.activatedRoute.snapshot.paramMap.get('attr_id');
     this.attrID = attrID == null ? null : parseInt(attrID);
 
+    this.attribute = this.attributes.get(this.attrID);
+
     let valueID: any = this.activatedRoute.snapshot.paramMap.get('value_id');
     this.valueID = valueID == null ? null : parseInt(valueID);
+
+
 
     if (!this.attrID || this.attrID == null) {
       this.router.navigateByUrl('/');
@@ -58,7 +68,7 @@ export class AttributeFormComponent implements OnInit {
     this.spinner.show();
 
     if (this.valueID != null) {
-      this.attrsService.attributeWithValue(this.attrID, this.valueID)
+      this.attributes.attributeWithValue(this.attrID, this.valueID)
         .subscribe((data: any) => {
           this.initializeAttribute(data);
           if (data.values) this.setInitialValues(data.values);
@@ -67,7 +77,7 @@ export class AttributeFormComponent implements OnInit {
       return;
     }
 
-    this.attrsService.attribute(this.attrID)
+    this.attributes.attribute(this.attrID)
       .subscribe((data: any) => {
         this.initializeAttribute(data);
         this.spinner.hide();
@@ -147,7 +157,7 @@ export class AttributeFormComponent implements OnInit {
 
     if (this.valueID != null) {
       this.spinner.show();
-      this.attrsService
+      this.attributes
         .editValueCollection(this.attrID, this.valueID, Array.from(this.values.entries()))
         .subscribe((data) => {
           this.spinner.hide();
@@ -158,7 +168,7 @@ export class AttributeFormComponent implements OnInit {
     }
 
 
-    this.attrsService
+    this.attributes
       .addValueCollection(this.attrID, Array.from(this.values.entries()))
       .subscribe((data) => {
         this.spinner.hide();
