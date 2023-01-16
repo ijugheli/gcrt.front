@@ -23,7 +23,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'structure/:attr_id',
+    path: 'structure',
     component: AttributesStructureComponent,
     canActivate: [AuthGuard]
   },
