@@ -1,4 +1,5 @@
 import { HttpHeaders } from "@angular/common/http";
+import { MAttribute } from "src/services/attributes/models/attribute.model";
 import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
 
 
@@ -20,7 +21,7 @@ export class AttrProperty {
 
     public order_id: number | null = null;
     public source: any = null;
-    public tree : any = null;
+    public tree: any = null;
     public sourceAttribute: any = null;
 }
 export class Property {
@@ -43,7 +44,7 @@ export class Property {
 
     public options: any[] = [];
     public selectedOptions: any[] = [];
-    public tree : any = null;
+    public tree: any = null;
     public sourceAttribute: any = null;
 
     public constructor(o: AttrProperty) {
@@ -64,7 +65,7 @@ export class Property {
         this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter;
 
-        if(this.tree != null) {
+        if (this.tree != null) {
 
             this.options = this.tree;
             this.selectedOptions = [];
@@ -176,7 +177,41 @@ export class User {
     public phone!: string;
     public address!: string;
     public email!: string;
+    public permissions: UserAttrPermission[] = [];
 }
+
+export class UserAttrPermission {
+    public id!: number;
+    public user_id!: number | null;
+    public attr_id!: number | null;
+    public update: boolean | null = false;
+    public delete: boolean | null = false;
+    public structure: boolean | null = false;
+}
+
+export class MManageUserPermission {
+    public id!: number;
+    public title!: string | null;
+    public attributeType!: number | null;
+    public update: boolean | null = false;
+    public delete: boolean | null = false;
+    public structure: boolean | null = false;
+
+    public static from(attribute: MAttribute, userAttrPermission: UserAttrPermission | null) {
+        let permission = new MManageUserPermission();
+
+        permission.id = attribute.id;
+        permission.title = attribute.title;
+        permission.attributeType = attribute.type;
+        permission.update = userAttrPermission?.update || false;
+        permission.delete = userAttrPermission?.delete || false;
+        permission.structure = userAttrPermission?.structure || false;
+
+        return permission;
+    }
+}
+
+
 
 export class GuardedService {
     public headers: HttpHeaders;

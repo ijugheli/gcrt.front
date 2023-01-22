@@ -1,0 +1,14 @@
+.p-datatable .p-datatable-tbody > tr > td, .p-treetable .p-treetable-tbody > tr > td {
+    font-size: 13px !important;
+    padding: 4px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+    padding-left: 9px !important;
+}
+
+.p-datatable.p-datatable-sm .p-datatable-thead tr th, .p-treetable.p-treetable-sm .p-treetable-thead tr th {
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+    text-align: left !important;
+    position: relative !important;
+}

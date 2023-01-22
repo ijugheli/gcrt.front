@@ -3,6 +3,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { User } from 'src/app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 interface cachedFilter {
   value: string;
@@ -32,6 +33,7 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private messageService: MessageService,
     private spinner: NgxSpinnerService,
+    private router: Router,
     private confirmationService: ConfirmationService,) {
 
   }
@@ -44,6 +46,8 @@ export class UsersComponent implements OnInit {
     this.spinner.show();
     this.userService.list().subscribe((users) => {
       this.users = users;
+      this.userService.users = this.users;
+      
       this.parseFilters();
       this.spinner.hide();
     }, (error) => {
@@ -119,6 +123,9 @@ export class UsersComponent implements OnInit {
     window.location.href = '/users/edit/' + userID;
   }
 
+  public onPermissions(userID: number) {
+    this.router.navigateByUrl(`/users/permissions/${userID}`);
+  }
 
 }
 

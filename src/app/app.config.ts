@@ -46,7 +46,7 @@ export const ATTR_TYPES: Map<string, number> = new Map([
 
 export const ATTR_TYPE_ID = (type: string) => ATTR_TYPES.get(type);
 
- 
+
 export const PROPERTY_TYPES: Map<string, number> = new Map([
   ['input', 1],
   ['section', 2],
@@ -80,6 +80,11 @@ export const ACTION_SETTINGS = {
   ]
 }
 
+export enum AttrPermissionTypes {
+  UPDATE = 1,
+  DELETE = 2,
+  STRUCTURE = 3,
+}
 
 //DEPRECATED
 export const TABLE_SETTINGS: Map<String, IActionItem> = new Map(

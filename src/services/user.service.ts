@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
-import { GuardedService, User } from '../app/app.models';
+import { GuardedService, User, UserAttrPermission } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends GuardedService {
+
+  public users: User[] = [];
 
   public urls: any = {
     'list': API_URL + '/user/list',
@@ -18,6 +20,8 @@ export class UserService extends GuardedService {
     'details': API_URL + '/user/{user_id}',
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
+    'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
+    'attrPermissionList': API_URL + '/user/permissions/{user_id}',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -51,6 +55,14 @@ export class UserService extends GuardedService {
     return this.http.delete(this.urls['delete'].replace('{user_id}', userID), { headers: this.headers });
   }
 
+  public saveAttrPermission(userID: number, attrID: number, values: any) {
+    return this.http.post(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+  }
+
+  public attrPermissionList(userID: number) {
+    return this.http.get<UserAttrPermission[]>(this.urls['attrPermissionList'].replace('{user_id}', userID), { headers: this.headers });
+  }
+
   public me() {
     const auth = localStorage.getItem('auth');
 
@@ -79,6 +91,10 @@ export class UserService extends GuardedService {
     }
     // Return an observable with a user-facing error message.
     return throwError(() => response);
+  }
+
+  public getUser(userID: number) {
+    return this.users.find((user) => user.id == userID) || null;
   }
 
 }

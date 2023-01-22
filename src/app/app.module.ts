@@ -23,6 +23,7 @@ import { AttributeFormModule } from '../pages/attribute-form/attribute-form.modu
 import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { DialogService } from 'primeng/dynamicdialog';
     ConfirmDialogModule,
     ManageUserModule,
     AppRoutingModule,
-    AttributesStructureModule
+    AttributesStructureModule,
+    ManageUserPermissionsModule
   ],
   providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

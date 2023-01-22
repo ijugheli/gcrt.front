@@ -1,0 +1,45 @@
+<section>
+  <div class="table-container" style="margin-top:25px">
+
+    <p-table sortMode="single" styleClass="p-datatable-striped p-datatable-sm" [paginator]="true" [rows]="25"
+      currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+      [value]="data" dataKey="id" [tableStyle]="{'min-width': '100%'}">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 5rem"></th>
+          <th>ID</th>
+          <th>დასახელება</th>
+          <!-- <th>ატრიბუტის ტიპი</th> -->
+          <th>განახლება</th>
+          <th>წაშლა</th>
+          <th>სტრუქტურა</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-attribute let-permission="permission">
+        <tr>
+          <td>
+          <td>{{attribute.id}}</td>
+          <td>{{attribute.title}}</td>
+          <!-- <td> -->
+            <!-- <ng-container *ngIf="attribute.isStandard()">სტანდარტული</ng-container>
+            <ng-container *ngIf="attribute.isTree()">ხე</ng-container>
+            <ng-container *ngIf="attribute.isEntity()">ობიექტი</ng-container>
+          </td> -->
+          <td>
+            <p-inputSwitch [(ngModel)]="attribute.update"
+              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>
+          </td>
+          <td>
+            <p-inputSwitch [(ngModel)]="attribute.delete"
+              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.DELETE, $event.checked)"></p-inputSwitch>
+          </td>
+          <td>
+            <p-inputSwitch [(ngModel)]="attribute.structure"
+              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.STRUCTURE, $event.checked)"></p-inputSwitch>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</section>

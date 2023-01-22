@@ -108,13 +108,14 @@
                     <td>{{user.phone}}</td>
                     <td>{{user.address}}</td>
                     <td>
-                        <!-- <button
+                        <button
                             pButton
                             type="button"
+                            (click)="onPermissions(user.id)"
                             class="p-button-outlined p-button-rounded"
                         >
                             წვდომები
-                        </button> -->
+                        </button>
                         <button
                             pButton
                             type="button"
