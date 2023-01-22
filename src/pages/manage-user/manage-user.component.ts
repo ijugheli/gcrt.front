@@ -3,8 +3,7 @@ import { validateEmail } from 'src/app/app.func';
 import { UserService } from '../../services/user.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
-import { ActivatedRoute } from '@angular/router';
-import { User } from 'src/app/app.models';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-manage-user',
@@ -30,12 +29,13 @@ export class ManageUserComponent implements OnInit {
   constructor(
     private userService: UserService,
     private spinner: NgxSpinnerService,
-    private route: ActivatedRoute,
     private messageService: MessageService,
+    private dialogConfig: DynamicDialogConfig,
+    private dialogRef: DynamicDialogRef
   ) { }
 
   ngOnInit() {
-    this.userID = this.route.snapshot.params['user_id'] ? parseInt(this.route.snapshot.params['user_id']) : null;
+    this.userID = parseInt(this.dialogConfig.data?.userID) || null;
 
     this.loadUser();
   }
@@ -46,7 +46,7 @@ export class ManageUserComponent implements OnInit {
     }
 
     this.spinner.show();
-    
+
     this.userService.details(this.userID).subscribe((data) => {
       this.actionTitle = 'რედაქტირება';
       this.values['email'] = data.email;
@@ -62,7 +62,7 @@ export class ManageUserComponent implements OnInit {
   }
 
   onCancel() {
-    window.location.href = '/users/';
+    this.dialogRef.close();
   }
 
   onSubmit() {
@@ -73,68 +73,59 @@ export class ManageUserComponent implements OnInit {
       !this.isValidValue('lastname') ||
       !this.isValidValue('phone') ||
       (this.userID == null && !this.isValidValue('password'))) {
-        console.log('VALIDATION ERROR');
+      console.log('VALIDATION ERROR');
       setTimeout(() => {
         this.validation = false;
       }, 5000);
       return;
     }
     console.log('HERE');
-    this.userID != null
-      ? this.edit()
-      : this.add();
+
+    this.handleSubmit();
   }
 
-  private add() {
-    this.spinner.show();
-    this.userService
-      .add(this.values)
-      .subscribe((data) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'სისტემის მომხმარებელი მომხმარებელი ' + this.values['email'] + ' წარმატებით დაემატა',
-        });
-        this.spinner.hide();
-        setTimeout(() => {
-          window.location.href = '/users/';
-        }, 500);
-      }, (error) => {
-        this.spinner.hide();
-        this.messageService.add({
-          severity: 'error',
-          summary: (error != null && error.hasOwnProperty('StatusMessage'))
-            ? error.statusMessage
-            : 'არასწორი მომხმარებლის მონაცემები',
-          detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
-        });
-      });
-  }
 
-  private edit() {
+  private handleSubmit() {
     this.spinner.show();
 
     if (this.userID == null) {
+      this.userService
+        .add(this.values)
+        .subscribe((data) => {
+          this.showSuccess();
+        }, (error) => {
+          this.showError(error);
+        });
       return;
     }
 
     this.userService
       .edit(this.userID, this.values)
       .subscribe((data) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'სისტემის მომხმარებლის ' + this.values['email'] + ' ცვლილება წარმატებით დასრულდა',
-        });
-        this.spinner.hide();
+        this.showSuccess();
       }, (error) => {
-        this.spinner.hide();
-        this.messageService.add({
-          severity: 'error',
-          summary: (error != null && error.hasOwnProperty('StatusMessage'))
-            ? error.statusMessage
-            : 'არასწორი მომხმარებლის მონაცემები',
-          detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
-        });
+        this.showError(error);
       });
+  }
+
+  private showSuccess() {
+    const msg = this.userID != null ? 'რედაქტირდა' : 'დაემატა';
+    this.messageService.add({
+      severity: 'success',
+      summary: 'სისტემის მომხმარებელი ' + this.values['email'] + ' წარმატებით ' + msg,
+    });
+    this.spinner.hide();
+  }
+
+  private showError(error: any) {
+    this.messageService.add({
+      severity: 'error',
+      summary: (error != null && error.hasOwnProperty('StatusMessage'))
+        ? error.statusMessage
+        : 'არასწორი მომხმარებლის მონაცემები',
+      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
+    });
+    this.spinner.hide();
   }
 
   public isEmailValid() {

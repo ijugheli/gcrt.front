@@ -1,7 +1,9 @@
 .form-actions {
     width: 100%;
     text-align: right;
+    margin: 10px 0px 0px 0px;
 }
+
 
 section>div {
     width: 50% !important;
@@ -27,3 +29,4 @@ button:first-child {
     color: #ef0000bd;
     font-size: 1.25rem;
 }
+

@@ -11,6 +11,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     ToastModule,
     NgxSpinnerModule,
     ButtonModule,
+    InputSwitchModule,
     InputTextModule
   ],
   providers: [ConfirmationService],

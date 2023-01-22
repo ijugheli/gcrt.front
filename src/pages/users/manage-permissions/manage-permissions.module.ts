@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DataTableModule } from "../../../modules/data-table/data-table.module";
 import { ManageUserPermissionsComponent } from './manage-permissions.component';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     declarations: [ManageUserPermissionsComponent],
@@ -18,6 +19,7 @@ import { ManageUserPermissionsComponent } from './manage-permissions.component';
         FormsModule,
         InputSwitchModule,
         ButtonModule,
+        ToastModule,
         DropdownModule,
         DataTableModule
     ]

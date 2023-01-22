@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { GuardedService, User, UserAttrPermission } from '../app/app.models';
@@ -21,7 +21,7 @@ export class UserService extends GuardedService {
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
     'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
-    'attrPermissionList': API_URL + '/user/permissions/{user_id}',
+    'updateStatusID': API_URL + '/user/update-status/{user_id}/{status_id}',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -29,7 +29,6 @@ export class UserService extends GuardedService {
   }
 
   public list(): Observable<User[]> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
     return this.http.get<User[]>(this.urls['list'], { headers: this.headers });
   }
 
@@ -59,8 +58,8 @@ export class UserService extends GuardedService {
     return this.http.post(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
   }
 
-  public attrPermissionList(userID: number) {
-    return this.http.get<UserAttrPermission[]>(this.urls['attrPermissionList'].replace('{user_id}', userID), { headers: this.headers });
+  public updateStatusID(userID: number, statusID: number) {
+    return this.http.post(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
   }
 
   public me() {
@@ -93,8 +92,14 @@ export class UserService extends GuardedService {
     return throwError(() => response);
   }
 
-  public getUser(userID: number) {
-    return this.users.find((user) => user.id == userID) || null;
+  public async getUser(userID: number) {
+    let user = this.users.find((user) => user.id == userID) || null;
+
+    if (user != null) return user;
+
+    user = await lastValueFrom(this.details(userID)) || null;
+
+    return user;
   }
 
 }

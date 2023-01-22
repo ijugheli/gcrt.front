@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { User } from 'src/app/app.models';
 import { NgxSpinnerService } from "ngx-spinner";
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-
+import { DialogService } from 'primeng/dynamicdialog';
+import { ManageUserComponent } from '../manage-user/manage-user.component';
 interface cachedFilter {
   value: string;
   matdhMode?: string;
@@ -14,7 +15,8 @@ interface cachedFilter {
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css'],
-  providers: [MessageService]
+  providers: [MessageService, DialogService],
+  encapsulation: ViewEncapsulation.None
 })
 export class UsersComponent implements OnInit {
   public users: User[] = [];
@@ -32,6 +34,7 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private messageService: MessageService,
+    private dialogService: DialogService,
     private spinner: NgxSpinnerService,
     private router: Router,
     private confirmationService: ConfirmationService,) {
@@ -47,7 +50,6 @@ export class UsersComponent implements OnInit {
     this.userService.list().subscribe((users) => {
       this.users = users;
       this.userService.users = this.users;
-      
       this.parseFilters();
       this.spinner.hide();
     }, (error) => {
@@ -115,12 +117,28 @@ export class UsersComponent implements OnInit {
 
   }
 
-  public onAddUser() {
-    window.location.href = '/users/add';
-  }
+  public updateStatusID(userID: number, event: any) {
 
-  public onEdit(userID: number) {
-    window.location.href = '/users/edit/' + userID;
+    const statusID = event.checked ? 1 : 0;
+
+    this.userService.updateStatusID(userID, statusID).subscribe((data) => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'სისტემის მომხმარებლის სტატუსი წარმატებით შეიცვალა',
+      });
+    }, (error) => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'სისტემის მომხმარებლის სტატუსი ცვლილებისას დაფიქსირდა შეცდომა',
+      });
+    });
+  }
+  public handleClick(userID?: number) {
+    this.dialogService.open(ManageUserComponent, {
+      data: { userID: userID != undefined ? userID : null, },
+      width: '30%',
+      position: 'top',
+    });
   }
 
   public onPermissions(userID: number) {

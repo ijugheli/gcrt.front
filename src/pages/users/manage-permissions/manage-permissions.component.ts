@@ -25,12 +25,14 @@ export class ManageUserPermissionsComponent implements OnInit {
   public attrPermissionTypes = AttrPermissionTypes;
   public initialData: MManageUserPermission[] = [];
   public data: MManageUserPermission[] = [];
+  public isLoading: boolean = false;
+
+  public filters: { [key: string]: number | string | null } = {
+    'title': ''
+  };
 
   ngOnInit(): void {
-    this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
-    this.user = this.userService.getUser(this.userID);
-    this.attributesList = this.attributes.asList();
-    this.parseData();
+    this.init();
   }
 
   public updateAttrPermission(attrID: number, type: AttrPermissionTypes, value: boolean) {
@@ -43,6 +45,11 @@ export class ManageUserPermissionsComponent implements OnInit {
         // if permission exists update it
         const index = this.user?.permissions.indexOf(attrPermission);
         this.user!.permissions[index!] = data as UserAttrPermission;
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'სისტემის მომხმარებლის წვდომის რედაქტირება წარმატებით დასრულდა.',
+        });
         return;
       }
 
@@ -56,7 +63,6 @@ export class ManageUserPermissionsComponent implements OnInit {
         severity: 'success',
         summary: 'სისტემის მომხმარებლის წვდომის რედაქტირება წარმატებით დასრულდა.',
       });
-
     }, (error) => {
       this.data = this.initialData; // restore old data on error
 
@@ -65,6 +71,15 @@ export class ManageUserPermissionsComponent implements OnInit {
         summary: 'ოპერაციის შესრულებისას მოხდა შეცდომა',
       });
     });
+  }
+
+  private async init() {
+    this.isLoading = true;
+    this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
+    this.user = await this.userService.getUser(this.userID);
+    this.attributesList = this.attributes.asList();
+    this.parseData();
+    this.isLoading = false;
   }
 
   private parseData() {

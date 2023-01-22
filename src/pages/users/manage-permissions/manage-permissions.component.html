@@ -1,31 +1,45 @@
 <section>
-  <div class="table-container" style="margin-top:25px">
+  <p-toast></p-toast>
 
-    <p-table sortMode="single" styleClass="p-datatable-striped p-datatable-sm" [paginator]="true" [rows]="25"
-      currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
-      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
-      [value]="data" dataKey="id" [tableStyle]="{'min-width': '100%'}">
+  <!-- ATTRIBUTE TITLE BLOCK -->
+  <div class="surface-section heading-section" *ngIf="!isLoading">
+    <div class="border-bottom-1 surface-border">
+      <div class="heading-section-title font-medium align-items-center">
+        <span>{{user!.name}} {{user!.lastname}}</span>
+      </div>
+    </div>
+  </div>
+  <!-- ATTRIBUTE TITLE BLOCK -->
+  <div class="table-container"  *ngIf="!isLoading">
+
+    <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true"
+      [rows]="25" currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="data"
+      dataKey="id" [tableStyle]="{'min-width': '100%'}">
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 5rem"></th>
-          <th>ID</th>
+          <th style="width: 3rem"></th>
           <th>დასახელება</th>
-          <!-- <th>ატრიბუტის ტიპი</th> -->
           <th>განახლება</th>
           <th>წაშლა</th>
           <th>სტრუქტურა</th>
         </tr>
+        <tr>
+          <th></th>
+          <th>
+            <input pInputText type="text" (input)="dataFilter.filter(filters['title'], 'title', 'contains')"
+              [(ngModel)]="filters['title']" placeholder="ძიება"
+              class="w-full p-inputtext p-component p-element ng-star-inserted">
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-attribute let-permission="permission">
+      <ng-template pTemplate="body" let-attribute>
         <tr>
           <td>
-          <td>{{attribute.id}}</td>
           <td>{{attribute.title}}</td>
-          <!-- <td> -->
-            <!-- <ng-container *ngIf="attribute.isStandard()">სტანდარტული</ng-container>
-            <ng-container *ngIf="attribute.isTree()">ხე</ng-container>
-            <ng-container *ngIf="attribute.isEntity()">ობიექტი</ng-container>
-          </td> -->
           <td>
             <p-inputSwitch [(ngModel)]="attribute.update"
               (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>

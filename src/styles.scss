@@ -1546,16 +1546,16 @@ section {
 
 //////////TABLE RELATED///////////////
 
-.p-datatable .p-datatable-tbody > tr > td,
-.p-treetable .p-treetable-tbody > tr > td {
+.p-datatable .p-datatable-tbody>tr>td,
+.p-treetable .p-treetable-tbody>tr>td {
     font-size: 12px !important;
     padding: 4px !important;
     text-align: center !important;
     vertical-align: middle !important;
 }
 
-.p-datatable .p-datatable-tbody > tr > td,
-.p-treetable .p-treetable-tbody > tr > td {
+.p-datatable .p-datatable-tbody>tr>td,
+.p-treetable .p-treetable-tbody>tr>td {
     font-size: 12px !important;
     padding: 4px !important;
     text-align: left !important;
@@ -1588,11 +1588,12 @@ section {
     position: relative !important;
 }
 
-.p-datatable-gridlines .p-datatable-thead  tr  th {
+.p-datatable-gridlines .p-datatable-thead tr th {
     border-width: 1px 1px 1px 1px !important;
-    
+
 }
-.p-datatable .p-datatable-thead  tr  th {
+
+.p-datatable .p-datatable-thead tr th {
     text-align: left;
     padding: 1rem 1rem;
     border: 1px solid #e9ecef;
@@ -1671,6 +1672,13 @@ p-sorticon i {
     font-family: 'roman' !important;
 }
 
+.form-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    border-top: 1px solid #dee2e6;
+    padding-top: 10px;
+}
 
 .manage-form-container .p-tabview-title {
     font-weight: normal !important;
@@ -1719,6 +1727,10 @@ p-sorticon i {
 
 .manage-form-container .p-tabview .p-tabview-nav li {
     margin-right: 0;
+}
+
+.form-actions button i {
+    margin-right: 12px;
 }
 
 .p-treeselect {
@@ -1770,8 +1782,8 @@ p-sorticon i {
     font-family: 'roman' !important;
 }
 
-.p-tabview-title { 
-    white-space: normal !important; 
+.p-tabview-title {
+    white-space: normal !important;
 }
 
 textarea.ng-dirty.ng-invalid {
