@@ -5,7 +5,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ManageUserComponent } from '../manage-user/manage-user.component';
+import { ManageUserComponent } from './manage-user/manage-user.component';
 interface cachedFilter {
   value: string;
   matdhMode?: string;
@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
 
   public filters: { [key: string]: number | string | null } = {
     'name': '',
+    'email': '',
     'lastname': '',
     'phone': '',
     'address': '',

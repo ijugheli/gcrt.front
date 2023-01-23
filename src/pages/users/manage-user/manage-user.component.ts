@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { validateEmail } from 'src/app/app.func';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IResponse } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-manage-user',
@@ -45,8 +46,6 @@ export class ManageUserComponent implements OnInit {
       return;
     }
 
-    this.spinner.show();
-
     this.userService.details(this.userID).subscribe((data) => {
       this.actionTitle = 'რედაქტირება';
       this.values['email'] = data.email;
@@ -54,10 +53,8 @@ export class ManageUserComponent implements OnInit {
       this.values['lastname'] = data.lastname;
       this.values['phone'] = data.phone;
       this.values['address'] = data.address;
-      this.spinner.hide();
     }, (error) => {
       this.userID = null;
-      this.spinner.hide();
     });
   }
 
@@ -92,7 +89,11 @@ export class ManageUserComponent implements OnInit {
       this.userService
         .add(this.values)
         .subscribe((data) => {
-          this.showSuccess();
+          const response = data as IResponse;
+
+          if (response.code == 0) return this.showError(response.message);
+
+          this.showSuccess(response.message);
         }, (error) => {
           this.showError(error);
         });
@@ -102,17 +103,20 @@ export class ManageUserComponent implements OnInit {
     this.userService
       .edit(this.userID, this.values)
       .subscribe((data) => {
-        this.showSuccess();
+        const response = data as IResponse;
+
+        if (response.code == 0) return this.showError(response.message);
+
+        this.showSuccess(response.message);
       }, (error) => {
         this.showError(error);
       });
   }
 
-  private showSuccess() {
-    const msg = this.userID != null ? 'რედაქტირდა' : 'დაემატა';
+  private showSuccess(msg: string) {
     this.messageService.add({
       severity: 'success',
-      summary: 'სისტემის მომხმარებელი ' + this.values['email'] + ' წარმატებით ' + msg,
+      summary: msg,
     });
     this.spinner.hide();
   }
@@ -120,9 +124,7 @@ export class ManageUserComponent implements OnInit {
   private showError(error: any) {
     this.messageService.add({
       severity: 'error',
-      summary: (error != null && error.hasOwnProperty('StatusMessage'))
-        ? error.statusMessage
-        : 'არასწორი მომხმარებლის მონაცემები',
+      summary: error,
       detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
     this.spinner.hide();

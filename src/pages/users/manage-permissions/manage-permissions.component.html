@@ -5,7 +5,7 @@
   <div class="surface-section heading-section" *ngIf="!isLoading">
     <div class="border-bottom-1 surface-border">
       <div class="heading-section-title font-medium align-items-center">
-        <span>{{user!.name}} {{user!.lastname}}</span>
+        <span>{{pageTitle}}</span>
       </div>
     </div>
   </div>
@@ -14,15 +14,15 @@
 
     <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true"
       [rows]="25" currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
-      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="data"
+      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="userPermissions"
       dataKey="id" [tableStyle]="{'min-width': '100%'}">
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 3rem"></th>
           <th>დასახელება</th>
-          <th>განახლება</th>
-          <th>წაშლა</th>
-          <th>სტრუქტურა</th>
+          <th>ცვლილების უფლება</th>
+          <th>წაშლის უფლება</th>
+          <th>სტრუქტურის ცვლილების უფლება</th>
         </tr>
         <tr>
           <th></th>
@@ -36,21 +36,21 @@
           <th></th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-attribute>
+      <ng-template pTemplate="body" let-userPermission>
         <tr>
           <td>
-          <td>{{attribute.title}}</td>
+          <td>{{userPermission.attr_title}}</td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.update"
-              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.update"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.delete"
-              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.DELETE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.delete"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.DELETE, $event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.structure"
-              (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.STRUCTURE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.structure"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.STRUCTURE, $event.checked)"></p-inputSwitch>
           </td>
         </tr>
       </ng-template>

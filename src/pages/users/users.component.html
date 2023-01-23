@@ -26,16 +26,19 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th>სტატუსი</th>
+                <th>ელ-ფოსტა</th>   
                 <th>სახელი</th>
                 <th>გვარი</th>
                 <th>ტელ.</th>
                 <th>მისამართი</th>
                 <th>მართვა</th>
+                <th>სტატუსი</th>
             </tr>
             <tr>
-                <!--  -->
-                <th></th>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['email'], 'email', 'contains')"
+                        [(ngModel)]="filters['email']" placeholder="ელ-ფოსტა" class="w-full">
+                </th>
                 <th>
                     <input pInputText type="text" (input)="data.filter(filters['name'], 'name', 'contains')"
                         [(ngModel)]="filters['name']" placeholder="სახელი" class="w-full">
@@ -53,12 +56,12 @@
                         [(ngModel)]="filters['address']" placeholder="მისამართი" class="w-full">
                 </th>
                 <th></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-user>
             <tr>
-                <td> <p-inputSwitch [(ngModel)]="user.status_id"
-                        (onChange)="updateStatusID(user.id, $event)"></p-inputSwitch></td>
+                <td>{{user.email}}</td>
                 <td>{{user.name}}</td>
                 <td>{{user.lastname}}</td>
                 <td>{{user.phone}}</td>
@@ -78,6 +81,10 @@
                     <!-- <button>წვდომები</button>
                         <button>რედაქტირება</button>
                         <button>წაშლა</button> -->
+                </td>
+                <td>
+                    <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateStatusID(user.id, $event)">
+                    </p-inputSwitch>
                 </td>
             </tr>
         </ng-template>

@@ -1,6 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
 import { MAttribute } from "src/services/attributes/models/attribute.model";
 import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
+import { IUserPermission } from "./app.interfaces";
 
 
 
@@ -178,32 +179,22 @@ export class User {
     public phone!: string;
     public address!: string;
     public email!: string;
-    public permissions: UserAttrPermission[] = [];
+    public permissions: IUserPermission[] = [];
 }
 
-export class UserAttrPermission {
-    public id!: number;
-    public user_id!: number | null;
-    public attr_id!: number | null;
-    public update: boolean | null = false;
-    public delete: boolean | null = false;
-    public structure: boolean | null = false;
-}
 
-export class MManageUserPermission {
-    public id!: number;
-    public title!: string | null;
-    public attributeType!: number | null;
+export class MUserPermission {
+    public attr_id!: number;
+    public attr_title!: string | null;
     public update: boolean | null = false;
     public delete: boolean | null = false;
     public structure: boolean | null = false;
 
-    public static from(attribute: MAttribute, userAttrPermission: UserAttrPermission | null) {
-        let permission = new MManageUserPermission();
+    public static from(attribute: MAttribute, userAttrPermission: IUserPermission | null) {
+        let permission = new MUserPermission();
 
-        permission.id = attribute.id;
-        permission.title = attribute.title;
-        permission.attributeType = attribute.type;
+        permission.attr_id = attribute.id;
+        permission.attr_title = attribute.title;
         permission.update = userAttrPermission?.update || false;
         permission.delete = userAttrPermission?.delete || false;
         permission.structure = userAttrPermission?.structure || false;

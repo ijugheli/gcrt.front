@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
-import { GuardedService, User, UserAttrPermission } from '../app/app.models';
+import { IResponse } from 'src/app/app.interfaces';
+import { GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
 @Injectable({
@@ -37,7 +38,7 @@ export class UserService extends GuardedService {
   }
 
   public add(values: any) {
-    return this.http.post(this.urls['add'], values, { headers: this.headers });
+    return this.http.post<IResponse>(this.urls['add'], values, { headers: this.headers });
   }
 
   public edit(userID: number, values: any) {
@@ -55,11 +56,11 @@ export class UserService extends GuardedService {
   }
 
   public saveAttrPermission(userID: number, attrID: number, values: any) {
-    return this.http.post(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+    return this.http.post<IResponse>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
   }
 
   public updateStatusID(userID: number, statusID: number) {
-    return this.http.post(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
+    return this.http.post<IResponse>(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
   }
 
   public me() {
