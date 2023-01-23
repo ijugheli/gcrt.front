@@ -41,11 +41,13 @@
           <td>
           <td>{{attribute.title}}</td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.update"
+            <p-inputSwitch 
+              [(ngModel)]="attribute.update"
               (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.delete"
+            <p-inputSwitch 
+              [(ngModel)]="attribute.delete"
               (onChange)="updateAttrPermission(attribute.id, attrPermissionTypes.DELETE, $event.checked)"></p-inputSwitch>
           </td>
           <td>

@@ -17,7 +17,11 @@ import { UserService } from 'src/services/user.service';
 
 export class ManageUserPermissionsComponent implements OnInit {
 
-  constructor(private attributes: AttributesService, private userService: UserService, private messageService: MessageService, private route: ActivatedRoute) { }
+  constructor(
+    private attributes: AttributesService,
+    private userService: UserService,
+    private messageService: MessageService,
+    private route: ActivatedRoute) { }
 
   public userID: number = 0;
   public user!: User | null;
