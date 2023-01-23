@@ -26,11 +26,11 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th>ელ-ფოსტა</th>   
-                <th>სახელი</th>
-                <th>გვარი</th>
+                <th pSortableColumn="email">ელ-ფოსტა<p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="name">სახელი<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="lastname">გვარი <p-sortIcon field="lastname"></p-sortIcon></th>
                 <th>ტელ.</th>
-                <th>მისამართი</th>
+                <th pSortableColumn="address">მისამართი<p-sortIcon field="address"></p-sortIcon></th>
                 <th>მართვა</th>
                 <th>სტატუსი</th>
             </tr>
@@ -68,12 +68,10 @@
                 <td>{{user.address}}</td>
                 <td>
                     <button type="button" (click)="onPermissions(user.id)" class="icon-border-btn">
-                        <i class="pi pi-users"></i>
-
+                        <i class="pi pi-bars"></i>
                     </button>
                     <button type="button" (click)="handleClick(user.id)" class="icon-border-btn">
                         <i class="pi pi-pencil"></i>
-
                     </button>
                     <button type="button" (click)="onDelete(user.id)" class="icon-border-btn">
                         <i class="pi pi-trash"></i>
