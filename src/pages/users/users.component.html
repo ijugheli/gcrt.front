@@ -8,7 +8,7 @@
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" stateStorage="local" stateKey="{{storageKey}}"
+    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="userName" [sortOrder]="-1" stateStorage="local" stateKey="{{storageKey}}"
         [value]="users">
         <ng-template pTemplate="caption">
             <div class="header">
