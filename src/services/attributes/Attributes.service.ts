@@ -13,6 +13,7 @@ import { storageItemExists } from '../../app/app.func';
 import { MAttributeSection } from './models/section.model';
 import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
+import { IResponse } from 'src/app/app.interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -28,8 +29,8 @@ export class AttributesService extends GuardedService {
         'static': API_URL + '/attrs/static',
         'list': API_URL + '/attrs/',
         'withProperties': API_URL + '/attrs/{attr_id}',
-        'addProperty' : API_URL +  '/attrs/{attr_id}/properties/add',
-        'reorderProperties' : API_URL +  '/attrs/{attr_id}/properties/reorder', 
+        'addProperty': API_URL + '/attrs/{attr_id}/properties/add',
+        'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
         'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
@@ -39,6 +40,8 @@ export class AttributesService extends GuardedService {
         'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
         'delete': API_URL + '/attrs/{attr_id}/values/remove',
         'editValueItem': API_URL + '/attrs/values/edit',
+        'updateLazyOrStatusID': API_URL + '/attrs/{attr_id}/update-lazy-status-id',
+        'updateProperty': API_URL + '/attrs/properties/{property_id}/update',
     };
 
     constructor(private http: HttpClient, private auth: AuthService) {
@@ -208,15 +211,17 @@ export class AttributesService extends GuardedService {
     }
 
 
+    public updateLazyOrStatusID(attrID: number, values: any) {
+        return this.http.post<IResponse>(
+            this.urls['updateLazyOrStatusID'].replace('{attr_id}', attrID.toString()
+            ), values, { headers: this.headers });
+    }
 
-
-
-
-
-
-
-
-
+    public updateProperty(propertyID: number, property: MProperty) {
+        return this.http.post<IResponse>(
+            this.urls['updateProperty'].replace('{property_id}', propertyID.toString()
+            ), { 'property': property }, { headers: this.headers });
+    }
     //Parsers
     private parseProperties(data: IAttribute[]) {
         data.map((item) => {
@@ -240,13 +245,13 @@ export class AttributesService extends GuardedService {
                 if (!property || property == null || property === undefined) {
                     return;
                 }
-                
+
                 properties.push(property);
             });
-            
+
             properties = properties.sort((a, b) => a.order_id - b.order_id);
             columns = properties.filter((prop) => !prop.isSection());
-            
+
             const attribute: MAttribute = new MAttribute(source, properties);
             // attribute.withProps(properties);
             attribute.withColumns(columns);

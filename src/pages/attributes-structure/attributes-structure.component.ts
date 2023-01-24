@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { MAttribute } from '../../services/attributes/models/attribute.model';
 import { AttributesService } from '../../services/attributes/Attributes.service';
-import { DATA_TYPES } from 'src/app/app.config';
-import { reverseMap } from 'src/app/app.func';
 import { MProperty } from 'src/services/attributes/models/property.model';
 import { MOption } from '../../services/attributes/models/option.model';
+import { IResponse } from 'src/app/app.interfaces';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-attributes-structure',
   templateUrl: './attributes-structure.component.html',
-  styleUrls: ['./attributes-structure.component.css']
+  styleUrls: ['./attributes-structure.component.css'],
+  providers: [MessageService]
 })
+
 export class AttributesStructureComponent implements OnInit {
   public addPropertyButton = false;
   public attrID = 0;
@@ -26,7 +28,7 @@ export class AttributesStructureComponent implements OnInit {
 
 
   public propertyTypeMap: any = {
-    1: { name: 'int', id: 1, title: 'სტანდარტული'},
+    1: { name: 'int', id: 1, title: 'სტანდარტული' },
     2: { name: 'int', id: 2, title: 'სექცია' },
   };
 
@@ -61,41 +63,45 @@ export class AttributesStructureComponent implements OnInit {
 
 
   public newObject = {
-    'parent_id' : '',
-    'source' : null,
-    'type' : null,
-    'title' : null,
-    'data_type' : null,
-    'data_view' : null,
-    'is_mandatory' : null,
-    'has_filter' : null,
-    'is_primary' : null,
+    'parent_id': '',
+    'source': null,
+    'type': null,
+    'title': null,
+    'data_type': null,
+    'data_view': null,
+    'is_mandatory': null,
+    'has_filter': null,
+    'is_primary': null,
   };
 
   private initNewObject() {
     let cleanObject = {
-      'parent_id' : '',
-      'source' : null,
-      'type' : null,
-      'title' : null,
-      'data_type' : null,
-      'data_view' : null,
-      'is_mandatory' : null,
-      'has_filter' : null,
-      'is_primary' : null,
+      'parent_id': '',
+      'source': null,
+      'type': null,
+      'title': null,
+      'data_type': null,
+      'data_view': null,
+      'is_mandatory': null,
+      'has_filter': null,
+      'is_primary': null,
     };
     this.newObject = cleanObject;
   }
 
 
-  constructor(public attributes: AttributesService) { }
+  constructor(
+    public attributesService: AttributesService,
+    public messageService: MessageService,
+  ) { }
 
   ngOnInit() {
-    this.list = this.attributes.asList();
+    this.list = this.attributesService.asList();
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
     this.DATA_SOURCE_TYPES = this.list.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+    console.log(this.list[0].properties[0].title);
   }
 
   private initializeDataTypes() {
@@ -118,9 +124,8 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  onRowReorder(event: any, id: any, propertyData : any) {
+  onRowReorder(event: any, id: any, propertyData: any) {
     this.reorderProperties(propertyData, id);
-
   }
 
   addProperty(attrID: any) {
@@ -128,44 +133,86 @@ export class AttributesStructureComponent implements OnInit {
     //Add Property Here
     this.attrID = attrID;
     this.newObject.parent_id = this.attrID.toString();
-      if(!this.validatePropertyForm()) {
-        this.addRecord(attrID, this.newObject);
-        this.initNewObject();
-      }
-      
-      
+    if (!this.validatePropertyForm()) {
+      this.addRecord(attrID, this.newObject);
+      this.initNewObject();
+    }
   }
 
   toggleProperty(atrrID: any) {
     this.addPropertyButton = !this.addPropertyButton;
-    if(!this.addPropertyButton) { 
+    if (!this.addPropertyButton) {
       this.initNewObject();
     }
   }
 
 
-  public addRecord(attrID: number, data: any)  {
+  public addRecord(attrID: number, data: any) {
     // this.spinner.show();
-    this.attributes.addProperty(attrID, data);
+    this.attributesService.addProperty(attrID, data);
 
   }
 
-  public reorderProperties(data : any, attrID : number) {
+  public reorderProperties(data: any, attrID: number) {
     let propertyIDs = [];
-    for(let i in data) {
+    for (let i in data) {
       propertyIDs.push(data[i]['id']);
     }
-    this.attributes.reorderProperties(attrID, JSON.stringify(propertyIDs));
-    this.list = this.attributes.asList();
+    this.attributesService.reorderProperties(attrID, JSON.stringify(propertyIDs));
+    this.list = this.attributesService.asList();
   }
 
+  //columnType lazy 0  statusID 1
+  public updateLazyOrStatusID(attrID: number, isLazy: boolean, value: boolean) {
+    const oldAttr = this.list.find((val) => val.id == attrID);
+
+    this.attributesService.updateLazyOrStatusID(attrID, { 'is_lazy': isLazy, 'value': value }).subscribe((data) => {
+      const response = data as IResponse;
+
+      if (!response.code) {
+        this.showError(response.message);
+        this.restoreOldValue(oldAttr!, value, isLazy);
+        return;
+      }
+      this.showSuccess(response.message);
+    }, (error) => {
+      this.showError('დაფიქსირდა შეცდომა');
+
+      this.restoreOldValue(oldAttr!, value, isLazy);
+    });
+  }
+
+
+  public updateProperty(propertyID: number, property: MProperty) {
+    this.attributesService.updateProperty(propertyID, property).subscribe((data) => {
+      console.log(data.message);
+    } )
+  }
+
+  private showSuccess(msg: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: msg,
+    });
+  }
+
+  private showError(error: any) {
+    this.messageService.add({
+      severity: 'error',
+      summary: error,
+    });
+  }
+
+  private restoreOldValue(oldAttr: MAttribute, value: boolean, isLazy: boolean) {
+    isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
+  }
 
 
   validatePropertyForm() {
-    for(let key in this.newObject) {
-      if(key == null || key == '') {
+    for (let key in this.newObject) {
+      if (key == null || key == '') {
         return false;
-      } 
+      }
     }
     return true;
   }

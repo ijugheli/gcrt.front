@@ -8,6 +8,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DataTableModule } from "../../modules/data-table/data-table.module";
+import { ToastModule } from 'primeng/toast';
 @NgModule({
     declarations: [AttributesStructureComponent],
     imports: [
@@ -17,6 +18,7 @@ import { DataTableModule } from "../../modules/data-table/data-table.module";
         FormsModule,
         InputSwitchModule,
         ButtonModule,
+        ToastModule,
         DropdownModule,
         DataTableModule
     ]
