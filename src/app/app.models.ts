@@ -190,14 +190,14 @@ export class MUserPermission {
     public delete: boolean | null = false;
     public structure: boolean | null = false;
 
-    public static from(attribute: MAttribute, userAttrPermission: IUserPermission | null) {
+    public static from(attribute: MAttribute, userPermission: IUserPermission | null) {
         let permission = new MUserPermission();
 
         permission.attr_id = attribute.id;
         permission.attr_title = attribute.title;
-        permission.update = userAttrPermission?.update || false;
-        permission.delete = userAttrPermission?.delete || false;
-        permission.structure = userAttrPermission?.structure || false;
+        permission.update = userPermission?.update || false;
+        permission.delete = userPermission?.delete || false;
+        permission.structure = userPermission?.structure || false;
 
         return permission;
     }
