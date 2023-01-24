@@ -1,8 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
+import { IResponse } from 'src/app/app.interfaces';
 import { GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
@@ -11,6 +12,8 @@ import { AuthService } from './AuthService.service';
 })
 export class UserService extends GuardedService {
 
+  public users: User[] = [];
+
   public urls: any = {
     'list': API_URL + '/user/list',
     'add': API_URL + '/user/add',
@@ -18,6 +21,8 @@ export class UserService extends GuardedService {
     'details': API_URL + '/user/{user_id}',
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
+    'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
+    'updateStatusID': API_URL + '/user/update-status/{user_id}/{status_id}',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -25,7 +30,6 @@ export class UserService extends GuardedService {
   }
 
   public list(): Observable<User[]> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
     return this.http.get<User[]>(this.urls['list'], { headers: this.headers });
   }
 
@@ -34,7 +38,7 @@ export class UserService extends GuardedService {
   }
 
   public add(values: any) {
-    return this.http.post(this.urls['add'], values, { headers: this.headers });
+    return this.http.post<IResponse>(this.urls['add'], values, { headers: this.headers });
   }
 
   public edit(userID: number, values: any) {
@@ -49,6 +53,14 @@ export class UserService extends GuardedService {
 
   public delete(userID: number) {
     return this.http.delete(this.urls['delete'].replace('{user_id}', userID), { headers: this.headers });
+  }
+
+  public saveAttrPermission(userID: number, attrID: number, values: any) {
+    return this.http.post<IResponse>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+  }
+
+  public updateStatusID(userID: number, statusID: number) {
+    return this.http.post<IResponse>(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
   }
 
   public me() {
@@ -79,6 +91,16 @@ export class UserService extends GuardedService {
     }
     // Return an observable with a user-facing error message.
     return throwError(() => response);
+  }
+
+  public async getUser(userID: number) {
+    let user = this.users.find((user) => user.id == userID) || null;
+
+    if (user != null) return user;
+
+    user = await lastValueFrom(this.details(userID)) || null;
+
+    return user;
   }
 
 }

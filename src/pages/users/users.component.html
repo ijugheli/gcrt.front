@@ -1,146 +1,95 @@
 <p-toast position="top-right"></p-toast>
-<p-confirmDialog
-    header="Confirmation"
-    icon="pi pi-exclamation-triangle"
-></p-confirmDialog>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
-    <section>
-        <ng-container>
-            <ngx-spinner
-                size="medium"
-                color="#fff"
-                bdColor="rgba(51,51,51,0.3)"
-                type="ball-scale-multiple"
-                [fullScreen]="false"
-            >
-                <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
-            </ngx-spinner>
-        </ng-container>
-        <p-table
-            #data
-            styleClass="p-datatable-gridlines"
-            dataKey="id"
-            stateStorage="local"
-            stateKey="{{storageKey}}"
-            [value]="users"
-        >
-            <ng-template pTemplate="caption">
-                <div class="header">
-                    <ul class="list">
-                        <ng-container>
-                            <li>
-                                <button
-                                    (click)="onAddUser()"
-                                    type="button"
-                                    class="border-btn"
-                                >
-                                    <i class="pi pi-plus-circle"></i>
-                                    დამატება
-                                </button>
-                            </li>
-                        </ng-container>
-                    </ul>
-                </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>#</th>
-                    <th>სახელი</th>
-                    <th>გვარი</th>
-                    <th>ტელ.</th>
-                    <th>მისამართი</th>
-                    <th>მართვა</th>
-                </tr>
-                <tr>
-                    <!--  -->
-                    <th>#</th>
-                    <th>
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="data.filter(filters['name'], 'name', 'contains')"
-                            [(ngModel)]="filters['name']"
-                            placeholder="სახელი"
-                            class="w-full"
-                        >
-                    </th>
-                    <th>
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="data.filter(filters['lastname'], 'lastname', 'contains')"
-                            [(ngModel)]="filters['lastname']"
-                            placeholder="გვარი"
-                            class="w-full"
-                        >
-                    </th>
-                    <th>
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="data.filter(filters['phone'], 'phone', 'contains')"
-                            [(ngModel)]="filters['phone']"
-                            placeholder="ტელ.ნომერი"
-                            class="w-full"
-                        >
-                    </th>
-                    <th>
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="data.filter(filters['address'], 'address', 'contains')"
-                            [(ngModel)]="filters['address']"
-                            placeholder="მისამართი"
-                            class="w-full"
-                        >
-                    </th>
-                    <th></th>
-                </tr>
-            </ng-template>
-            <ng-template
-                pTemplate="body"
-                let-user
-            >
-                <tr>
-                    <td>{{user.id}}</td>
-                    <td>{{user.name}}</td>
-                    <td>{{user.lastname}}</td>
-                    <td>{{user.phone}}</td>
-                    <td>{{user.address}}</td>
-                    <td>
-                        <!-- <button
-                            pButton
-                            type="button"
-                            class="p-button-outlined p-button-rounded"
-                        >
-                            წვდომები
-                        </button> -->
-                        <button
-                            pButton
-                            type="button"
-                            (click)="onEdit(user.id)"
-                            class="p-button-outlined p-button-rounded"
-                        >
-                            რედაქტირება
-                        </button>
-                        <button
-                            pButton
-                            type="button"
-                            (click)="onDelete(user.id)"
-                            class="p-button-outlined p-button-rounded"
-                        >
-                            წაშლა
-                        </button>
-                        <!-- <button>წვდომები</button>
+<section>
+    <ng-container>
+        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.3)" type="ball-scale-multiple"
+            [fullScreen]="false">
+            <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+        </ngx-spinner>
+    </ng-container>
+    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="userName" [sortOrder]="-1" stateStorage="local" stateKey="{{storageKey}}"
+        [value]="users">
+        <ng-template pTemplate="caption">
+            <div class="header">
+                <ul class="list">
+                    <ng-container>
+                        <li>
+                            <button (click)="handleClick()" type="button" class="border-btn">
+                                <i class="pi pi-plus-circle"></i>
+                                დამატება
+                            </button>
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="email">ელ-ფოსტა<p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="name">სახელი<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="lastname">გვარი <p-sortIcon field="lastname"></p-sortIcon></th>
+                <th>ტელ.</th>
+                <th pSortableColumn="address">მისამართი<p-sortIcon field="address"></p-sortIcon></th>
+                <th>მართვა</th>
+                <th>სტატუსი</th>
+            </tr>
+            <tr>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['email'], 'email', 'contains')"
+                        [(ngModel)]="filters['email']" placeholder="ელ-ფოსტა" class="w-full">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['name'], 'name', 'contains')"
+                        [(ngModel)]="filters['name']" placeholder="სახელი" class="w-full">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['lastname'], 'lastname', 'contains')"
+                        [(ngModel)]="filters['lastname']" placeholder="გვარი" class="w-full">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['phone'], 'phone', 'contains')"
+                        [(ngModel)]="filters['phone']" placeholder="ტელ.ნომერი" class="w-full">
+                </th>
+                <th>
+                    <input pInputText type="text" (input)="data.filter(filters['address'], 'address', 'contains')"
+                        [(ngModel)]="filters['address']" placeholder="მისამართი" class="w-full">
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{user.email}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.lastname}}</td>
+                <td>{{user.phone}}</td>
+                <td>{{user.address}}</td>
+                <td>
+                    <button type="button" (click)="onPermissions(user.id)" class="icon-border-btn">
+                        <i class="pi pi-bars"></i>
+                    </button>
+                    <button type="button" (click)="handleClick(user.id)" class="icon-border-btn">
+                        <i class="pi pi-pencil"></i>
+                    </button>
+                    <button type="button" (click)="onDelete(user.id)" class="icon-border-btn">
+                        <i class="pi pi-trash"></i>
+                    </button>
+                    <!-- <button>წვდომები</button>
                         <button>რედაქტირება</button>
                         <button>წაშლა</button> -->
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-        <!-- <div style="text-align:center; margin : 60px auto;">
+                </td>
+                <td>
+                    <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateStatusID(user.id, $event)">
+                    </p-inputSwitch>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- <div style="text-align:center; margin : 60px auto;">
             <h2>
                 სისტემის მომხმარებლების მართვის ფუნქციონალი დროებით გათიშულია.
             </h2>
         </div> -->
-    </section>
+</section>

@@ -1,13 +1,24 @@
 td button {
-    margin : auto 5px;
-    color : black;
-    border-color :#4CAF50;
+    margin: auto 5px;
+    color: black;
+    border-color: #4CAF50;
 }
-.thead > tr > th {
+
+.thead>tr>th {
     text-align: center !important;
 }
 
+.p-datatable.p-datatable-gridlines .p-datatable-thead>tr>th {
+    border-width: 1px 1px 1px 1px;
+    font-size: 14px !important;
+}
 
+.p-datatable.p-datatable-gridlines .p-datatable-tbody>tr>td {
+    border-width: 1px;
+    font-size: 14px !important;
+
+    padding: 5px 16px !important;
+}
 
 .row-item {
     font-family: light !important;
@@ -44,4 +55,8 @@ li button {
     position: relative;
     width: 100%;
     height: 100vh;
+}
+
+p-sorticon {
+    position: unset;
 }

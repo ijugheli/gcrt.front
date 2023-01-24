@@ -1,5 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
+import { MAttribute } from "src/services/attributes/models/attribute.model";
 import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
+import { IUserPermission } from "./app.interfaces";
 
 
 
@@ -20,7 +22,7 @@ export class AttrProperty {
 
     public order_id: number | null = null;
     public source: any = null;
-    public tree : any = null;
+    public tree: any = null;
     public sourceAttribute: any = null;
 }
 export class Property {
@@ -43,7 +45,7 @@ export class Property {
 
     public options: any[] = [];
     public selectedOptions: any[] = [];
-    public tree : any = null;
+    public tree: any = null;
     public sourceAttribute: any = null;
 
     public constructor(o: AttrProperty) {
@@ -64,7 +66,7 @@ export class Property {
         this.sourceAttribute = o.sourceAttribute;
         this.has_filter = o.has_filter;
 
-        if(this.tree != null) {
+        if (this.tree != null) {
 
             this.options = this.tree;
             this.selectedOptions = [];
@@ -171,12 +173,37 @@ export class AttrValue {
 
 export class User {
     public id!: number;
+    public status_id: boolean = true;
     public name!: string;
     public lastname!: string;
     public phone!: string;
     public address!: string;
     public email!: string;
+    public permissions: IUserPermission[] = [];
 }
+
+
+export class MUserPermission {
+    public attr_id!: number;
+    public attr_title!: string | null;
+    public update: boolean | null = false;
+    public delete: boolean | null = false;
+    public structure: boolean | null = false;
+
+    public static from(attribute: MAttribute, userPermission: IUserPermission | null) {
+        let permission = new MUserPermission();
+
+        permission.attr_id = attribute.id;
+        permission.attr_title = attribute.title;
+        permission.update = userPermission?.update || false;
+        permission.delete = userPermission?.delete || false;
+        permission.structure = userPermission?.structure || false;
+
+        return permission;
+    }
+}
+
+
 
 export class GuardedService {
     public headers: HttpHeaders;

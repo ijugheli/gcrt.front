@@ -17,12 +17,13 @@ import { LoginModule } from '../pages/login/login/login.module';
 import { ReportsModule } from '../pages/reports/reports.module';
 import { UsersModule } from '../pages/users/users.module';
 import { ChangePasswordModule } from '../pages/change-password/change-password.module';
-import { ManageUserModule } from '../pages/manage-user/manage-user.module';
+import { ManageUserModule } from '../pages/users/manage-user/manage-user.module';
 import { TreeTableModule } from 'primeng/treetable';
 import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
 import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { DialogService } from 'primeng/dynamicdialog';
     ConfirmDialogModule,
     ManageUserModule,
     AppRoutingModule,
-    AttributesStructureModule
+    AttributesStructureModule,
+    ManageUserPermissionsModule
   ],
   providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

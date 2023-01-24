@@ -37,10 +37,27 @@ export interface IActionItem {
 }
 
 export interface IMenuItem {
-    id : number;
+    id: number;
     title: string;
     img: string;
     active?: boolean;
     onClick?: any;
     children?: IMenuItem[];
 }
+
+
+export class IUserPermission {
+    public id!: number;
+    public user_id!: number | null;
+    public attr_id!: number | null;
+    public update: boolean | null = false;
+    public delete: boolean | null = false;
+    public structure: boolean | null = false;
+}
+
+export class IResponse {
+    public code!: number;
+    public message!: string;
+    public data!: Object | null ;
+}
+

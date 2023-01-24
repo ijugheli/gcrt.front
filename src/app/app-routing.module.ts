@@ -9,9 +9,10 @@ import { AuthGuardService as AuthGuard } from 'src/services/AuthGuardService.ser
 import { ReportsComponent } from 'src/pages/reports/reports.component';
 import { UsersComponent } from '../pages/users/users.component';
 import { ChangePasswordComponent } from '../pages/change-password/change-password.component';
-import { ManageUserComponent } from 'src/pages/manage-user/manage-user.component';
+import { ManageUserComponent } from 'src/pages/users/manage-user/manage-user.component';
 import { AttributeFormComponent } from '../pages/attribute-form/attribute-form.component';
 import { AttributesStructureComponent } from '../pages/attributes-structure/attributes-structure.component';
+import { ManageUserPermissionsComponent } from 'src/pages/users/manage-permissions/manage-permissions.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -41,6 +42,7 @@ const routes: Routes = [
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'users/add', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'users/edit/:user_id', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'users/permissions/:user_id', component: ManageUserPermissionsComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] }
 ];
 
