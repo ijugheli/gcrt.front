@@ -1,3 +1,5 @@
+<p-toast position="top-right"></p-toast>
+
 <section>
   <div class="table-container" style="margin-top:25px">
 
@@ -9,8 +11,8 @@
         <tr>
           <th style="width: 5rem"></th>
           <!-- <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th> -->
-          <th>ID</th>
-          <th>დასახელება</th>
+          <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th>
           <th>ატრიბუტის ტიპი</th>
           <th>Lazy</th>
           <th>სტატუსი</th>
@@ -35,7 +37,8 @@
             <ng-container *ngIf="attribute.isEntity()">ობიექტი</ng-container>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.lazy"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="attribute.lazy"
+              (onChange)="updateLazyOrStatusID(attribute.id, true, $event.checked)"></p-inputSwitch>
 
             <!-- <div class="p-inputgroup">
               <p-inputSwitch
@@ -47,7 +50,8 @@
           </div> -->
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="attribute.status"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="attribute.status"
+              (onChange)="updateLazyOrStatusID(attribute.id, false, $event.checked)"></p-inputSwitch>
           </td>
           <!-- <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" /></td>
             <td>{{product.price | currency:'USD'}}</td>
@@ -207,10 +211,10 @@
               </p-dropdown>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="property.is_mandatory"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.is_mandatory" ></p-inputSwitch>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="property.has_filter"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.has_filter" ></p-inputSwitch>
             </td>
             <td>
               <p-inputSwitch [(ngModel)]="property.is_primary"></p-inputSwitch>
