@@ -49,6 +49,10 @@ export class AttributesStructureComponent implements OnInit {
     // 14 : {name : 'tableselect', id : 14, title : 'tableselect'},
   };
 
+  public filters: { [key: string]: number | string | null } = {
+    'title': ''
+  };
+
   public DATA_TYPES: any;
 
   public DATA_VIEW_TYPES: any;
@@ -162,11 +166,10 @@ export class AttributesStructureComponent implements OnInit {
     this.list = this.attributesService.asList();
   }
 
-  //columnType lazy 0  statusID 1
-  public updateLazyOrStatusID(attrID: number, isLazy: boolean, value: boolean) {
-    const oldAttr = this.list.find((val) => val.id == attrID);
+  public updateAttr(attr: MAttribute, isLazy: boolean, value: boolean) {
+    const oldAttr = this.list.find((val) => val.id == attr.id);
 
-    this.attributesService.updateLazyOrStatusID(attrID, { 'is_lazy': isLazy, 'value': value }).subscribe((data) => {
+    this.attributesService.updateAttr(attr.id, { 'data': attr }).subscribe((data) => {
       const response = data as IResponse;
 
       if (!response.code) {
@@ -183,10 +186,21 @@ export class AttributesStructureComponent implements OnInit {
   }
 
 
-  public updateProperty(propertyID: number, property: MProperty) {
-    this.attributesService.updateProperty(propertyID, property).subscribe((data) => {
-      console.log(data.message);
-    } )
+  public updateProperty(property: MProperty, fieldName: any) {
+    const oldProperty = this.list.find((attr) => attr.properties.find((item) => item.id == property.id));
+
+    this.attributesService.updateProperty(property.id, property).subscribe((data) => {
+      const response = data as IResponse;
+
+      if (!response.code) {
+        this.showError(response.message);
+        return;
+      }
+
+      this.showSuccess(response.message);
+    }, (error) => {
+      this.showError('დაფიქსირდა შეცდომა');
+    })
   }
 
   private showSuccess(msg: string) {
@@ -206,7 +220,6 @@ export class AttributesStructureComponent implements OnInit {
   private restoreOldValue(oldAttr: MAttribute, value: boolean, isLazy: boolean) {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
-
 
   validatePropertyForm() {
     for (let key in this.newObject) {

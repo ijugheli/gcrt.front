@@ -40,7 +40,7 @@ export class AttributesService extends GuardedService {
         'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
         'delete': API_URL + '/attrs/{attr_id}/values/remove',
         'editValueItem': API_URL + '/attrs/values/edit',
-        'updateLazyOrStatusID': API_URL + '/attrs/{attr_id}/update-lazy-status-id',
+        'updateAttr': API_URL + '/attrs/{attr_id}/update',
         'updateProperty': API_URL + '/attrs/properties/{property_id}/update',
     };
 
@@ -211,16 +211,16 @@ export class AttributesService extends GuardedService {
     }
 
 
-    public updateLazyOrStatusID(attrID: number, values: any) {
+    public updateAttr(attrID: number, values: any) {
         return this.http.post<IResponse>(
-            this.urls['updateLazyOrStatusID'].replace('{attr_id}', attrID.toString()
+            this.urls['updateAttr'].replace('{attr_id}', attrID.toString()
             ), values, { headers: this.headers });
     }
 
     public updateProperty(propertyID: number, property: MProperty) {
         return this.http.post<IResponse>(
             this.urls['updateProperty'].replace('{property_id}', propertyID.toString()
-            ), { 'property': property }, { headers: this.headers });
+            ), { 'data': property }, { headers: this.headers });
     }
     //Parsers
     private parseProperties(data: IAttribute[]) {

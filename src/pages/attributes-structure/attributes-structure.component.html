@@ -3,7 +3,8 @@
 <section>
   <div class="table-container" style="margin-top:25px">
 
-    <p-table sortMode="single" styleClass="p-datatable-striped p-datatable-sm" [paginator]="true" [rows]="25"
+    <p-table #attrFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+      [paginator]="true" [rows]="25"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
       [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="list"
       dataKey="id" [tableStyle]="{'min-width': '100%'}">
@@ -20,6 +21,17 @@
             <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
             <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>
             <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th> -->
+        </tr>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>
+            <input pInputText type="text" (input)="attrFilter.filter(filters['title'], 'title', 'contains')"
+              [(ngModel)]="filters['title']" placeholder="ძიება"
+              class="w-full p-inputtext p-component p-element ng-star-inserted">
+          </th>
+          <th></th>
+          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-attribute let-expanded="expanded">
@@ -38,7 +50,7 @@
           </td>
           <td>
             <p-inputSwitch [(ngModel)]="attribute.lazy"
-              (onChange)="updateLazyOrStatusID(attribute.id, true, $event.checked)"></p-inputSwitch>
+              (onChange)="updateAttr(attribute, true, $event.checked)"></p-inputSwitch>
 
             <!-- <div class="p-inputgroup">
               <p-inputSwitch
@@ -51,7 +63,7 @@
           </td>
           <td>
             <p-inputSwitch [(ngModel)]="attribute.status"
-              (onChange)="updateLazyOrStatusID(attribute.id, false, $event.checked)"></p-inputSwitch>
+              (onChange)="updateAttr(attribute.id, false, $event.checked)"></p-inputSwitch>
           </td>
           <!-- <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" /></td>
             <td>{{product.price | currency:'USD'}}</td>
@@ -59,18 +71,19 @@
             <td><p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td>
             <td><span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span></td> -->
         </tr>
+
       </ng-template>
       <ng-template pTemplate="rowexpansion" let-attribute>
         <tr>
           <td colspan="7">
-            <button (click)="toggleProperty(attribute.id)" type="button" class="border-btn">
+            <button (click)="toggleProperty(attribute.id)" type="button" class="border-btn" style="margin-bottom: 10px;">
               <i class="pi pi-plus-circle"></i>
               დამატება
             </button>
 
             <!-- Property Add Here  -->
             <ng-container *ngIf="addPropertyButton">
-              <p-table dataKey="id" [value]="[{id : 1}]">
+              <p-table dataKey="id" [value]="[{id : 1}]" >
                 <ng-template pTemplate="header">
         <tr>
           <th>წყარო</th>
@@ -88,22 +101,22 @@
       <ng-template pTemplate="body" let-item>
         <tr>
           <td>
-            <p-dropdown [options]="DATA_SOURCE_TYPES" [(ngModel)]="newObject.source" placeholder="ტიპი" name="name"
+            <p-dropdown [options]="DATA_SOURCE_TYPES" [(ngModel)]="newObject.source" placeholder="აირჩიეთ წყარო" name="name"
               optionLabel="name"></p-dropdown>
           </td>
           <td>
-            <p-dropdown [options]="DATA_PROPERTY_TYPES" placeholder="ტიპი" [(ngModel)]="newObject.type" name="name"
+            <p-dropdown [options]="DATA_PROPERTY_TYPES" placeholder="აირჩიეთ ატრიბუტის ტიპი" [(ngModel)]="newObject.type" name="name"
               optionLabel="title" [class.ng-dirty]="newObject.type ? true : false"></p-dropdown>
             <!-- <ng-container *ngIf="property.isAttr()">ატრიბუტი</ng-container> -->
           </td>
           <td><input type="text" placeholder="დასახელება" [(ngModel)]="newObject.title">
           </td>
           <td>
-            <p-dropdown [options]="DATA_TYPES" placeholder="ტიპი" [(ngModel)]="newObject.data_type" name="id"
+            <p-dropdown [options]="DATA_TYPES" placeholder="აირჩიეთ..." [(ngModel)]="newObject.data_type" name="id"
               optionLabel="title"></p-dropdown>
           </td>
           <td>
-            <p-dropdown [options]="DATA_VIEW_TYPES" placeholder="ტიპი" [(ngModel)]="newObject.data_view" name="id"
+            <p-dropdown [options]="DATA_VIEW_TYPES" placeholder="აირჩიეთ..." [(ngModel)]="newObject.data_view" name="id"
               optionLabel="title"></p-dropdown>
           </td>
           <td>
@@ -117,8 +130,8 @@
           </td>
           <td>
             <button (click)="addProperty(attribute.id)" type="button" class="border-btn">
-              <i class="pi pi-plus-circle"></i>
-              დამატება
+              <i class="pi pi-check"></i>
+              შენახვა
             </button>
           </td>
           <!-- <td>{{order.customer}}</td>
@@ -178,7 +191,7 @@
         (onRowReorder)="onRowReorder($event, attribute.id, attribute.properties)">
         <ng-template pTemplate="header">
           <tr>
-            <th class="pi pi-bars"></th>
+            <th><i class="pi pi-bars"></i></th>
             <th>ID</th>
             <th>წყარო</th>
             <th>ატრიბუტის ტიპი</th>
@@ -200,24 +213,24 @@
               <ng-container *ngIf="property.isSection()">სექცია</ng-container>
               <!-- <ng-container *ngIf="property.isAttr()">ატრიბუტი</ng-container> -->
             </td>
-            <td>{{property.title}}</td>
+            <td><input type="text" placeholder="დასახელება" [(ngModel)]="property.title" (onChange)="updateProperty(property, $event)" disabled="true"></td>
             <td>
               <p-dropdown [options]="DATA_TYPES" placeholder="{{property.title}} - ის ტიპი"
-                [(ngModel)]="selectedPropTypes[attribute.id][property.id]" name="id" optionLabel="title"></p-dropdown>
+                [(ngModel)]="selectedPropTypes[attribute.id][property.id]" name="id" optionLabel="title" (onChange)="updateProperty(property, $event)"></p-dropdown>
             </td>
             <td>
               <p-dropdown [options]="DATA_VIEW_TYPES" placeholder="{{property.title}} - ის ტიპი"
-                [(ngModel)]="selectedPropViewTypes[attribute.id][property.id]" name="id" optionLabel="title">
+                [(ngModel)]="selectedPropViewTypes[attribute.id][property.id]" name="id" optionLabel="title" (onChange)="updateProperty(property, $event)">
               </p-dropdown>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="property.is_mandatory" ></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.is_mandatory" (onChange)="updateProperty(property, $event)"></p-inputSwitch>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="property.has_filter" ></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.has_filter" (onChange)="updateProperty(property, $event)"></p-inputSwitch>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="property.is_primary"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.is_primary" ></p-inputSwitch>
             </td>
             <td>{{property.order_id}}</td>
             <!-- <td>{{order.customer}}</td>
