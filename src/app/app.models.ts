@@ -191,8 +191,8 @@ export class UserAttrPermission {
 }
 
 export class MUserPermission {
-    public id!: number;
-    public title!: string | null;
+    public attr_id!: number;
+    public attr_title!: string | null;
     public attributeType!: number | null;
     public update: boolean | null = false;
     public delete: boolean | null = false;
@@ -201,8 +201,8 @@ export class MUserPermission {
     public static from(attribute: MAttribute, userAttrPermission: UserAttrPermission | null) {
         let permission = new MUserPermission();
 
-        permission.id = attribute.id;
-        permission.title = attribute.title;
+        permission.attr_id = attribute.id;
+        permission.attr_title = attribute.title;
         permission.attributeType = attribute.type;
         permission.update = userAttrPermission?.update || false;
         permission.delete = userAttrPermission?.delete || false;
