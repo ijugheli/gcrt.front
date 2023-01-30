@@ -28,7 +28,7 @@
             [paginator]="true" [rows]="25"
             currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
             [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
-            [value]="list['standard']" dataKey="id" [tableStyle]="{'min-width': '100%'}">
+            [value]="list[item.key]" dataKey="id" [tableStyle]="{'min-width': '100%'}">
             <ng-template pTemplate="header">
               <tr>
                 <th style="width: 5rem"></th>
