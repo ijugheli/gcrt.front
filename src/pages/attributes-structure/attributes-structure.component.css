@@ -16,5 +16,9 @@ input {
 
 .structure-drop {
     margin-right:25px!important;
+}
 
+.heading-section .heading-section-title {
+    display: inline-block !important;
+    font-size: 1rem !important;
 }

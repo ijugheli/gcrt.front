@@ -5,6 +5,7 @@ import { MProperty } from 'src/services/attributes/models/property.model';
 import { MOption } from '../../services/attributes/models/option.model';
 import { IResponse } from 'src/app/app.interfaces';
 import { MessageService } from 'primeng/api';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-attributes-structure',
@@ -14,10 +15,19 @@ import { MessageService } from 'primeng/api';
 })
 
 export class AttributesStructureComponent implements OnInit {
+  public pageTitle: string = 'მონაცემთა სტრუქტურების მართვა';
+  public isLoading: boolean = false;
   public addPropertyButton = false;
   public attrID = 0;
-  public list: MAttribute[] = [];
+  public list: listType = {};
+  public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
+  public attrTypeName: any = {
+    'standard': 'სტანდარტული',
+    'tree': 'ხე',
+    'entity': 'ობიექტი',
+  };
+
   public dataTypesMap: any = {
     1: { name: 'string', id: 1, title: 'ტექსტი' },
     2: { name: 'int', id: 2, title: 'მთელი რიცხვი' },
@@ -61,10 +71,6 @@ export class AttributesStructureComponent implements OnInit {
 
   public DATA_PROPERTY_TYPES: any;
 
-  public selectedPropViewTypes: { [index: number]: any } = {};
-
-  public selectedPropTypes: { [index: number]: any } = {};
-
 
   public newObject = {
     'parent_id': '',
@@ -97,35 +103,19 @@ export class AttributesStructureComponent implements OnInit {
   constructor(
     public attributesService: AttributesService,
     public messageService: MessageService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit() {
-    this.list = this.attributesService.asList();
-    this.initializeDataTypes();
-    this.initializeViewTypes();
-    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
-    this.DATA_SOURCE_TYPES = this.list.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
-    console.log(this.list[0].properties[0].title);
+    this.loadData();
   }
 
   private initializeDataTypes() {
     this.DATA_TYPES = Object.values(this.dataTypesMap);
-    this.list.forEach((attribute: MAttribute) => {
-      this.selectedPropTypes[attribute.id] = {};
-      attribute.properties.forEach((property: MProperty) => {
-        this.selectedPropTypes[attribute.id][property.id] = this.dataTypesMap[property.input_data_type];
-      });
-    });
   }
 
   private initializeViewTypes() {
     this.DATA_VIEW_TYPES = Object.values(this.viewTypesMap);
-    this.list.forEach((attribute: MAttribute) => {
-      this.selectedPropViewTypes[attribute.id] = {};
-      attribute.properties.forEach((property: MProperty) => {
-        this.selectedPropViewTypes[attribute.id][property.id] = this.viewTypesMap[property.input_view_type];
-      });
-    });
   }
 
   onRowReorder(event: any, id: any, propertyData: any) {
@@ -151,6 +141,7 @@ export class AttributesStructureComponent implements OnInit {
   }
 
 
+
   public addRecord(attrID: number, data: any) {
     // this.spinner.show();
     this.attributesService.addProperty(attrID, data);
@@ -163,38 +154,43 @@ export class AttributesStructureComponent implements OnInit {
       propertyIDs.push(data[i]['id']);
     }
     this.attributesService.reorderProperties(attrID, JSON.stringify(propertyIDs));
-    this.list = this.attributesService.asList();
+    this.attributes = this.attributesService.asList();
   }
 
-  public updateAttr(attr: MAttribute, isLazy: boolean, value: boolean) {
-    const oldAttr = this.list.find((val) => val.id == attr.id);
+  public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
+    const oldAttr = this.attributes.find((val) => val.id == attr.id);
 
     this.attributesService.updateAttr(attr.id, { 'data': attr }).subscribe((data) => {
       const response = data as IResponse;
 
       if (!response.code) {
         this.showError(response.message);
-        this.restoreOldValue(oldAttr!, value, isLazy);
+        this.restoreOldValue(oldAttr!, value, isLazy || false);
         return;
       }
       this.showSuccess(response.message);
     }, (error) => {
       this.showError('დაფიქსირდა შეცდომა');
 
-      this.restoreOldValue(oldAttr!, value, isLazy);
+      this.restoreOldValue(oldAttr!, value, isLazy || false);
     });
   }
 
 
-  public updateProperty(property: MProperty, fieldName: any) {
-    const oldProperty = this.list.find((attr) => attr.properties.find((item) => item.id == property.id));
-
+  public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
       const response = data as IResponse;
 
       if (!response.code) {
         this.showError(response.message);
         return;
+      }
+
+      if (isPrimary) {
+        this.list[attrType].find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
+          if (data.id === property.id) return;
+          data.is_primary = false;
+        });
       }
 
       this.showSuccess(response.message);
@@ -230,4 +226,35 @@ export class AttributesStructureComponent implements OnInit {
     return true;
   }
 
+  private async loadData() {
+    this.isLoading = true;
+    this.spinner.show();
+
+    await this.loadList();
+
+    this.initializeDataTypes();
+    this.initializeViewTypes();
+    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
+    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+
+    this.isLoading = false;
+    this.spinner.hide();
+  }
+
+
+
+  private async loadList() {
+    await this.attributesService.requestAttributes();
+    const list = this.attributesService.asList();
+
+    this.attributes = list;
+
+    this.list['standard'] = list.filter((i) => i.isStandard());
+    this.list['tree'] = list.filter((i) => i.isTree());
+    this.list['entity'] = list.filter((i) => i.isEntity());
+  }
+}
+
+interface listType {
+  [key: string]: MAttribute[];
 }

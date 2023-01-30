@@ -67,7 +67,7 @@ export class AttributesService extends GuardedService {
         return storageItemExists(this.cacheKey);
     }
 
-    private load() {
+    public load() {
         if (this.hasCache()) {
             this.loadCache();
             return;
@@ -77,7 +77,7 @@ export class AttributesService extends GuardedService {
 
     }
 
-    private requestAttributes() {
+    public async requestAttributes() {
         this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
             this.saveCache(data);
             this.parse(data);
