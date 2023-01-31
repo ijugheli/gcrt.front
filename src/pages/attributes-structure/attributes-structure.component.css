@@ -5,7 +5,7 @@ input {
     font-size: 12px;
     height: 40px;
     margin-right:10px;
-    margin-top:10px;
+    /* margin-top:10px; */
 }
 
 
@@ -16,5 +16,9 @@ input {
 
 .structure-drop {
     margin-right:25px!important;
+}
 
+.heading-section .heading-section-title {
+    display: inline-block !important;
+    font-size: 1rem !important;
 }

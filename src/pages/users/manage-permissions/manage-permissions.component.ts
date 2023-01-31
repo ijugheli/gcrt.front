@@ -44,6 +44,7 @@ export class ManageUserPermissionsComponent implements OnInit {
   public updateAttrPermission(attrID: number, type: AttrPermissionTypes, value: boolean) {
     this.userService.saveAttrPermission(this.userID, attrID, { 'permission_type': type, 'permission_value': value }).subscribe((data) => {
       const response = data as IResponse;
+
       if (response.code == 0) {
         this.messageService.add({
           severity: 'error',
@@ -52,27 +53,13 @@ export class ManageUserPermissionsComponent implements OnInit {
         return;
       }
 
+
+      this.handleAttrUpdate(attrID, response);
+
       this.messageService.add({
         severity: 'success',
         summary: response.message,
       });
-
-      const attrPermission = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
-
-      this.initialUserPermissions = this.userPermissions; // reassign updated data for backup
-
-      if (attrPermission != null) {
-        // if permission exists update it
-        const index = this.user?.permissions.indexOf(attrPermission);
-        this.user!.permissions[index!] = response.data as IUserPermission;
-        return;
-      }
-
-      this.user?.permissions.push(response.data as IUserPermission);
-
-      // update user in existing list
-      const userIndex = this.userService.users.indexOf(this.user!);
-      this.userService.users[userIndex] = this.user!;
     }, (error) => {
       this.userPermissions = this.initialUserPermissions; // restore old data on error
 
@@ -81,6 +68,25 @@ export class ManageUserPermissionsComponent implements OnInit {
         summary: 'ოპერაციის შესრულებისას მოხდა შეცდომა',
       });
     });
+  }
+
+  private handleAttrUpdate(attrID: number, response: IResponse,) {
+    const attrPermission = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
+
+    this.initialUserPermissions = this.userPermissions; // reassign updated data for backup
+
+    // if permission exists update it
+    if (attrPermission != null) {
+      const index = this.user?.permissions.indexOf(attrPermission);
+      this.user!.permissions[index!] = response.data as IUserPermission;
+      return;
+    }
+
+    this.user?.permissions.push(response.data as IUserPermission);
+
+    // update user in existing list
+    const userIndex = this.userService.users.indexOf(this.user!);
+    this.userService.users[userIndex] = this.user!;
   }
 
   private async init() {

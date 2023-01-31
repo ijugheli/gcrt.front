@@ -9,6 +9,10 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DataTableModule } from "../../modules/data-table/data-table.module";
 import { ToastModule } from 'primeng/toast';
+import { InputTextModule } from 'primeng/inputtext';
+import {FieldsetModule} from 'primeng/fieldset';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 @NgModule({
     declarations: [AttributesStructureComponent],
     imports: [
@@ -20,7 +24,10 @@ import { ToastModule } from 'primeng/toast';
         ButtonModule,
         ToastModule,
         DropdownModule,
-        DataTableModule
+        DataTableModule,
+        InputTextModule,
+        FieldsetModule,
+        NgxSpinnerModule,
     ]
 })
 export class AttributesStructureModule { }

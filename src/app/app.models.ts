@@ -187,6 +187,7 @@ export class User {
 export class MUserPermission {
     public attr_id!: number;
     public attr_title!: string | null;
+    public attributeType!: number | null;
     public update: boolean | null = false;
     public delete: boolean | null = false;
     public structure: boolean | null = false;
