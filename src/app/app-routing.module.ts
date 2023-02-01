@@ -40,7 +40,7 @@ const routes: Routes = [
   },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-  { path: 'users/add', component: ManageUserComponent, canActivate: [AuthGuard] },
+  { path: 'users/add', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'users/edit/:user_id', component: ManageUserComponent, canActivate: [AuthGuard] },
   { path: 'users/permissions/:user_id', component: ManageUserPermissionsComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] }

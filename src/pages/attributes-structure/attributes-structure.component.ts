@@ -19,13 +19,18 @@ export class AttributesStructureComponent implements OnInit {
   public isLoading: boolean = false;
   public addPropertyButton = false;
   public attrID = 0;
-  public list: listType = {};
+  public list: { [key: string]: MAttribute[] } = {};
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
   public attrTypeName: any = {
-    'standard': 'სტანდარტული',
-    'tree': 'ხე',
+    'standard': 'სტანდარტული ატრიბუტები',
+    'tree': 'ხისებრი ატრიბუტები',
     'entity': 'ობიექტი',
+  };
+  public fieldsets: any = {
+    'standard': true,
+    'tree': true,
+    'entity': true,
   };
 
   public dataTypesMap: any = {
@@ -140,12 +145,20 @@ export class AttributesStructureComponent implements OnInit {
     }
   }
 
+  toggleFieldset(type: string, value: boolean) {
+    this.fieldsets[type] = value;
+
+    // to close other fieldesets
+    for (let key in this.fieldsets) {
+      if (key == type) continue;
+      this.fieldsets[key] = true;
+    }
+  }
+
 
 
   public addRecord(attrID: number, data: any) {
-    // this.spinner.show();
     this.attributesService.addProperty(attrID, data);
-
   }
 
   public reorderProperties(data: any, attrID: number) {
@@ -160,7 +173,11 @@ export class AttributesStructureComponent implements OnInit {
   public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
     const oldAttr = this.attributes.find((val) => val.id == attr.id);
 
-    this.attributesService.updateAttr(attr.id, { 'data': attr }).subscribe((data) => {
+    let newAttr = { ...attr };
+
+    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
+
+    this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
       const response = data as IResponse;
 
       if (!response.code) {
@@ -252,9 +269,10 @@ export class AttributesStructureComponent implements OnInit {
     this.list['standard'] = list.filter((i) => i.isStandard());
     this.list['tree'] = list.filter((i) => i.isTree());
     this.list['entity'] = list.filter((i) => i.isEntity());
+    console.log(this.list['entity'][0]);
   }
-}
 
-interface listType {
-  [key: string]: MAttribute[];
+  public getSourceAttrTitle(attrID: number) {
+    return this.attributes.find((i) => i.id == attrID)?.title;
+  }
 }

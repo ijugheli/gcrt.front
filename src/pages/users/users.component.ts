@@ -43,6 +43,9 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.router.url.includes('/users/add')) {
+      this.handleClick();
+    };
     this.getUsers();
   }
 

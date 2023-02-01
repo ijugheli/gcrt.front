@@ -4,18 +4,18 @@ input {
     border: 1px solid #D3DFEB;
     font-size: 12px;
     height: 40px;
-    margin-right:10px;
+    margin-right: 10px;
     /* margin-top:10px; */
 }
 
 
 .structure-switch {
     display: grid;
-    margin-top: 30px!important;
+    margin-top: 30px !important;
 }
 
 .structure-drop {
-    margin-right:25px!important;
+    margin-right: 25px !important;
 }
 
 .heading-section .heading-section-title {
