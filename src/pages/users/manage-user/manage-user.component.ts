@@ -24,7 +24,7 @@ export class ManageUserComponent implements OnInit {
     'password': '',
   };
   public userID!: number | null;
-  public actionTitle = 'დამატება';
+  public actionTitle: string = 'დამატება';
 
 
   constructor(
@@ -39,6 +39,22 @@ export class ManageUserComponent implements OnInit {
     this.userID = parseInt(this.dialogConfig.data?.userID) || null;
 
     this.loadUser();
+  }
+
+  public isEmailValid() {
+    if (!this.validation) {
+      return true;
+    }
+
+    return validateEmail(this.values['email']);
+  }
+
+  public isValidValue(key: string) {
+    if (!this.validation) {
+      return true;
+    }
+
+    return this.values[key] != null && this.values[key] != '';
   }
 
   private loadUser() {
@@ -56,6 +72,50 @@ export class ManageUserComponent implements OnInit {
     }, (error) => {
       this.userID = null;
     });
+  }
+
+  private handleSubmit() {
+    this.spinner.show();
+
+    if (this.userID == null) {
+      this.userService
+        .add(this.values)
+        .subscribe(this.handleSuccessResponse, (error) => {
+          this.showError(error);
+        });
+      return;
+    }
+
+    this.userService
+      .edit(this.userID, this.values)
+      .subscribe(this.handleSuccessResponse, (error) => {
+        this.showError(error);
+      });
+  }
+
+  private handleSuccessResponse(data: IResponse) {
+    const response: IResponse = data;
+
+    if (response.code == 0) return this.showError(response.message);
+
+    this.showSuccess(response.message);
+  }
+
+  private showSuccess(msg: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: msg,
+    });
+    this.spinner.hide();
+  }
+
+  private showError(error: any) {
+    this.messageService.add({
+      severity: 'error',
+      summary: error,
+      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
+    });
+    this.spinner.hide();
   }
 
   onCancel() {
@@ -76,76 +136,7 @@ export class ManageUserComponent implements OnInit {
       }, 5000);
       return;
     }
-    console.log('HERE');
 
     this.handleSubmit();
   }
-
-
-  private handleSubmit() {
-    this.spinner.show();
-
-    if (this.userID == null) {
-      this.userService
-        .add(this.values)
-        .subscribe((data) => {
-          const response = data as IResponse;
-
-          if (response.code == 0) return this.showError(response.message);
-
-          this.showSuccess(response.message);
-        }, (error) => {
-          this.showError(error);
-        });
-      return;
-    }
-
-    this.userService
-      .edit(this.userID, this.values)
-      .subscribe((data) => {
-        const response = data as IResponse;
-
-        if (response.code == 0) return this.showError(response.message);
-
-        this.showSuccess(response.message);
-      }, (error) => {
-        this.showError(error);
-      });
-  }
-
-  private showSuccess(msg: string) {
-    this.messageService.add({
-      severity: 'success',
-      summary: msg,
-    });
-    this.spinner.hide();
-  }
-
-  private showError(error: any) {
-    this.messageService.add({
-      severity: 'error',
-      summary: error,
-      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
-    });
-    this.spinner.hide();
-  }
-
-  public isEmailValid() {
-    if (!this.validation) {
-      return true;
-    }
-
-    return validateEmail(this.values['email']);
-  }
-
-
-  public isValidValue(key: string) {
-    if (!this.validation) {
-      return true;
-    }
-
-    return this.values[key] != null && this.values[key] != '';
-  }
-
-
 }

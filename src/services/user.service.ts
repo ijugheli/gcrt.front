@@ -42,7 +42,7 @@ export class UserService extends GuardedService {
   }
 
   public edit(userID: number, values: any) {
-    return this.http.post(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<IResponse>(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
   }
 
   public changePassword(values: any) {

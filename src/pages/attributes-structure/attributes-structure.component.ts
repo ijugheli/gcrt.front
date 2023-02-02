@@ -104,7 +104,6 @@ export class AttributesStructureComponent implements OnInit {
     this.newObject = cleanObject;
   }
 
-
   constructor(
     public attributesService: AttributesService,
     public messageService: MessageService,
@@ -112,7 +111,95 @@ export class AttributesStructureComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadData();
+    this.initializeData();
+  }
+
+  public addRecord(attrID: number, data: any) {
+    this.attributesService.addProperty(attrID, data);
+  }
+
+  public reorderProperties(data: any, attrID: number) {
+    let propertyIDs = [];
+    for (let i in data) {
+      propertyIDs.push(data[i]['id']);
+    }
+    this.attributesService.reorderProperties(attrID, JSON.stringify(propertyIDs));
+    this.attributes = this.attributesService.asList();
+  }
+
+  public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
+    const oldAttr: MAttribute | undefined = this.attributes.find((val) => val.id == attr.id);
+
+    let newAttr = { ...attr };
+
+    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
+
+    this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
+      const response: IResponse = data;
+
+      if (!response.code) {
+        this.showError(response.message);
+        this.restoreOldValue(oldAttr!, value, isLazy || false);
+        return;
+      }
+      this.showSuccess(response.message);
+    }, (error) => {
+      this.showError('დაფიქსირდა შეცდომა');
+
+      this.restoreOldValue(oldAttr!, value, isLazy || false);
+    });
+  }
+
+  public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
+    this.attributesService.updateProperty(property.id, property).subscribe((data) => {
+      const response = data as IResponse;
+
+      if (!response.code) {
+        this.showError(response.message);
+        return;
+      }
+
+      if (isPrimary) {
+        this.list[attrType].find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
+          if (data.id === property.id) return;
+          data.is_primary = false;
+        });
+      }
+
+      this.showSuccess(response.message);
+    }, (error) => {
+      this.showError('დაფიქსირდა შეცდომა');
+    })
+  }
+
+  public getSourceAttrTitle(attrID: number) {
+    return this.attributes.find((i) => i.id == attrID)?.title;
+  }
+
+  private async initializeData() {
+    this.isLoading = true;
+    this.spinner.show();
+
+    await this.initializeAttrList();
+
+    this.initializeDataTypes();
+    this.initializeViewTypes();
+    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
+    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+
+    this.isLoading = false;
+    this.spinner.hide();
+  }
+
+  private async initializeAttrList() {
+    await this.attributesService.requestAttributes();
+    const list: MAttribute[] = this.attributesService.asList();
+
+    this.attributes = list;
+
+    this.list['standard'] = list.filter((i) => i.isStandard());
+    this.list['tree'] = list.filter((i) => i.isTree());
+    this.list['entity'] = list.filter((i) => i.isEntity());
   }
 
   private initializeDataTypes() {
@@ -121,6 +208,33 @@ export class AttributesStructureComponent implements OnInit {
 
   private initializeViewTypes() {
     this.DATA_VIEW_TYPES = Object.values(this.viewTypesMap);
+  }
+
+  private showSuccess(msg: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: msg,
+    });
+  }
+
+  private showError(error: any) {
+    this.messageService.add({
+      severity: 'error',
+      summary: error,
+    });
+  }
+
+  private restoreOldValue(oldAttr: MAttribute, value: boolean, isLazy: boolean) {
+    isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
+  }
+
+  validatePropertyForm() {
+    for (let key in this.newObject) {
+      if (key == null || key == '') {
+        return false;
+      }
+    }
+    return true;
   }
 
   onRowReorder(event: any, id: any, propertyData: any) {
@@ -153,126 +267,5 @@ export class AttributesStructureComponent implements OnInit {
       if (key == type) continue;
       this.fieldsets[key] = true;
     }
-  }
-
-
-
-  public addRecord(attrID: number, data: any) {
-    this.attributesService.addProperty(attrID, data);
-  }
-
-  public reorderProperties(data: any, attrID: number) {
-    let propertyIDs = [];
-    for (let i in data) {
-      propertyIDs.push(data[i]['id']);
-    }
-    this.attributesService.reorderProperties(attrID, JSON.stringify(propertyIDs));
-    this.attributes = this.attributesService.asList();
-  }
-
-  public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
-    const oldAttr = this.attributes.find((val) => val.id == attr.id);
-
-    let newAttr = { ...attr };
-
-    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
-
-    this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
-      const response = data as IResponse;
-
-      if (!response.code) {
-        this.showError(response.message);
-        this.restoreOldValue(oldAttr!, value, isLazy || false);
-        return;
-      }
-      this.showSuccess(response.message);
-    }, (error) => {
-      this.showError('დაფიქსირდა შეცდომა');
-
-      this.restoreOldValue(oldAttr!, value, isLazy || false);
-    });
-  }
-
-
-  public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
-    this.attributesService.updateProperty(property.id, property).subscribe((data) => {
-      const response = data as IResponse;
-
-      if (!response.code) {
-        this.showError(response.message);
-        return;
-      }
-
-      if (isPrimary) {
-        this.list[attrType].find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
-          if (data.id === property.id) return;
-          data.is_primary = false;
-        });
-      }
-
-      this.showSuccess(response.message);
-    }, (error) => {
-      this.showError('დაფიქსირდა შეცდომა');
-    })
-  }
-
-  private showSuccess(msg: string) {
-    this.messageService.add({
-      severity: 'success',
-      summary: msg,
-    });
-  }
-
-  private showError(error: any) {
-    this.messageService.add({
-      severity: 'error',
-      summary: error,
-    });
-  }
-
-  private restoreOldValue(oldAttr: MAttribute, value: boolean, isLazy: boolean) {
-    isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
-  }
-
-  validatePropertyForm() {
-    for (let key in this.newObject) {
-      if (key == null || key == '') {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private async loadData() {
-    this.isLoading = true;
-    this.spinner.show();
-
-    await this.loadList();
-
-    this.initializeDataTypes();
-    this.initializeViewTypes();
-    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
-    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
-
-    this.isLoading = false;
-    this.spinner.hide();
-  }
-
-
-
-  private async loadList() {
-    await this.attributesService.requestAttributes();
-    const list = this.attributesService.asList();
-
-    this.attributes = list;
-
-    this.list['standard'] = list.filter((i) => i.isStandard());
-    this.list['tree'] = list.filter((i) => i.isTree());
-    this.list['entity'] = list.filter((i) => i.isEntity());
-    console.log(this.list['entity'][0]);
-  }
-
-  public getSourceAttrTitle(attrID: number) {
-    return this.attributes.find((i) => i.id == attrID)?.title;
   }
 }
