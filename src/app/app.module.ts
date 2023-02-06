@@ -9,7 +9,7 @@ import { TableModule } from 'primeng/table';
 import { HomeModule } from '../pages/home/home.module';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AttributePageModule } from 'src/pages/attribute-page/attribute-page.module';
 import { AuthGuardService } from 'src/services/AuthGuardService.service';
 import { AuthService } from 'src/services/AuthService.service';
@@ -24,6 +24,7 @@ import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module'
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
+import { InterceptorService } from 'src/services/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,11 @@ import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/
     AttributesStructureModule,
     ManageUserPermissionsModule
   ],
-  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService],
+  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: InterceptorService,
+    multi: true
+  }],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
