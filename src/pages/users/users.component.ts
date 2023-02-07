@@ -43,6 +43,9 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.router.url.includes('/users/add')) {
+      this.handleClick();
+    };
     this.getUsers();
   }
 
@@ -51,7 +54,7 @@ export class UsersComponent implements OnInit {
     this.userService.list().subscribe((users) => {
       this.users = users;
       this.userService.users = this.users;
-      this.parseFilters();
+      // this.parseFilters();
       this.spinner.hide();
     }, (error) => {
       this.spinner.hide();
@@ -60,31 +63,34 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  private parseFilters() {
-    let storageFilters = localStorage.getItem(this.storageKey);
-    if (storageFilters == null) {
-      return;
-    }
+  // private parseFilters() {
+  //   let storageFilters = localStorage.getItem(this.storageKey);
+  //   console.log('///////////////////////////////');
+  //       console.log(storageFilters);
+  //   console.log('///////////////////////////////');
+  //   if (storageFilters == null) {
+  //     return;
+  //   }
 
-    let filters = JSON.parse(storageFilters)['filters'];
-    if (filters == null) {
-      return;
-    }
+  //   let filters = JSON.parse(storageFilters)['filters'];
+  //   if (filters == null) {
+  //     return;
+  //   }
 
-    let filterableKeys = Object.keys(this.filters);
-    let keys = Object.keys(filters);
-    let values: cachedFilter[] = Object.values(filters) as cachedFilter[];
-    for (let i = 0; i < keys.length; i++) {
-      let key: string = keys[i];
-      let filter: cachedFilter = values[i];
+  //   let filterableKeys = Object.keys(this.filters);
+  //   let keys = Object.keys(filters);
+  //   let values: cachedFilter[] = Object.values(filters) as cachedFilter[];
+  //   for (let i = 0; i < keys.length; i++) {
+  //     let key: string = keys[i];
+  //     let filter: cachedFilter = values[i];
 
-      if (filterableKeys.includes(key) &&
-        filter.value != null &&
-        filter.value != '') {
-        this.filters[key] = filter.value;
-      }
-    }
-  }
+  //     if (filterableKeys.includes(key) &&
+  //       filter.value != null &&
+  //       filter.value != '') {
+  //       this.filters[key] = filter.value;
+  //     }
+  //   }
+  // }
 
   private remove(userID: number): void {
     this.spinner.show();

@@ -19,13 +19,18 @@ export class AttributesStructureComponent implements OnInit {
   public isLoading: boolean = false;
   public addPropertyButton = false;
   public attrID = 0;
-  public list: listType = {};
+  public list: { [key: string]: MAttribute[] } = {};
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
   public attrTypeName: any = {
-    'standard': 'სტანდარტული',
-    'tree': 'ხე',
+    'standard': 'სტანდარტული ატრიბუტები',
+    'tree': 'ხისებრი ატრიბუტები',
     'entity': 'ობიექტი',
+  };
+  public fieldsets: any = {
+    'standard': true,
+    'tree': true,
+    'entity': true,
   };
 
   public dataTypesMap: any = {
@@ -99,7 +104,6 @@ export class AttributesStructureComponent implements OnInit {
     this.newObject = cleanObject;
   }
 
-
   constructor(
     public attributesService: AttributesService,
     public messageService: MessageService,
@@ -107,45 +111,11 @@ export class AttributesStructureComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadData();
+    this.initializeData();
   }
-
-  private initializeDataTypes() {
-    this.DATA_TYPES = Object.values(this.dataTypesMap);
-  }
-
-  private initializeViewTypes() {
-    this.DATA_VIEW_TYPES = Object.values(this.viewTypesMap);
-  }
-
-  onRowReorder(event: any, id: any, propertyData: any) {
-    this.reorderProperties(propertyData, id);
-  }
-
-  addProperty(attrID: any) {
-    // this.addPropertyButton = !this.addPropertyButton;
-    //Add Property Here
-    this.attrID = attrID;
-    this.newObject.parent_id = this.attrID.toString();
-    if (!this.validatePropertyForm()) {
-      this.addRecord(attrID, this.newObject);
-      this.initNewObject();
-    }
-  }
-
-  toggleProperty(atrrID: any) {
-    this.addPropertyButton = !this.addPropertyButton;
-    if (!this.addPropertyButton) {
-      this.initNewObject();
-    }
-  }
-
-
 
   public addRecord(attrID: number, data: any) {
-    // this.spinner.show();
     this.attributesService.addProperty(attrID, data);
-
   }
 
   public reorderProperties(data: any, attrID: number) {
@@ -158,10 +128,14 @@ export class AttributesStructureComponent implements OnInit {
   }
 
   public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
-    const oldAttr = this.attributes.find((val) => val.id == attr.id);
+    const oldAttr: MAttribute | undefined = this.attributes.find((val) => val.id == attr.id);
 
-    this.attributesService.updateAttr(attr.id, { 'data': attr }).subscribe((data) => {
-      const response = data as IResponse;
+    let newAttr = { ...attr };
+
+    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
+
+    this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
+      const response: IResponse = data;
 
       if (!response.code) {
         this.showError(response.message);
@@ -175,7 +149,6 @@ export class AttributesStructureComponent implements OnInit {
       this.restoreOldValue(oldAttr!, value, isLazy || false);
     });
   }
-
 
   public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
@@ -197,6 +170,44 @@ export class AttributesStructureComponent implements OnInit {
     }, (error) => {
       this.showError('დაფიქსირდა შეცდომა');
     })
+  }
+
+  public getSourceAttrTitle(attrID: number) {
+    return this.attributes.find((i) => i.id == attrID)?.title;
+  }
+
+  private async initializeData() {
+    this.isLoading = true;
+    this.spinner.show();
+
+    await this.initializeAttrList();
+
+    this.initializeDataTypes();
+    this.initializeViewTypes();
+    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
+    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+
+    this.isLoading = false;
+    this.spinner.hide();
+  }
+
+  private async initializeAttrList() {
+    await this.attributesService.requestAttributes();
+    const list: MAttribute[] = this.attributesService.asList();
+
+    this.attributes = list;
+
+    this.list['standard'] = list.filter((i) => i.isStandard());
+    this.list['tree'] = list.filter((i) => i.isTree());
+    this.list['entity'] = list.filter((i) => i.isEntity());
+  }
+
+  private initializeDataTypes() {
+    this.DATA_TYPES = Object.values(this.dataTypesMap);
+  }
+
+  private initializeViewTypes() {
+    this.DATA_VIEW_TYPES = Object.values(this.viewTypesMap);
   }
 
   private showSuccess(msg: string) {
@@ -226,35 +237,35 @@ export class AttributesStructureComponent implements OnInit {
     return true;
   }
 
-  private async loadData() {
-    this.isLoading = true;
-    this.spinner.show();
-
-    await this.loadList();
-
-    this.initializeDataTypes();
-    this.initializeViewTypes();
-    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
-    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
-
-    this.isLoading = false;
-    this.spinner.hide();
+  onRowReorder(event: any, id: any, propertyData: any) {
+    this.reorderProperties(propertyData, id);
   }
 
-
-
-  private async loadList() {
-    await this.attributesService.requestAttributes();
-    const list = this.attributesService.asList();
-
-    this.attributes = list;
-
-    this.list['standard'] = list.filter((i) => i.isStandard());
-    this.list['tree'] = list.filter((i) => i.isTree());
-    this.list['entity'] = list.filter((i) => i.isEntity());
+  addProperty(attrID: any) {
+    // this.addPropertyButton = !this.addPropertyButton;
+    //Add Property Here
+    this.attrID = attrID;
+    this.newObject.parent_id = this.attrID.toString();
+    if (!this.validatePropertyForm()) {
+      this.addRecord(attrID, this.newObject);
+      this.initNewObject();
+    }
   }
-}
 
-interface listType {
-  [key: string]: MAttribute[];
+  toggleProperty(atrrID: any) {
+    this.addPropertyButton = !this.addPropertyButton;
+    if (!this.addPropertyButton) {
+      this.initNewObject();
+    }
+  }
+
+  toggleFieldset(type: string, value: boolean) {
+    this.fieldsets[type] = value;
+
+    // to close other fieldesets
+    for (let key in this.fieldsets) {
+      if (key == type) continue;
+      this.fieldsets[key] = true;
+    }
+  }
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AttrPermissionTypes } from 'src/app/app.config';
-import { MUserPermission, User } from 'src/app/app.models';
-import { ActivatedRoute } from '@angular/router';
+import { IResponse, IUserPermission } from 'src/app/app.interfaces';
+import { MUserPermission, User, UserAttrPermission } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { UserService } from 'src/services/user.service';
-import { IResponse, IUserPermission } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-manage-user-permissions',
@@ -43,7 +43,7 @@ export class ManageUserPermissionsComponent implements OnInit {
 
   public updateAttrPermission(attrID: number, type: AttrPermissionTypes, value: boolean) {
     this.userService.saveAttrPermission(this.userID, attrID, { 'permission_type': type, 'permission_value': value }).subscribe((data) => {
-      const response = data as IResponse;
+      const response: IResponse = data;
 
       if (response.code == 0) {
         this.messageService.add({
@@ -52,7 +52,6 @@ export class ManageUserPermissionsComponent implements OnInit {
         });
         return;
       }
-
 
       this.handleAttrUpdate(attrID, response);
 
@@ -70,25 +69,6 @@ export class ManageUserPermissionsComponent implements OnInit {
     });
   }
 
-  private handleAttrUpdate(attrID: number, response: IResponse,) {
-    const attrPermission = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
-
-    this.initialUserPermissions = this.userPermissions; // reassign updated data for backup
-
-    // if permission exists update it
-    if (attrPermission != null) {
-      const index = this.user?.permissions.indexOf(attrPermission);
-      this.user!.permissions[index!] = response.data as IUserPermission;
-      return;
-    }
-
-    this.user?.permissions.push(response.data as IUserPermission);
-
-    // update user in existing list
-    const userIndex = this.userService.users.indexOf(this.user!);
-    this.userService.users[userIndex] = this.user!;
-  }
-
   private async init() {
     this.isLoading = true;
     this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
@@ -99,11 +79,30 @@ export class ManageUserPermissionsComponent implements OnInit {
     this.isLoading = false;
   }
 
+  private handleAttrUpdate(attrID: number, response: IResponse,) {
+    const attrPermission: UserAttrPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
+
+    this.initialUserPermissions = this.userPermissions; // reassign updated data for backup
+
+    // if permission exists update it
+    if (attrPermission != null) {
+      const index: number | undefined = this.user?.permissions.indexOf(attrPermission);
+      this.user!.permissions[index!] = response.data as IUserPermission;
+      return;
+    }
+
+    this.user?.permissions.push(response.data as IUserPermission);
+
+    // update user in existing list
+    const userIndex: number = this.userService.users.indexOf(this.user!);
+    this.userService.users[userIndex] = this.user!;
+  }
+
   private parseData() {
     for (const attribute of this.attributesList) {
-      const attrPermission = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
+      const attrPermission: UserAttrPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
 
-      const permission = MUserPermission.from(attribute, attrPermission);
+      const permission: MUserPermission = MUserPermission.from(attribute, attrPermission);
 
       this.userPermissions.push(permission);
     }
