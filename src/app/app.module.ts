@@ -24,6 +24,7 @@ import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module'
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
+import { ManageObjectModule } from '../modules/manage-object/manage-object.module';
 
 @NgModule({
   declarations: [

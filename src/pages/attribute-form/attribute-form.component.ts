@@ -16,6 +16,8 @@ export class AttributeFormComponent implements OnInit {
 
   public selectedRecord = null;
 
+  public selectedsubAttribute: any = null;
+
   public attrID: any; //Project
   public valueID: number | null = 0;
   public initialValuesProvided: boolean = false;
