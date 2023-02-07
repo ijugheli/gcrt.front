@@ -13,8 +13,8 @@ export class InterceptorService implements HttpInterceptor {
         return next.handle(request).pipe(map((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
                 event = event.clone();
-
                 const refreshToken: string | undefined = event.body['refresh_token'];
+
                 if (refreshToken !== undefined) {
                     const auth = localStorage.getItem('auth');
 

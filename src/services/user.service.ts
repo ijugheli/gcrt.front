@@ -23,6 +23,7 @@ export class UserService extends GuardedService {
     'delete': API_URL + '/user/{user_id}',
     'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
     'updateStatusID': API_URL + '/user/update-status/{user_id}/{status_id}',
+    'updatePassword': API_URL + '/user/update-password',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -61,6 +62,10 @@ export class UserService extends GuardedService {
 
   public updateStatusID(userID: number, statusID: number) {
     return this.http.post<IResponse>(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
+  }
+
+  public updatePassword(data: any) {
+    return this.http.post<IResponse>(this.urls['updatePassword'], data, { headers: this.headers });
   }
 
   public me() {

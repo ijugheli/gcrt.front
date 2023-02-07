@@ -19,6 +19,9 @@ import { UserService } from 'src/services/user.service';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../services/AuthService.service';
+import { RouterModule } from '@angular/router';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
+import { UpdatePasswordComponent } from '../update-password/update-password.component';
 
 
 
@@ -39,12 +42,13 @@ import { AuthService } from '../../../services/AuthService.service';
         CardModule,
         AccordionModule,
         NgxSpinnerModule,
-        CalendarModule
+        CalendarModule,
+        RouterModule,
     ],
     exports: [
-        LoginComponent
+        LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent
     ],
     providers: [UserService, AuthService],
-    declarations: [LoginComponent]
+    declarations: [LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent]
 })
 export class LoginModule { }

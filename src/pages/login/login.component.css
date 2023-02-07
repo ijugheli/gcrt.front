@@ -48,3 +48,6 @@ button:first-child {
     width: 100%;
     min-height:300px
 }
+.forgot-pass-btn:hover {
+    color: #4CAF50;
+}

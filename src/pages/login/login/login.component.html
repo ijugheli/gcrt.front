@@ -41,14 +41,17 @@
                 </div> -->
 
                     <div class="p-inputgroup right">
-                        <div class="g-recaptcha" [attr.data-sitekey]="googleKey"></div>
+                        <button type="button" class="forgot-pass-btn" routerLink="../forgot-password">დაგავიწყდა პაროლი?</button>
                     </div>
+                    <!-- <div class="p-inputgroup right">
+                        <div class="g-recaptcha" [attr.data-sitekey]="googleKey"></div>
+                    </div> -->
 
                 </div>
                 <p-divider></p-divider>
                 <div class="form-actions">
                     <span>
-                        <button pButton (click)="onSubmit()" type="submit" label="ავტორიზაცია"
+                        <button pButton type="submit" label="ავტორიზაცია"
                             class="p-button-outlined p-button-lg">
                         </button>
                     </span>
