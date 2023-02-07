@@ -1,4 +1,3 @@
-
 .head-item {
     font-family: roman !important;
     font-weight: bold !important;
@@ -25,7 +24,8 @@ li button {
 .table-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 50vh;
+    min-width: 70vw;
 }
 
 .p-table {
@@ -52,8 +52,8 @@ li button {
     border-radius: 3px;
 }
 
-.icon-only-btn i{
-    margin:0px !important;
+.icon-only-btn i {
+    margin: 0px !important;
 }
 
 .p-togglebutton.p-button.p-highlight {
@@ -61,4 +61,3 @@ li button {
     border-color: #4CAF50;
     color: #ffffff;
 }
-

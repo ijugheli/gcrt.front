@@ -25,6 +25,7 @@ import { AttributesStructureModule } from '../pages/attributes-structure/attribu
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
 import { InterceptorService } from 'src/services/interceptor.service';
+import { ManageObjectModule } from '../modules/manage-object/manage-object.module';
 
 @NgModule({
   declarations: [

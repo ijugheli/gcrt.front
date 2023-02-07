@@ -5,9 +5,123 @@
     ></data-table>
 </section>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <section *ngIf="attribute?.hasChildren()">
-    <p-panel header="{{attribute?.title}}">
-        <p-tabView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <p-splitter
+            [style]="{'width': '100%', height: '400px', 'padding' : '0px'}"
+            [panelSizes]="[20,80]"
+        >
+            <ng-template pTemplate>
+                <p-listbox
+                    [options]="(attribute && attribute.children) ? attribute.children : []"
+                    [(ngModel)]="selectedsubAttribute"
+                    optionLabel="title"
+                ></p-listbox>
+            </ng-template>
+
+
+
+
+
+            <ng-template pTemplate></ng-template>
+        </p-splitter> -->
+    <p-panel
+        header="დამატება"
+        [toggleable]="true"
+    >
+        <manage-object [attribute]="attribute"></manage-object>
+    </p-panel>
+
+
+
+
+    <p-divider layout="horizontal"></p-divider>
+
+
+
+    <p-panel
+        header="{{attribute?.title}}"
+        [toggleable]="true"
+    >
+        <data-table [attrID]="attrID"></data-table>
+        <!-- <div class="flex">
+            <div>
+                <p-listbox
+                    [options]="(attribute && attribute.children) ? attribute.children : []"
+                    [(ngModel)]="selectedsubAttribute"
+                    optionLabel="title"
+                ></p-listbox>
+            </div>
+            <p-divider layout="vertical"></p-divider>
+            <div>
+                <p-scrollPanel [style]="{width: '100%', height: '400px'}">
+                    <ng-container *ngFor="let subAttribute of children; let j = index">
+                        <data-table
+                            *ngIf="subAttribute.id == selectedsubAttribute?.id"
+                            [attrID]="subAttribute.id"
+                            [valueID]="valueID"
+                        ></data-table>
+                    </ng-container>
+                </p-scrollPanel>
+            </div>
+        </div> -->
+    </p-panel>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <p-tabView>
             <p-tabPanel
                 header="მართვა"
                 class="management-tab-panel"
@@ -61,7 +175,6 @@
                                 [selected]="j == 0"
                             >
                                 <ng-container *ngIf="j == 0">
-                                    <!-- <data-table [attrID]="attrID"></data-table> -->
                                     <dynamic-form
                                         [attribute]="attribute"
                                         *ngIf="attribute"
@@ -77,27 +190,6 @@
                         </p-tabView>
 
 
-                        <!-- <p-tabView *ngIf="!attribute?.hasChildren()">
-                            <p-tabPanel
-                                [header]="subAttribute.title"
-                                *ngFor="let subAttribute of children; let j = index"
-                                [selected]="j == 0"
-                            >
-                                <ng-container *ngIf="j == 0">
-                                    <dynamic-form
-                                        [attribute]="attribute"
-                                        *ngIf="attribute"
-                                    ></dynamic-form>
-                                </ng-container>
-                                <ng-container *ngIf="j > 0">
-                                    <data-table
-                                        [attrID]="subAttribute.id"
-                                        [valueID]="valueID"
-                                    ></data-table>
-                                </ng-container>
-                            </p-tabPanel>
-                        </p-tabView> -->
-
 
                         <div
                             class="manage-form-container"
@@ -108,7 +200,50 @@
                                 *ngIf="attribute"
                             ></dynamic-form>
                         </div>
-                        <!-- <p-divider></p-divider>
+                     
+                    </ng-container>
+                </div>
+            </p-tabPanel>
+
+
+        </p-tabView> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <p-divider></p-divider>
 
                         <div class="form-actions">
                             <span>
@@ -133,16 +268,61 @@
                             </span>
 
                         </div> -->
-                    </ng-container>
-                </div>
-            </p-tabPanel>
 
 
-        </p-tabView>
 
 
-    </p-panel>
-</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <p-tabView *ngIf="!attribute?.hasChildren()">
+                            <p-tabPanel
+                                [header]="subAttribute.title"
+                                *ngFor="let subAttribute of children; let j = index"
+                                [selected]="j == 0"
+                            >
+                                <ng-container *ngIf="j == 0">
+                                    <dynamic-form
+                                        [attribute]="attribute"
+                                        *ngIf="attribute"
+                                    ></dynamic-form>
+                                </ng-container>
+                                <ng-container *ngIf="j > 0">
+                                    <data-table
+                                        [attrID]="subAttribute.id"
+                                        [valueID]="valueID"
+                                    ></data-table>
+                                </ng-container>
+                            </p-tabPanel>
+                        </p-tabView> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- <div class="manage-form-container">
@@ -176,6 +356,21 @@
                          
                             </p-tabView>
                         </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- <p-tabPanel
