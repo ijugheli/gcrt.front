@@ -21,13 +21,21 @@
 
   <ng-container *ngIf="!isLoading">
     <div *ngFor="let item of list | keyvalue" style="margin: 12px 4px;">
-      <p-fieldset legend="{{ attrTypeName[item.key] }}" [toggleable]="true" [collapsed]="fieldsets[item.key]"
-        (onAfterToggle)="toggleFieldset(item.key, $event.collapsed)" [style]="{ 'padding' : '16px 12px'}">
+      <p-panel [header]="getAttrTypeName(item.key)" [toggleable]="true" [(collapsed)]="fieldsets[item.key]"
+        (onBeforeToggle)="closeFieldsets()" [style]="{ 'padding' : '16px 12px'}"
+        [transitionOptions]="'100ms'" expandIcon="pi pi-angle-down"
+        collapseIcon="pi pi-angle-up">
+        <ng-template pTemplate="icons">
+          <button pButton class="p-button-outlined" icon="pi pi-plus" label="დამატება" style="margin-right: 36px;"
+            (click)="onAddClick(getAttrTypeID(item.key))">
+          </button>
+
+        </ng-template>
         <p-table #attrFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
           [paginator]="true" [rows]="25"
           currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
           [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
-          [value]="list[item.key]" dataKey="id" [tableStyle]="{'min-width': '100%'}">
+          [value]="list[item.key]" dataKey="id" [tableStyle]="{'min-width': '100%'}" rowExpandMode="single">
           <ng-template pTemplate="header">
             <tr>
               <th style="width: 5rem"></th>
@@ -209,7 +217,7 @@
 
 
   <div class="p-3">
-    <p-table [value]="attribute.sections" dataKey="id" sortField="properties.title" sortMode="single"
+    <p-table #menu [value]="attribute.sections" dataKey="id" sortField="properties.title" sortMode="single"
       dataKey="properties.title" rowGroupMode="subheader" groupRowsBy="properties.title"
       (onRowReorder)="onRowReorder($event, attribute.id, attribute.properties)">
       <ng-template pTemplate="header">
@@ -297,7 +305,7 @@
   </tr>
   </ng-template>
   </p-table>
-  </p-fieldset>
+  </p-panel>
   </div>
   </ng-container>
 

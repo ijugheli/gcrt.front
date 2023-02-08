@@ -22,3 +22,9 @@ input {
     display: inline-block !important;
     font-size: 1rem !important;
 }
+
+.form-actions {
+    width: 100%;
+    text-align: right;
+    margin: 10px 0px 0px 0px;
+}

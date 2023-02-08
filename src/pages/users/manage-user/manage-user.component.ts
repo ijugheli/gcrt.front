@@ -80,7 +80,13 @@ export class ManageUserComponent implements OnInit {
     if (this.userID == null) {
       this.userService
         .add(this.values)
-        .subscribe(this.handleSuccessResponse, (error) => {
+        .subscribe((data) => {
+          const response: IResponse = data;
+
+          if (response.code == 0) return this.showError(response.message);
+
+          this.showSuccess(response.message);
+        }, (error) => {
           this.showError(error);
         });
       return;
@@ -88,17 +94,19 @@ export class ManageUserComponent implements OnInit {
 
     this.userService
       .edit(this.userID, this.values)
-      .subscribe(this.handleSuccessResponse, (error) => {
+      .subscribe((data) => {
+        const response: IResponse = data;
+
+        if (response.code == 0) return this.showError(response.message);
+
+        this.showSuccess(response.message);
+        
+        setTimeout(() => {
+          this.dialogRef.close();
+        }, 1000);
+      }, (error) => {
         this.showError(error);
       });
-  }
-
-  private handleSuccessResponse(data: IResponse) {
-    const response: IResponse = data;
-
-    if (response.code == 0) return this.showError(response.message);
-
-    this.showSuccess(response.message);
   }
 
   private showSuccess(msg: string) {

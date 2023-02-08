@@ -42,6 +42,7 @@ export class AttributesService extends GuardedService {
         'editValueItem': API_URL + '/attrs/values/edit',
         'updateAttr': API_URL + '/attrs/{attr_id}/update',
         'updateProperty': API_URL + '/attrs/properties/{property_id}/update',
+        'addAttr': API_URL + '/attrs/add',
     };
 
     constructor(private http: HttpClient, private auth: AuthService) {
@@ -102,7 +103,7 @@ export class AttributesService extends GuardedService {
 
 
 
-    //ORM Methods
+    //ORM Method
     public find(attrID: number): MAttribute | undefined {
         return this.get(attrID);
     }
@@ -133,6 +134,10 @@ export class AttributesService extends GuardedService {
 
 
     // Individual Requests
+    public add(data: any) {
+        return this.http.post<IResponse>(this.urls['addAttr'], data, { headers: this.headers });
+    }
+
     public list() {
         return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
     }

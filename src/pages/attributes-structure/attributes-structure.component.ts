@@ -6,6 +6,10 @@ import { MOption } from '../../services/attributes/models/option.model';
 import { IResponse } from 'src/app/app.interfaces';
 import { MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AddAttributeComponent } from './add-attribute/add-attribute.component';
+import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
+
 
 @Component({
   selector: 'app-attributes-structure',
@@ -107,6 +111,7 @@ export class AttributesStructureComponent implements OnInit {
   constructor(
     public attributesService: AttributesService,
     public messageService: MessageService,
+    public dialogService: DialogService,
     private spinner: NgxSpinnerService,
   ) { }
 
@@ -265,7 +270,29 @@ export class AttributesStructureComponent implements OnInit {
     // to close other fieldesets
     for (let key in this.fieldsets) {
       if (key == type) continue;
+
       this.fieldsets[key] = true;
     }
+  }
+  closeFieldsets() {
+    for (let key in this.fieldsets) {
+      this.fieldsets[key] = true;
+    }
+  }
+
+  public getAttrTypeID(name: string): number {
+    return ATTR_TYPE_ID(name) as number;
+  }
+
+  public getAttrTypeName(name: string): string {
+    return ATTR_TYPE_NAME(name) as string;
+  }
+
+  public onAddClick(type: number) {
+    this.dialogService.open(AddAttributeComponent, {
+      data: { type: type, },
+      width: '30%',
+      position: 'top',
+    });
   }
 }

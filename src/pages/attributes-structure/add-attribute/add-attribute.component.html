@@ -1,0 +1,69 @@
+<p-toast position="top-right"></p-toast>
+
+<div class="form-container">
+
+    <ng-container>
+        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.1)" type="ball-scale-multiple"
+            [fullScreen]="false">
+        </ngx-spinner>
+    </ng-container>
+    <div>
+        <p-panel header="{{actionTitle}}">
+            <div class="form-inputs">
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <!-- <span class="p-inputgroup-addon">
+                        <i class="pi pi-pencil"></i>
+                    </span> -->
+                    <input type="text" pInputText value="მშობლის გარეშე" disabled placeholder="მშობელი">
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <!-- <span class="p-inputgroup-addon">
+                        <i class="pi pi-pencil"></i>
+                    </span> -->
+                    <input type="text" pInputText value="{{types[type]}}" disabled placeholder="ტიპი">
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-pencil"></i>
+                    </span>
+                    <input type="text" pInputText [(ngModel)]="values['title']"
+                        [class.ng-invalid]="!isValidValue('title')" [class.ng-dirty]="!isValidValue('title')"
+                        placeholder="დასახელება">
+                </div>
+
+                <div class="p-inputgroup">
+                    <span style="margin-right:12px">Lazy</span>
+                    <p-inputSwitch [(ngModel)]="values['is_lazy']"></p-inputSwitch>
+                </div>
+                <div class="p-inputgroup">
+                    <span style="margin-right:12px">სტატუსი</span>
+                    <p-inputSwitch [(ngModel)]="values['status_id']"></p-inputSwitch>
+                </div>
+            </div>
+            <p-divider></p-divider>
+            <div class="form-actions">
+                <span>
+                    <button (click)="onCancel()" pButton type="button" label="დახურვა"
+                        class="p-button-outlined p-button-md">
+                        <i class="pi pi-replay"></i>
+                    </button>
+                    <button pButton (click)="onSubmit()" type="button" [label]="'დამატება'"
+                        class="p-button-outlined p-button-md">
+                        <i class="pi pi-check"></i>
+                    </button>
+                </span>
+
+            </div>
+
+        </p-panel>
+    </div>
+</div>

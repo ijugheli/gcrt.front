@@ -10,11 +10,17 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DataTableModule } from "../../modules/data-table/data-table.module";
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
-import {FieldsetModule} from 'primeng/fieldset';
+import { FieldsetModule } from 'primeng/fieldset';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { AddAttributeComponent } from './add-attribute/add-attribute.component';
+import { MenuModule } from 'primeng/menu';
+import { DividerModule } from 'primeng/divider';
+import { CardModule } from 'primeng/card';
+import { InputMaskModule } from 'primeng/inputmask';
+import { PanelModule } from 'primeng/panel';
 
 @NgModule({
-    declarations: [AttributesStructureComponent],
+    declarations: [AttributesStructureComponent, AddAttributeComponent],
     imports: [
         CommonModule,
         BrowserAnimationsModule,
@@ -28,6 +34,12 @@ import { NgxSpinnerModule } from 'ngx-spinner';
         InputTextModule,
         FieldsetModule,
         NgxSpinnerModule,
+        MenuModule,
+        DividerModule,
+        CardModule,
+        InputMaskModule,
+        PanelModule,
     ]
 })
+
 export class AttributesStructureModule { }
