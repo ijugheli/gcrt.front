@@ -16,20 +16,15 @@
     </div>
   </div>
   <!-- ATTRIBUTE TITLE BLOCK -->
-
-
-
   <ng-container *ngIf="!isLoading">
     <div *ngFor="let item of list | keyvalue" style="margin: 12px 4px;">
       <p-panel [header]="getAttrTypeName(item.key)" [toggleable]="true" [(collapsed)]="fieldsets[item.key]"
-        (onBeforeToggle)="closeFieldsets()" [style]="{ 'padding' : '16px 12px'}"
-        [transitionOptions]="'100ms'" expandIcon="pi pi-angle-down"
-        collapseIcon="pi pi-angle-up">
+        (onBeforeToggle)="closeFieldsets()" [style]="{ 'padding' : '16px 12px'}" [transitionOptions]="'100ms'"
+        expandIcon="pi pi-angle-down" collapseIcon="pi pi-angle-up">
         <ng-template pTemplate="icons">
           <button pButton class="p-button-outlined" icon="pi pi-plus" label="დამატება" style="margin-right: 36px;"
             (click)="onAddClick(getAttrTypeID(item.key))">
           </button>
-
         </ng-template>
         <p-table #attrFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
           [paginator]="true" [rows]="25"
@@ -68,8 +63,6 @@
               </td>
               <td>{{attribute.id}}</td>
               <td [pEditableColumn]="attribute.title" pEditableColumnField="title">
-
-
                 <p-cellEditor>
                   <ng-template pTemplate="input">
                     <input pInputText type="text" [(ngModel)]="attribute.title"
@@ -94,13 +87,7 @@
                 <p-inputSwitch [(ngModel)]="attribute.status"
                   (onChange)="updateAttr(attribute,  $event.checked,false)"></p-inputSwitch>
               </td>
-              <!-- <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" /></td>
-                  <td>{{product.price | currency:'USD'}}</td>
-                  <td>{{product.category}}</td>
-                  <td><p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td>
-                  <td><span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span></td> -->
             </tr>
-
           </ng-template>
           <ng-template pTemplate="rowexpansion" let-attribute>
             <tr>
@@ -165,57 +152,10 @@
                   შენახვა
                 </button>
               </td>
-              <!-- <td>{{order.customer}}</td>
-                                  <td>{{order.id}}</td>
-                                  <td>{{order.amount | currency:'USD'}}</td>
-                                  <td><span [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
-                                  <td><p-button type="button" icon="pi pi-search"></p-button></td> -->
-            </tr>
           </ng-template>
         </p-table>
-        <!-- <input type="text" placeholder="წყარო">
-      
-                          <input type="text" placeholder="დასახელება">
-      
-                          <input type="text" placeholder="მონაცემის ტიპი">
-                          <span class="structure-drop">
-                            <p-dropdown
-                              [options]="DATA_TYPES"
-                              placeholder="მონაცემის ტიპი"
-                              name="id"
-                              optionLabel="title"
-                            ></p-dropdown>
-                          </span>
-                       
-                          <span class="structure-drop">
-                            <p-dropdown
-                              [options]="DATA_VIEW_TYPES"
-                              placeholder="ველის ტიპი"
-                              name="id"
-                              optionLabel="title"
-                            ></p-dropdown>
-                          </span>
-         
-                          <span class="structure-switch" style="margin:0">
-                            აუცილებელი ველი
-                          <p-inputSwitch></p-inputSwitch>
-                          </span>
-                          <span class="structure-switch" style="margin-right:30px">
-                            ფილტრაციის შესაძლებლობა
-                          <p-inputSwitch></p-inputSwitch>
-                          </span>
-                          <span class="structure-switch">
-                            მთავარი პარამეტრი
-                          <p-inputSwitch></p-inputSwitch>
-                          </span>
-                          <input type="text" placeholder="წყარო"> -->
   </ng-container>
-
-
   <!-- Property Add Ends HERE -->
-
-
-
   <div class="p-3">
     <p-table #menu [value]="attribute.sections" dataKey="id" sortField="properties.title" sortMode="single"
       dataKey="properties.title" rowGroupMode="subheader" groupRowsBy="properties.title"
@@ -248,7 +188,6 @@
           <th></th>
           <th></th>
         </tr>
-
       </ng-template>
       <ng-template pTemplate="rowexpansion" let-section let-index="rowIndex">
 
@@ -291,12 +230,6 @@
             <p-inputSwitch [(ngModel)]="property.is_primary"
               (onChange)="updateProperty(property, $event, property.is_primary, item.key)"></p-inputSwitch>
           </td>
-          <!-- <td>{{property.order_id}}</td> -->
-          <!-- <td>{{order.customer}}</td>
-                                      <td>{{order.id}}</td>
-                                      <td>{{order.amount | currency:'USD'}}</td>
-                                      <td><span [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
-                                      <td><p-button type="button" icon="pi pi-search"></p-button></td> -->
         </tr>
       </ng-template>
     </p-table>
@@ -308,6 +241,4 @@
   </p-panel>
   </div>
   </ng-container>
-
-
 </section>

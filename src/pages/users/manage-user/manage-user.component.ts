@@ -9,7 +9,7 @@ import { IResponse } from 'src/app/app.interfaces';
 @Component({
   selector: 'app-manage-user',
   templateUrl: './manage-user.component.html',
-  styleUrls: ['./manage-user.component.css'],
+  styleUrls: ['../../attributes-structure/dialog.component.css'],
   providers: [MessageService]
 })
 export class ManageUserComponent implements OnInit {

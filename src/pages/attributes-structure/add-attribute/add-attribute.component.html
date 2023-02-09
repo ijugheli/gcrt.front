@@ -1,12 +1,6 @@
 <p-toast position="top-right"></p-toast>
 
 <div class="form-container">
-
-    <ng-container>
-        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.1)" type="ball-scale-multiple"
-            [fullScreen]="false">
-        </ngx-spinner>
-    </ng-container>
     <div>
         <p-panel header="{{actionTitle}}">
             <div class="form-inputs">
@@ -14,18 +8,12 @@
                     <span class="p-inputgroup-addon">
                         <i class="pi pi-exclamation-triangle"></i>
                     </span>
-                    <!-- <span class="p-inputgroup-addon">
-                        <i class="pi pi-pencil"></i>
-                    </span> -->
                     <input type="text" pInputText value="მშობლის გარეშე" disabled placeholder="მშობელი">
                 </div>
                 <div class="p-inputgroup">
                     <span class="p-inputgroup-addon">
                         <i class="pi pi-exclamation-triangle"></i>
                     </span>
-                    <!-- <span class="p-inputgroup-addon">
-                        <i class="pi pi-pencil"></i>
-                    </span> -->
                     <input type="text" pInputText value="{{types[type]}}" disabled placeholder="ტიპი">
                 </div>
                 <div class="p-inputgroup">
@@ -39,13 +27,12 @@
                         [class.ng-invalid]="!isValidValue('title')" [class.ng-dirty]="!isValidValue('title')"
                         placeholder="დასახელება">
                 </div>
-
-                <div class="p-inputgroup">
-                    <span style="margin-right:12px">Lazy</span>
+                <div class="p-inputgroup-right">
+                    <span style="margin-right:12px; margin-top:2px;">Lazy</span>
                     <p-inputSwitch [(ngModel)]="values['is_lazy']"></p-inputSwitch>
                 </div>
-                <div class="p-inputgroup">
-                    <span style="margin-right:12px">სტატუსი</span>
+                <div class="p-inputgroup-right">
+                    <span style="margin-right:12px; margin-top:2px;">სტატუსი</span>
                     <p-inputSwitch [(ngModel)]="values['status_id']"></p-inputSwitch>
                 </div>
             </div>
@@ -61,9 +48,7 @@
                         <i class="pi pi-check"></i>
                     </button>
                 </span>
-
             </div>
-
         </p-panel>
     </div>
 </div>
