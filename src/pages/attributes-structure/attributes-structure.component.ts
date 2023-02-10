@@ -205,13 +205,14 @@ export class AttributesStructureComponent implements OnInit {
 
   private async initializeAttrList() {
     await this.attributesService.requestAttributes();
-    const list: MAttribute[] = this.attributesService.asList();
-    this.attributes = list;
+    setTimeout(() => {
+      const list: MAttribute[] = this.attributesService.asList();
+      this.attributes = list;
 
-    this.list['standard'] = list.filter((i) => i.isStandard());
-    this.list['tree'] = list.filter((i) => i.isTree());
-    this.list['entity'] = list.filter((i) => i.isEntity());
-
+      this.list['standard'] = list.filter((i) => i.isStandard());
+      this.list['tree'] = list.filter((i) => i.isTree());
+      this.list['entity'] = list.filter((i) => i.isEntity());
+    }, 200);
   }
 
   private initializeDataTypes() {
@@ -240,10 +241,10 @@ export class AttributesStructureComponent implements OnInit {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
 
-  private refreshAttributesOnAdd = (isSuccess: boolean) => {
+  private refreshAttributesOnAdd = async (isSuccess: boolean) => {
     if (isSuccess) {
       this.spinner.show();
-      this.initializeAttrList();
+      await this.initializeAttrList();
       this.spinner.hide();
     }
   };
