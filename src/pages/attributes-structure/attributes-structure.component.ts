@@ -171,7 +171,8 @@ export class AttributesStructureComponent implements OnInit {
       position: 'top',
     });
 
-    ref.onClose.subscribe(this.updateAttributeOnAdd);
+    ref.onClose.subscribe(this.refreshAttributesOnAdd);
+
   }
   public onAddSectionPropertyClick(property: MProperty, attrID: number) {
     const ref = this.dialogService.open(AddSectionPropertyComponent, {
@@ -180,7 +181,7 @@ export class AttributesStructureComponent implements OnInit {
       position: 'top',
     });
 
-    ref.onClose.subscribe(this.updateAttributeOnAdd);
+    ref.onClose.subscribe(this.refreshAttributesOnAdd);
   }
 
   public getSourceAttrTitle(attrID: number) {
@@ -192,24 +193,25 @@ export class AttributesStructureComponent implements OnInit {
     this.spinner.show();
 
     await this.initializeAttrList();
-
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
 
     this.isLoading = false;
     this.spinner.hide();
+
+
   }
 
   private async initializeAttrList() {
     await this.attributesService.requestAttributes();
     const list: MAttribute[] = this.attributesService.asList();
-
     this.attributes = list;
 
     this.list['standard'] = list.filter((i) => i.isStandard());
     this.list['tree'] = list.filter((i) => i.isTree());
     this.list['entity'] = list.filter((i) => i.isEntity());
+
   }
 
   private initializeDataTypes() {
@@ -238,9 +240,11 @@ export class AttributesStructureComponent implements OnInit {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
 
-  private updateAttributeOnAdd = (newAttribute: MAttribute) => {
-    if (newAttribute) {
-      this.initializeAttrList()
+  private refreshAttributesOnAdd = (isSuccess: boolean) => {
+    if (isSuccess) {
+      this.spinner.show();
+      this.initializeAttrList();
+      this.spinner.hide();
     }
   };
 

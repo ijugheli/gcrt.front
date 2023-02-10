@@ -82,6 +82,9 @@ export class AttributesService extends GuardedService {
 
     public async requestAttributes() {
         this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
+            console.log('///////////////////////////////');
+            console.log(data);
+            console.log('///////////////////////////////');
             this.saveCache(data);
             this.parse(data);
         }, (e) => {

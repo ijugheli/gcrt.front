@@ -54,20 +54,13 @@ export class AddSectionComponent implements OnInit {
       .addSection(this.values)
       .subscribe((data) => {
         const response: IResponse = data;
-        const responseData = response.data as IProperty[];
-
-        let result: MAttribute | null;
 
         if (response.code == 0) return this.showError(response.message);
 
         this.showSuccess(response.message);
 
-        if (responseData != null) {
-          result = this.attrService.updateSectionProperties(responseData, this.values['attr_id'] as number);
-        }
-
         setTimeout(() => {
-          this.dialogRef.close(result);
+          this.dialogRef.close(true);
         }, 500);
       }, (error) => {
         console.log('ADD SECTION ERROR ////');

@@ -28,9 +28,9 @@ export class AddSectionPropertyComponent implements OnInit {
     'title': null,
     'input_data_type': 0,
     'input_view_type': 0,
-    'is_mandatory': 1,
-    'has_filter': 1,
-    'is_primary': 0,
+    'is_mandatory': false,
+    'has_filter': false,
+    'is_primary': false,
     'order_id': 0,
   };
 
@@ -133,21 +133,12 @@ export class AddSectionPropertyComponent implements OnInit {
       .addSectionProperty(this.sectionProperty)
       .subscribe((data) => {
         const response: IResponse = data;
-        const responseData = response.data as IProperty[];
-
-        let result: MAttribute | null;
 
         if (response.code == 0) return this.showError(response.message);
 
         this.showSuccess(response.message);
 
-        if (responseData != null) {
-          result = this.attrService.updateSectionProperties(responseData, this.sectionProperty['attr_id']);
-        }
-
-        setTimeout(() => {
-          this.dialogRef.close(result);
-        }, 500);
+        setTimeout(() => this.dialogRef.close(true), 1000);
       }, (error) => {
         this.showError('დაფიქსირდა შეცდომა');
       });
