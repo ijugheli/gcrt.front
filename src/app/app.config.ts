@@ -58,7 +58,7 @@ export const ATTR_TYPES_IDS_NAME: Map<number, string> = new Map([
 
 
 export const ATTR_TYPE_ID = (type: string) => ATTR_TYPES.get(type);
-export const ATTR_TYPE_NAME = (type: string | number) => typeof type  === "string" ? ATTR_TYPES_NAMES.get(type) : ATTR_TYPES_IDS_NAME.get(type);
+export const ATTR_TYPE_NAME = (type: string | number) => typeof type === "string" ? ATTR_TYPES_NAMES.get(type) : ATTR_TYPES_IDS_NAME.get(type);
 
 
 export const PROPERTY_TYPES: Map<string, number> = new Map([

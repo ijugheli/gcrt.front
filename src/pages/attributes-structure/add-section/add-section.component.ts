@@ -5,33 +5,25 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IResponse } from 'src/app/app.interfaces';
 import { ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
+import { MAttribute } from 'src/services/attributes/models/attribute.model';
+import { IProperty } from 'src/services/attributes/interfaces/property.interface';
 
 @Component({
-  selector: 'app-add-attribute',
-  templateUrl: './add-attribute.component.html',
+  selector: 'app-add-section',
+  templateUrl: './add-section.component.html',
   styleUrls: ['../dialog.component.css'],
   providers: [MessageService]
 })
 
-export class AddAttributeComponent implements OnInit {
+export class AddSectionComponent implements OnInit {
 
   public validation: boolean = false;
   public values: { [key: string]: string | number | boolean } = {
-    'p_id': 0,
-    'type': 1,
-    'status_id': true,
+    'attr_id': 0,
     'title': '',
-    'is_lazy': false,
   };
 
-  public types: { [key: number]: string } = {
-    1: 'სტანდარტული ატრიბუტი',
-    2: 'ხისებრი ატრიბუტი',
-    3: 'ობიექტი',
-  };
-
-  public type!: number;
-  public actionTitle: string = 'დამატება';
+  public actionTitle: string = 'სექციის დამატება';
 
 
   constructor(
@@ -43,8 +35,7 @@ export class AddAttributeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.type = parseInt(this.dialogConfig.data?.type) || 1;
-    this.actionTitle = this.types[this.type] + 'ს დამატება';
+    this.values['attr_id'] = parseInt(this.dialogConfig.data?.attrID) || 0;
   }
 
   public isValidValue(key: string) {
@@ -57,30 +48,33 @@ export class AddAttributeComponent implements OnInit {
 
 
   private handleSubmit() {
-    this.values['is_lazy'] = this.values['is_lazy'] ? 1 : 0;
-    this.values['status_id'] = this.values['status_id'] ? 1 : 0;
-
     this.spinner.show();
 
     this.attrService
-      .add(this.values)
+      .addSection(this.values)
       .subscribe((data) => {
         const response: IResponse = data;
+        const responseData = response.data as IProperty[];
+
+        let result: MAttribute | null;
 
         if (response.code == 0) return this.showError(response.message);
 
         this.showSuccess(response.message);
 
+        if (responseData != null) {
+          result = this.attrService.updateSectionProperties(responseData, this.values['attr_id'] as number);
+        }
+
         setTimeout(() => {
-          this.dialogRef.close();
-        }, 1000);
+          this.dialogRef.close(result);
+        }, 500);
       }, (error) => {
-        console.log('ADD ATTR ERROR ////');
+        console.log('ADD SECTION ERROR ////');
         console.log(error);
-        console.log('ADD ATTR ERROR ////');
+        console.log('ADD SECTION ERROR ////');
 
         this.showError('დაფიქსირდა შეცდომა');
-
       });
   }
 

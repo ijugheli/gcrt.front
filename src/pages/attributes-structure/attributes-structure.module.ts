@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AttributesStructureComponent } from './attributes-structure.component';
 import { TableModule } from 'primeng/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,9 +18,11 @@ import { DividerModule } from 'primeng/divider';
 import { CardModule } from 'primeng/card';
 import { InputMaskModule } from 'primeng/inputmask';
 import { PanelModule } from 'primeng/panel';
+import { AddSectionComponent } from './add-section/add-section.component';
+import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 
 @NgModule({
-    declarations: [AttributesStructureComponent, AddAttributeComponent],
+    declarations: [AttributesStructureComponent, AddAttributeComponent, AddSectionComponent, AddSectionPropertyComponent],
     imports: [
         CommonModule,
         BrowserAnimationsModule,
@@ -29,6 +31,7 @@ import { PanelModule } from 'primeng/panel';
         InputSwitchModule,
         ButtonModule,
         ToastModule,
+        ReactiveFormsModule,
         DropdownModule,
         DataTableModule,
         InputTextModule,

@@ -9,6 +9,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddAttributeComponent } from './add-attribute/add-attribute.component';
 import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
+import { AddSectionComponent } from './add-section/add-section.component';
+import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 
 
 @Component({
@@ -22,15 +24,18 @@ export class AttributesStructureComponent implements OnInit {
   public pageTitle: string = 'მონაცემთა სტრუქტურების მართვა';
   public isLoading: boolean = false;
   public addPropertyButton = false;
-  public attrID = 0;
   public list: { [key: string]: MAttribute[] } = {};
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
-  public attrTypeName: any = {
+  public attrType: any = {
     'standard': 'სტანდარტული ატრიბუტები',
     'tree': 'ხისებრი ატრიბუტები',
     'entity': 'ობიექტი',
+    1: 'standard',
+    2: 'tree',
+    3: 'entity'
   };
+
   public fieldsets: any = {
     'standard': true,
     'tree': true,
@@ -45,14 +50,8 @@ export class AttributesStructureComponent implements OnInit {
     5: { name: 'boolean', id: 5, title: 'კი/არა' },
   };
 
-
-  public propertyTypeMap: any = {
-    1: { name: 'int', id: 1, title: 'სტანდარტული' },
-    2: { name: 'int', id: 2, title: 'სექცია' },
-  };
-
   public viewTypesMap: any = {
-    1: { name: 'input', id: 1, title: 'სტანდარტულ ტექსტი' },
+    1: { name: 'input', id: 1, title: 'სტანდარტული ტექსტი' },
     2: { name: 'textarea', id: 2, title: 'გრძელი ტექსტი' },
     // 3 : {name : 'editable-textarea', id : 3,title : 'editable-textarea'},
     // 4 : {name : 'checkbox', id : 4, title : 'checkbox'},
@@ -72,41 +71,11 @@ export class AttributesStructureComponent implements OnInit {
     'title': ''
   };
 
-  public DATA_TYPES: any;
+  public dataTypes: any;
 
-  public DATA_VIEW_TYPES: any;
+  public viewTypes: any;
 
-  public DATA_SOURCE_TYPES: any;
-
-  public DATA_PROPERTY_TYPES: any;
-
-
-  public newObject = {
-    'parent_id': '',
-    'source': null,
-    'type': null,
-    'title': null,
-    'data_type': null,
-    'data_view': null,
-    'is_mandatory': null,
-    'has_filter': null,
-    'is_primary': null,
-  };
-
-  private initNewObject() {
-    let cleanObject = {
-      'parent_id': '',
-      'source': null,
-      'type': null,
-      'title': null,
-      'data_type': null,
-      'data_view': null,
-      'is_mandatory': null,
-      'has_filter': null,
-      'is_primary': null,
-    };
-    this.newObject = cleanObject;
-  }
+  public attrSources: any;
 
   constructor(
     public attributesService: AttributesService,
@@ -117,6 +86,14 @@ export class AttributesStructureComponent implements OnInit {
 
   ngOnInit() {
     this.initializeData();
+  }
+
+  public getAttrTypeID(name: string): number {
+    return ATTR_TYPE_ID(name) as number;
+  }
+
+  public getAttrTypeName(name: string): string {
+    return ATTR_TYPE_NAME(name) as string;
   }
 
   public addRecord(attrID: number, data: any) {
@@ -177,6 +154,35 @@ export class AttributesStructureComponent implements OnInit {
     })
   }
 
+
+
+  public onAddAttrClick(type: number) {
+    this.dialogService.open(AddAttributeComponent, {
+      data: { type: type, },
+      width: '30%',
+      position: 'top',
+    });
+  }
+
+  public onAddSectionClick(attrID: number) {
+    const ref = this.dialogService.open(AddSectionComponent, {
+      data: { attrID: attrID, },
+      width: '30%',
+      position: 'top',
+    });
+
+    ref.onClose.subscribe(this.updateAttributeOnAdd);
+  }
+  public onAddSectionPropertyClick(property: MProperty, attrID: number) {
+    const ref = this.dialogService.open(AddSectionPropertyComponent, {
+      data: { property: property, attrSources: this.attrSources, attrID: attrID },
+      width: '30%',
+      position: 'top',
+    });
+
+    ref.onClose.subscribe(this.updateAttributeOnAdd);
+  }
+
   public getSourceAttrTitle(attrID: number) {
     return this.attributes.find((i) => i.id == attrID)?.title;
   }
@@ -189,8 +195,7 @@ export class AttributesStructureComponent implements OnInit {
 
     this.initializeDataTypes();
     this.initializeViewTypes();
-    this.DATA_PROPERTY_TYPES = Object.values(this.propertyTypeMap);
-    this.DATA_SOURCE_TYPES = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+    this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
 
     this.isLoading = false;
     this.spinner.hide();
@@ -208,11 +213,11 @@ export class AttributesStructureComponent implements OnInit {
   }
 
   private initializeDataTypes() {
-    this.DATA_TYPES = Object.values(this.dataTypesMap);
+    this.dataTypes = Object.values(this.dataTypesMap);
   }
 
   private initializeViewTypes() {
-    this.DATA_VIEW_TYPES = Object.values(this.viewTypesMap);
+    this.viewTypes = Object.values(this.viewTypesMap);
   }
 
   private showSuccess(msg: string) {
@@ -233,35 +238,14 @@ export class AttributesStructureComponent implements OnInit {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
 
-  validatePropertyForm() {
-    for (let key in this.newObject) {
-      if (key == null || key == '') {
-        return false;
-      }
+  private updateAttributeOnAdd = (newAttribute: MAttribute) => {
+    if (newAttribute) {
+      this.initializeAttrList()
     }
-    return true;
-  }
+  };
 
   onRowReorder(event: any, id: any, propertyData: any) {
     this.reorderProperties(propertyData, id);
-  }
-
-  addProperty(attrID: any) {
-    // this.addPropertyButton = !this.addPropertyButton;
-    //Add Property Here
-    this.attrID = attrID;
-    this.newObject.parent_id = this.attrID.toString();
-    if (!this.validatePropertyForm()) {
-      this.addRecord(attrID, this.newObject);
-      this.initNewObject();
-    }
-  }
-
-  toggleProperty(atrrID: any) {
-    this.addPropertyButton = !this.addPropertyButton;
-    if (!this.addPropertyButton) {
-      this.initNewObject();
-    }
   }
 
   toggleFieldset(type: string, value: boolean) {
@@ -280,19 +264,4 @@ export class AttributesStructureComponent implements OnInit {
     }
   }
 
-  public getAttrTypeID(name: string): number {
-    return ATTR_TYPE_ID(name) as number;
-  }
-
-  public getAttrTypeName(name: string): string {
-    return ATTR_TYPE_NAME(name) as string;
-  }
-
-  public onAddClick(type: number) {
-    this.dialogService.open(AddAttributeComponent, {
-      data: { type: type, },
-      width: '30%',
-      position: 'top',
-    });
-  }
 }
