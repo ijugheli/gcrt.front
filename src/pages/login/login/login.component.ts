@@ -96,8 +96,7 @@ export class LoginComponent implements OnInit {
       this.spinner.hide();
       this.messageService.add({
         severity: 'error',
-        summary: 'ავტორიზაცია ვერ მოხერხდა!',
-        detail: 'მომხმარებელი ან პაროლი არასწორია. სცადეთ განსხვავებული კომბინაცია.'
+        summary: error.error.message,
       });
     }, () => {
       this.spinner.hide();
