@@ -22,6 +22,7 @@ import { AuthService } from '../../../services/AuthService.service';
 import { RouterModule } from '@angular/router';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 import { UpdatePasswordComponent } from '../update-password/update-password.component';
+import { OTPComponent } from '../otp/otp.component';
 
 
 
@@ -46,9 +47,9 @@ import { UpdatePasswordComponent } from '../update-password/update-password.comp
         RouterModule,
     ],
     exports: [
-        LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent
+        LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent, OTPComponent
     ],
     providers: [UserService, AuthService],
-    declarations: [LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent]
+    declarations: [LoginComponent, ForgotPasswordComponent, UpdatePasswordComponent, OTPComponent]
 })
 export class LoginModule { }

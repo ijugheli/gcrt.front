@@ -43,6 +43,18 @@ export class AuthService {
     return info.access_token;
   }
 
+  public getOTPEmail() {
+    const email: string | null = localStorage.getItem('otp');
+
+    localStorage.removeItem('otp');
+
+    return email;
+  }
+
+  public storeOTPEmail(data: string) {
+    localStorage.setItem('otp', data);
+  }
+
   public getHeader() {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
     headers.set('bearer', this.getToken());
@@ -68,7 +80,7 @@ export class AuthService {
 
   public login(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post(this.urls['login'], info, { headers: headers });
+    return this.http.post<IResponse>(this.urls['login'], info, { headers: headers });
   }
 
   public logout() {

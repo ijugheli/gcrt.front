@@ -54,10 +54,11 @@ export class UpdatePasswordComponent implements OnInit {
     };
 
     this.userService.updatePassword(info).subscribe((data) => {
+      this.spinner.hide();
+
       const response: IResponse = data;
 
       if (!response.code) {
-        this.spinner.hide();
         this.showError(response.message);
         return;
       }
@@ -129,8 +130,6 @@ export class UpdatePasswordComponent implements OnInit {
     }, () => {
       this.spinner.hide();
     });
-
-
   }
 
 

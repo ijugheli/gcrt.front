@@ -1,0 +1,40 @@
+<p-toast position="top-right"></p-toast>
+<section>
+    <form (ngSubmit)="onSubmit()">
+        <div class="card">
+            <p-card>
+                <ng-container>
+                    <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.3)" type="ball-scale-multiple"
+                        [fullScreen]="false">
+                        <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+                    </ngx-spinner>
+                </ng-container>
+                <h2>
+                    <img src="/assets/img/logo.png">
+                </h2>
+                <p-divider></p-divider>
+                <div class="form-inputs">
+                    <span>
+                        <p style="font-size: 13px;">ვერიფიკაციის კოდი გამოგეგზავნათ მითითებულ ელ-ფოსტაზე</p>
+                        <p>{{ email }}</p>
+                    </span>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <input type="password" pInputText [class.ng-invalid]="!isValid(code)"
+                            [class.ng-dirty]="!isValid(code)" (onChange)="onValueUpdate()" [(ngModel)]="code"
+                            placeholder="კოდი" [ngModelOptions]="{standalone: true}">
+                    </div>
+                </div>
+                <p-divider></p-divider>
+                <div class="form-actions">
+                    <span>
+                        <button pButton type="submit" label="ავტორიზაცია" class="p-button-outlined p-button-lg">
+                        </button>
+                    </span>
+                </div>
+            </p-card>
+        </div>
+    </form>
+</section>

@@ -4,6 +4,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
+import { IResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -59,14 +60,38 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(info).subscribe((authData) => {
       this.spinner.hide();
+      const response: IResponse = authData;
+
+      if (response.code == 0) {
+        this.messageService.add({
+          severity: 'error',
+          summary: response.message,
+        });
+        return;
+      }
+
+      if (response?.data == null && response.code == 1) {
+        this.authService.storeOTPEmail(info.email);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'კოდი წარმატებით გამოიგზავნა თქვენს მეილზე!',
+          detail: 'გთხოვთ დაელოდოთ...'
+        });
+        this.router.navigate(['/otp']);
+        return;
+      }
+
       this.messageService.add({
         severity: 'success',
         summary: 'ავტორიზაცია წარმატებით დასრულდა!',
         detail: 'გთხოვთ დაელოდოთ...'
       });
 
-      this.authService.authorize(authData);
-      this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 200));
+
+      setTimeout(() => {
+        this.authService.authorize(authData.data);
+        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 200));
+      }, 500);
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({

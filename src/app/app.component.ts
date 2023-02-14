@@ -12,7 +12,7 @@ export class AppComponent {
 
   constructor(private activatedRoute: ActivatedRoute) {
     console.log(activatedRoute.snapshot);
-    if (window.location.href.toString().indexOf('login') > -1 || window.location.href.toString().indexOf('forgot-password') > -1 || window.location.href.toString().indexOf('update-password') > -1) {
+    if (window.location.href.toString().indexOf('login') > -1 || window.location.href.toString().indexOf('forgot-password') > -1 || window.location.href.toString().indexOf('update-password') > -1 || window.location.href.toString().indexOf('otp') > -1) {
       this.menuExists = false;
     }
   }

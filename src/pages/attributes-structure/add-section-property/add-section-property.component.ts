@@ -132,6 +132,8 @@ export class AddSectionPropertyComponent implements OnInit {
     this.attrService
       .addSectionProperty(this.sectionProperty)
       .subscribe((data) => {
+        this.spinner.hide();
+
         const response: IResponse = data;
 
         if (response.code == 0) return this.showError(response.message);
@@ -140,6 +142,8 @@ export class AddSectionPropertyComponent implements OnInit {
 
         setTimeout(() => this.dialogRef.close(true), 1000);
       }, (error) => {
+        this.spinner.hide();
+
         this.showError('დაფიქსირდა შეცდომა');
       });
   }
@@ -161,7 +165,6 @@ export class AddSectionPropertyComponent implements OnInit {
       severity: 'success',
       summary: msg,
     });
-    this.spinner.hide();
   }
 
   private showError(error: any) {
@@ -170,7 +173,6 @@ export class AddSectionPropertyComponent implements OnInit {
       summary: error,
       detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
-    this.spinner.hide();
   }
 
 

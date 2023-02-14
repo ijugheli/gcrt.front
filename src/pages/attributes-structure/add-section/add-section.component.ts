@@ -53,6 +53,8 @@ export class AddSectionComponent implements OnInit {
     this.attrService
       .addSection(this.values)
       .subscribe((data) => {
+        this.spinner.hide();
+
         const response: IResponse = data;
 
         if (response.code == 0) return this.showError(response.message);
@@ -63,6 +65,8 @@ export class AddSectionComponent implements OnInit {
           this.dialogRef.close(true);
         }, 500);
       }, (error) => {
+        this.spinner.hide();
+
         console.log('ADD SECTION ERROR ////');
         console.log(error);
         console.log('ADD SECTION ERROR ////');
@@ -80,7 +84,6 @@ export class AddSectionComponent implements OnInit {
       severity: 'success',
       summary: msg,
     });
-    this.spinner.hide();
   }
 
   private showError(error: any) {
@@ -89,7 +92,6 @@ export class AddSectionComponent implements OnInit {
       summary: error,
       detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
-    this.spinner.hide();
   }
 
   onCancel() {

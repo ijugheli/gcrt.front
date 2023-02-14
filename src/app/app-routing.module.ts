@@ -15,10 +15,12 @@ import { AttributesStructureComponent } from '../pages/attributes-structure/attr
 import { ManageUserPermissionsComponent } from 'src/pages/users/manage-permissions/manage-permissions.component';
 import { ForgotPasswordComponent } from 'src/pages/login/forgot-password/forgot-password.component';
 import { UpdatePasswordComponent } from 'src/pages/login/update-password/update-password.component';
+import { OTPComponent } from 'src/pages/login/otp/otp.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'otp', component: OTPComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },

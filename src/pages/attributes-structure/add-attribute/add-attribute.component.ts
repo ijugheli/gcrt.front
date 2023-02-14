@@ -65,6 +65,8 @@ export class AddAttributeComponent implements OnInit {
     this.attrService
       .add(this.values)
       .subscribe((data) => {
+        this.spinner.hide();
+
         const response: IResponse = data;
 
         if (response.code == 0) return this.showError(response.message);
@@ -75,6 +77,8 @@ export class AddAttributeComponent implements OnInit {
           this.dialogRef.close();
         }, 1000);
       }, (error) => {
+        this.spinner.hide();
+
         console.log('ADD ATTR ERROR ////');
         console.log(error);
         console.log('ADD ATTR ERROR ////');
@@ -93,7 +97,6 @@ export class AddAttributeComponent implements OnInit {
       severity: 'success',
       summary: msg,
     });
-    this.spinner.hide();
   }
 
   private showError(error: any) {
@@ -102,7 +105,6 @@ export class AddAttributeComponent implements OnInit {
       summary: error,
       detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
-    this.spinner.hide();
   }
 
   onCancel() {
