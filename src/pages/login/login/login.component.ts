@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
       });
 
       this.authService.authorize(authData);
-      window.location.href = '/home';
+      this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 200));
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({

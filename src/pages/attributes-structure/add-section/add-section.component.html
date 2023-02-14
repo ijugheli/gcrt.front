@@ -1,0 +1,31 @@
+<p-toast position="top-right"></p-toast>
+
+<div>
+    <p-panel header="{{actionTitle}}">
+        <div class="form-inputs">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-exclamation-triangle"></i>
+                </span>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-pencil"></i>
+                </span>
+                <input type="text" pInputText [(ngModel)]="values['title']" [class.ng-invalid]="!isValidValue('title')"
+                    [class.ng-dirty]="!isValidValue('title')" placeholder="დასახელება">
+            </div>
+        </div>
+        <p-divider></p-divider>
+        <div class="form-actions">
+            <span>
+                <button (click)="onCancel()" pButton type="button" label="დახურვა"
+                    class="p-button-outlined p-button-md">
+                    <i class="pi pi-replay"></i>
+                </button>
+                <button pButton (click)="onSubmit()" type="button" [label]="'დამატება'"
+                    class="p-button-outlined p-button-md">
+                    <i class="pi pi-check"></i>
+                </button>
+            </span>
+        </div>
+    </p-panel>
+</div>

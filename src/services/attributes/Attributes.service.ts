@@ -29,7 +29,6 @@ export class AttributesService extends GuardedService {
         'static': API_URL + '/attrs/static',
         'list': API_URL + '/attrs/',
         'withProperties': API_URL + '/attrs/{attr_id}',
-        'addProperty': API_URL + '/attrs/{attr_id}/properties/add',
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
@@ -42,6 +41,10 @@ export class AttributesService extends GuardedService {
         'editValueItem': API_URL + '/attrs/values/edit',
         'updateAttr': API_URL + '/attrs/{attr_id}/update',
         'updateProperty': API_URL + '/attrs/properties/{property_id}/update',
+        'addAttr': API_URL + '/attrs/add',
+        'addSection': API_URL + '/attrs/add-section',
+        'addSectionProperty': API_URL + '/attrs/add-section-property',
+        'addProperty': API_URL + '/attrs/{attr_id}/properties/add',
     };
 
     constructor(private http: HttpClient, private auth: AuthService) {
@@ -79,6 +82,9 @@ export class AttributesService extends GuardedService {
 
     public async requestAttributes() {
         this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
+            console.log('///////////////////////////////');
+            console.log(data);
+            console.log('///////////////////////////////');
             this.saveCache(data);
             this.parse(data);
         }, (e) => {
@@ -102,7 +108,7 @@ export class AttributesService extends GuardedService {
 
 
 
-    //ORM Methods
+    //ORM Method
     public find(attrID: number): MAttribute | undefined {
         return this.get(attrID);
     }
@@ -133,6 +139,18 @@ export class AttributesService extends GuardedService {
 
 
     // Individual Requests
+    public add(data: any) {
+        return this.http.post<IResponse>(this.urls['addAttr'], data, { headers: this.headers });
+    }
+
+    public addSection(data: any) {
+        return this.http.post<IResponse>(this.urls['addSection'], data, { headers: this.headers });
+    }
+
+    public addSectionProperty(data: any) {
+        return this.http.post<IResponse>(this.urls['addSectionProperty'], data, { headers: this.headers });
+    }
+
     public list() {
         return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
     }
@@ -185,7 +203,6 @@ export class AttributesService extends GuardedService {
         return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
     }
 
-
     public addProperty(attrID: number, values: any, func?: Function) {
         this.http.post(
             this.urls['addProperty'].replace('{attr_id}', attrID.toString()
@@ -196,8 +213,6 @@ export class AttributesService extends GuardedService {
                     func(response);
             });
     }
-
-
 
     public reorderProperties(attrID: number, values: any, func?: Function) {
         this.http.post(
@@ -210,7 +225,6 @@ export class AttributesService extends GuardedService {
             });
     }
 
-
     public updateAttr(attrID: number, values: any) {
         return this.http.post<IResponse>(
             this.urls['updateAttr'].replace('{attr_id}', attrID.toString()
@@ -222,6 +236,7 @@ export class AttributesService extends GuardedService {
             this.urls['updateProperty'].replace('{property_id}', propertyID.toString()
             ), { 'data': property }, { headers: this.headers });
     }
+
     //Parsers
     private parseProperties(data: IAttribute[]) {
         data.map((item) => {
@@ -316,37 +331,61 @@ export class AttributesService extends GuardedService {
     }
 
     private appendSections() {
-        this.attributes.forEach((attribute: MAttribute) => {
-
-            attribute.properties.map((property: MProperty, propertyID: number) => {
-                if (!property.isSection()) {
-                    return;
-                }
-
-                let props: MProperty[] =
-                    attribute.properties
-                        .filter((prop: MProperty) => {
-                            return !prop.isSection() && prop.parentID() == property.id;
-                        })
-                        .sort((a: MProperty, b: MProperty) => {
-                            return a.order_id > b.order_id ? 1 : -1;
-                        });
-                attribute.appendSection((new MAttributeSection(property)).setProps(props));
-            });
-
-            if (!attribute.hasSections()) {
-                attribute.appendSection((new MAttributeSection()).set({
-                    title: 'მახასიათებლები',
-                }).setProps(attribute.properties));
-            }
-
-            attribute.sections = attribute.sections.sort((a: MAttributeSection, b: MAttributeSection) => {
-                return !(!a.property || !b.property)
-                    ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
-                    : 1;
-            });
-        });
+        this.attributes.forEach(this.appendSection);
     }
-    //Parsers
+
+    // update section properties
+    public updateSectionProperties(properties: IProperty[], attrID: number): MAttribute {
+        const attribute = this.attributes.get(attrID) as MAttribute;
+        const newProperties: MProperty[] = [];
+
+        properties.forEach((e) => {
+            newProperties.push(new MProperty(e));
+            return e;
+        });
+
+        properties.map((property: IProperty) => {
+            this.properties.set(property.id, new MProperty(property));
+        });
+
+        attribute.properties = newProperties as MProperty[];
+
+        attribute.sections = [];
+
+        this.appendSection(attribute);
+
+        return attribute;
+    }
+
+    private appendSection = (attribute: MAttribute) => {
+        attribute.properties.map((property: MProperty, propertyID: number) => {
+            if (!property.isSection()) {
+                return;
+            }
+            let props: MProperty[] =
+                attribute.properties
+                    .filter((prop: MProperty) => {
+                        return !prop.isSection() && prop.parentID() == property.id;
+                    })
+                    .sort((a: MProperty, b: MProperty) => {
+                        return a.order_id > b.order_id ? 1 : -1;
+                    });
+
+            attribute.appendSection((new MAttributeSection(property)).setProps(props));
+        });
+
+        if (!attribute.hasSections()) {
+            attribute.appendSection((new MAttributeSection()).set({
+                title: 'მახასიათებლები',
+            }).setProps(attribute.properties));
+        }
+
+        attribute.sections = attribute.sections.sort((a: MAttributeSection, b: MAttributeSection) => {
+            return !(!a.property || !b.property)
+                ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
+                : 1;
+        });
+
+    }
 
 }

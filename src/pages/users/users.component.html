@@ -8,8 +8,8 @@
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="userName" [sortOrder]="-1" stateStorage="local" stateKey="{{storageKey}}"
-        [value]="users">
+    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="userName" [sortOrder]="-1"
+        stateStorage="local" stateKey="{{storageKey}}" [value]="users">
         <ng-template pTemplate="caption">
             <div class="header">
                 <ul class="list">
@@ -77,9 +77,6 @@
                     <button type="button" (click)="onDelete(user.id)" class="icon-border-btn">
                         <i class="pi pi-trash"></i>
                     </button>
-                    <!-- <button>წვდომები</button>
-                        <button>რედაქტირება</button>
-                        <button>წაშლა</button> -->
                 </td>
                 <td>
                     <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateBooleanColumns(user, $event)">
@@ -92,9 +89,4 @@
             </tr>
         </ng-template>
     </p-table>
-    <!-- <div style="text-align:center; margin : 60px auto;">
-            <h2>
-                სისტემის მომხმარებლების მართვის ფუნქციონალი დროებით გათიშულია.
-            </h2>
-        </div> -->
 </section>

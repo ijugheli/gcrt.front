@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/services/AuthService.service';
 import { UserService } from 'src/services/user.service';
 import { User } from 'src/app/app.models';
+import { MAttribute } from 'src/services/attributes/models/attribute.model';
 
 @Component({
   selector: 'left-menu',
@@ -186,42 +187,28 @@ export class MenuComponent implements OnInit {
   }
 
   private loadAttrs() {
-    // this.attrsService.list().subscribe((response) => {})
+    const attributeList = this.attrsService.asList();
 
-    this.attrsService.list().subscribe((d) => {
-      this.attributes = d.filter((i: any) => {
-        return i['type'] == 1;
-      }).map((attr) => {
-        return {
-          id: attr.id,
-          count: attr.count,
-          title: attr.title,
-          action: '/manage/' + attr.id,
-        };
-      });
+    this.attributes = attributeList.filter((i: any) => {
+      return i['type'] == 1;
+    }).map(this.mapAttributeType);
 
-      this.trees = d.filter((i: any) => {
-        return i['type'] == 2;
-      }).map((attr) => {
-        return {
-          id: attr.id,
-          title: attr.title,
-          count: attr.count,
-          action: '/manage/' + attr.id,
-        };
-      });
+    this.trees = attributeList.filter((i: any) => {
+      return i['type'] == 2;
+    }).map(this.mapAttributeType);
 
-      this.objects = d.filter((i: any) => {
-        return i['type'] == 3;
-      }).map((attr) => {
-        return {
-          id: attr.id,
-          title: attr.title,
-          count: attr.count,
-          action: '/add/' + attr.id,
-        };
-      });
-    });
+    this.objects = attributeList.filter((i: any) => {
+      return i['type'] == 3;
+    }).map(this.mapAttributeType);
+  }
+
+  private mapAttributeType(attr: MAttribute) {
+    return {
+      id: attr.id,
+      title: attr.title,
+      count: attr.count,
+      action: '/manage/' + attr.id,
+    };
   }
 
   private isAttrPageActive(attrID: number): boolean {

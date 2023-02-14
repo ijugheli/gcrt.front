@@ -1,0 +1,92 @@
+<p-toast position="top-right"></p-toast>
+
+<div class="form-container">
+
+    <p-panel header="{{actionTitle}}">
+        <form (ngSubmit)="onSubmit()">
+            <div class="form-inputs">
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <input type="text" pInputText value="ატრიბუტი: {{attrTitle}}" disabled placeholder="ტიპი">
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <input type="text" pInputText value="მშობელი: {{property?.title}}" n disabled placeholder="ტიპი">
+                </div>
+
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </span>
+                    <p-dropdown [style]="dropdownStyle" [options]="dataTypes" placeholder="აირჩიეთ მონაცემის ტიპი"
+                        [(ngModel)]="sectionProperty['input_data_type']" name="input_data_type" optionLabel="title"
+                        optionValue="id" [class.ng-invalid]="!isValueSelected('input_data_type')"
+                        [class.ng-dirty]="!isValueSelected('input_data_type')"></p-dropdown>
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </span>
+                    <p-dropdown [style]="dropdownStyle" [options]="viewTypes" placeholder="აირჩიეთ ველის ტიპი"
+                        [(ngModel)]="sectionProperty['input_view_type']" name="input_view_type" optionLabel="title"
+                        optionValue="id" [class.ng-invalid]="!isValueSelected('input_view_type')"
+                        [class.ng-dirty]="!isValueSelected('input_view_type')">
+                    </p-dropdown>
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-exclamation-triangle"></i>
+                    </span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-pencil"></i>
+                    </span>
+                    <input type="text" pInputText [(ngModel)]="sectionProperty['title']" name="title"
+                        placeholder="დასახელება" [class.ng-invalid]="!isValidValue('title')"
+                        [class.ng-dirty]="!isValidValue('title')">
+                </div>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-list"></i>
+                    </span>
+                    <p-dropdown [style]="dropdownStyle" [options]="attrSources"
+                        [(ngModel)]="sectionProperty['source_attr_id']" placeholder="აირჩიეთ წყარო"
+                        name="source_attr_id" optionLabel="name" optionValue="id"></p-dropdown>
+                </div>
+                <div class="p-inputgroup-right">
+                    <span style="margin-right:16px;margin-top:2px;">აუცილებელი</span>
+                    <p-inputSwitch [(ngModel)]="sectionProperty['is_mandatory']" name="is_mandatory"></p-inputSwitch>
+                </div>
+                <div class="p-inputgroup-right">
+                    <span style="margin-right:16px;margin-top:2px;">მთავარი</span>
+                    <p-inputSwitch [(ngModel)]="sectionProperty['is_primary']" name="is_primary"></p-inputSwitch>
+                </div>
+                <div class="p-inputgroup-right">
+                    <span style="margin-right:16px;margin-top:2px;">ფილტრაცია</span>
+                    <p-inputSwitch [(ngModel)]="sectionProperty['has_filter']" name="has_filter"></p-inputSwitch>
+                </div>
+            </div>
+            <p-divider></p-divider>
+            <div class="form-actions">
+                <span>
+                    <button (click)="onCancel()" pButton type="button" label="დახურვა"
+                        class="p-button-outlined p-button-md">
+                        <i class="pi pi-replay"></i>
+                    </button>
+                    <button pButton type="submit" [label]="'დამატება'" class="p-button-outlined p-button-md">
+                        <i class="pi pi-check"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </p-panel>
+</div>
