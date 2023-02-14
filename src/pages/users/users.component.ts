@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserComponent } from './manage-user/manage-user.component';
+import { IResponse } from 'src/app/app.interfaces';
 interface cachedFilter {
   value: string;
   matdhMode?: string;
@@ -62,6 +63,8 @@ export class UsersComponent implements OnInit {
 
     });
   }
+
+
 
   // private parseFilters() {
   //   let storageFilters = localStorage.getItem(this.storageKey);
@@ -124,20 +127,15 @@ export class UsersComponent implements OnInit {
 
   }
 
-  public updateStatusID(userID: number, event: any) {
+  public updateBooleanColumns(user: User, event:any) {
+    this.userService.updateBooleanColumns(user.id, { 'status_id': user.status_id, 'otp_enabled': user.otp_enabled }).subscribe((data) => {
+      const response: IResponse = data;
 
-    const statusID = event.checked ? 1 : 0;
+      if (response.code == 0) return this.showError(response.message);
 
-    this.userService.updateStatusID(userID, statusID).subscribe((data) => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'სისტემის მომხმარებლის სტატუსი წარმატებით შეიცვალა',
-      });
+      this.showSuccess(response.message);
     }, (error) => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'სისტემის მომხმარებლის სტატუსი ცვლილებისას დაფიქსირდა შეცდომა',
-      });
+      this.showError('დაფიქსირდა შეცდომა');
     });
   }
   public handleClick(userID?: number) {
@@ -151,6 +149,23 @@ export class UsersComponent implements OnInit {
   public onPermissions(userID: number) {
     this.router.navigateByUrl(`/users/permissions/${userID}`);
   }
+
+  private showSuccess(msg: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: msg,
+    });
+    this.spinner.hide();
+  }
+
+  private showError(error: any) {
+    this.messageService.add({
+      severity: 'error',
+      summary: error,
+    });
+    this.spinner.hide();
+  }
+
 
 }
 

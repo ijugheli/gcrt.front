@@ -33,6 +33,7 @@
                 <th pSortableColumn="address">მისამართი<p-sortIcon field="address"></p-sortIcon></th>
                 <th>მართვა</th>
                 <th>სტატუსი</th>
+                <th>OTP ავტორიზაცია</th>
             </tr>
             <tr>
                 <th>
@@ -81,7 +82,11 @@
                         <button>წაშლა</button> -->
                 </td>
                 <td>
-                    <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateStatusID(user.id, $event)">
+                    <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateBooleanColumns(user, $event)">
+                    </p-inputSwitch>
+                </td>
+                <td>
+                    <p-inputSwitch [(ngModel)]="user.otp_enabled" (onChange)="updateBooleanColumns(user, $event)">
                     </p-inputSwitch>
                 </td>
             </tr>

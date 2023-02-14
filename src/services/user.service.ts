@@ -22,7 +22,7 @@ export class UserService extends GuardedService {
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
     'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
-    'updateStatusID': API_URL + '/user/update-status/{user_id}/{status_id}',
+    'updateBooleanColumns': API_URL + '/user/update-boolean-columns/{user_id}',
     'updatePassword': API_URL + '/user/update-password',
   };
 
@@ -60,8 +60,8 @@ export class UserService extends GuardedService {
     return this.http.post<IResponse>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
   }
 
-  public updateStatusID(userID: number, statusID: number) {
-    return this.http.post<IResponse>(this.urls['updateStatusID'].replace('{user_id}', userID).replace('{status_id}', statusID), { headers: this.headers });
+  public updateBooleanColumns(userID: number, values: any) {
+    return this.http.post<IResponse>(this.urls['updateBooleanColumns'].replace('{user_id}', userID), values, { headers: this.headers });
   }
 
   public updatePassword(data: any) {

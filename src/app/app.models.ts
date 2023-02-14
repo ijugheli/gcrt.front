@@ -173,6 +173,7 @@ export class AttrValue {
 export class User {
     public id!: number;
     public status_id: boolean = true;
+    public otp_enabled: boolean = true;
     public name!: string;
     public lastname!: string;
     public phone!: string;
