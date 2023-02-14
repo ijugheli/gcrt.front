@@ -56,7 +56,7 @@ export class OTPComponent implements OnInit {
     this.authService.validateCode(data).subscribe((data) => {
       this.spinner.hide();
       const response: IResponse = data;
-      
+
       if (!response.code) {
         this.showError(response.message);
 
@@ -68,7 +68,7 @@ export class OTPComponent implements OnInit {
       if (response.code == 1) {
         this.showSuccess(response.message);
         this.authService.authorize(response.data);
-        this.router.navigate(['/home'], { replaceUrl: true });
+        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 200));
       }
 
     }, (error) => {
