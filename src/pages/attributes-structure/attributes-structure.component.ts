@@ -188,11 +188,11 @@ export class AttributesStructureComponent implements OnInit {
     return this.attributes.find((i) => i.id == attrID)?.title;
   }
 
-  private async initializeData() {
+  private initializeData() {
     this.isLoading = true;
     this.spinner.show();
 
-    await this.initializeAttrList();
+    this.initializeAttrList();
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
@@ -203,16 +203,24 @@ export class AttributesStructureComponent implements OnInit {
 
   }
 
-  private async initializeAttrList() {
-    await this.attributesService.requestAttributes();
-    setTimeout(() => {
-      const list: MAttribute[] = this.attributesService.asList();
-      this.attributes = list;
+  private initializeAttrList() {
+    let that = this;
+    this.attributesService.reload().then((list : MAttribute[]) => {
+      that.attributes = list;
+      that.list['standard'] = list.filter((i) => i.isStandard());
+      that.list['tree'] = list.filter((i) => i.isTree());
+      that.list['entity'] = list.filter((i) => i.isEntity());
+    });
 
-      this.list['standard'] = list.filter((i) => i.isStandard());
-      this.list['tree'] = list.filter((i) => i.isTree());
-      this.list['entity'] = list.filter((i) => i.isEntity());
-    }, 200);
+  }
+
+  private initLists() {
+    const list: MAttribute[] = this.attributesService.asList();
+    this.attributes = list;
+
+    this.list['standard'] = list.filter((i) => i.isStandard());
+    this.list['tree'] = list.filter((i) => i.isTree());
+    this.list['entity'] = list.filter((i) => i.isEntity());
   }
 
   private initializeDataTypes() {
@@ -241,10 +249,10 @@ export class AttributesStructureComponent implements OnInit {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
 
-  private refreshAttributesOnAdd = async (isSuccess: boolean) => {
+  private refreshAttributesOnAdd = (isSuccess: boolean) => {
     if (isSuccess) {
       this.spinner.show();
-      await this.initializeAttrList();
+      this.initializeAttrList();
       this.spinner.hide();
     }
   };

@@ -63,6 +63,7 @@ export class AttributesService extends GuardedService {
         }
 
         let data: IAttribute[] = JSON.parse(localStorage.getItem(this.cacheKey) as string) as IAttribute[];
+
         this.parse(data);
     }
 
@@ -70,23 +71,34 @@ export class AttributesService extends GuardedService {
         return storageItemExists(this.cacheKey);
     }
 
-    public load() {
+    public load(onLoad?: Function): MAttribute[] {
         if (this.hasCache()) {
             this.loadCache();
-            return;
+            return this.asList();
         }
 
-        this.requestAttributes();
-
-    }
-
-    public async requestAttributes() {
-        this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
-            console.log('///////////////////////////////');
-            console.log(data);
-            console.log('///////////////////////////////');
+        this.request((data: any) => {
             this.saveCache(data);
             this.parse(data);
+            if (onLoad) onLoad();
+        });
+
+        return this.asList();
+    }
+
+    public async reload() {
+        return new Promise<MAttribute[]>((resolve, reject) => {
+            this.request((data: any) => {
+                this.saveCache(data);
+                this.parse(data);
+                resolve(this.asList());
+            });
+        });
+    }
+
+    private async request(f?: Function) {
+        this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
+            if (f) f(data)
         }, (e) => {
 
         });
@@ -208,7 +220,7 @@ export class AttributesService extends GuardedService {
             this.urls['addProperty'].replace('{attr_id}', attrID.toString()
             ), values, { headers: this.headers }).subscribe((response) => {
 
-                this.requestAttributes();
+                this.request();
                 if (func)
                     func(response);
             });
@@ -219,7 +231,7 @@ export class AttributesService extends GuardedService {
             this.urls['reorderProperties'].replace('{attr_id}', attrID.toString()
             ), values, { headers: this.headers }).subscribe((response) => {
 
-                this.requestAttributes();
+                this.request();
                 if (func)
                     func(response);
             });

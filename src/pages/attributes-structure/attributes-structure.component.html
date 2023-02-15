@@ -101,8 +101,8 @@
 
               <!-- Property Add Ends HERE -->
               <div class="p-3">
-                <p-table [value]="attribute.sections" dataKey="id" sortField="order_id" sortMode="single" dataKey="title"
-                  rowGroupMode="subheader" groupRowsBy="title" rowExpandMode="single"
+                <p-table [value]="attribute.sections" dataKey="id" sortField="order_id" sortMode="single"
+                  dataKey="title" rowGroupMode="subheader" groupRowsBy="title" rowExpandMode="single"
                   (onRowReorder)="onRowReorder($event, attribute.id, attribute.properties)">
                   <ng-template pTemplate="header">
           <tr>
@@ -137,10 +137,9 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="rowexpansion" let-section let-rowIndex="rowIndex">
-          <tr [pReorderableRow]="rowIndex" *ngFor="let property of section.properties">
+          <tr [pReorderableRow]="ind + 1" *ngFor="let property of section.properties; let ind = index;">
             <td><span class="pi pi-bars" [pReorderableRowHandle]="rowIndex"></span></td>
             <td>{{property.id}}</td>
-            <td>Row shit {{ rowIndex }}</td>
             <td>{{ getSourceAttrTitle(property.source_attr_id) }}</td>
             <td [pEditableColumn]="property.title" pEditableColumnField="title">
               <p-cellEditor>
