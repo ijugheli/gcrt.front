@@ -28,3 +28,22 @@ input {
     text-align: right;
     margin: 10px 0px 0px 0px;
 }
+
+.th-group-style {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px 4px;
+    width: 100%;
+}
+
+.center-text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+.p-datatable.p-datatable-sm .p-datatable-tbody > tr > td {
+    padding: 0.5rem 0.5rem !important;
+}

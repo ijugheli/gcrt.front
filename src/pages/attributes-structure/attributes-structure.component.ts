@@ -11,6 +11,7 @@ import { AddAttributeComponent } from './add-attribute/add-attribute.component';
 import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
+import { MAttributeSection } from 'src/services/attributes/models/section.model';
 
 
 @Component({
@@ -41,6 +42,10 @@ export class AttributesStructureComponent implements OnInit {
     'tree': true,
     'entity': true,
   };
+
+  public expandedSection: { [s: string]: boolean; } = {};
+  public expandedAttr: { [s: string]: boolean; } = {};
+  public expandedType: { [s: string]: boolean; } = {};
 
   public dataTypesMap: any = {
     1: { name: 'string', id: 1, title: 'ტექსტი' },
@@ -96,17 +101,19 @@ export class AttributesStructureComponent implements OnInit {
     return ATTR_TYPE_NAME(name) as string;
   }
 
-  public addRecord(attrID: number, data: any) {
-    this.attributesService.addProperty(attrID, data);
-  }
-
   public reorderProperties(data: any, attrID: number) {
     let propertyIDs = [];
+
     for (let i in data) {
+      if (data[i] instanceof MAttributeSection) {
+        propertyIDs.push(data[i]['propertyID']);
+        continue;
+      }
+
       propertyIDs.push(data[i]['id']);
     }
+
     this.attributesService.reorderProperties(attrID, JSON.stringify(propertyIDs));
-    this.attributes = this.attributesService.asList();
   }
 
   public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
@@ -119,14 +126,9 @@ export class AttributesStructureComponent implements OnInit {
     this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
       const response: IResponse = data;
 
-      if (!response.code) {
-        this.showError(response.message);
-        this.restoreOldValue(oldAttr!, value, isLazy || false);
-        return;
-      }
       this.showSuccess(response.message);
     }, (error) => {
-      this.showError('დაფიქსირდა შეცდომა');
+      this.showError(error.error.message);
 
       this.restoreOldValue(oldAttr!, value, isLazy || false);
     });
@@ -135,11 +137,6 @@ export class AttributesStructureComponent implements OnInit {
   public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
       const response = data as IResponse;
-
-      if (!response.code) {
-        this.showError(response.message);
-        return;
-      }
 
       if (isPrimary) {
         this.list[attrType].find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
@@ -150,11 +147,20 @@ export class AttributesStructureComponent implements OnInit {
 
       this.showSuccess(response.message);
     }, (error) => {
-      this.showError('დაფიქსირდა შეცდომა');
+      this.showError(error.error.message);
     })
   }
 
+  public onRowExpand(event: any) {
+    const id = event.data.propertyID?.toString() ?? event.data.id?.toString();
 
+    if (typeof event.data.propertyID != 'undefined') {
+      this.expandedSection = { [id]: true };
+      return
+    }
+
+    this.expandedAttr = { [id]: true };
+  }
 
   public onAddAttrClick(type: number) {
     this.dialogService.open(AddAttributeComponent, {
@@ -164,63 +170,44 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  public onAddSectionClick(attrID: number) {
-    const ref = this.dialogService.open(AddSectionComponent, {
-      data: { attrID: attrID, },
-      width: '30%',
-      position: 'top',
-    });
+  public onAddClick(property: MProperty | null, attrID: number) {
+    const component = property != null ? AddSectionPropertyComponent : AddAttributeComponent;
 
-    ref.onClose.subscribe(this.refreshAttributesOnAdd);
-
-  }
-  public onAddSectionPropertyClick(property: MProperty, attrID: number) {
-    const ref = this.dialogService.open(AddSectionPropertyComponent, {
+    const ref = this.dialogService.open(component, {
       data: { property: property, attrSources: this.attrSources, attrID: attrID },
       width: '30%',
       position: 'top',
     });
 
-    ref.onClose.subscribe(this.refreshAttributesOnAdd);
+    ref.onClose.subscribe(this.reloadOnAdd);
   }
 
   public getSourceAttrTitle(attrID: number) {
     return this.attributes.find((i) => i.id == attrID)?.title;
   }
 
-  private initializeData() {
+  private async initializeData() {
     this.isLoading = true;
     this.spinner.show();
 
-    this.initializeAttrList();
+    await this.initializeAttrList();
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
 
     this.isLoading = false;
     this.spinner.hide();
-
-
   }
 
-  private initializeAttrList() {
+  private async initializeAttrList() {
     let that = this;
-    this.attributesService.reload().then((list : MAttribute[]) => {
+
+    await this.attributesService.reload().then((list: MAttribute[]) => {
       that.attributes = list;
       that.list['standard'] = list.filter((i) => i.isStandard());
       that.list['tree'] = list.filter((i) => i.isTree());
       that.list['entity'] = list.filter((i) => i.isEntity());
     });
-
-  }
-
-  private initLists() {
-    const list: MAttribute[] = this.attributesService.asList();
-    this.attributes = list;
-
-    this.list['standard'] = list.filter((i) => i.isStandard());
-    this.list['tree'] = list.filter((i) => i.isTree());
-    this.list['entity'] = list.filter((i) => i.isEntity());
   }
 
   private initializeDataTypes() {
@@ -249,7 +236,7 @@ export class AttributesStructureComponent implements OnInit {
     isLazy ? oldAttr!.lazy = !value : oldAttr!.status_id = Number(!value);
   }
 
-  private refreshAttributesOnAdd = (isSuccess: boolean) => {
+  private reloadOnAdd = (isSuccess: boolean) => {
     if (isSuccess) {
       this.spinner.show();
       this.initializeAttrList();
@@ -261,20 +248,10 @@ export class AttributesStructureComponent implements OnInit {
     this.reorderProperties(propertyData, id);
   }
 
-  toggleFieldset(type: string, value: boolean) {
-    this.fieldsets[type] = value;
-
-    // to close other fieldesets
-    for (let key in this.fieldsets) {
-      if (key == type) continue;
-
-      this.fieldsets[key] = true;
-    }
-  }
-  closeFieldsets() {
+  onBeforeToggle() {
+    // Close all fieldsets before expanding another one
     for (let key in this.fieldsets) {
       this.fieldsets[key] = true;
     }
   }
-
 }
