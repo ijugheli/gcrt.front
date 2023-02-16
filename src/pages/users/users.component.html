@@ -8,14 +8,13 @@
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="userName" [sortOrder]="-1"
-        stateStorage="local" stateKey="{{storageKey}}" [value]="users">
+    <p-table #data styleClass="p-datatable-gridlines" dataKey="id" sortField="email" [value]="users">
         <ng-template pTemplate="caption">
             <div class="header">
                 <ul class="list">
                     <ng-container>
                         <li>
-                            <button (click)="handleClick()" type="button" class="border-btn">
+                            <button (click)="onEdit()" type="button" class="border-btn">
                                 <i class="pi pi-plus-circle"></i>
                                 დამატება
                             </button>
@@ -68,18 +67,18 @@
                 <td>{{user.lastname}}</td>
                 <td>{{user.phone}}</td>
                 <td>{{user.address}}</td>
-                <td>
+                <td style="width: 12%;">
                     <button type="button" (click)="onPermissions(user.id)" class="icon-border-btn">
                         <i class="pi pi-bars"></i>
                     </button>
-                    <button type="button" (click)="handleClick(user.id)" class="icon-border-btn">
+                    <button type="button" (click)="onEdit(user.id)" class="icon-border-btn">
                         <i class="pi pi-pencil"></i>
                     </button>
                     <button type="button" (click)="onDelete(user.id)" class="icon-border-btn">
                         <i class="pi pi-trash"></i>
                     </button>
                 </td>
-                <td>
+                <td >
                     <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateBooleanColumns(user, $event)">
                     </p-inputSwitch>
                 </td>

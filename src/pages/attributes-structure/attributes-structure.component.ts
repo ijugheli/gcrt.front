@@ -23,7 +23,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class AttributesStructureComponent implements OnInit {
-  public pageTitle: string = 'მონაცემთა სტრუქტურების მართვა';
+  public pageTitle: string = 'მონაცემთა სქემები';
   public isLoading: boolean = false;
   public addPropertyButton = false;
   public attributes: MAttribute[] = [];

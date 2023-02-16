@@ -45,7 +45,7 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     if (this.router.url.includes('/users/add')) {
-      this.handleClick();
+      this.onEdit();
     };
     this.getUsers();
   }
@@ -73,7 +73,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  public handleClick(userID?: number) {
+  public onEdit(userID?: number) {
     this.dialogService.open(ManageUserComponent, {
       data: { userID: userID != undefined ? userID : null, },
       width: '30%',
