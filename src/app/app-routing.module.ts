@@ -30,7 +30,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'structure',
+    path: 'structure/:type_id',
     component: AttributesStructureComponent,
     canActivate: [AuthGuard]
   },

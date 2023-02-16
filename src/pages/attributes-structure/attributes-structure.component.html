@@ -16,181 +16,161 @@
     </div>
   </div>
   <!-- ATTRIBUTE TITLE BLOCK -->
-  <div *ngFor="let item of list | keyvalue" style="margin: 12px 4px;">
-    <p-panel [header]="getAttrTypeName(item.key)" [toggleable]="true" [(collapsed)]="fieldsets[item.key]"
-      (onBeforeToggle)="onBeforeToggle()" [style]="{ 'padding' : '16px 12px'}" [transitionOptions]="'100ms'"
-      expandIcon="pi pi-angle-down" collapseIcon="pi pi-angle-up">
-      <ng-template pTemplate="icons">
-        <button pButton class="p-button-outlined" icon="pi pi-plus" label="დამატება" style="margin-right: 36px;"
-          (click)="onAddAttrClick(getAttrTypeID(item.key))">
-        </button>
-      </ng-template>
-      <p-table #attrFilter *ngIf="!isLoading" sortMode="single"
-        styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true" [rows]="25"
-        currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
-        [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
-        [value]="list[item.key]" dataKey="id" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedAttr"
-        rowExpandMode="single">
-        <ng-template pTemplate="header">
+  <p-table #attrFilter *ngIf="!isLoading" sortMode="single"
+    styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true" [rows]="25"
+    currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+    [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="attributes"
+    dataKey="id" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedAttr" rowExpandMode="single">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 5rem"></th>
+        <!-- <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th> -->
+        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th>
+        <th>Lazy</th>
+        <th>სტატუსი</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>
+          <input pInputText type="text" (input)="attrFilter.filter(filters['title'], 'title', 'contains')"
+            [(ngModel)]="filters['title']" placeholder="ძიება"
+            class="w-full p-inputtext p-component p-element ng-star-inserted">
+        </th>
+        <th></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-attribute let-expanded="expanded">
+      <tr>
+        <td>
+          <button type="button" pButton pRipple [pRowToggler]="attribute"
+            class="p-button-text p-button-rounded p-button-plain"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+        </td>
+        <td>{{attribute.id}}</td>
+        <td [pEditableColumn]="attribute.title" pEditableColumnField="title">
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="attribute.title"
+                (change)="updateAttr(attribute, attribute.title)"
+                (keydown.enter)="updateAttr(attribute, attribute.title)">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{attribute.title}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-inputSwitch [(ngModel)]="attribute.lazy"
+            (onChange)="updateAttr(attribute,  $event.checked, true)"></p-inputSwitch>
+        </td>
+        <td>
+          <p-inputSwitch [(ngModel)]="attribute.status"
+            (onChange)="updateAttr(attribute,  $event.checked,false)"></p-inputSwitch>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-attribute>
+      <tr>
+        <td colspan="6">
+          <button (click)="onAddClick(null,attribute.id, false)" type="button" class="border-btn"
+            style="margin-bottom: 10px;">
+            <i class="pi pi-plus-circle"></i>
+            სექციის დამატება
+          </button>
+
+          <!-- Property Add Here  -->
+
+          <!-- Property Add Ends HERE -->
+          <p-table [value]="attribute.sections" dataKey="id"
+            styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" sortField="property.order_id"
+            sortMode="single" dataKey="title" rowGroupMode="subheader" groupRowsBy="title"
+            rowExpandMode="single" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedSection"
+            (onRowReorder)="onRowReorder($event, attribute.id, attribute.sections)">
+            <ng-template pTemplate="header">
+      <tr>
+        <th style="padding: 12px !important;">სექციის დასახელება</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="groupheader" let-section let-expanded="expanded" let-rowIndex="rowIndex">
+      <tr pRowGroupHeader [pReorderableRow]="rowIndex" class="p-datatable-gridlines">
+        <td class="th-group-style" [pReorderableRowHandle]="rowIndex">
+          <button type="button" pButton pRipple [pRowToggler]="section"
+            class="p-button-text p-button-rounded p-button-plain mr-2"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+          </button>
+          <span style="font-weight: 300;" class="center-text mr-4">{{section.title}}</span>
+          <button (click)="onAddClick(section.property, attribute.id, true)" type="button" class="border-btn">
+            <i class="pi pi-plus-circle"></i>
+            დამატება
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-section let-rowIndex="rowIndex">
+      <p-table [value]="section.properties" sortMode="single" styleClass="p-datatable-sm p-datatable-gridlines"
+        dataKey="id" (onRowReorder)="onRowReorder($event, attribute.id, section.properties)">
+        <ng-template pTemplate="header" *ngIf="section.properties.length > 0">
           <tr>
-            <th style="width: 5rem"></th>
-            <!-- <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th> -->
-            <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
-            <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th>
-            <th>ატრიბუტის ტიპი</th>
-            <th>Lazy</th>
-            <th>სტატუსი</th>
-          </tr>
-          <tr>
-            <th></th>
-            <th></th>
-            <th>
-              <input pInputText type="text" (input)="attrFilter.filter(filters['title'], 'title', 'contains')"
-                [(ngModel)]="filters['title']" placeholder="ძიება"
-                class="w-full p-inputtext p-component p-element ng-star-inserted">
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th><i class="pi pi-bars"></i></th>
+            <th>ID</th>
+            <th>წყარო</th>
+            <th>დასახელება</th>
+            <th>მონაცემის ტიპი</th>
+            <th>ველის ტიპი</th>
+            <th>აუცილებელი</th>
+            <th>ფილტრაცია</th>
+            <th>მთავარი</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-attribute let-expanded="expanded">
-          <tr>
-            <td>
-              <button type="button" pButton pRipple [pRowToggler]="attribute"
-                class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-            </td>
-            <td>{{attribute.id}}</td>
-            <td [pEditableColumn]="attribute.title" pEditableColumnField="title">
+        <ng-template pTemplate="body" let-property let-index="rowIndex">
+          <tr [pReorderableRow]="index">
+            <td><span class="pi pi-bars" [pReorderableRowHandle]="rowIndex"></span></td>
+            <td>{{property.id}}</td>
+            <td>{{ getSourceAttrTitle(property.source_attr_id) }}</td>
+            <td [pEditableColumn]="property.title" pEditableColumnField="title">
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="attribute.title"
-                    (change)="updateAttr(attribute, attribute.title)"
-                    (keydown.enter)="updateAttr(attribute, attribute.title)">
+                  <input pInputText type="text" [(ngModel)]="property.title" (change)="updateProperty(property, $event)"
+                    (keydown.enter)="updateProperty(property, $event)">
                 </ng-template>
                 <ng-template pTemplate="output">
-                  {{attribute.title}}
+                  {{property.title}}
                 </ng-template>
               </p-cellEditor>
             </td>
             <td>
-              <ng-container *ngIf="attribute.isStandard()">სტანდარტული</ng-container>
-              <ng-container *ngIf="attribute.isTree()">ხე</ng-container>
-              <ng-container *ngIf="attribute.isEntity()">ობიექტი</ng-container>
+              <p-dropdown [options]="dataTypes" placeholder="{{property.title}} - ის ტიპი"
+                [(ngModel)]="property.input_data_type" name="id" optionLabel="title" optionValue="id"
+                (onChange)="updateProperty(property, $event)"></p-dropdown>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="attribute.lazy"
-                (onChange)="updateAttr(attribute,  $event.checked, true)"></p-inputSwitch>
+              <p-dropdown [options]="viewTypes" placeholder="{{property.title}} - ის ტიპი"
+                [(ngModel)]="property.input_view_type" name="id" optionLabel="title" optionValue="id"
+                (onChange)="updateProperty(property, $event)">
+              </p-dropdown>
             </td>
             <td>
-              <p-inputSwitch [(ngModel)]="attribute.status"
-                (onChange)="updateAttr(attribute,  $event.checked,false)"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="property.is_mandatory"
+                (onChange)="updateProperty(property, $event)"></p-inputSwitch>
+            </td>
+            <td>
+              <p-inputSwitch [(ngModel)]="property.has_filter"
+                (onChange)="updateProperty(property, $event)"></p-inputSwitch>
+            </td>
+            <td>
+              <p-inputSwitch [(ngModel)]="property.is_primary"
+                (onChange)="updateProperty(property, $event, property.is_primary)"></p-inputSwitch>
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="rowexpansion" let-attribute>
-          <tr>
-            <td colspan="6">
-              <button (click)="onAddClick(null,attribute.id)" type="button" class="border-btn"
-                style="margin-bottom: 10px;">
-                <i class="pi pi-plus-circle"></i>
-                სექციის დამატება
-              </button>
-
-              <!-- Property Add Here  -->
-
-              <!-- Property Add Ends HERE -->
-              <p-table [value]="attribute.sections" dataKey="id"
-                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" sortField="property.order_id"
-                sortMode="single" dataKey="property.id" rowGroupMode="subheader" groupRowsBy="title"
-                rowExpandMode="single" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedSection"
-                (onRowReorder)="onRowReorder($event, attribute.id, attribute.sections)">
-                <ng-template pTemplate="header">
-          <tr>
-            <th style="padding: 12px !important;">სექციის დასახელება</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="groupheader" let-section let-expanded="expanded" let-rowIndex="rowIndex">
-          <tr pRowGroupHeader [pReorderableRow]="rowIndex" class="p-datatable-gridlines">
-            <td class="th-group-style" [pReorderableRowHandle]="rowIndex">
-              <button type="button" pButton pRipple [pRowToggler]="section"
-                class="p-button-text p-button-rounded p-button-plain mr-2"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-              </button>
-              <span style="font-weight: 300;" class="center-text mr-4">{{section.title}}</span>
-              <button (click)="onAddClick(section.property, attribute.id)" type="button"
-                class="border-btn">
-                <i class="pi pi-plus-circle"></i>
-                დამატება
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="rowexpansion" let-section let-rowIndex="rowIndex">
-          <p-table [value]="section.properties" sortMode="single" styleClass="p-datatable-sm p-datatable-gridlines"
-            dataKey="id" (onRowReorder)="onRowReorder($event, attribute.id, section.properties)">
-            <ng-template pTemplate="header" *ngIf="section.properties.length > 0">
-              <tr>
-                <th><i class="pi pi-bars"></i></th>
-                <th>ID</th>
-                <th>წყარო</th>
-                <th>დასახელება</th>
-                <th>მონაცემის ტიპი</th>
-                <th>ველის ტიპი</th>
-                <th>აუცილებელი</th>
-                <th>ფილტრაცია</th>
-                <th>მთავარი</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-property let-index="rowIndex">
-              <tr [pReorderableRow]="index">
-                <td><span class="pi pi-bars" [pReorderableRowHandle]="rowIndex"></span></td>
-                <td>{{property.id}}</td>
-                <td>{{ getSourceAttrTitle(property.source_attr_id) }}</td>
-                <td [pEditableColumn]="property.title" pEditableColumnField="title">
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input pInputText type="text" [(ngModel)]="property.title"
-                        (change)="updateProperty(property, $event)" (keydown.enter)="updateProperty(property, $event)">
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      {{property.title}}
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
-                <td>
-                  <p-dropdown [options]="dataTypes" placeholder="{{property.title}} - ის ტიპი"
-                    [(ngModel)]="property.input_data_type" name="id" optionLabel="title" optionValue="id"
-                    (onChange)="updateProperty(property, $event)"></p-dropdown>
-                </td>
-                <td>
-                  <p-dropdown [options]="viewTypes" placeholder="{{property.title}} - ის ტიპი"
-                    [(ngModel)]="property.input_view_type" name="id" optionLabel="title" optionValue="id"
-                    (onChange)="updateProperty(property, $event)">
-                  </p-dropdown>
-                </td>
-                <td>
-                  <p-inputSwitch [(ngModel)]="property.is_mandatory"
-                    (onChange)="updateProperty(property, $event)"></p-inputSwitch>
-                </td>
-                <td>
-                  <p-inputSwitch [(ngModel)]="property.has_filter"
-                    (onChange)="updateProperty(property, $event)"></p-inputSwitch>
-                </td>
-                <td>
-                  <p-inputSwitch [(ngModel)]="property.is_primary"
-                    (onChange)="updateProperty(property, $event, property.is_primary, item.key)"></p-inputSwitch>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </ng-template>
       </p-table>
-      </td>
-      </tr>
-      </ng-template>
-      </p-table>
-    </p-panel>
-  </div>
+    </ng-template>
+  </p-table>
+  </td>
+  </tr>
+  </ng-template>
+  </p-table>
 </section>

@@ -47,13 +47,13 @@ export const ATTR_TYPES: Map<string, number> = new Map([
 export const ATTR_TYPES_NAMES: Map<string, string> = new Map([
   ['standard', 'სტანდარტული ატრიბუტები'],
   ['tree', 'ხისებრი ატრიბუტები'],
-  ['entity', 'ობიექტი'],
+  ['entity', 'ობიექტები'],
 ]);
 
 export const ATTR_TYPES_IDS_NAME: Map<number, string> = new Map([
   [1, 'სტანდარტული ატრიბუტები'],
   [2, 'ხისებრი ატრიბუტები'],
-  [3, 'ობიექტი'],
+  [3, 'ობიექტები'],
 ]);
 
 

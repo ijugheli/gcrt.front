@@ -12,6 +12,7 @@ import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 import { MAttributeSection } from 'src/services/attributes/models/section.model';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -25,9 +26,9 @@ export class AttributesStructureComponent implements OnInit {
   public pageTitle: string = 'მონაცემთა სტრუქტურების მართვა';
   public isLoading: boolean = false;
   public addPropertyButton = false;
-  public list: { [key: string]: MAttribute[] } = {};
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
+  private typeID = 0;
   public attrType: any = {
     'standard': 'სტანდარტული ატრიბუტები',
     'tree': 'ხისებრი ატრიბუტები',
@@ -35,12 +36,6 @@ export class AttributesStructureComponent implements OnInit {
     1: 'standard',
     2: 'tree',
     3: 'entity'
-  };
-
-  public fieldsets: any = {
-    'standard': true,
-    'tree': true,
-    'entity': true,
   };
 
   public expandedSection: { [s: string]: boolean; } = {};
@@ -82,10 +77,11 @@ export class AttributesStructureComponent implements OnInit {
   public attrSources: any;
 
   constructor(
-    public attributesService: AttributesService,
-    public messageService: MessageService,
-    public dialogService: DialogService,
+    private attributesService: AttributesService,
+    private messageService: MessageService,
+    private dialogService: DialogService,
     private spinner: NgxSpinnerService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -96,7 +92,7 @@ export class AttributesStructureComponent implements OnInit {
     return ATTR_TYPE_ID(name) as number;
   }
 
-  public getAttrTypeName(name: string): string {
+  public getAttrTypeName(name: string | number): string {
     return ATTR_TYPE_NAME(name) as string;
   }
 
@@ -133,12 +129,12 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false, attrType: string = '') {
+  public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false) {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
       const response = data as IResponse;
 
       if (isPrimary) {
-        this.list[attrType].find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
+        this.attributes.find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
           if (data.id === property.id) return;
           data.is_primary = false;
         });
@@ -153,8 +149,8 @@ export class AttributesStructureComponent implements OnInit {
   public onRowExpand(event: any) {
     const id = event.data.propertyID?.toString() ?? event.data.id?.toString();
 
-    if (typeof event.data.propertyID != 'undefined') {
-      this.expandedSection = { [id]: true };
+    if (typeof event.data.propertyID != 'undefined' || event.data.title == "მახასიათებლები") {
+      this.expandedSection = { [event.data.title]: true };
       return
     }
 
@@ -169,8 +165,8 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  public onAddClick(property: MProperty | null, attrID: number) {
-    const component = property != null ? AddSectionPropertyComponent : AddAttributeComponent;
+  public onAddClick(property: MProperty | null, attrID: number, isSectionProperty: boolean = false) {
+    const component = isSectionProperty ? AddSectionPropertyComponent : AddSectionComponent;
 
     const ref = this.dialogService.open(component, {
       data: { property: property, attrSources: this.attrSources, attrID: attrID },
@@ -189,6 +185,8 @@ export class AttributesStructureComponent implements OnInit {
     this.isLoading = true;
     this.spinner.show();
 
+    this.typeID = parseInt(this.route.snapshot.paramMap.get('type_id')!);;
+    this.pageTitle = this.pageTitle + ' - ' + this.getAttrTypeName(this.typeID);
     await this.initializeAttrList();
     this.initializeDataTypes();
     this.initializeViewTypes();
@@ -202,10 +200,7 @@ export class AttributesStructureComponent implements OnInit {
     let that = this;
 
     await this.attributesService.reload().then((list: MAttribute[]) => {
-      that.attributes = list;
-      that.list['standard'] = list.filter((i) => i.isStandard());
-      that.list['tree'] = list.filter((i) => i.isTree());
-      that.list['entity'] = list.filter((i) => i.isEntity());
+      that.attributes = list.filter((i) => i.type == this.typeID);
     });
   }
 
@@ -245,12 +240,5 @@ export class AttributesStructureComponent implements OnInit {
 
   onRowReorder(event: any, id: any, propertyData: any) {
     this.reorderProperties(propertyData, id);
-  }
-
-  onBeforeToggle() {
-    // Close all fieldsets before expanding another one
-    for (let key in this.fieldsets) {
-      this.fieldsets[key] = true;
-    }
   }
 }
