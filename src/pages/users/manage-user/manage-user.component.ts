@@ -78,35 +78,53 @@ export class ManageUserComponent implements OnInit {
     this.spinner.show();
 
     if (this.userID == null) {
-      this.userService
-        .add(this.values)
-        .subscribe((data) => {
-          const response: IResponse = data;
-
-          if (response.code == 0) return this.showError(response.message);
-
-          this.showSuccess(response.message);
-        }, (error) => {
-          this.showError(error);
-        });
+      this.addUser();
       return;
     }
 
+    this.editUser;
+  }
+
+  private addUser() {
     this.userService
-      .edit(this.userID, this.values)
+      .add(this.values)
       .subscribe((data) => {
+        this.spinner.hide();
+
         const response: IResponse = data;
 
-        if (response.code == 0) return this.showError(response.message);
-
         this.showSuccess(response.message);
-        
-        setTimeout(() => {
-          this.dialogRef.close();
-        }, 1000);
+
+        this.closeDialog();
       }, (error) => {
+        this.spinner.hide();
+
         this.showError(error);
       });
+  }
+
+  private editUser() {
+    this.userService
+      .edit(this.userID!, this.values)
+      .subscribe((data) => {
+        this.spinner.hide();
+
+        const response: IResponse = data;
+
+        this.showSuccess(response.message);
+
+        this.closeDialog();
+      }, (error) => {
+        this.spinner.hide();
+
+        this.showError(error.error.message);
+      });
+  }
+
+  private closeDialog() {
+    setTimeout(() => {
+      this.dialogRef.close();
+    }, 1000);
   }
 
   private showSuccess(msg: string) {
@@ -114,16 +132,13 @@ export class ManageUserComponent implements OnInit {
       severity: 'success',
       summary: msg,
     });
-    this.spinner.hide();
   }
 
   private showError(error: any) {
     this.messageService.add({
       severity: 'error',
       summary: error,
-      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
-    this.spinner.hide();
   }
 
   onCancel() {
@@ -138,7 +153,6 @@ export class ManageUserComponent implements OnInit {
       !this.isValidValue('lastname') ||
       !this.isValidValue('phone') ||
       (this.userID == null && !this.isValidValue('password'))) {
-      console.log('VALIDATION ERROR');
       setTimeout(() => {
         this.validation = false;
       }, 5000);

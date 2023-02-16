@@ -46,7 +46,6 @@ export class AddSectionComponent implements OnInit {
     return this.values[key] != null && this.values[key] != '';
   }
 
-
   private handleSubmit() {
     this.spinner.show();
 
@@ -57,8 +56,6 @@ export class AddSectionComponent implements OnInit {
 
         const response: IResponse = data;
 
-        if (response.code == 0) return this.showError(response.message);
-
         this.showSuccess(response.message);
 
         setTimeout(() => {
@@ -67,11 +64,7 @@ export class AddSectionComponent implements OnInit {
       }, (error) => {
         this.spinner.hide();
 
-        console.log('ADD SECTION ERROR ////');
-        console.log(error);
-        console.log('ADD SECTION ERROR ////');
-
-        this.showError('დაფიქსირდა შეცდომა');
+        this.showError(error.error.message);
       });
   }
 
@@ -90,7 +83,6 @@ export class AddSectionComponent implements OnInit {
     this.messageService.add({
       severity: 'error',
       summary: error,
-      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
   }
 

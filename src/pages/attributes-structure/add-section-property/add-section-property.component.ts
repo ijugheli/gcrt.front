@@ -86,7 +86,6 @@ export class AddSectionPropertyComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.init();
   }
 
@@ -105,9 +104,6 @@ export class AddSectionPropertyComponent implements OnInit {
 
     return this.sectionProperty[key] != null && this.sectionProperty[key] != '';
   }
-
-
-
 
   public onCancel() {
     this.dialogRef.close();
@@ -136,15 +132,13 @@ export class AddSectionPropertyComponent implements OnInit {
 
         const response: IResponse = data;
 
-        if (response.code == 0) return this.showError(response.message);
-
         this.showSuccess(response.message);
 
         setTimeout(() => this.dialogRef.close(true), 1000);
       }, (error) => {
         this.spinner.hide();
 
-        this.showError('დაფიქსირდა შეცდომა');
+        this.showError(error.error.message);
       });
   }
   private init() {
@@ -171,11 +165,8 @@ export class AddSectionPropertyComponent implements OnInit {
     this.messageService.add({
       severity: 'error',
       summary: error,
-      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
   }
-
-
 
   private validate() {
     return this.isValidValue('title') && this.isValueSelected('input_data_type') && this.isValueSelected('input_view_type');

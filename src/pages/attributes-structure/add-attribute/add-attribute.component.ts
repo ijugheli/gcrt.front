@@ -55,7 +55,6 @@ export class AddAttributeComponent implements OnInit {
     return this.values[key] != null && this.values[key] != '';
   }
 
-
   private handleSubmit() {
     this.values['is_lazy'] = this.values['is_lazy'] ? 1 : 0;
     this.values['status_id'] = this.values['status_id'] ? 1 : 0;
@@ -69,8 +68,6 @@ export class AddAttributeComponent implements OnInit {
 
         const response: IResponse = data;
 
-        if (response.code == 0) return this.showError(response.message);
-
         this.showSuccess(response.message);
 
         setTimeout(() => {
@@ -79,12 +76,7 @@ export class AddAttributeComponent implements OnInit {
       }, (error) => {
         this.spinner.hide();
 
-        console.log('ADD ATTR ERROR ////');
-        console.log(error);
-        console.log('ADD ATTR ERROR ////');
-
-        this.showError('დაფიქსირდა შეცდომა');
-
+        this.showError(error.error.message);
       });
   }
 
@@ -103,7 +95,6 @@ export class AddAttributeComponent implements OnInit {
     this.messageService.add({
       severity: 'error',
       summary: error,
-      detail: 'გთხოვთ სცადოთ განსხვავებული პარამეტრები'
     });
   }
 
@@ -115,7 +106,6 @@ export class AddAttributeComponent implements OnInit {
     this.validation = true;
 
     if (!this.isValidValue('title')) {
-      console.log('VALIDATION ERROR');
       setTimeout(() => {
         this.validation = false;
       }, 2500);
