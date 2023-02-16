@@ -22,7 +22,8 @@ export class ManageUserPermissionsComponent implements OnInit {
     private attributes: AttributesService,
     private userService: UserService,
     private messageService: MessageService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute
+  ) { }
 
   public userID: number = 0;
   public user!: User | null;
@@ -45,14 +46,6 @@ export class ManageUserPermissionsComponent implements OnInit {
     this.userService.saveAttrPermission(this.userID, attrID, { 'permission_type': type, 'permission_value': value }).subscribe((data) => {
       const response: IResponse = data;
 
-      if (response.code == 0) {
-        this.messageService.add({
-          severity: 'error',
-          summary: response.message,
-        });
-        return;
-      }
-
       this.handleAttrUpdate(attrID, response);
 
       this.messageService.add({
@@ -64,7 +57,7 @@ export class ManageUserPermissionsComponent implements OnInit {
 
       this.messageService.add({
         severity: 'error',
-        summary: 'ოპერაციის შესრულებისას მოხდა შეცდომა',
+        summary: error.error.emssage,
       });
     });
   }

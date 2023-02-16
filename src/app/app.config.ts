@@ -95,9 +95,10 @@ export const ACTION_SETTINGS = {
 }
 
 export enum AttrPermissionTypes {
-  UPDATE = 1,
-  DELETE = 2,
-  STRUCTURE = 3,
+  CAN_VIEW = 1,
+  CAN_UPDATE = 2,
+  CAN_DELETE = 3,
+  CAN_EDIT_STRUCTURE = 4,
 }
 
 //DEPRECATED

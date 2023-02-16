@@ -10,16 +10,18 @@
     </div>
   </div>
   <!-- ATTRIBUTE TITLE BLOCK -->
-  <div class="table-container"  *ngIf="!isLoading">
+  <div class="table-container" *ngIf="!isLoading">
 
-    <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true"
-      [rows]="25" currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
-      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="userPermissions"
-      dataKey="id" [tableStyle]="{'min-width': '100%'}">
+    <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+      [paginator]="true" [rows]="25"
+      currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
+      [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+      [value]="userPermissions" dataKey="id" [tableStyle]="{'min-width': '100%'}">
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 3rem"></th>
           <th pSortableColumn="attr_title">დასახელება <p-sortIcon field="attr_title"></p-sortIcon></th>
+          <th>ნახვის უფლება</th>
           <th>ცვლილების უფლება</th>
           <th>წაშლის უფლება</th>
           <th>სტრუქტურის ცვლილების უფლება</th>
@@ -27,10 +29,11 @@
         <tr>
           <th></th>
           <th>
-            <input pInputText type="text" (input)="dataFilter.filter(filters['title'], 'title', 'contains')"
+            <input pInputText type="text" (input)="dataFilter.filter(filters['title'], 'attr_title', 'contains')"
               [(ngModel)]="filters['title']" placeholder="ძიება"
               class="w-full p-inputtext p-component p-element ng-star-inserted">
           </th>
+          <th></th>
           <th></th>
           <th></th>
           <th></th>
@@ -38,19 +41,23 @@
       </ng-template>
       <ng-template pTemplate="body" let-userPermission>
         <tr>
-          <td>
+          <td></td>
           <td>{{userPermission.attr_title}}</td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.update"
-              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.UPDATE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.can_view"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_VIEW,$event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.delete"
-              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.DELETE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.can_update"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_UPDATE, $event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.structure"
-              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.STRUCTURE, $event.checked)"></p-inputSwitch>
+            <p-inputSwitch [(ngModel)]="userPermission.can_delete"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_DELETE, $event.checked)"></p-inputSwitch>
+          </td>
+          <td>
+            <p-inputSwitch [(ngModel)]="userPermission.can_edit_structure"
+              (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_EDIT_STRUCTURE, $event.checked)"></p-inputSwitch>
           </td>
         </tr>
       </ng-template>

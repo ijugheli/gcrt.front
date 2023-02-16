@@ -186,18 +186,20 @@ export class UserAttrPermission {
     public id!: number;
     public user_id!: number | null;
     public attr_id!: number | null;
-    public update: boolean | null = false;
-    public delete: boolean | null = false;
-    public structure: boolean | null = false;
+    public can_view: boolean | null = false;
+    public can_update: boolean | null = false;
+    public can_delete: boolean | null = false;
+    public can_edit_structure: boolean | null = false;
 }
 
 export class MUserPermission {
     public attr_id!: number;
     public attr_title!: string | null;
     public attributeType!: number | null;
-    public update: boolean | null = false;
-    public delete: boolean | null = false;
-    public structure: boolean | null = false;
+    public can_view: boolean | null = false;
+    public can_update: boolean | null = false;
+    public can_delete: boolean | null = false;
+    public can_edit_structure: boolean | null = false;
 
     public static from(attribute: MAttribute, userAttrPermission: UserAttrPermission | null) {
         let permission = new MUserPermission();
@@ -205,9 +207,10 @@ export class MUserPermission {
         permission.attr_id = attribute.id;
         permission.attr_title = attribute.title;
         permission.attributeType = attribute.type;
-        permission.update = userAttrPermission?.update || false;
-        permission.delete = userAttrPermission?.delete || false;
-        permission.structure = userAttrPermission?.structure || false;
+        permission.can_view = userAttrPermission?.can_view || false;
+        permission.can_update = userAttrPermission?.can_update || false;
+        permission.can_delete = userAttrPermission?.can_delete || false;
+        permission.can_edit_structure = userAttrPermission?.can_edit_structure || false;
 
         return permission;
     }

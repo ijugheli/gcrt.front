@@ -50,14 +50,15 @@ export class IUserPermission {
     public id!: number;
     public user_id!: number | null;
     public attr_id!: number | null;
-    public update: boolean | null = false;
-    public delete: boolean | null = false;
-    public structure: boolean | null = false;
+    public can_view: boolean | null = false;
+    public can_update: boolean | null = false;
+    public can_delete: boolean | null = false;
+    public can_edit_structure: boolean | null = false;
 }
 
 export class IResponse {
     public code!: number;
     public message!: string;
-    public data!: Object | null ;
+    public data!: Object | null;
 }
 
