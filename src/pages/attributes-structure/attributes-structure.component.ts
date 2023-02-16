@@ -45,7 +45,6 @@ export class AttributesStructureComponent implements OnInit {
 
   public expandedSection: { [s: string]: boolean; } = {};
   public expandedAttr: { [s: string]: boolean; } = {};
-  public expandedType: { [s: string]: boolean; } = {};
 
   public dataTypesMap: any = {
     1: { name: 'string', id: 1, title: 'ტექსტი' },
