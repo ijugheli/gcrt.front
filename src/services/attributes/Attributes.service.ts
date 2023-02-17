@@ -77,9 +77,11 @@ export class AttributesService extends GuardedService {
             return this.asList();
         }
 
-        this.request((data: any) => {
-            this.saveCache(data);
-            this.parse(data);
+        this.request((response: IResponse) => {
+            const attributes = response.data as IAttribute[];
+
+            this.saveCache(attributes);
+            this.parse(attributes);
             if (onLoad) onLoad();
         });
 
@@ -88,16 +90,18 @@ export class AttributesService extends GuardedService {
 
     public async reload() {
         return new Promise<MAttribute[]>((resolve, reject) => {
-            this.request((data: any) => {
-                this.saveCache(data);
-                this.parse(data);
+            this.request((response: IResponse) => {
+                const attributes = response.data as IAttribute[];
+
+                this.saveCache(attributes);
+                this.parse(attributes);
                 resolve(this.asList());
             });
         });
     }
 
     private async request(f?: Function) {
-        this.http.get<IAttribute[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
+        this.http.get<IResponse[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
             if (f) f(data)
         }, (e) => {
 

@@ -60,5 +60,6 @@ export class IResponse {
     public code!: number;
     public message!: string;
     public data!: Object | null;
+    public refreshToken!: string;
 }
 
