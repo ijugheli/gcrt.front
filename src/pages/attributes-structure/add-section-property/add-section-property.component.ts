@@ -150,8 +150,8 @@ export class AddSectionPropertyComponent implements OnInit {
     this.attrSources = this.dialogConfig.data?.attrSources;
 
     this.sectionProperty['p_id'] = this.property?.id || 0;
-    this.sectionProperty['attr_id'] = this.property?.attr_id || this.attrID;
-    this.attrTitle = this.attrService.get(this.property?.attr_id || this.attrID)?.title!;
+    this.sectionProperty['attr_id'] = this.attrID;
+    this.attrTitle = this.attrService.get(this.attrID)?.title!;
   }
 
   private showSuccess(msg: string) {

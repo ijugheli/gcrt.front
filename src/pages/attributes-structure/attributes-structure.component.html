@@ -24,7 +24,6 @@
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 5rem"></th>
-        <!-- <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th> -->
         <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
         <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th>
         <th>Lazy</th>
@@ -86,8 +85,8 @@
           <!-- Property Add Ends HERE -->
           <p-table [value]="attribute.sections" dataKey="id"
             styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" sortField="property.order_id"
-            sortMode="single" dataKey="title" rowGroupMode="subheader" groupRowsBy="title"
-            rowExpandMode="single" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedSection"
+            sortMode="single" dataKey="title" rowGroupMode="subheader" groupRowsBy="title" rowExpandMode="single"
+            (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedSection"
             (onRowReorder)="onRowReorder($event, attribute.id, attribute.sections)">
             <ng-template pTemplate="header">
       <tr>
@@ -104,7 +103,7 @@
           <span style="font-weight: 300;" class="center-text mr-4">{{section.title}}</span>
           <button (click)="onAddClick(section.property, attribute.id, true)" type="button" class="border-btn">
             <i class="pi pi-plus-circle"></i>
-            დამატება
+            პარამეტრის დამატება
           </button>
         </td>
       </tr>
