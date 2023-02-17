@@ -87,12 +87,16 @@ export class UsersComponent implements OnInit {
 
   private getUsers() {
     this.spinner.show();
-    this.userService.list().subscribe((users) => {
+    this.userService.list().subscribe((response: IResponse) => {
+      const users = response.data as User[];
+
       this.users = users;
-      this.userService.users = this.users;
+      this.userService.users = users;
       this.spinner.hide();
     }, (error) => {
       this.spinner.hide();
+
+      this.showError(error.error.message);
     }, () => {
 
     });

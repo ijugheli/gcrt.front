@@ -30,8 +30,8 @@ export class UserService extends GuardedService {
     super(auth.getToken());
   }
 
-  public list(): Observable<User[]> {
-    return this.http.get<User[]>(this.urls['list'], { headers: this.headers });
+  public list(): Observable<IResponse> {
+    return this.http.get<IResponse>(this.urls['list'], { headers: this.headers });
   }
 
   public details(userID: number): Observable<User> {
