@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AttrPermissionTypes } from 'src/app/app.config';
 import { IResponse, IUserPermission } from 'src/app/app.interfaces';
-import { MUserPermission, User, UserAttrPermission } from 'src/app/app.models';
+import { MUserPermission, User } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { UserService } from 'src/services/user.service';
@@ -29,7 +29,7 @@ export class ManageUserPermissionsComponent implements OnInit {
   public user!: User | null;
   public attributesList: MAttribute[] = [];
   public attrPermissionTypes = AttrPermissionTypes;
-  public initialUserPermissions: MUserPermission[] = []; // for error backup
+  public initialUserPermissions: MUserPermission[] = []; // If we have error we can restore old Data
   public userPermissions: MUserPermission[] = [];
   public isLoading: boolean = false;
   public pageTitle: string = 'წვდომების მართვა';
@@ -53,7 +53,7 @@ export class ManageUserPermissionsComponent implements OnInit {
         summary: response.message,
       });
     }, (error) => {
-      this.userPermissions = this.initialUserPermissions; // restore old data on error
+      this.userPermissions = this.initialUserPermissions; // Assign previous data
 
       this.messageService.add({
         severity: 'error',
@@ -64,20 +64,25 @@ export class ManageUserPermissionsComponent implements OnInit {
 
   private async init() {
     this.isLoading = true;
+
     this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
     this.user = await this.userService.getUser(this.userID);
+
     this.pageTitle = this.pageTitle + ' - ' + this.user.name + ' ' + this.user.lastname;
+
     this.attributesList = this.attributes.asList();
+
     this.parseData();
+
     this.isLoading = false;
   }
 
   private handleAttrUpdate(attrID: number, response: IResponse,) {
-    const attrPermission: UserAttrPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
+    const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
 
-    this.initialUserPermissions = this.userPermissions; // reassign updated data for backup
+    this.initialUserPermissions = this.userPermissions; // assign updated data for backup
 
-    // if permission exists update it
+    // If permission exists update it
     if (attrPermission != null) {
       const index: number | undefined = this.user?.permissions.indexOf(attrPermission);
       this.user!.permissions[index!] = response.data as IUserPermission;
@@ -86,14 +91,14 @@ export class ManageUserPermissionsComponent implements OnInit {
 
     this.user?.permissions.push(response.data as IUserPermission);
 
-    // update user in existing list
+    // Update user in existing list
     const userIndex: number = this.userService.users.indexOf(this.user!);
     this.userService.users[userIndex] = this.user!;
   }
 
   private parseData() {
     for (const attribute of this.attributesList) {
-      const attrPermission: UserAttrPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
+      const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
 
       const permission: MUserPermission = MUserPermission.from(attribute, attrPermission);
 

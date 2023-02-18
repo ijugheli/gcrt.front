@@ -149,7 +149,7 @@ export class AttributesStructureComponent implements OnInit {
   public onRowExpand(event: any) {
     const id = event.data.propertyID?.toString() ?? event.data.id?.toString();
 
-    if (typeof event.data.propertyID != 'undefined' || event.data.title == "მახასიათებლები") {
+    if (typeof event.data.propertyID != 'undefined' || event.data.title == 'მახასიათებლები') {
       this.expandedSection = { [event.data.title]: true };
       return
     }
@@ -187,7 +187,9 @@ export class AttributesStructureComponent implements OnInit {
 
     this.typeID = parseInt(this.route.snapshot.paramMap.get('type_id')!);;
     this.pageTitle = this.pageTitle + ' - ' + this.getAttrTypeName(this.typeID);
+
     await this.initializeAttrList();
+
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));

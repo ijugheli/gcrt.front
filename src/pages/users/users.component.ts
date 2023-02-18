@@ -75,10 +75,10 @@ export class UsersComponent implements OnInit {
 
   public onEdit(userID?: number) {
     this.dialogService.open(ManageUserComponent, {
-      data: { userID: userID != undefined ? userID : null, },
+      data: { userID: typeof userID != 'undefined' ? userID : null, },
       width: '30%',
       position: 'top',
-    });
+    }).onClose.subscribe((data: any) => this.getUsers());
   }
 
   public onPermissions(userID: number) {
@@ -90,9 +90,11 @@ export class UsersComponent implements OnInit {
     this.userService.list().subscribe((response: IResponse) => {
       const users = response.data as User[];
 
+      this.spinner.hide();
+
+
       this.users = users;
       this.userService.users = users;
-      this.spinner.hide();
     }, (error) => {
       this.spinner.hide();
 

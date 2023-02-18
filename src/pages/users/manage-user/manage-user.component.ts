@@ -36,6 +36,7 @@ export class ManageUserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Null if we add new user
     this.userID = parseInt(this.dialogConfig.data?.userID) || null;
 
     this.loadUser();
@@ -88,38 +89,33 @@ export class ManageUserComponent implements OnInit {
   private addUser() {
     this.userService
       .add(this.values)
-      .subscribe((data) => {
-        this.spinner.hide();
-
-        const response: IResponse = data;
-
-        this.showSuccess(response.message);
-
-        this.closeDialog();
-      }, (error) => {
-        this.spinner.hide();
-
-        this.showError(error);
-      });
+      .subscribe(this.handleSuccessResponse, this.handleErrorResponse);
   }
+
 
   private editUser() {
     this.userService
       .edit(this.userID!, this.values)
-      .subscribe((data) => {
-        this.spinner.hide();
+      .subscribe(this.handleSuccessResponse, this.handleErrorResponse);
 
-        const response: IResponse = data;
-
-        this.showSuccess(response.message);
-
-        this.closeDialog();
-      }, (error) => {
-        this.spinner.hide();
-
-        this.showError(error.error.message);
-      });
   }
+
+  private handleSuccessResponse = (data: IResponse) => {
+    const response: IResponse = data;
+
+    this.spinner.hide();
+
+    this.showSuccess(response.message);
+
+    this.closeDialog();
+  }
+
+  private handleErrorResponse = (error: any) => {
+    this.spinner.hide();
+
+    this.showError(error.error.message);
+  }
+
 
   private closeDialog() {
     setTimeout(() => {

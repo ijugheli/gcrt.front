@@ -1,6 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
 import { MAttribute } from "src/services/attributes/models/attribute.model";
 import { DATA_TYPE_ID, VIEW_TYPE_ID } from "./app.config";
+import { IUserPermission } from "./app.interfaces";
 
 
 
@@ -179,17 +180,7 @@ export class User {
     public phone!: string;
     public address!: string;
     public email!: string;
-    public permissions: UserAttrPermission[] = [];
-}
-
-export class UserAttrPermission {
-    public id!: number;
-    public user_id!: number | null;
-    public attr_id!: number | null;
-    public can_view: boolean | null = false;
-    public can_update: boolean | null = false;
-    public can_delete: boolean | null = false;
-    public can_edit_structure: boolean | null = false;
+    public permissions: IUserPermission[] = [];
 }
 
 export class MUserPermission {
@@ -201,7 +192,7 @@ export class MUserPermission {
     public can_delete: boolean | null = false;
     public can_edit_structure: boolean | null = false;
 
-    public static from(attribute: MAttribute, userAttrPermission: UserAttrPermission | null) {
+    public static from(attribute: MAttribute, userAttrPermission: IUserPermission | null) {
         let permission = new MUserPermission();
 
         permission.attr_id = attribute.id;
@@ -222,6 +213,14 @@ export class GuardedService {
     public headers: HttpHeaders;
 
     constructor(token: string) {
+        this.headers = new HttpHeaders({
+            'Content-Type': 'application/json; charset=utf-8',
+            'Authorization': 'Bearer ' + token
+        });
+    }
+
+    // Set new Token for requests
+    public refreshToken(token: string) {
         this.headers = new HttpHeaders({
             'Content-Type': 'application/json; charset=utf-8',
             'Authorization': 'Bearer ' + token
