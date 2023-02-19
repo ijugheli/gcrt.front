@@ -21,7 +21,7 @@ export class InterceptorService implements HttpInterceptor {
             if (event instanceof HttpResponse) {
                 const refreshToken: string | undefined = event.body['refresh_token'];
 
-                if (refreshToken !== undefined) {
+                if (typeof refreshToken !== 'undefined') {
                     const auth = localStorage.getItem('auth');
 
                     this.refreshTokens(refreshToken);

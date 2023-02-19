@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AttrPermissionTypes } from 'src/app/app.config';
-import { IResponse, IUserPermission } from 'src/app/app.interfaces';
+import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { MUserPermission, User } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
@@ -44,7 +44,7 @@ export class ManageUserPermissionsComponent implements OnInit {
 
   public updateAttrPermission(attrID: number, type: AttrPermissionTypes, value: boolean) {
     this.userService.saveAttrPermission(this.userID, attrID, { 'permission_type': type, 'permission_value': value }).subscribe((data) => {
-      const response: IResponse = data;
+      const response: APIResponse<IUserPermission> = data;
 
       this.handleAttrUpdate(attrID, response);
 
@@ -77,7 +77,7 @@ export class ManageUserPermissionsComponent implements OnInit {
     this.isLoading = false;
   }
 
-  private handleAttrUpdate(attrID: number, response: IResponse,) {
+  private handleAttrUpdate(attrID: number, response: APIResponse<IUserPermission>,) {
     const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
 
     this.initialUserPermissions = this.userPermissions; // assign updated data for backup

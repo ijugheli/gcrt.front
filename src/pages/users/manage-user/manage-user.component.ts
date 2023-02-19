@@ -4,7 +4,7 @@ import { UserService } from '../../../services/user.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-manage-user',
@@ -83,7 +83,7 @@ export class ManageUserComponent implements OnInit {
       return;
     }
 
-    this.editUser;
+    this.editUser();
   }
 
   private addUser() {
@@ -100,8 +100,8 @@ export class ManageUserComponent implements OnInit {
 
   }
 
-  private handleSuccessResponse = (data: IResponse) => {
-    const response: IResponse = data;
+  private handleSuccessResponse = (data: APIResponse) => {
+    const response: APIResponse = data;
 
     this.spinner.hide();
 

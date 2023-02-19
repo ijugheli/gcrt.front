@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
@@ -30,8 +30,8 @@ export class UserService extends GuardedService {
     super(auth.getToken());
   }
 
-  public list(): Observable<IResponse> {
-    return this.http.get<IResponse>(this.urls['list'], { headers: this.headers });
+  public list(): Observable<APIResponse<User[]>> {
+    return this.http.get<APIResponse<User[]>>(this.urls['list'], { headers: this.headers });
   }
 
   public details(userID: number): Observable<User> {
@@ -39,11 +39,11 @@ export class UserService extends GuardedService {
   }
 
   public add(values: any) {
-    return this.http.post<IResponse>(this.urls['add'], values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['add'], values, { headers: this.headers });
   }
 
   public edit(userID: number, values: any) {
-    return this.http.post<IResponse>(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
   }
 
   public changePassword(values: any) {
@@ -57,15 +57,15 @@ export class UserService extends GuardedService {
   }
 
   public saveAttrPermission(userID: number, attrID: number, values: any) {
-    return this.http.post<IResponse>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+    return this.http.post<APIResponse<IUserPermission>>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
   }
 
   public updateBooleanColumns(userID: number, values: any) {
-    return this.http.post<IResponse>(this.urls['updateBooleanColumns'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateBooleanColumns'].replace('{user_id}', userID), values, { headers: this.headers });
   }
 
   public updatePassword(data: any) {
-    return this.http.post<IResponse>(this.urls['updatePassword'], data, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updatePassword'], data, { headers: this.headers });
   }
 
   public me() {

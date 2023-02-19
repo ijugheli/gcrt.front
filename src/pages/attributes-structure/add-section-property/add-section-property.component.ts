@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 import { ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MProperty } from 'src/services/attributes/models/property.model';
@@ -130,7 +130,7 @@ export class AddSectionPropertyComponent implements OnInit {
       .subscribe((data) => {
         this.spinner.hide();
 
-        const response: IResponse = data;
+        const response: APIResponse = data;
 
         this.showSuccess(response.message);
 

@@ -4,7 +4,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -55,7 +55,7 @@ export class OTPComponent implements OnInit {
 
     this.authService.validateCode(data).subscribe((data) => {
       this.spinner.hide();
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       if (!response.code) {
         this.showError(response.message);

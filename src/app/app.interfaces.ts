@@ -56,10 +56,10 @@ export class IUserPermission {
     public can_edit_structure: boolean | null = false;
 }
 
-export class IResponse {
+export class APIResponse<T = undefined> {
     public code!: number;
     public message!: string;
-    public data!: Object | null;
+    public data?: T;
     public refreshToken!: string;
 }
 

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_URL } from 'src/app/app.config';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable()
 export class AuthService {
@@ -71,16 +71,16 @@ export class AuthService {
 
   public sendCode(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post<IResponse>(this.urls['sendCode'], info, { headers: headers });
+    return this.http.post<APIResponse>(this.urls['sendCode'], info, { headers: headers });
   }
   public validateCode(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post<IResponse>(this.urls['validateCode'], info, { headers: headers });
+    return this.http.post<APIResponse>(this.urls['validateCode'], info, { headers: headers });
   }
 
   public login(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-    return this.http.post<IResponse>(this.urls['login'], info, { headers: headers });
+    return this.http.post<APIResponse>(this.urls['login'], info, { headers: headers });
   }
 
   public logout() {

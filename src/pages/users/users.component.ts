@@ -6,7 +6,7 @@ import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserComponent } from './manage-user/manage-user.component';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 interface cachedFilter {
   value: string;
   matdhMode?: string;
@@ -52,7 +52,7 @@ export class UsersComponent implements OnInit {
 
   public updateBooleanColumns(user: User, event: any) {
     this.userService.updateBooleanColumns(user.id, { 'status_id': user.status_id, 'otp_enabled': user.otp_enabled }).subscribe((data) => {
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       this.showSuccess(response.message);
     }, (error) => {
@@ -87,11 +87,10 @@ export class UsersComponent implements OnInit {
 
   private getUsers() {
     this.spinner.show();
-    this.userService.list().subscribe((response: IResponse) => {
-      const users = response.data as User[];
+    this.userService.list().subscribe((response: APIResponse<User[]>) => {
+      const users: User[] = response.data!;
 
       this.spinner.hide();
-
 
       this.users = users;
       this.userService.users = users;

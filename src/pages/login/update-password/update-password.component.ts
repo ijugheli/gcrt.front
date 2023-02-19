@@ -6,7 +6,7 @@ import { AuthService } from '../../../services/AuthService.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { validateEmail } from 'src/app/app.func';
 import { UserService } from 'src/services/user.service';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -56,7 +56,7 @@ export class UpdatePasswordComponent implements OnInit {
     this.userService.updatePassword(info).subscribe((data) => {
       this.spinner.hide();
 
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       if (!response.code) {
         this.showError(response.message);
@@ -110,7 +110,7 @@ export class UpdatePasswordComponent implements OnInit {
     let data = { 'code': this.hash, 'email': this.email };
 
     this.authService.validateCode(data).subscribe((data) => {
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       if (!response.code) {
         this.spinner.hide();

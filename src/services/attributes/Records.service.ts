@@ -17,14 +17,7 @@ import { MRecord } from './models/record.model';
 import { AttributesService } from './Attributes.service';
 import { IPropertyValue } from './interfaces/property.value.interface';
 import { IRecord } from './interfaces/record.interface';
-
-
-class APIResponse<T> {
-    public status?: string;
-    public code?: number;
-    public data?: T;
-}
-
+import { APIResponse } from 'src/app/app.interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -100,7 +93,7 @@ export class RecordsService extends GuardedService {
                 for (let record of response.data as IRecord[]) {
                     const generated = this.generateRecord(record.values as IPropertyValue[]);
                     const recordModel = (new MRecord(record.valueID, record.attrID)).append(generated);
-                    if(attribute) recordModel.withAttribute(attribute);
+                    if (attribute) recordModel.withAttribute(attribute);
                     records.push(recordModel);
                 }
 

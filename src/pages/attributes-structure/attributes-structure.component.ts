@@ -3,7 +3,7 @@ import { MAttribute } from '../../services/attributes/models/attribute.model';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { MProperty } from 'src/services/attributes/models/property.model';
 import { MOption } from '../../services/attributes/models/option.model';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 import { MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -119,7 +119,7 @@ export class AttributesStructureComponent implements OnInit {
     newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
 
     this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       this.showSuccess(response.message);
     }, (error) => {
@@ -131,7 +131,7 @@ export class AttributesStructureComponent implements OnInit {
 
   public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false) {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
-      const response = data as IResponse;
+      const response = data as APIResponse;
 
       if (isPrimary) {
         this.attributes.find((i) => i.id === property.attr_id)?.properties.forEach((data) => {

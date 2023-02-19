@@ -4,7 +4,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(info).subscribe((authData) => {
       this.spinner.hide();
-      const response: IResponse = authData;
+      const response: APIResponse = authData;
 
       if (response.code == 0) {
         this.messageService.add({

@@ -13,7 +13,7 @@ import { storageItemExists } from '../../app/app.func';
 import { MAttributeSection } from './models/section.model';
 import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -77,8 +77,8 @@ export class AttributesService extends GuardedService {
             return this.asList();
         }
 
-        this.request((response: IResponse) => {
-            const attributes = response.data as IAttribute[];
+        this.request((response: APIResponse<IAttribute[]>) => {
+            const attributes: IAttribute[] = response.data!;
 
             this.saveCache(attributes);
             this.parse(attributes);
@@ -90,8 +90,8 @@ export class AttributesService extends GuardedService {
 
     public async reload() {
         return new Promise<MAttribute[]>((resolve, reject) => {
-            this.request((response: IResponse) => {
-                const attributes = response.data as IAttribute[];
+            this.request((response: APIResponse<IAttribute[]>) => {
+                const attributes: IAttribute[] = response.data!;
 
                 this.saveCache(attributes);
                 this.parse(attributes);
@@ -101,7 +101,7 @@ export class AttributesService extends GuardedService {
     }
 
     private async request(f?: Function) {
-        this.http.get<IResponse[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
+        this.http.get<APIResponse[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
             if (f) f(data)
         }, (e) => {
 
@@ -156,15 +156,15 @@ export class AttributesService extends GuardedService {
 
     // Individual Requests
     public add(data: any) {
-        return this.http.post<IResponse>(this.urls['addAttr'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addAttr'], data, { headers: this.headers });
     }
 
     public addSection(data: any) {
-        return this.http.post<IResponse>(this.urls['addSection'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addSection'], data, { headers: this.headers });
     }
 
     public addSectionProperty(data: any) {
-        return this.http.post<IResponse>(this.urls['addSectionProperty'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addSectionProperty'], data, { headers: this.headers });
     }
 
     public list() {
@@ -172,15 +172,15 @@ export class AttributesService extends GuardedService {
     }
 
     public delete(attrID: number, values: any) {
-        return this.http.post(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
     }
 
     public related(attrID: number, valueID: number) {
-        return this.http.get<Attribute[]>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
+        return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
     }
 
     public full(attrID: number) {
-        return this.http.get<Attribute[]>(this.urls['full'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+        return this.http.get<APIResponse<Attribute[]>>(this.urls['full'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
     }
 
     public attribute(attrID: number) {
@@ -242,13 +242,13 @@ export class AttributesService extends GuardedService {
     }
 
     public updateAttr(attrID: number, values: any) {
-        return this.http.post<IResponse>(
+        return this.http.post<APIResponse>(
             this.urls['updateAttr'].replace('{attr_id}', attrID.toString()
             ), values, { headers: this.headers });
     }
 
     public updateProperty(propertyID: number, property: MProperty) {
-        return this.http.post<IResponse>(
+        return this.http.post<APIResponse>(
             this.urls['updateProperty'].replace('{property_id}', propertyID.toString()
             ), { 'data': property }, { headers: this.headers });
     }

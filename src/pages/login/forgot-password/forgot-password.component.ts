@@ -5,7 +5,7 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
 import { validateEmail } from 'src/app/app.func';
-import { IResponse } from 'src/app/app.interfaces';
+import { APIResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -49,7 +49,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.spinner.show();
 
     this.authService.sendCode(info).subscribe((data) => {
-      const response: IResponse = data;
+      const response: APIResponse = data;
 
       if (!response.code) {
         this.spinner.hide();
