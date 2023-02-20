@@ -210,13 +210,10 @@ export class MUserPermission {
 
 
 export class GuardedService {
-    public headers: HttpHeaders;
+    public headers!: HttpHeaders;
 
     constructor(token: string) {
-        this.headers = new HttpHeaders({
-            'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': 'Bearer ' + token
-        });
+        this.refreshToken(token);
     }
 
     // Set new Token for requests

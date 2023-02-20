@@ -13,12 +13,18 @@ export class InterceptorService implements HttpInterceptor {
         private userService: UserService,
         private attrService: AttributesService,
         private recordsService: RecordsService
-    ) { }
+    ) {
+        console.log('Interceptor Created');
+    }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+        console.log('Intercept Method Activated');
+        console.log(request);
+        console.log(next);
 
         return next.handle(request).pipe(map((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
+                console.log('Interceptor : HTTP Response');
                 const refreshToken: string | undefined = event.body['refresh_token'];
 
                 if (typeof refreshToken !== 'undefined') {
@@ -36,6 +42,8 @@ export class InterceptorService implements HttpInterceptor {
 
                     return event;
                 }
+            } else {
+                console.log('Interceptor : not HTTP Response');
             }
             return event;
         }));

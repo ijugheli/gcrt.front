@@ -53,11 +53,12 @@ import { ManageObjectModule } from '../modules/manage-object/manage-object.modul
     AttributesStructureModule,
     ManageUserPermissionsModule
   ],
-  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: InterceptorService,
-    multi: true
-  }],
+  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, ],
+  // {
+  //   provide: HTTP_INTERCEPTORS,
+  //   useClass: InterceptorService,
+  //   multi: true
+  // }
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })

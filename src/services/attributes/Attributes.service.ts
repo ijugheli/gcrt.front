@@ -14,6 +14,7 @@ import { MAttributeSection } from './models/section.model';
 import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
 import { APIResponse } from 'src/app/app.interfaces';
+import { of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -71,7 +72,7 @@ export class AttributesService extends GuardedService {
         return storageItemExists(this.cacheKey);
     }
 
-    public load(onLoad?: Function): MAttribute[] {
+    public load(onLoad?: Function) {
         if (this.hasCache()) {
             this.loadCache();
             return this.asList();
