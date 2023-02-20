@@ -128,7 +128,7 @@ export class DataTableComponent implements OnInit {
 
 
   private receiveResponse(response: APIResponse<Attribute[]>) {
-    const attribute: Attribute[]  = response.data!;
+    const attribute: Attribute[] = response.data!;
 
     this.attribute = attribute;
     this.title = this.attribute.title
