@@ -9,9 +9,11 @@ import { UserService } from './user.service';
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
 
-    constructor() {
-
-    }
+    constructor(
+        private userService: UserService,
+        private attrService: AttributesService,
+        private recordsService: RecordsService
+    ) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(request).pipe(map((event: HttpEvent<any>) => {
@@ -21,7 +23,7 @@ export class InterceptorService implements HttpInterceptor {
                 if (typeof refreshToken !== 'undefined') {
                     const auth = localStorage.getItem('auth');
 
-                    // this.refreshTokens(refreshToken);
+                    this.refreshTokens(refreshToken);
 
                     // Update Auth cache
                     if (auth !== null) {
@@ -39,13 +41,9 @@ export class InterceptorService implements HttpInterceptor {
     }
 
     // Set refreshToken for services using guardedService
-    // private refreshTokens(refreshToken: string): void {
-    //     const userService = inject(UserService);
-    //     const attrService = inject(AttributesService);
-    //     const recordsService = inject(RecordsService);
-
-    //     userService.refreshToken(refreshToken);
-    //     attrService.refreshToken(refreshToken);
-    //     recordsService.refreshToken(refreshToken);
-    // }
+    private refreshTokens(refreshToken: string): void {
+        this.userService.refreshToken(refreshToken);
+        this.attrService.refreshToken(refreshToken);
+        this.recordsService.refreshToken(refreshToken);
+    }
 }
