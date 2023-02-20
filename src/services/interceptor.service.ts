@@ -1,5 +1,5 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AttributesService } from './attributes/Attributes.service';
@@ -10,21 +10,13 @@ import { UserService } from './user.service';
 export class InterceptorService implements HttpInterceptor {
 
     constructor(
-        private userService: UserService,
-        private attrService: AttributesService,
-        private recordsService: RecordsService
     ) {
-        console.log('Interceptor Created');
+
     }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        console.log('Intercept Method Activated');
-        console.log(request);
-        console.log(next);
-
         return next.handle(request).pipe(map((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
-                console.log('Interceptor : HTTP Response');
                 const refreshToken: string | undefined = event.body['refresh_token'];
 
                 if (typeof refreshToken !== 'undefined') {
@@ -42,8 +34,6 @@ export class InterceptorService implements HttpInterceptor {
 
                     return event;
                 }
-            } else {
-                console.log('Interceptor : not HTTP Response');
             }
             return event;
         }));
@@ -51,8 +41,12 @@ export class InterceptorService implements HttpInterceptor {
 
     // Set refreshToken for services using guardedService
     private refreshTokens(refreshToken: string): void {
-        this.userService.refreshToken(refreshToken);
-        this.attrService.refreshToken(refreshToken);
-        this.recordsService.refreshToken(refreshToken);
+        const userService = inject(UserService);
+        const attrService = inject(AttributesService);
+        const recordsService = inject(RecordsService);
+
+        userService.refreshToken(refreshToken);
+        attrService.refreshToken(refreshToken);
+        recordsService.refreshToken(refreshToken);
     }
 }

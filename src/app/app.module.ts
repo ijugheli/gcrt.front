@@ -26,6 +26,9 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserPermissionsModule } from 'src/pages/users/manage-permissions/manage-permissions.module';
 import { InterceptorService } from 'src/services/interceptor.service';
 import { ManageObjectModule } from '../modules/manage-object/manage-object.module';
+import { AttributesService } from 'src/services/attributes/Attributes.service';
+import { RecordsService } from 'src/services/attributes/Records.service';
+import { UserService } from 'src/services/user.service';
 
 @NgModule({
   declarations: [
@@ -53,12 +56,13 @@ import { ManageObjectModule } from '../modules/manage-object/manage-object.modul
     AttributesStructureModule,
     ManageUserPermissionsModule
   ],
-  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, ],
-  // {
-  //   provide: HTTP_INTERCEPTORS,
-  //   useClass: InterceptorService,
-  //   multi: true
-  // }
+  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true,
+    }
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
