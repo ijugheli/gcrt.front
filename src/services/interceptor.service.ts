@@ -11,8 +11,8 @@ export class InterceptorService implements HttpInterceptor {
 
     constructor(
         private userService: UserService,
-        private attrService: AttributesService,
-        private recordsService: RecordsService
+        // private attrService: AttributesService,
+        // private recordsService: RecordsService
     ) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -43,7 +43,7 @@ export class InterceptorService implements HttpInterceptor {
     // Set refreshToken for services using guardedService
     private refreshTokens(refreshToken: string): void {
         this.userService.refreshToken(refreshToken);
-        this.attrService.refreshToken(refreshToken);
-        this.recordsService.refreshToken(refreshToken);
+        // this.attrService.refreshToken(refreshToken);
+        // this.recordsService.refreshToken(refreshToken);
     }
 }

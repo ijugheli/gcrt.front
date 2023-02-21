@@ -88,10 +88,8 @@ export class LoginComponent implements OnInit {
       });
 
 
-      setTimeout(() => {
         this.authService.authorize(authData.data);
-        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 200));
-      }, 500);
+        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 500));
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({

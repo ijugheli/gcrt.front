@@ -21,10 +21,9 @@ export class AppComponent {
 
     console.log(activatedRoute.snapshot);
 
-    if (!this.pages.some((page) => page == url)) {
+    if (this.pages.some((page) => url.indexOf(page) > - 1)) {
       this.menuExists = false;
     }
+
   }
-
-
 }

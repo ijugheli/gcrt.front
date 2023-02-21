@@ -50,7 +50,7 @@ export class AttributesService extends GuardedService {
 
     constructor(private http: HttpClient, private auth: AuthService) {
         super(auth.getToken());
-        setTimeout(() => this.load(), 0);
+        this.load();
     }
 
     //Loader/Parser Methods
