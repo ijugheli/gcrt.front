@@ -16,6 +16,7 @@ import { ManageUserPermissionsComponent } from 'src/pages/users/manage-permissio
 import { ForgotPasswordComponent } from 'src/pages/login/forgot-password/forgot-password.component';
 import { UpdatePasswordComponent } from 'src/pages/login/update-password/update-password.component';
 import { OTPComponent } from 'src/pages/login/otp/otp.component';
+import { SurveyComponent } from 'src/pages/survey-page/survey.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'survey', component: SurveyComponent, canActivate: [AuthGuard] },
   {
     path: 'manage/:attr_id',
     component: AttributePageComponent,

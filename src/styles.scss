@@ -391,37 +391,37 @@ input {
     padding: 0px 10px;
 }
 
-input[type=radio] {
-    position: absolute;
-    cursor: pointer;
-}
+// input[type=radio] {
+//     position: absolute;
+//     cursor: pointer;
+// }
 
-input[type="radio"] {
-    position: relative !important;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    outline: none !important;
-    -webkit-appearance: none;
-    cursor: pointer;
-    border: 1px solid #78909C;
-    transition: 0.3s;
-    padding: 0 !important;
-}
+// input[type="radio"] {
+//     position: relative !important;
+//     width: 20px;
+//     height: 20px;
+//     background-color: white;
+//     border-radius: 50%;
+//     outline: none !important;
+//     -webkit-appearance: none;
+//     cursor: pointer;
+//     border: 1px solid #78909C;
+//     transition: 0.3s;
+//     padding: 0 !important;
+// }
 
-input[type="radio"]:before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 12px;
-    height: 12px;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 0.2s;
-    background-color: #46AB44;
-    border-radius: 50%;
-}
+// input[type="radio"]:before {
+//     content: '';
+//     position: absolute;
+//     left: 50%;
+//     top: 50%;
+//     width: 12px;
+//     height: 12px;
+//     transform: translate(-50%, -50%) scale(0);
+//     transition: 0.2s;
+//     background-color: #46AB44;
+//     border-radius: 50%;
+// }
 
 input:checked[type="radio"]:before {
     transform: translate(-50%, -50%) scale(1);

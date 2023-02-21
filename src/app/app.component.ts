@@ -9,11 +9,22 @@ import { ActivatedRoute } from '@angular/router';
 export class AppComponent {
   title = 'project';
   public menuExists: boolean = true;
+  private pages: string[] = [
+    'login',
+    'forgot-password',
+    'update-password',
+    'otp'
+  ];
 
   constructor(private activatedRoute: ActivatedRoute) {
+    const url = window.location.href.toString();
+
     console.log(activatedRoute.snapshot);
-    if (window.location.href.toString().indexOf('login') > -1 || window.location.href.toString().indexOf('forgot-password') > -1 || window.location.href.toString().indexOf('update-password') > -1 || window.location.href.toString().indexOf('otp') > -1) {
+
+    if (!this.pages.some((page) => page == url)) {
       this.menuExists = false;
     }
   }
+
+
 }

@@ -29,6 +29,7 @@ import { ManageObjectModule } from '../modules/manage-object/manage-object.modul
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { RecordsService } from 'src/services/attributes/Records.service';
 import { UserService } from 'src/services/user.service';
+import { SurveyPageModule } from 'src/pages/survey-page/survey.module';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { UserService } from 'src/services/user.service';
     ManageUserModule,
     AppRoutingModule,
     AttributesStructureModule,
-    ManageUserPermissionsModule
+    ManageUserPermissionsModule,
+    SurveyPageModule
   ],
   providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService,
     {
