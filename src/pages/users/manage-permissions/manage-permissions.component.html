@@ -10,13 +10,13 @@
     </div>
   </div>
   <!-- ATTRIBUTE TITLE BLOCK -->
-  <div class="table-container" *ngIf="!isLoading">
+  <ng-container *ngIf="!isLoading">
 
     <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
       [paginator]="true" [rows]="25"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
       [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"
-      [value]="userPermissions" dataKey="id" [tableStyle]="{'min-width': '100%'}">
+      [value]="filteredData" dataKey="id" [tableStyle]="{'min-width': '100%', 'min-height' : '200px'}">
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 3rem"></th>
@@ -27,7 +27,12 @@
           <th>სტრუქტურის ცვლილების უფლება</th>
         </tr>
         <tr>
-          <th></th>
+          <th>
+            <p-multiSelect [options]="attrTypeFilter" [(ngModel)]="selectedTypes" filterBy="attr_type"
+              (onChange)="filterTable($event)" optionLabel="name" selectedItemsLabel="{0} აქტიური ველი"
+              [style]="{minWidth: '230px'}" [maxSelectedLabels]="1" placeholder="აქტიური ველები" [showHeader]="false">
+            </p-multiSelect>
+          </th>
           <th>
             <input pInputText type="text" (input)="dataFilter.filter(filters['title'], 'attr_title', 'contains')"
               [(ngModel)]="filters['title']" placeholder="ძიება"
@@ -62,5 +67,5 @@
         </tr>
       </ng-template>
     </p-table>
-  </div>
+  </ng-container>
 </section>

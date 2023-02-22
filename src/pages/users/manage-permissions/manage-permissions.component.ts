@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { AttrPermissionTypes } from 'src/app/app.config';
+import { AttrPermissionTypes, ATTR_TYPES_IDS_NAME } from 'src/app/app.config';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { MUserPermission, User } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
@@ -26,11 +26,14 @@ export class ManageUserPermissionsComponent implements OnInit {
   ) { }
 
   public userID: number = 0;
+  public selectedTypes: any;
   public user!: User | null;
   public attributesList: MAttribute[] = [];
+  public attrTypeFilter: any;
   public attrPermissionTypes = AttrPermissionTypes;
   public initialUserPermissions: MUserPermission[] = []; // If we have error we can restore old Data
   public userPermissions: MUserPermission[] = [];
+  public filteredData: MUserPermission[] = [];
   public isLoading: boolean = false;
   public pageTitle: string = 'წვდომების მართვა';
 
@@ -39,6 +42,8 @@ export class ManageUserPermissionsComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.attrTypeFilter = Array.from(ATTR_TYPES_IDS_NAME).map((item) => { return { type: item[0], name: item[1] } });
+    console.log(this.attrTypeFilter);
     this.init();
   }
 
@@ -60,6 +65,12 @@ export class ManageUserPermissionsComponent implements OnInit {
         summary: error.error.emssage,
       });
     });
+  }
+
+  public filterTable(event: any) {
+    const ids = this.selectedTypes.map((i: any) => i.type);
+
+    this.filteredData = this.userPermissions.filter((i) => ids.length > 0 ? ids.includes(i.attributeType) : i);
   }
 
   private async init() {
@@ -104,5 +115,7 @@ export class ManageUserPermissionsComponent implements OnInit {
 
       this.userPermissions.push(permission);
     }
+
+    this.filteredData = this.userPermissions;
   }
 }
