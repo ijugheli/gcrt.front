@@ -55,30 +55,17 @@ export class OTPComponent implements OnInit {
 
     this.spinner.show();
 
+    // TO-DO handle redirect on error
     this.authService.validateCode(data).subscribe((data) => {
       this.spinner.hide();
       const response: APIResponse = data;
 
-      if (!response.code) {
-        this.showError(response.message);
-
-        setTimeout(function () {
-          window.location.href = '/login';
-        }, 1000);
-      }
-
-      if (response.code == 1) {
-        this.showSuccess(response.message);
-        this.authService.authorize(response.data);
-        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 500));
-      }
-
+      this.showSuccess(response.message);
+      this.authService.authorize(response.data);
+      this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 500));
     }, (error) => {
       this.spinner.hide();
-      this.showError('დაფიქსირდა შეცდომა');
-      setTimeout(function () {
-        window.location.href = '/login';
-      }, 1000);
+      this.showError(error.error.message);
     }, () => {
       this.spinner.hide();
     });
