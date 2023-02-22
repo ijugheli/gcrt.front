@@ -4,6 +4,19 @@ import { IActionItem, IMenuItem } from "./app.interfaces";
 export const API_URL = 'http://localhost:8000';
 // export const API_URL = 'https://gcrt.live/api';
 
+export const ACTION_TYPES: Map<number, string> = new Map([
+  [1, 'RECOVER_PASSWORD'],
+  [2, 'OTP']
+]);
+export const VALIDATION_TYPES: Map<number, string> = new Map([
+  [1, 'EMAIL'],
+  [2, 'PHONE']
+]);
+export const ACTION_TYPE_TITLES = reverseMap(ACTION_TYPES);
+export const VALIDATION_TYPE_TITLES = reverseMap(VALIDATION_TYPES);
+export const ACTION_TYPE_ID = (title: string) => ACTION_TYPE_TITLES.get(title);
+export const VALIDATION_TYPE_ID = (title: string) => VALIDATION_TYPE_TITLES.get(title);
+
 export const VIEW_TYPES: Map<number, string> = new Map([
   [1, 'input'],
   [2, 'textarea'],

@@ -16,7 +16,6 @@ import { APIResponse } from 'src/app/app.interfaces';
   providers: [InputTextModule, MessageService]
 })
 export class UpdatePasswordComponent implements OnInit {
-  public email!: string | null;
   public hash!: string | null;
   public password: string = '';
   public password_confirmation: string = '';
@@ -48,12 +47,13 @@ export class UpdatePasswordComponent implements OnInit {
     }
 
     let info = {
-      'email': this.email,
+      'email': this.authService.getOTPEmail(),
       'password': this.password,
       'password_confirmation': this.password_confirmation,
     };
 
     this.userService.updatePassword(info).subscribe((data) => {
+      this.authService.removeOTPEmail();
       this.spinner.hide();
 
       const response: APIResponse = data;
@@ -95,9 +95,8 @@ export class UpdatePasswordComponent implements OnInit {
     this.route.queryParams
       .subscribe(params => {
         this.hash = params['hash'];
-        this.email = params['email'];
 
-        if (this.hash === undefined || this.email === undefined) {
+        if (this.hash === undefined) {
           this.showError('ლინკი არავალიდურია');
           setTimeout(function () {
             window.location.href = '/login';
@@ -107,13 +106,15 @@ export class UpdatePasswordComponent implements OnInit {
       }
       );
 
-    let data = { 'code': this.hash, 'email': this.email };
+    let data = { 'code': this.hash };
 
     this.authService.validateCode(data).subscribe((data) => {
+
+      this.spinner.hide();
+
       const response: APIResponse = data;
 
       if (!response.code) {
-        this.spinner.hide();
         this.showError(response.message);
 
         setTimeout(function () {
@@ -123,7 +124,7 @@ export class UpdatePasswordComponent implements OnInit {
 
     }, (error) => {
       this.spinner.hide();
-      this.showError('დაფიქსირდა შეცდომა');
+      this.showError(error.error.message);
       setTimeout(function () {
         window.location.href = '/login';
       }, 1000);

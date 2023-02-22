@@ -46,9 +46,11 @@ export class AuthService {
   public getOTPEmail() {
     const email: string | null = localStorage.getItem('otp');
 
-    localStorage.removeItem('otp');
-
     return email;
+  }
+
+  public removeOTPEmail() {
+    localStorage.removeItem('otp');
   }
 
   public storeOTPEmail(data: string) {

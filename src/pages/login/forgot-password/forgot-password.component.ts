@@ -6,6 +6,7 @@ import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
 import { validateEmail } from 'src/app/app.func';
 import { APIResponse } from 'src/app/app.interfaces';
+import { ACTION_TYPE_ID, VALIDATION_TYPE_ID } from 'src/app/app.config';
 
 
 @Component({
@@ -44,15 +45,18 @@ export class ForgotPasswordComponent implements OnInit {
 
     let info = {
       'email': this.email,
+      'actionType': ACTION_TYPE_ID('RECOVER_PASSWORD'),
+      'validationType': VALIDATION_TYPE_ID('EMAIL'),
     };
 
     this.spinner.show();
 
     this.authService.sendCode(info).subscribe((data) => {
+      this.authService.storeOTPEmail(this.email);
+      this.spinner.hide();
       const response: APIResponse = data;
 
       if (!response.code) {
-        this.spinner.hide();
         this.showError(response.message);
         return;
       }
@@ -63,9 +67,8 @@ export class ForgotPasswordComponent implements OnInit {
         window.location.href = '/login';
       }, 1000);
     }, (error) => {
-      console.log(error);
       this.spinner.hide();
-      this.showError('დაფიქსირდა შეცოდმა');
+      this.showError(error.error.message);
     }, () => {
       this.spinner.hide();
     });
