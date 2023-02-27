@@ -1,4 +1,5 @@
 <p-toast position="top-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 <section>
   <ng-container>
@@ -21,22 +22,26 @@
     currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
     [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll" [value]="attributes"
     dataKey="id" (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedAttr" rowExpandMode="single">
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-attr>
       <tr>
         <th style="width: 5rem"></th>
         <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
         <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th>
         <th>Lazy</th>
         <th>სტატუსი</th>
+        <th></th>
       </tr>
       <tr>
-        <th></th>
+        <th> <button pButton class="p-button-outlined" icon="pi pi-plus" label="დამატება"
+            (click)="onAddAttrClick(attributes[0].type)">
+          </button></th>
         <th></th>
         <th>
           <input pInputText type="text" (input)="attrFilter.filter(filters['title'], 'title', 'contains')"
             [(ngModel)]="filters['title']" placeholder="ძიება"
             class="w-full p-inputtext p-component p-element ng-star-inserted">
         </th>
+        <th></th>
         <th></th>
         <th></th>
       </tr>
@@ -69,11 +74,16 @@
           <p-inputSwitch [(ngModel)]="attribute.status"
             (onChange)="updateAttr(attribute,  $event.checked,false)"></p-inputSwitch>
         </td>
+        <td>
+          <button type="button" (click)="onDeleteAttr(attribute.id)" class="icon-border-btn">
+            <i class="pi pi-trash"></i>
+          </button>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="rowexpansion" let-attribute>
       <tr>
-        <td colspan="6">
+        <td colspan="7">
           <button (click)="onAddClick(null,attribute.id, false)" type="button" class="border-btn"
             style="margin-bottom: 10px;">
             <i class="pi pi-plus-circle"></i>

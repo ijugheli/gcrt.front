@@ -43,9 +43,11 @@ export class AttributesService extends GuardedService {
         'updateAttr': API_URL + '/attrs/{attr_id}/update',
         'updateProperty': API_URL + '/attrs/properties/{property_id}/update',
         'addAttr': API_URL + '/attrs/add',
-        'addSection': API_URL + '/attrs/add-section',
-        'addSectionProperty': API_URL + '/attrs/add-section-property',
+        'removeAttr': API_URL + '/attrs/{attr_id}',
+        'addSection': API_URL + '/attrs/properties/add-section',
+        'addSectionProperty': API_URL + '/attrs/properties/add-section-property',
         'addProperty': API_URL + '/attrs/{attr_id}/properties/add',
+        'removeProperty': API_URL + '/attrs/properties/{property_id}',
     };
 
     constructor(private http: HttpClient, private auth: AuthService) {
@@ -166,6 +168,14 @@ export class AttributesService extends GuardedService {
 
     public addSectionProperty(data: any) {
         return this.http.post<APIResponse>(this.urls['addSectionProperty'], data, { headers: this.headers });
+    }
+
+    public removeAttribute(attrID: number) {
+        return this.http.delete<APIResponse>(this.urls['removeAttr'].replace('{attr_id}', attrID), { headers: this.headers });
+    }
+
+    public removeProperty(propertyID: number) {
+        return this.http.delete<APIResponse>(this.urls['removeProperty'].replace('{ }', propertyID), { headers: this.headers });
     }
 
     public list() {

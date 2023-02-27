@@ -9,12 +9,14 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
 import { SurveyComponent } from './survey.component';
 import { SurveyModule } from 'survey-angular-ui';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
     declarations: [SurveyComponent],
     imports: [
         CommonModule,
-        SurveyModule
+        SurveyModule,
+        NgxSpinnerModule,
     ]
 })
 export class SurveyPageModule { }

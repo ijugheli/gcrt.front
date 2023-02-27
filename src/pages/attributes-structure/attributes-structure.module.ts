@@ -20,6 +20,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { PanelModule } from 'primeng/panel';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
     declarations: [AttributesStructureComponent, AddAttributeComponent, AddSectionComponent, AddSectionPropertyComponent],
@@ -32,6 +33,7 @@ import { AddSectionPropertyComponent } from './add-section-property/add-section-
         ButtonModule,
         ToastModule,
         ReactiveFormsModule,
+        ConfirmDialogModule,
         DropdownModule,
         DataTableModule,
         InputTextModule,

@@ -4,7 +4,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { MProperty } from 'src/services/attributes/models/property.model';
 import { MOption } from '../../services/attributes/models/option.model';
 import { APIResponse } from 'src/app/app.interfaces';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddAttributeComponent } from './add-attribute/add-attribute.component';
@@ -81,6 +81,7 @@ export class AttributesStructureComponent implements OnInit {
     private messageService: MessageService,
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
+    private confirmationService: ConfirmationService,
     private route: ActivatedRoute
   ) { }
 
@@ -116,7 +117,7 @@ export class AttributesStructureComponent implements OnInit {
 
     let newAttr = { ...attr };
 
-    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = [];
+    newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = newAttr.options = [];
 
     this.attributesService.updateAttr(attr.id, { 'data': newAttr }).subscribe((data) => {
       const response: APIResponse = data;
@@ -131,7 +132,7 @@ export class AttributesStructureComponent implements OnInit {
 
   public updateProperty(property: MProperty, fieldName: any, isPrimary: boolean = false) {
     this.attributesService.updateProperty(property.id, property).subscribe((data) => {
-      const response = data as APIResponse;
+      const response: APIResponse = data;
 
       if (isPrimary) {
         this.attributes.find((i) => i.id === property.attr_id)?.properties.forEach((data) => {
@@ -144,6 +145,47 @@ export class AttributesStructureComponent implements OnInit {
     }, (error) => {
       this.showError(error.error.message);
     })
+  }
+
+  public onDeleteAttr(attrID: number) {
+    this.confirmationService.confirm({
+      header: 'ატრიბუტის წაშლა',
+      acceptLabel: 'კი',
+      rejectLabel: 'გაუქმება',
+      message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ატრიბუტის წაშლა?',
+      accept: () => {
+        this.attributesService.removeAttribute(attrID).subscribe((data) => {
+          const response: APIResponse = data;
+
+          this.attributes.splice(this.attributes.findIndex((i) => i.id === attrID), 1);
+
+          this.showSuccess(response.message);
+        }, (error) => {
+          this.showError(error.error.message);
+        });
+      }, reject: () => {
+      }
+    });
+  }
+
+  public onDeleteProperty(propertyID: number, type: number) {
+    const title = type == 1 ? 'პარამეტრის' : 'სექციის';
+    this.confirmationService.confirm({
+      header: title + 'წაშლა',
+      acceptLabel: 'კი',
+      rejectLabel: 'გაუქმება',
+      message: `დარწმუნებული ხართ რომ გსურთ არჩეული ${title} წაშლა?`,
+      accept: () => {
+        this.attributesService.removeProperty(propertyID).subscribe((data) => {
+          const response: APIResponse = data;
+
+          this.showSuccess(response.message);
+        }, (error) => {
+          this.showError(error.error.message);
+        });
+      }, reject: () => {
+      }
+    });
   }
 
   public onRowExpand(event: any) {

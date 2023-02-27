@@ -43,7 +43,6 @@ export class ManageUserPermissionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.attrTypeFilter = Array.from(ATTR_TYPES_IDS_NAME).map((item) => { return { type: item[0], name: item[1] } });
-    console.log(this.attrTypeFilter);
     this.init();
   }
 

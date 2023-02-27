@@ -60,6 +60,7 @@ export class APIResponse<T = undefined> {
     public code!: number;
     public message!: string;
     public data?: T;
+    public elements?: Object;
     public refreshToken!: string;
 }
 

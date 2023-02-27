@@ -15,14 +15,14 @@ export class UserService extends GuardedService {
   public users: User[] = [];
 
   public urls: any = {
-    'list': API_URL + '/user/list',
+    'list': API_URL + ' /list',
     'add': API_URL + '/user/add',
     'edit': API_URL + '/user/edit/{user_id}',
     'details': API_URL + '/user/{user_id}',
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
-    'saveAttrPermission': API_URL + '/user/permissions/add/{user_id}/{attr_id}',
-    'updateBooleanColumns': API_URL + '/user/update-boolean-columns/{user_id}',
+    'updatePermission': API_URL + '/user/permissions{user_id}/{attr_id}',
+    'updateBooleanProperties': API_URL + '/user/update-boolean-properties/{user_id}',
     'updatePassword': API_URL + '/user/update-password',
   };
 

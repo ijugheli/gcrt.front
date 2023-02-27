@@ -12,8 +12,8 @@ export class AuthService {
     'refresh': API_URL + '/user/refresh',
     'profile': API_URL + '/user/profile',
     'list': API_URL + '/user/list',
-    'sendCode': API_URL + '/user/send-recovery-link',
-    'validateCode': API_URL + '/user/validate-recovery-link',
+    'sendCode': API_URL + '/user/send-code',
+    'validateCode': API_URL + '/user/validate-code',
   };
 
   constructor(private http: HttpClient) {
