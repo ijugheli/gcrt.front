@@ -49,15 +49,15 @@
           <td></td>
           <td>{{userPermission.attr_title}}</td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.can_view"
+            <p-inputSwitch [(ngModel)]="userPermission.can_view" 
               (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_VIEW,$event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.can_update"
+            <p-inputSwitch [disabled]="!userPermission.can_view" [(ngModel)]="userPermission.can_update"
               (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_UPDATE, $event.checked)"></p-inputSwitch>
           </td>
           <td>
-            <p-inputSwitch [(ngModel)]="userPermission.can_delete"
+            <p-inputSwitch [disabled]="!userPermission.can_view" [(ngModel)]="userPermission.can_delete"
               (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_DELETE, $event.checked)"></p-inputSwitch>
           </td>
           <td>

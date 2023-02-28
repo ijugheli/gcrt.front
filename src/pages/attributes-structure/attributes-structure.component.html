@@ -71,7 +71,7 @@
             (onChange)="updateAttr(attribute,  $event.checked, true)"></p-inputSwitch>
         </td>
         <td>
-          <p-inputSwitch [(ngModel)]="attribute.status"
+          <p-inputSwitch [(ngModel)]="attribute.status_id"
             (onChange)="updateAttr(attribute,  $event.checked,false)"></p-inputSwitch>
         </td>
         <td>
@@ -132,6 +132,7 @@
             <th>აუცილებელი</th>
             <th>ფილტრაცია</th>
             <th>მთავარი</th>
+            <th></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-property let-index="rowIndex">
@@ -172,6 +173,11 @@
             <td>
               <p-inputSwitch [(ngModel)]="property.is_primary"
                 (onChange)="updateProperty(property, $event, property.is_primary)"></p-inputSwitch>
+            </td>
+            <td>
+              <button type="button" (click)="onDeleteProperty(property.id, 1, attribute.id)" class="icon-border-btn">
+                <i class="pi pi-trash"></i>
+              </button>
             </td>
           </tr>
         </ng-template>

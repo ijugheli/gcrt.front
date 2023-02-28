@@ -126,7 +126,7 @@ export class AddSectionPropertyComponent implements OnInit {
     this.spinner.show();
 
     this.attrService
-      .addSectionProperty(this.sectionProperty)
+      .addProperty(this.sectionProperty)
       .subscribe((data) => {
         this.spinner.hide();
 

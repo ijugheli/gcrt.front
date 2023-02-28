@@ -168,8 +168,10 @@ export class AttributesStructureComponent implements OnInit {
     });
   }
 
-  public onDeleteProperty(propertyID: number, type: number) {
+  public onDeleteProperty(propertyID: number, type: number, attrID: number) {
     const title = type == 1 ? 'პარამეტრის' : 'სექციის';
+    const attr = this.attributesService.attributes.get(attrID);
+
     this.confirmationService.confirm({
       header: title + 'წაშლა',
       acceptLabel: 'კი',
@@ -179,6 +181,14 @@ export class AttributesStructureComponent implements OnInit {
         this.attributesService.removeProperty(propertyID).subscribe((data) => {
           const response: APIResponse = data;
 
+          type == 1
+            ? attr?.sections.forEach((section) => {
+              section.properties.splice(section.properties.findIndex((i) => i.id === propertyID), 1);
+            })
+            : attr?.sections.splice(attr?.sections.findIndex((i) => i.propertyID == propertyID), 1);
+
+          this.attributes = this.attributesService.asList();
+          
           this.showSuccess(response.message);
         }, (error) => {
           this.showError(error.error.message);
@@ -235,6 +245,8 @@ export class AttributesStructureComponent implements OnInit {
     this.initializeDataTypes();
     this.initializeViewTypes();
     this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+
+    console.log(this.attributes);
 
     this.isLoading = false;
     this.spinner.hide();

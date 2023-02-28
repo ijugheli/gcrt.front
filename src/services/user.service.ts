@@ -15,13 +15,13 @@ export class UserService extends GuardedService {
   public users: User[] = [];
 
   public urls: any = {
-    'list': API_URL + ' /list',
+    'list': API_URL + '/user/list',
     'add': API_URL + '/user/add',
     'edit': API_URL + '/user/edit/{user_id}',
     'details': API_URL + '/user/{user_id}',
     'changePassword': API_URL + '/user/changePassword',
     'delete': API_URL + '/user/{user_id}',
-    'updatePermission': API_URL + '/user/permissions{user_id}/{attr_id}',
+    'updatePermission': API_URL + '/user/permissions/{user_id}/{attr_id}',
     'updateBooleanProperties': API_URL + '/user/update-boolean-properties/{user_id}',
     'updatePassword': API_URL + '/user/update-password',
   };
@@ -57,7 +57,7 @@ export class UserService extends GuardedService {
   }
 
   public saveAttrPermission(userID: number, attrID: number, values: any) {
-    return this.http.post<APIResponse<IUserPermission>>(this.urls['saveAttrPermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+    return this.http.post<APIResponse<IUserPermission>>(this.urls['updatePermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
   }
 
   public updateBooleanColumns(userID: number, values: any) {

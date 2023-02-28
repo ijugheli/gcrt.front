@@ -47,10 +47,15 @@ export class ManageUserPermissionsComponent implements OnInit {
   }
 
   public updateAttrPermission(attrID: number, type: AttrPermissionTypes, value: boolean) {
+    const attrPermission: MUserPermission | null = this.userPermissions.find((permission) => permission.attr_id == attrID) || null;
+
+    if (attrPermission?.can_view == false) {
+      attrPermission.can_update = false;
+      attrPermission.can_delete = false;
+    }
+
     this.userService.saveAttrPermission(this.userID, attrID, { 'permission_type': type, 'permission_value': value }).subscribe((data) => {
       const response: APIResponse<IUserPermission> = data;
-
-      this.handleAttrUpdate(attrID, response);
 
       this.messageService.add({
         severity: 'success',
@@ -85,25 +90,6 @@ export class ManageUserPermissionsComponent implements OnInit {
     this.parseData();
 
     this.isLoading = false;
-  }
-
-  private handleAttrUpdate(attrID: number, response: APIResponse<IUserPermission>,) {
-    const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attrID) || null;
-
-    this.initialUserPermissions = this.userPermissions; // assign updated data for backup
-
-    // If permission exists update it
-    if (attrPermission != null) {
-      const index: number | undefined = this.user?.permissions.indexOf(attrPermission);
-      this.user!.permissions[index!] = response.data as IUserPermission;
-      return;
-    }
-
-    this.user?.permissions.push(response.data as IUserPermission);
-
-    // Update user in existing list
-    const userIndex: number = this.userService.users.indexOf(this.user!);
-    this.userService.users[userIndex] = this.user!;
   }
 
   private parseData() {

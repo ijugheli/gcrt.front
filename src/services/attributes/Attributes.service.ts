@@ -45,8 +45,7 @@ export class AttributesService extends GuardedService {
         'addAttr': API_URL + '/attrs/add',
         'removeAttr': API_URL + '/attrs/{attr_id}',
         'addSection': API_URL + '/attrs/properties/add-section',
-        'addSectionProperty': API_URL + '/attrs/properties/add-section-property',
-        'addProperty': API_URL + '/attrs/{attr_id}/properties/add',
+        'addProperty': API_URL + '/attrs/properties/add-property',
         'removeProperty': API_URL + '/attrs/properties/{property_id}',
     };
 
@@ -166,8 +165,8 @@ export class AttributesService extends GuardedService {
         return this.http.post<APIResponse>(this.urls['addSection'], data, { headers: this.headers });
     }
 
-    public addSectionProperty(data: any) {
-        return this.http.post<APIResponse>(this.urls['addSectionProperty'], data, { headers: this.headers });
+    public addProperty(data: any) {
+        return this.http.post<APIResponse>(this.urls['addProperty'], data, { headers: this.headers });
     }
 
     public removeAttribute(attrID: number) {
@@ -175,7 +174,7 @@ export class AttributesService extends GuardedService {
     }
 
     public removeProperty(propertyID: number) {
-        return this.http.delete<APIResponse>(this.urls['removeProperty'].replace('{ }', propertyID), { headers: this.headers });
+        return this.http.delete<APIResponse>(this.urls['removeProperty'].replace('{property_id}', propertyID), { headers: this.headers });
     }
 
     public list() {
@@ -228,17 +227,6 @@ export class AttributesService extends GuardedService {
 
     public editValueItem(values: any) {
         return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
-    }
-
-    public addProperty(attrID: number, values: any, func?: Function) {
-        this.http.post(
-            this.urls['addProperty'].replace('{attr_id}', attrID.toString()
-            ), values, { headers: this.headers }).subscribe((response) => {
-
-                this.request();
-                if (func)
-                    func(response);
-            });
     }
 
     public reorderProperties(attrID: number, values: any, func?: Function) {
