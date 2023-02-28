@@ -17,6 +17,7 @@ import { ForgotPasswordComponent } from 'src/pages/login/forgot-password/forgot-
 import { UpdatePasswordComponent } from 'src/pages/login/update-password/update-password.component';
 import { OTPComponent } from 'src/pages/login/otp/otp.component';
 import { SurveyComponent } from 'src/pages/survey-page/survey.component';
+import { UserReportComponent } from 'src/pages/reports/users/user-report.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -47,6 +48,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
+  { path: 'reports/users', component: UserReportComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'users/add', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'users/edit/:user_id', component: ManageUserComponent, canActivate: [AuthGuard] },
