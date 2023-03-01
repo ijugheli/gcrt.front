@@ -9,7 +9,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DividerModule } from 'primeng/divider';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-import { UserReportComponent } from './users/user-report.component';
+import { UserReportComponent } from '../users/users/user-report.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -23,6 +23,6 @@ import { UserReportComponent } from './users/user-report.component';
     MenuModule,
     CheckboxModule,
   ],
-  declarations: [ReportsComponent, UserReportComponent]
+  declarations: [ReportsComponent]
 })
 export class ReportsModule { }

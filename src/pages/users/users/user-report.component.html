@@ -1,0 +1,46 @@
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<section>
+    <div class="surface-section heading-section">
+        <div class="border-bottom-1 surface-border">
+            <div class="heading-section-title font-medium align-items-center">
+                <span>აქტივობის გვერდი</span>
+            </div>
+        </div>
+    </div>
+    <ng-container>
+        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.3)" type="ball-scale-multiple"
+            [fullScreen]="false">
+            <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
+        </ngx-spinner>
+    </ng-container>
+    <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" dataKey="id" sortField="email"
+        [value]="data">
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th>ტიპი</th>
+                <th>ატრიბუტის დასახელება</th>
+                <th>პარამეტრის დასახელება</th>
+                <th>ჩანაწერის დასახელება</th>
+                <th>თარიღი</th>
+            </tr>
+            <!-- <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr> -->
+        </ng-template>
+        <ng-template pTemplate="body" let-action>
+            <tr>
+                <td></td>
+                <td>{{action.title}}</td>
+                <td>{{action.attrTitle}}</td>
+                <td>{{action.propertyTitle}}</td>
+                <td>{{action.recordTitle}}</td>
+                <td>{{action.createdAt | date: 'M/d/yy H:mm'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</section>

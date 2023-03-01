@@ -17,7 +17,7 @@ import { ForgotPasswordComponent } from 'src/pages/login/forgot-password/forgot-
 import { UpdatePasswordComponent } from 'src/pages/login/update-password/update-password.component';
 import { OTPComponent } from 'src/pages/login/otp/otp.component';
 import { SurveyComponent } from 'src/pages/survey-page/survey.component';
-import { UserReportComponent } from 'src/pages/reports/users/user-report.component';
+import { UserReportComponent } from 'src/pages/users/users/user-report.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },

@@ -15,15 +15,16 @@ export class UserService extends GuardedService {
   public users: User[] = [];
 
   public urls: any = {
-    'list': API_URL + '/user/list',
-    'add': API_URL + '/user/add',
-    'edit': API_URL + '/user/edit/{user_id}',
-    'details': API_URL + '/user/{user_id}',
-    'changePassword': API_URL + '/user/changePassword',
-    'delete': API_URL + '/user/{user_id}',
-    'updatePermission': API_URL + '/user/permissions/{user_id}/{attr_id}',
-    'updateBooleanProperties': API_URL + '/user/update-boolean-properties/{user_id}',
-    'updatePassword': API_URL + '/user/update-password',
+    'list': API_URL + '/users/list',
+    'add': API_URL + '/users/add',
+    'edit': API_URL + '/users/edit/{user_id}',
+    'details': API_URL + '/users/{user_id}',
+    'changePassword': API_URL + '/users/changePassword',
+    'delete': API_URL + '/users/{user_id}',
+    'updatePermission': API_URL + '/users/permissions/{user_id}/{attr_id}',
+    'updateBooleanProperties': API_URL + '/users/update-boolean-properties/{user_id}',
+    'updatePassword': API_URL + '/users/update-password',
+    'getReport': API_URL + '/user/report',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
@@ -44,6 +45,10 @@ export class UserService extends GuardedService {
 
   public edit(userID: number, values: any) {
     return this.http.post<APIResponse>(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
+  }
+
+  public getReport() {
+    return this.http.get(this.urls['getReport'], { headers: this.headers });
   }
 
   public changePassword(values: any) {

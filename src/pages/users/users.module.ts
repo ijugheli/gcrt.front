@@ -12,6 +12,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { UserReportComponent } from './users/user-report.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,6 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     InputTextModule
   ],
   providers: [ConfirmationService],
-  declarations: [UsersComponent]
+  declarations: [UsersComponent, UserReportComponent]
 })
 export class UsersModule { }

@@ -182,6 +182,14 @@ export class User {
     public email!: string;
     public permissions: IUserPermission[] = [];
 }
+export class MAction {
+    public id!: number;
+    public title!: string;
+    public attrTitle!: string;
+    public propertyTitle!: string;
+    public recordTitle!: string;
+    public createdAt!: number;
+}
 
 export class MUserPermission {
     public attr_id!: number;
