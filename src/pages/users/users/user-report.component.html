@@ -1,11 +1,10 @@
-<p-toast position="top-right"></p-toast>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 <section>
     <div class="surface-section heading-section">
         <div class="border-bottom-1 surface-border">
             <div class="heading-section-title font-medium align-items-center">
-                <span>აქტივობის გვერდი</span>
+                <span>პირადი აქტივობის გვერდი</span>
             </div>
         </div>
     </div>
@@ -15,27 +14,22 @@
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" dataKey="id" sortField="email"
-        [value]="data">
+    <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" dataKey="title"
+        rowGroupMode="rowspan" groupRowsBy="title" [value]="data">
         <ng-template pTemplate="header">
             <tr>
-                <th></th>
-                <th>ტიპი</th>
+                <th>აქტივობა</th>
                 <th>ატრიბუტის დასახელება</th>
                 <th>პარამეტრის დასახელება</th>
                 <th>ჩანაწერის დასახელება</th>
                 <th>თარიღი</th>
             </tr>
-            <!-- <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr> -->
         </ng-template>
-        <ng-template pTemplate="body" let-action>
+        <ng-template pTemplate="body" let-action let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan">
             <tr>
-                <td></td>
-                <td>{{action.title}}</td>
+                <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                    <span class="font-bold ml-2">{{action.title}}</span>
+                </td>
                 <td>{{action.attrTitle}}</td>
                 <td>{{action.propertyTitle}}</td>
                 <td>{{action.recordTitle}}</td>

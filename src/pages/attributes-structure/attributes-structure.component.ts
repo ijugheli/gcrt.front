@@ -181,14 +181,8 @@ export class AttributesStructureComponent implements OnInit {
         this.attributesService.removeProperty(propertyID).subscribe((data) => {
           const response: APIResponse = data;
 
-          type == 1
-            ? attr?.sections.forEach((section) => {
-              section.properties.splice(section.properties.findIndex((i) => i.id === propertyID), 1);
-            })
-            : attr?.sections.splice(attr?.sections.findIndex((i) => i.propertyID == propertyID), 1);
+          this.initializeAttrList();
 
-          this.attributes = this.attributesService.asList();
-          
           this.showSuccess(response.message);
         }, (error) => {
           this.showError(error.error.message);

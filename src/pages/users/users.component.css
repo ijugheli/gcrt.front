@@ -8,6 +8,20 @@ td button {
     text-align: center !important;
 }
 
+.center-text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+.th-group-style {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px 4px;
+    width: 100%;
+}
+
 .p-datatable .p-datatable-tbody>tr>td,
 .p-treetable .p-treetable-tbody>tr>td {
     font-size: 14px !important;

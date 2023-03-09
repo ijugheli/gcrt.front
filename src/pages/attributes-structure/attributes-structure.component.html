@@ -93,7 +93,7 @@
           <!-- Property Add Here  -->
 
           <!-- Property Add Ends HERE -->
-          <p-table [value]="attribute.sections" dataKey="id"
+          <p-table [value]="attribute.sections"
             styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" sortField="property.order_id"
             sortMode="single" dataKey="title" rowGroupMode="subheader" groupRowsBy="title" rowExpandMode="single"
             (onRowExpand)="onRowExpand($event)" [expandedRowKeys]="expandedSection"
@@ -114,6 +114,9 @@
           <button (click)="onAddClick(section.property, attribute.id, true)" type="button" class="border-btn">
             <i class="pi pi-plus-circle"></i>
             პარამეტრის დამატება
+          </button>
+          <button type="button" (click)="onDeleteProperty(section.propertyID, 2, attribute.id)" class="icon-border-btn">
+            <i class="pi pi-trash"></i>
           </button>
         </td>
       </tr>

@@ -66,7 +66,7 @@ export class UserService extends GuardedService {
   }
 
   public updateBooleanColumns(userID: number, values: any) {
-    return this.http.post<APIResponse>(this.urls['updateBooleanColumns'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateBooleanProperties'].replace('{user_id}', userID), values, { headers: this.headers });
   }
 
   public updatePassword(data: any) {

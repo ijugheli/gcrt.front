@@ -389,10 +389,12 @@ export class AttributesService extends GuardedService {
             attribute.appendSection((new MAttributeSection(property)).setProps(props));
         });
 
-        if (!attribute.hasSections()) {
+        const regularProperties = attribute.properties.filter((property) => !property.isSection() && property.p_id == 0);
+        
+        if (!attribute.hasSections() || regularProperties.length > 0) {
             attribute.appendSection((new MAttributeSection()).set({
                 title: 'მახასიათებლები',
-            }).setProps(attribute.properties));
+            }).setProps(regularProperties));
         }
 
         attribute.sections = attribute.sections.sort((a: MAttributeSection, b: MAttributeSection) => {
