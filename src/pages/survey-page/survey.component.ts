@@ -5,14 +5,18 @@ import "./survey.component.css";
 import "survey-core/defaultV2.min.css";
 import { SurveyService } from "src/services/survey.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { ISymptomSurveyResult } from "src/app/app.models";
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "component-survey",
   templateUrl: "./survey.component.html",
   styleUrls: ["./survey.component.css"],
 })
+
 export class SurveyComponent implements OnInit {
-  model!: Model;
+  public model!: Model;
+  public resultData: ISymptomSurveyResult[] = [];
+
   constructor(
     public spinner: NgxSpinnerService,
     private surveyService: SurveyService,
@@ -27,11 +31,14 @@ export class SurveyComponent implements OnInit {
     const that = this;
     this.surveyService.survey(48).subscribe((data) => {
       const survey = new Model({ elements: data.elements });
+      survey.showCompletedPage = false;
 
-      survey.onComplete.add((sender, options) => {
+      survey.onValueChanged.add((sender, options) => {
         that.surveyService.store(sender.data).subscribe((data) => {
-          console.log(data);
+          this.resultData = data.data;
         });
+        
+        survey.clear(false, true);
       });
 
       this.model = survey;

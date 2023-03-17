@@ -6,4 +6,19 @@
         </ngx-spinner>
     </ng-container>
     <survey [model]="model"></survey>
+    <ng-container *ngIf="resultData.length > 0">
+        <p-card header="შედეგები" class="survey-card">
+            <ul>
+                <li *ngFor="let data of resultData; index as i;">
+                    <span>{{data.group_title}}: </span>
+                    <span style="font-weight: bold; margin-right: 8px;">
+                        {{data.result}}
+                    </span>
+                    <span>{{data.resultLevel}}</span>
+                    <p-divider></p-divider>
+                </li>
+            </ul>
+        </p-card>
+    </ng-container>
+
 </section>

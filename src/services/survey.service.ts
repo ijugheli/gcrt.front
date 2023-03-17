@@ -4,7 +4,7 @@ import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
-import { GuardedService, User } from '../app/app.models';
+import { GuardedService, ISymptomSurveyResult, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class SurveyService extends GuardedService {
   }
 
   public store(data: any): Observable<any> {
-    return this.http.post(this.urls['store'], data, {headers: this.headers});
+    return this.http.post<APIResponse<ISymptomSurveyResult[]>>(this.urls['store'], data, {headers: this.headers});
   }
 
 }

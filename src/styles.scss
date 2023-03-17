@@ -992,7 +992,6 @@ section {
         display: flex;
     }
 }
-
 .table {
     width: 100%;
     margin-left: -1px;
@@ -1550,14 +1549,6 @@ section {
 .p-treetable .p-treetable-tbody>tr>td {
     font-size: 12px !important;
     padding: 4px !important;
-    text-align: center !important;
-    vertical-align: middle !important;
-}
-
-.p-datatable .p-datatable-tbody>tr>td,
-.p-treetable .p-treetable-tbody>tr>td {
-    font-size: 12px !important;
-    padding: 4px !important;
     text-align: left !important;
     vertical-align: middle !important;
 
@@ -1804,9 +1795,6 @@ textarea.ng-dirty.ng-invalid {
         margin-right: .25rem;
     }
 }
-
-
-
 app-attribute-form .p-panel .p-panel-content {
     padding: 0px !important;
     border: 1px solid #dee2e6;
@@ -1816,11 +1804,31 @@ app-attribute-form .p-panel .p-panel-content {
     border-bottom-left-radius: 3px;
     border-top: 0 none;
 }
- .sd-page {
+
+.sd-page {
+    font-size: 12px !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
     padding: 0 !important;
 }
+
+.sd-table span {
+    font-size: 13px !important;
+    font-family : roman !important;
+}
+
 .sd-row {
     margin-top: 0 !important;
+}
+
+.survey-card {
+    font-family: caps !important;
+    margin: 48px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.survey-card .p-card{
+    width: 650px;
 }
