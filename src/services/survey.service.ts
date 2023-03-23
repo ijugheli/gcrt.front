@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { storageItemExists } from 'src/app/app.func';
-import { APIResponse, ISurveyMenuItem, ISymptomSurveyResult, } from 'src/app/app.interfaces';
+import { APIResponse, ISurveyMenuItem, ISurveyResult, } from 'src/app/app.interfaces';
 import { GuardedService, } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 
@@ -29,7 +29,7 @@ export class SurveyService extends GuardedService {
   }
 
   public store(data: any): Observable<any> {
-    return this.http.post<APIResponse<ISymptomSurveyResult[]>>(this.urls['store'], data, { headers: this.headers });
+    return this.http.post<APIResponse<ISurveyResult[]>>(this.urls['store'], data, { headers: this.headers });
   }
 
   public async getSurveyList(): Promise<ISurveyMenuItem[]> {

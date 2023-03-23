@@ -63,11 +63,11 @@ export class APIResponse<T = undefined> {
     public elements?: Object;
     public refreshToken!: string;
 }
-export class ISymptomSurveyResult {
-    public group_id!: number;
+export class ISurveyResult {
+    public group_id!: number | undefined | null;
     public result!: number;
     public resultLevel!: number;
-    public group_title!: string;
+    public group_title!: string | undefined | null;
 }
 
 export class ISurveyMenuItem {

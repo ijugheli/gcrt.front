@@ -9,12 +9,23 @@
     <ng-container *ngIf="resultData.length > 0">
         <p-card header="შედეგები" class="survey-card">
             <ul>
+
                 <li *ngFor="let data of resultData; index as i;">
-                    <span>{{data.group_title}}: </span>
-                    <span style="font-weight: bold; margin-right: 8px;">
-                        {{data.result}}
-                    </span>
-                    <span>{{data.resultLevel}}</span>
+                    <div *ngIf="data.group_title != null;then scl90; else gad7;"></div>
+                    <ng-template #scl90>
+                        <span>{{data.group_title}}: </span>
+                        <span style="font-weight: bold; margin-right: 8px;">
+                            {{data.result}}
+                        </span>
+                        <span>{{data.resultLevel}}</span>
+                    </ng-template>
+                    <ng-template #gad7>
+                        <span>შედეგი:</span>
+                        <span style="font-weight: bold; margin-right: 8px;">
+                            {{data.result}}
+                        </span>
+                        <span>{{data.resultLevel}}</span>
+                    </ng-template>
                     <p-divider></p-divider>
                 </li>
             </ul>
