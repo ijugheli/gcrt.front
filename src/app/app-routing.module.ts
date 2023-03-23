@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'survey', component: SurveyComponent, canActivate: [AuthGuard] },
+  { path: 'survey/:survey_id', component: SurveyComponent, canActivate: [AuthGuard] },
   {
     path: 'manage/:attr_id',
     component: AttributePageComponent,

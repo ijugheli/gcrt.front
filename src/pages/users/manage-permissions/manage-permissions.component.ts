@@ -13,7 +13,6 @@ import { UserService } from 'src/services/user.service';
   templateUrl: './manage-permissions.component.html',
   styleUrls: ['./manage-permissions.component.css'],
   providers: [MessageService],
-  encapsulation: ViewEncapsulation.None
 })
 
 export class ManageUserPermissionsComponent implements OnInit {
