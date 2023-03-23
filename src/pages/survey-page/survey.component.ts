@@ -5,7 +5,7 @@ import "survey-core/defaultV2.min.css";
 import { SurveyService } from "src/services/survey.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
-import { ISymptomSurveyResult } from "src/app/app.interfaces";
+import { ISurveyResult } from "src/app/app.interfaces";
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "component-survey",
@@ -16,7 +16,7 @@ import { ISymptomSurveyResult } from "src/app/app.interfaces";
 export class SurveyComponent implements OnInit {
   public model!: Model;
   public surveyID!: number;
-  public resultData: ISymptomSurveyResult[] = [];
+  public resultData: ISurveyResult[] = [];
 
   constructor(
     public spinner: NgxSpinnerService,
@@ -45,10 +45,10 @@ export class SurveyComponent implements OnInit {
         survey.clear(false, true);
       });
       survey.onValueChanged.add((sender, options) => {
-        that.surveyService.store(sender.data).subscribe((data) => {
-          this.resultData = data.data;
+        that.surveyService.store({ surveyID: this.surveyID, data: sender.data }).subscribe((data) => {
+          this.resultData = data.data;  
         });
-        
+
         survey.clear(false, true);
       });
 
