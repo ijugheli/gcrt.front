@@ -12,7 +12,7 @@
   <!-- ATTRIBUTE TITLE BLOCK -->
   <ng-container *ngIf="!isLoading">
 
-    <p-table #dataFilter sortMode="single" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+    <p-table #dataFilter sortMode="single" styleClass="p-datatable-sm p-datatable-gridlines"
       [paginator]="true" [rows]="25"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
       [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true" responsiveLayout="scroll"

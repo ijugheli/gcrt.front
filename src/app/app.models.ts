@@ -191,13 +191,6 @@ export class MAction {
     public createdAt!: number;
 }
 
-export class ISymptomSurveyResult {
-    public group_id!: number;
-    public result!: number;
-    public resultLevel!: number;
-    public group_title!: string;
-}
-
 export class MUserPermission {
     public attr_id!: number;
     public attr_title!: string | null;

@@ -1,11 +1,11 @@
-// "node_modules/survey-core/modern.min.css"
 import { Component, OnInit } from "@angular/core";
 import { Model } from "survey-core";
 import "./survey.component.css";
 import "survey-core/defaultV2.min.css";
 import { SurveyService } from "src/services/survey.service";
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
-import { ISymptomSurveyResult } from "src/app/app.models";
+import { ISymptomSurveyResult } from "src/app/app.interfaces";
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "component-survey",
@@ -15,11 +15,13 @@ import { ISymptomSurveyResult } from "src/app/app.models";
 
 export class SurveyComponent implements OnInit {
   public model!: Model;
+  public surveyID!: number;
   public resultData: ISymptomSurveyResult[] = [];
 
   constructor(
     public spinner: NgxSpinnerService,
     private surveyService: SurveyService,
+    private activatedRoute: ActivatedRoute,
   ) { };
 
   ngOnInit() {
@@ -28,11 +30,20 @@ export class SurveyComponent implements OnInit {
   }
 
   private init() {
+    this.surveyID = parseInt(this.activatedRoute.snapshot.paramMap.get('survey_id')!);
+
     const that = this;
-    this.surveyService.survey(48).subscribe((data) => {
-      const survey = new Model({ elements: data.elements });
+    this.surveyService.survey(this.surveyID).subscribe((data) => {
+      const survey = new Model(data.data);
       survey.showCompletedPage = false;
 
+      survey.onComplete.add((sender, options) => {
+        // that.surveyService.store(sender.data).subscribe((data) => {
+        //   this.resultData = data.data;
+        // });
+        console.log(sender.getPlainData());
+        survey.clear(false, true);
+      });
       survey.onValueChanged.add((sender, options) => {
         that.surveyService.store(sender.data).subscribe((data) => {
           this.resultData = data.data;
