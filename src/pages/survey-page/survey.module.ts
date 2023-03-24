@@ -7,6 +7,8 @@ import { DataTableModule } from 'src/modules/data-table/data-table.module';
 import { TableModule } from 'primeng/table';
 import { Card, CardModule } from 'primeng/card';
 import { Divider, DividerModule } from 'primeng/divider';
+import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
+import { FormsModule } from '@angular/forms';
 @NgModule({
     declarations: [SurveyComponent],
     imports: [
@@ -16,7 +18,9 @@ import { Divider, DividerModule } from 'primeng/divider';
         DataTableModule,
         DividerModule,
         CardModule,
+        FormsModule,
         TableModule,
+        TriStateCheckboxModule
     ]
 })
 export class SurveyPageModule { }

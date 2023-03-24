@@ -7,26 +7,42 @@
     </ng-container>
     <survey [model]="model"></survey>
     <ng-container *ngIf="resultData.length > 0">
-        <p-card header="შედეგები" class="survey-card">
+        <p-card header="შედეგები" class="survey-card" [class.w-700]="surveyID == 7">
             <ul>
-
                 <li *ngFor="let data of resultData; index as i;">
-                    <div *ngIf="data.group_title != null;then scl90; else gad7;"></div>
-                    <ng-template #scl90>
-                        <span>{{data.group_title}}: </span>
-                        <span style="font-weight: bold; margin-right: 8px;">
-                            {{data.result}}
-                        </span>
-                        <span>{{data.resultLevel}}</span>
-                    </ng-template>
-                    <ng-template #gad7>
-                        <span>შედეგი:</span>
-                        <span style="font-weight: bold; margin-right: 8px;">
-                            {{data.result}}
-                        </span>
-                        <span>{{data.resultLevel}}</span>
-                    </ng-template>
-                    <p-divider></p-divider>
+                    <ng-container *ngIf="surveyID == 7">
+                        <div class="flex justify-content-between">
+                            <span>{{data.group_title}} </span>
+                            <p-triStateCheckbox [(ngModel)]="data.result" [disabled]="true"></p-triStateCheckbox>
+                        </div>
+                        <ng-container *ngIf="data.sum !=null">
+                            <span>ქულა: </span>
+                            <span style="font-weight: bold;">
+                                {{data.sum}}
+                            </span>
+                        </ng-container>
+                        <p-divider></p-divider>
+
+                    </ng-container>
+                    <ng-container *ngIf="surveyID != 7">
+                        <div *ngIf="data.group_title != null;then scl90; else gad7;"></div>
+                        <ng-template #scl90>
+                            <span>{{data.group_title}}: </span>
+                            <span style="font-weight: bold; margin-right: 8px;">
+                                {{data.result}}
+                            </span>
+                            <span>{{data.resultLevel}}</span>
+                        </ng-template>
+                        <ng-template #gad7>
+                            <span>შედეგი:</span>
+                            <span style="font-weight: bold; margin-right: 8px;">
+                                {{data.result}}
+                            </span>
+                            <span>{{data.resultLevel}}</span>
+                        </ng-template>
+                        <p-divider></p-divider>
+                    </ng-container>
+
                 </li>
             </ul>
         </p-card>

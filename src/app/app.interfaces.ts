@@ -64,10 +64,13 @@ export class APIResponse<T = undefined> {
     public refreshToken!: string;
 }
 export class ISurveyResult {
-    public group_id!: number | undefined | null;
-    public result!: number;
+    public group_id!: string | number | undefined | null;
+    public values!: any[];
+    public result!: number| boolean;
     public resultLevel!: number;
     public group_title!: string | undefined | null;
+    public sum_group_title!: string | undefined | null;
+    public sum!: number | undefined | null;
 }
 
 export class ISurveyMenuItem {
