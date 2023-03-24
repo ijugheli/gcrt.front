@@ -38,19 +38,21 @@ export class SurveyComponent implements OnInit {
       survey.showCompletedPage = false;
 
       survey.onComplete.add((sender, options) => {
-        // that.surveyService.store(sender.data).subscribe((data) => {
-        //   this.resultData = data.data;
-        // });
-        console.log(sender.getPlainData());
-        survey.clear(false, true);
-      });
-      survey.onValueChanged.add((sender, options) => {
         that.surveyService.store({ surveyID: this.surveyID, data: sender.data }).subscribe((data) => {
-          this.resultData = data.data;  
+          this.resultData = data.data;
         });
-
         survey.clear(false, true);
       });
+
+      if (this.surveyID != 7) {
+        survey.onValueChanged.add((sender, options) => {
+          that.surveyService.store({ surveyID: this.surveyID, data: sender.data }).subscribe((data) => {
+            this.resultData = data.data;
+          });
+
+          survey.clear(false, true);
+        });
+      }
 
       this.model = survey;
       this.spinner.hide();
