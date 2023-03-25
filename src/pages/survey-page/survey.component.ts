@@ -34,7 +34,6 @@ export class SurveyComponent implements OnInit {
 
     const that = this;
     this.surveyService.getSurveyList().subscribe((data) => {
-      console.log(data);
       const survey = new Model(data.surveys.get(this.surveyID));
       survey.showCompletedPage = false;
 
