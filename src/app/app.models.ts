@@ -215,7 +215,25 @@ export class MUserPermission {
     }
 }
 
+export class MSurvey {
+    menuItems!: MSurveyMenuItem[];
+    surveys!: Map<number, any>;
 
+    constructor(menuItems: MSurveyMenuItem[], surveys: Map<number, any>) {
+        this.menuItems = menuItems;
+        this.surveys = surveys;
+    }
+}
+
+export class MSurveyMenuItem {
+    public id!: number;
+    public title!: string;
+
+    constructor(o: any) {
+        this.id = o.surveyID;
+        this.title = o.title;
+    }
+}
 
 export class GuardedService {
     public headers!: HttpHeaders;
