@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IMenuItem, ISurveyMenuItem } from 'src/app/app.interfaces';
+import { IMenuItem } from 'src/app/app.interfaces';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/services/AuthService.service';
 import { UserService } from 'src/services/user.service';
-import { User } from 'src/app/app.models';
+import { MSurveyMenuItem, User } from 'src/app/app.models';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { SurveyService } from 'src/services/survey.service';
 
@@ -21,7 +21,7 @@ export class MenuComponent implements OnInit {
   public objects: any[] = [];
   public trees: any[] = [];
   public attributes: any[] = [];
-  public surveyList!: ISurveyMenuItem[] | null;
+  public surveyList!: MSurveyMenuItem[] | null;
 
   public user: User | null = null;
 
@@ -191,7 +191,7 @@ export class MenuComponent implements OnInit {
   }
 
   private async loadSurveys() {
-    this.surveyList = await this.surveyService.getSurveyList();
+    this.surveyService.getSurveyList().subscribe((data) => this.surveyList = data.menuItems);
   }
 
   private loadAttrs() {

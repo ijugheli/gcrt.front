@@ -33,8 +33,9 @@ export class SurveyComponent implements OnInit {
     this.surveyID = parseInt(this.activatedRoute.snapshot.paramMap.get('survey_id')!);
 
     const that = this;
-    this.surveyService.survey(this.surveyID).subscribe((data) => {
-      const survey = new Model(data.data);
+    this.surveyService.getSurveyList().subscribe((data) => {
+      console.log(data);
+      const survey = new Model(data.surveys.get(this.surveyID));
       survey.showCompletedPage = false;
 
       survey.onComplete.add((sender, options) => {

@@ -66,17 +66,12 @@ export class APIResponse<T = undefined> {
 export class ISurveyResult {
     public group_id!: string | number | undefined | null;
     public values!: any[];
-    public result!: number| boolean;
+    public result!: number | boolean;
     public resultLevel!: number;
     public group_title!: string | undefined | null;
-    public sum_group_title!: string | undefined | null;
     public sum!: number | undefined | null;
 }
 
-export class ISurveyMenuItem {
-    public id!: number;
-    public title!: string;
-}
 
 
 
