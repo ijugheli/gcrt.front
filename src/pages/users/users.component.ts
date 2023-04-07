@@ -7,11 +7,6 @@ import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserComponent } from './manage-user/manage-user.component';
 import { APIResponse } from 'src/app/app.interfaces';
-interface cachedFilter {
-  value: string;
-  matdhMode?: string;
-}
-
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -20,6 +15,7 @@ interface cachedFilter {
   encapsulation: ViewEncapsulation.None
 })
 export class UsersComponent implements OnInit {
+  public pageTitle: string = 'ადმინისტრატორები';
   public users: User[] = [];
   public data: any;
 

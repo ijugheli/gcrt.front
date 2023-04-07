@@ -1,0 +1,71 @@
+input,
+::ng-deep .p-inputnumber,
+::ng-deep .p-calendar,
+::ng-deep .p-dropdown,
+::ng-deep .p-treeselect {
+    border-radius: 0 6px 6px 0;
+    min-width: 300px;
+    max-width: 300px;
+    border: 1px solid #D3DFEB;
+    font-size: 12px;
+    height: 40px;
+}
+
+::ng-deep .p-ripple.p-element.p-dropdown-item {
+    font-family: roman;
+    font-size: 13px;
+}
+::ng-deep .p-dropdown-label {
+    display: flex !important;
+    font-family: roman;
+    align-items: center;
+}
+
+::ng-deep .p-inputswitch {
+    display: flex !important;
+}
+
+::ng-deep .p-buttonset .p-button,
+::ng-deep .p-buttonset .p-button:not(:first-of-type):not(:last-of-type) {
+    border-radius: 8px !important;
+    min-width: 252px;
+    border: none;
+}
+
+::ng-deep .p-selectbutton {
+    border: none;
+}
+
+::ng-deep .p-selectbutton .p-button.p-highlight,
+::ng-deep .p-buttonset .p-button.p-highlight:not(:last-of-type) {
+    background: var(--green-50);
+    border: 1px solid var(--green-100);
+    color: var(--green-500) !important;
+}
+
+::ng-deep .p-selectbutton .p-button:focus {
+    outline: 0 none !important;
+    box-shadow: 0 0 0 0 !important;
+}
+
+::ng-deep .p-selectbutton .p-button.p-highlight:hover {
+    background: var(--green-500);
+}
+
+::ng-deep .p-selectbutton .p-button.p-highlight:hover * {
+    color: var(--green-50) !important;
+}
+
+::ng-deep .p-selectbutton .p-button.p-highlight span {
+    color: var(--green-500) !important;
+}
+
+::ng-deep .p-selectbutton .p-button span {
+    font-size: .875rem;
+}
+
+
+
+::ng-deep .p-selectbutton .p-button {
+    border-radius: 5px;
+}

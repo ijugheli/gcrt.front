@@ -46,3 +46,11 @@ li button {
 p-sorticon {
     position: unset;
 }
+:host ::ng-deep .p-inputtext  {
+    font-family: roman;
+  }
+  :host ::ng-deep .p-inputtext {
+    color: green;
+    border: 2px solid green;
+    border-radius: 10px;
+}

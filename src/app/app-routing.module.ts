@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from 'src/pages/login/login/login.component';
-import { MainComponent } from 'src/pages/main/main/main.component';
-
 import { HomeComponent } from '../pages/home/home.component';
 import { AttributePageComponent } from '../pages/attribute-page/attribute-page.component';
 import { AuthGuardService as AuthGuard } from 'src/services/AuthGuardService.service';
@@ -18,10 +16,17 @@ import { UpdatePasswordComponent } from 'src/pages/login/update-password/update-
 import { OTPComponent } from 'src/pages/login/otp/otp.component';
 import { SurveyComponent } from 'src/pages/survey-page/survey.component';
 import { UserReportComponent } from 'src/pages/users/users/user-report.component';
+import { ClientComponent } from 'src/pages/client/client.component';
+import { ClientFormComponent } from 'src/pages/client/client-form/client-form.component';
+import { CaseComponent } from 'src/pages/case/case.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'client', component: ClientComponent },
+  { path: 'client/add', component: ClientFormComponent },
+  { path: 'case', component: CaseComponent },
+  { path: 'case/add', component: CaseComponent },
   { path: 'otp', component: OTPComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },
