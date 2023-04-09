@@ -8,340 +8,154 @@
   </div>
   <div class="relative w-100 h-100 m-3 mt-6">
     <div class="grid">
-      <div class="col-fixed" style="width:280px;">
-        <p-selectButton [(ngModel)]="selectedSection" [options]="options" optionLabel="label"></p-selectButton>
+      <div
+        class="col-fixed"
+        style="width:280px;"
+      >
+        <p-selectButton
+          [(ngModel)]="selectedSection"
+          [options]="options"
+          optionLabel="label"
+        ></p-selectButton>
       </div>
       <div class="col-fixed w-min">
         <p-divider layout="vertical"></p-divider>
       </div>
-      <div class="col-fixed" style="width: 400px;">
-        <div *ngIf="selectedSection.value == 0" class="flex flex-row gap-8">
+      <div
+        class="col-fixed"
+        style="width: 400px;"
+      >
+        <div
+          *ngIf="selectedSection.value == 0"
+          class="flex flex-row gap-8"
+        >
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
             animation-duration-200">
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-exclamation-triangle"></i>
-              </span>
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-list"></i>
-              </span>
-              <span class="p-float-label">
-                <p-dropdown id="branch"></p-dropdown>
-                <label for="branch">ფილიალი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-exclamation-triangle"></i>
-              </span>
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-calendar"></i>
-              </span>
-              <span class="p-float-label">
-                <p-calendar id="registration_date"></p-calendar>
-                <label for="registration_date">რეგისტრაციის თარიღი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input id="client_code" type="text" pInputText disabled>
-                <label for="client_code">კლიენტის კოდი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-exclamation-triangle"></i>
-              </span>
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-sitemap"></i>
-              </span>
-              <span class="p-float-label">
-                <p-treeSelect id="category_group" [options]="treeselect" [filter]="true"></p-treeSelect>
-                <label for="category_group">კატეგორია</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-exclamation-triangle"></i>
-              </span>
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-list"></i>
-              </span>
-              <span class="p-float-label">
-                <p-dropdown name="gender" [(ngModel)]="selectedGender" [options]="genderSources" placeholder="სქესი"
-                  optionLabel="name" optionValue="id" [filter]="true" filterBy="name" emptyFilterMessage="..."
-                  inputId="gender"></p-dropdown>
-                <label for="gender">სქესი</label>
-              </span>
-            </div>
-            <div class="flex flex-row  align-items-center justify-content-start gap-1">
-              <label for="repeating_client">განმეორებადი კლიენტი</label>
-              <p-inputSwitch name="repeating_client" id="repeating_client"></p-inputSwitch>
+            <div *ngFor="let item of ClientAttrs.mainFirstCol">
+              <custom-input
+                [model]="client.main[item.mainKey]"
+                [data]="item"
+                (onChange)="client.main[(item.mainKey)] = $event"
+              ></custom-input>
             </div>
           </div>
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
             animation-duration-200">
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input id="name" type="text" pInputText>
-                <label for="name">სახელი</label>
-              </span>
+            <div *ngFor="let item of ClientAttrs.mainSecondCol">
+              <custom-input
+                [model]="client.main[item.mainKey]"
+                [data]="item"
+                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.mainKey)] = $event) : client.main[(item.mainKey)] = $event)"
+              ></custom-input>
             </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input id="surname" type="text" pInputText>
-                <label for="surname">გვარი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-exclamation-triangle"></i>
-              </span>
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-calendar"></i>
-              </span>
-              <span class="p-float-label">
-                <p-calendar id="birth_date"></p-calendar>
-                <label for="birth_date">დაბადების თარიღი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input id="age" type="text" pInputText disabled>
-                <label for="age">ასაკი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input id="age_group" type="text" pInputText disabled>
-                <label for="age_group">ასაკობრივი ჯგუფი</label>
-              </span>
-            </div>
-            <div class="flex flex-row">
-              <span class="p-inputgroup-addon">
-                <i class="pi pi-pencil"></i>
-              </span>
-              <span class="p-float-label">
-                <input pInputText id="personal_id" pKeyFilter="num">
-                <label for="personal_id">პირადი ნომერი</label>
-              </span>
-            </div>
-
           </div>
-
-
         </div>
-        <div *ngIf="selectedSection.value == 1"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-list"></i>
-            </span>
-            <span class="p-float-label">
-              <p-dropdown inputId="nationality" [(ngModel)]="selectedNationality" [options]="nationalitySources"
-                placeholder="ეროვნება" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"
-                emptyFilterMessage="..."></p-dropdown>
-              <label for="nationality">ეროვნება</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-list"></i>
-            </span>
-            <span class="p-float-label">
-              <p-dropdown inputId="education" [(ngModel)]="selectedEducation" [options]="educationSources"
-                placeholder="განათლება" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"
-                emptyFilterMessage="..."></p-dropdown>
-              <label for="education">განათლება</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-list"></i>
-            </span>
-            <span class="p-float-label">
-              <p-dropdown inputId="marital_status" [(ngModel)]="selectedStatus" [options]="maritalStatusSources"
-                optionLabel="name" optionValue="id" placeholder="ოჯახური მდგომარეობა" [filter]="true" filterBy="name"
-                emptyFilterMessage="...">
-              </p-dropdown>
-              <label for="marital_status">ოჯახური მდგომარეობა</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-list"></i>
-            </span>
-            <span class="p-float-label">
-              <p-dropdown id="family_members"></p-dropdown>
-              <label for="family_members">ოჯახის წევრები</label>
-            </span>
-          </div>
+        <div
+          *ngIf="selectedSection.value == 1"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <custom-input
+            [model]="client.additional.nationality"
+            [data]="ClientAttrs.additionalMap.get('nationality')"
+            (onChange)="client.additional.nationality = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.education"
+            [data]="ClientAttrs.additionalMap.get('education')"
+            (onChange)="client.additional.education = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.marital_status"
+            [data]=" ClientAttrs.additionalMap.get('marital_status')"
+            (onChange)="client.additional.marital_status = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.family_members"
+            [data]=" ClientAttrs.additionalMap.get('family_members')"
+            (onChange)="client.additional.family_members = $event"
+          >
+          </custom-input>
+
           <div class="flex flex-row align-items-center justify-content-start gap-1">
             <label for="social_help">იღებს თუ არა სოც. დახმარებას</label>
-            <p-inputSwitch id="social_help" [(ngModel)]="hasSocialSupport"></p-inputSwitch>
+            <p-inputSwitch
+              inputId="social_help"
+              [(ngModel)]="hasSocialSupport"
+            >
+            </p-inputSwitch>
           </div>
-          <div *ngIf="hasSocialSupport" class="flex flex-row fadeinup">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="social_support_name" type="text" pInputText>
-              <label for="social_support_name">სოც. დახმარების დასახელება</label>
-            </span>
-          </div>
+
+          <custom-input
+            *ngIf="hasSocialSupport"
+            [model]="client.additional.has_social_support"
+            [data]=" ClientAttrs.additionalMap.get('has_social_support')"
+            (onChange)="client.additional.has_social_support = $event"
+            class="fadeinup"
+          >
+          </custom-input>
+
           <div class="flex flex-row align-items-center justify-content-start gap-1">
-            <label for="has_insurance">ოჯახის წევრები</label>
-            <p-inputSwitch id="has_insurance" [(ngModel)]="hasInsurance"></p-inputSwitch>
+            <label for="has_insurance">აქვს თუ არა ჯანმრთელობის დაზღვევა</label>
+            <p-inputSwitch
+              inputId="has_insurance"
+              [(ngModel)]="hasInsurance"
+            >
+            </p-inputSwitch>
           </div>
-          <div *ngIf="hasInsurance" class="flex flex-row fadeinup">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="insurance_name" type="text" pInputText>
-              <label for="insurance_name">სადაზღვევო კომპანიის დასახელება</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="work_address" type="text" pInputText>
-              <label for="work_address">სამუშაო ადგილი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="proffesion" type="text" pInputText disabled>
-              <label for="proffesion">პროფესია</label>
-            </span>
+
+          <custom-input
+            *ngIf="hasInsurance"
+            [model]="client.additional.has_insurance"
+            [data]=" ClientAttrs.additionalMap.get('has_insurance')"
+            (onChange)="client.additional.has_insurance = $event"
+            class="fadeinup"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.work_address"
+            [data]=" ClientAttrs.additionalMap.get('work_address')"
+            (onChange)="client.additional.work_address = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.profession"
+            [data]=" ClientAttrs.additionalMap.get('profession')"
+            (onChange)="client.additional.profession = $event"
+          >
+          </custom-input>
+        </div>
+        <div
+          *ngIf="selectedSection.value == 2"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <div *ngFor="let item of ClientAttrs.contactList">
+            <custom-input
+              [model]="client.contact[item.contactKey]"
+              [data]="item"
+              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.contactKey)] = $event) : client.contact[(item.contactKey)] = $event)"
+            >
+            </custom-input>
           </div>
         </div>
-        <div *ngIf="selectedSection.value == 2"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="phone_number" type="text" pInputText>
-              <label for="phone_number">ტელეფონის ნომერი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="client_code" type="text" pInputText>
-              <label for="client_code">სახლის ტელეფონი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="personal_email" type="text" pInputText>
-              <label for="personal_email">პირადი ელ. ფოსტა</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="work_number" type="text" pInputText>
-              <label for="work_number">სამსახურის ტელეფონი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="work_internal_phone_number" type="text" pInputText>
-              <label for="work_internal_phone_number">სამსახურის შიდა ნომერი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="fax" type="text" pInputText>
-              <label for="fax">ფაქსი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="work_email" type="text" pInputText>
-              <label for="სახლის ტელეფონი">სამსახურის ელ.ფოსტა</label>
-            </span>
-          </div>
-        </div>
-        <div *ngIf="selectedSection.value == 3"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-exclamation-triangle"></i>
-            </span>
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-sitemap"></i>
-            </span>
-            <span class="p-float-label">
-              <p-treeSelect id="location" [options]="treeselect" [filter]="true"></p-treeSelect>
-              <label for="location">ლოკაცია</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input id="address" type="text" pInputText>
-              <label for="address">მისამართი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input pInputText id="zip" pKeyFilter="num">
-              <label for="zip">ZIP/საფოსტო კოდი</label>
-            </span>
-          </div>
-          <div class="flex flex-row">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-pencil"></i>
-            </span>
-            <span class="p-float-label">
-              <input pInputText id="previous_address">
-              <label for="previous_address">მისამართი გადაადგილებამდე</label>
-            </span>
+        <div
+          *ngIf="selectedSection.value == 3"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <div *ngFor="let item of ClientAttrs.addressList">
+            <custom-input
+              [model]="client.address[item.addressKey]"
+              [data]="item"
+              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.addressKey)] = $event) : client.address[(item.addressKey)] = $event)"
+            >
+            </custom-input>
           </div>
         </div>
       </div>

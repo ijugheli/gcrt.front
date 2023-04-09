@@ -10,6 +10,11 @@ export const validateEmail = (email: string) => {
         );
 };
 
+export const calculateAge = (date: Date) => {
+    let timeDiff = Math.abs(Date.now() - date.getTime());
+    return Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25);
+}
+
 
 export const clone = (obj: any): any => {
     var copy;

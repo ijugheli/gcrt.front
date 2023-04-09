@@ -15,6 +15,7 @@ import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
 import { APIResponse } from 'src/app/app.interfaces';
 import { of } from 'rxjs';
+import { TreeNode } from 'primeng/api';
 
 @Injectable({
     providedIn: 'root'
@@ -33,8 +34,10 @@ export class AttributesService extends GuardedService {
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
+        'fullWithSelect': API_URL + '/attrs/tree-select/{attr_id}/values',
         'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
         'tree': API_URL + '/attrs/{attr_id}/values/tree/{value_id}',
+        'treeSelect': API_URL + '/attrs/{attr_id}/values/tree-select/{value_id}',
         'title': API_URL + '/attrs/{attr_id}/title',
         'addValueCollection': API_URL + '/attrs/{attr_id}/values/add',
         'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
@@ -189,8 +192,9 @@ export class AttributesService extends GuardedService {
         return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
     }
 
-    public full(attrID: number) {
-        return this.http.get<APIResponse<Attribute[]>>(this.urls['full'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+    public full(attrID: number, isTreeSelect: boolean = false) {
+        const url = isTreeSelect ? 'fullWithSelect' : 'full';
+        return this.http.get<APIResponse<Attribute[]>>(this.urls[url].replace('{attr_id}', attrID.toString()), { headers: this.headers });
     }
 
     public attribute(attrID: number) {
@@ -204,8 +208,9 @@ export class AttributesService extends GuardedService {
         );
     }
 
-    public treeNodes(attrID: number, valueID: number) {
-        return this.http.get<Attribute>(this.urls['tree']
+    public treeNodes(attrID: number, valueID: number, isTreeSelect: boolean = false) {
+        const url = isTreeSelect ? 'treeSelect' : 'tree';
+        return this.http.get<Attribute>(this.urls[url]
             .replace('{attr_id}', attrID.toString())
             .replace('{value_id}', valueID.toString()), { headers: this.headers }
         );
@@ -390,7 +395,7 @@ export class AttributesService extends GuardedService {
         });
 
         const regularProperties = attribute.properties.filter((property) => !property.isSection() && property.p_id == 0);
-        
+
         if (!attribute.hasSections() || regularProperties.length > 0) {
             attribute.appendSection((new MAttributeSection()).set({
                 title: 'მახასიათებლები',
@@ -402,7 +407,20 @@ export class AttributesService extends GuardedService {
                 ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
                 : 1;
         });
+    }
 
+    public parseTree(tree: any) {
+        return (Array.from(Object.values(tree)) as TreeNode[])
+            .filter((item) => {
+                return item.data != undefined && item.data != null;
+            })
+            .map((node: any) => {
+                if (node.children) {
+                    node.children = this.parseTree(node.children);
+                }
+
+                return node;
+            });
     }
 
 }

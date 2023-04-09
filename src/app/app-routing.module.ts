@@ -19,6 +19,7 @@ import { UserReportComponent } from 'src/pages/users/users/user-report.component
 import { ClientComponent } from 'src/pages/client/client.component';
 import { ClientFormComponent } from 'src/pages/client/client-form/client-form.component';
 import { CaseComponent } from 'src/pages/case/case.component';
+import { CaseFormComponent } from 'src/pages/case/case-form/case-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -26,7 +27,7 @@ const routes: Routes = [
   { path: 'client', component: ClientComponent },
   { path: 'client/add', component: ClientFormComponent },
   { path: 'case', component: CaseComponent },
-  { path: 'case/add', component: CaseComponent },
+  { path: 'case/add', component: CaseFormComponent },
   { path: 'otp', component: OTPComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },

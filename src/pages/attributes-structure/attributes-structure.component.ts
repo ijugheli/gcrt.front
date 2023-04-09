@@ -238,7 +238,7 @@ export class AttributesStructureComponent implements OnInit {
 
     this.initializeDataTypes();
     this.initializeViewTypes();
-    this.attrSources = this.attributes.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
+    this.attrSources = this.attributesService.asList().map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
 
     console.log(this.attributes);
 

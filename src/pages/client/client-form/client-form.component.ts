@@ -1,32 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { MProperty } from 'src/services/attributes/models/property.model';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
+import { APIResponse } from 'src/app/app.interfaces';
+import { Attribute } from 'src/app/app.models';
+import { ATTR_TYPES } from 'src/app/app.config';
+import { Client, ClientMain, ICustomInput, ClientAttrs } from '../client.model';
+import { calculateAge } from 'src/app/app.func';
 
 
 @Component({
   selector: 'app-client-form',
   templateUrl: './client-form.component.html',
-  styleUrls: ['./client-form.component.css'],
+  styleUrls: ['./client-form.component.scss',],
   providers: [MessageService]
 })
 
 export class ClientFormComponent implements OnInit {
   public pageTitle: string = 'კლიენტის დამატება';
+  public client: Client = new Client();
+  public ClientAttrs: ClientAttrs = new ClientAttrs();
   public isLoading: boolean = false;
   public hasSocialSupport: boolean = false;
   public hasInsurance: boolean = false;
-  public nationalitySources: any = [];
-  public maritalStatusSources: any = [];
-  public selectedNationality: any;
-  public genderSources: any;
-  public educationSources: any;
-  public selectedEducation: any;
-  public selectedGender: any;
-  public selectedStatus: any;
   public selectedSection: any = { label: 'ძირითადი მახასიათებლები', value: 0, icon: 'pi pi-user' };
   public options: any = [
     { label: 'ძირითადი მახასიათებლები', value: 0, icon: 'pi pi-user' },
@@ -34,23 +32,8 @@ export class ClientFormComponent implements OnInit {
     { label: 'საკონტაქტო ინფორმაცია', value: 2, icon: 'pi pi-phone' },
     { label: 'სამისამართო ინფორმაცია', value: 3, icon: 'pi pi-map-marker' },
   ];
-
-  public onOptionClick(event: any) {
-    console.log(event);
-    console.log(this.selectedSection);
-  }
-  public menuItems: MenuItem[] = [
-    {
-      label: 'HTML',
-      items: [
-        {
-          label: 'HTML 1'
-        },
-        {
-          label: 'HTML 2'
-        }
-      ]
-    }];
+  categoryTree: any;
+  todayDate: any;
 
   treeselect = [
     {
@@ -72,9 +55,6 @@ export class ClientFormComponent implements OnInit {
     },
   ];
 
-  public filters: { [key: string]: number | string | null } = {
-    'title': ''
-  };
   constructor(
     private messageService: MessageService,
     private dialogService: DialogService,
@@ -85,15 +65,13 @@ export class ClientFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.nationalitySources = this.attrService.properties.get(168)?.source.options;
-    this.maritalStatusSources = this.attrService.properties.get(169)?.source.options;
-    this.genderSources = this.attrService.properties.get(167)?.source.options;
-    this.educationSources = this.attrService.properties.get(195)?.source.options;
   }
 
-
-  public onChange(event: any) {
+  public onSelect(event: any) {
+    this.client.main.age = calculateAge(event);
+    this.client.setAgeGroupID();
   }
+
   private showSuccess(msg: string) {
     this.messageService.add({
       severity: 'success',
