@@ -4,6 +4,28 @@ import { addressList, addressMap } from "./client-attrs/client.address";
 import { contactList, contactMap } from "./client-attrs/client.contact";
 import { mainFirstCol, mainMap, mainSecondCol } from "./client-attrs/client.main";
 
+const ageGroups = [
+    {
+        'from': 0,
+        'to': 15,
+        'id': 234,
+    },
+    {
+        'from': 16,
+        'to': 35,
+        'id': 236,
+    },
+    {
+        'from': 36,
+        'to': 55,
+        'id': 238,
+    },
+    {
+        'from': 56,
+        'to': 100,
+        'id': 240,
+    }
+];
 
 export class Client {
     public main!: ClientMain;
@@ -24,20 +46,12 @@ export class Client {
     public setAgeGroupID() {
         const age: number = this.main.age!;
 
-        if (age <= 15) {
-            this.main.age_group = 234;
-            return;
-        } else if (age >= 16 && age <= 35) {
-            this.main.age_group = 236;
-            return;
-        } else if (age >= 36 && age <= 45) {
-            this.main.age_group = 238;
-            return;
-        } else if (age >= 60) {
-            this.main.age_group = 240;
-            return;
+        for (let group of ageGroups) {
+            if (age >= group['from'] && age <= group['to']) {
+                this.main.age_group = group['id'];
+                return;
+            }
         }
-        this.main.age_group = 240;
     }
 }
 

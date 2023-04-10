@@ -7,7 +7,8 @@ import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Attribute } from 'src/app/app.models';
 import { ATTR_TYPES } from 'src/app/app.config';
-import { CaseAttrs, ICase, ICaseSection, IConsultation, IDiagnosis, IReferral } from '../case.model';
+import { CaseAttrs, ICase, ICaseSection, IConsultation, IDiagnosis, IReferral, MCaseSection } from '../case.model';
+import { flattenTree } from 'src/app/app.func';
 
 
 @Component({
@@ -42,6 +43,8 @@ export class CaseFormComponent implements OnInit {
   loading: boolean = false;
   referralSources: any;
   incidentSources: any;
+  careplans!: any[];
+  parents!: any[];
 
   public onOptionClick(event: any) {
   }
@@ -68,11 +71,19 @@ export class CaseFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.Case.care_plans[0] = {
+      case_id: 0,
+      category: 125657,
+      comment: 'ragaca'
+    };
     //რეფერალური წყარო 
-    this.referralSources = this.attrService
-      .full(30, true)
+    this.attrService
+      .full(45, true)
       .subscribe((d) => this.receiveResponse(d));
   }
+
+
 
 
   private receiveResponse(response: APIResponse<Attribute[]>) {
@@ -91,8 +102,20 @@ export class CaseFormComponent implements OnInit {
 
     if (isTree) {
       this.referralSources = this.attrService.parseTree(data['tree']);;
+      this.careplans = this.parseCaseSection(flattenTree(this.referralSources));
+      this.parents = this.getCarePlanP();
+      console.log(this.careplans);
+      // console.log(rame);
       return;
     }
+  }
+
+  public getCarePlanP() {
+    return this.careplans.filter(e => e.p_value_id == 0);
+  }
+
+  public getCarePlanNodes(id: number) {
+    return this.careplans.filter(e => e.p_value_id == id);
   }
 
   public onNodeExpand(event: any) {
@@ -108,6 +131,24 @@ export class CaseFormComponent implements OnInit {
     });
   }
 
+  private parseCaseSection(tree: any[]): any[] {
+    return tree.map((node: any) => {
+      const temp = new MCaseSection();
+      temp.category = node.data.id;
+      temp.p_value_id = node.data.p_value_id;
+      temp.value_id = node.data.value_id;
+      temp.title = node.data.title;
+      temp.p_title = this.referralSources.find((e: any) => e.data.value_id == temp.p_value_id)?.data.title ?? '';
+
+      const carePlan = this.Case.care_plans.find(e => e.category == temp.category);
+      if (carePlan !== undefined) {
+        temp.isSelected = true;
+        temp.comment = carePlan.comment;
+      }
+      return temp;
+    });
+
+  }
 
   private showSuccess(msg: string) {
     this.messageService.add({

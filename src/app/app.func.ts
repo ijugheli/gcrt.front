@@ -2,6 +2,16 @@ export const reverseMap = (m: Map<number, string>) => {
     return new Map(Array.from(m, entry => [entry[1], entry[0]]));
 }
 
+export const flattenTree = (arr: any[]): any[] => {
+    return arr.reduce((acc, curr) => {
+        if (Array.isArray(curr.children)) {
+            return acc.concat(curr, flattenTree(curr.children));
+        } else {
+            return acc.concat(curr);
+        }
+    }, []);
+}
+
 export const validateEmail = (email: string) => {
     return String(email)
         .toLowerCase()

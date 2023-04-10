@@ -8,11 +8,11 @@ import { referralList } from "./case-attrs/referral";
 
 export class ICase {
     public case!: Case;
-    public forms_of_violence!: ICaseSection[];
-    public care_plans!: ICaseSection[];
-    public diagnosis!: IDiagnosis[];
-    public referral!: IReferral[];
-    public consultation!: IConsultation[];
+    public forms_of_violence: ICaseSection[] =[];
+    public care_plans: ICaseSection[] = [];
+    public diagnosis: IDiagnosis[] = [ ];
+    public referral: IReferral[] = [];
+    public consultation: IConsultation[] = [];
     public psychodiagnosis!: IPsychodiagnosis;
 
     constructor() {
@@ -41,10 +41,21 @@ export class Case {
 export class ICaseSection {
     public case_id!: number | null;
     public category!: number | null; // treeselect
-    public comment!: number | null;
-    public setNodeID: any = (node: any, key: 'category') => {
+    public comment!: string | null;
+    public setNodeID?: any = (node: any, key: 'category') => {
         this[key] = node.data.id;
     };
+}
+
+export class MCaseSection {
+    public case_id!: number | null;
+    public category!: number | null;
+    public p_value_id!: number | null; // treeselect
+    public title!: string | null; // treeselect
+    public isSelected?: boolean = false;
+    public p_title!: string | null; // treeselect
+    public value_id!: number | null; // treeselect
+    public comment!: string | null;
 }
 
 export class IDiagnosis {

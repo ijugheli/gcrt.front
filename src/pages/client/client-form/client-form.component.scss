@@ -11,7 +11,28 @@ input,
     height: 40px;
 }
 
+// .p-editable-column  .p-element {
+//     display: flex;
+//     width: 100%;
+// }
+
+span.font-bold.ml-2 {
+    font-size: .8rem;
+    font-family: roman;
+}
+
+.p-editable-column input {
+    border-radius: 0;
+    border: 1px solid #D3DFEB;
+    max-width: unset;
+    width: 100%;
+    font-size: 0.875rem !important;
+    height: 40px;
+}
+
+
 :where(.is-not-mandatory) {
+
     input,
     ::ng-deep .p-inputnumber,
     ::ng-deep p-calendar input.p-inputtext,

@@ -33,7 +33,7 @@
                 <p-treeSelect
                     *ngIf="data['type'] == 'tree'"
                     [inputId]="data['fieldName']"
-                    [ngModel]="getTreeNode(model)"
+                    [ngModel]="selectedNode"
                     [options]="options"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"

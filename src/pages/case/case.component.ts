@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { MAttribute } from '../../services/attributes/models/attribute.model';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { MProperty } from 'src/services/attributes/models/property.model';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute } from '@angular/router';
 import { CaseFormComponent } from './case-form/case-form.component';
+import { MCaseSection } from './case.model';
+import { APIResponse } from 'src/app/app.interfaces';
+import { Attribute } from 'src/app/app.models';
+import { ATTR_TYPES } from 'src/app/app.config';
 
 
 @Component({
@@ -36,6 +40,7 @@ export class CaseComponent implements OnInit {
   //   'title': ''
   // };
 
+  public options: any;
   public isSidebarVisible: boolean = true;
 
   constructor(

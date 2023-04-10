@@ -12,6 +12,7 @@ import { ToastModule } from "primeng/toast";
 import { CaseFormComponent } from "./case-form/case-form.component";
 import { CaseComponent } from "./case.component";
 import { CustomInputComponent } from "../client/custom-input/custom-input.component";
+import { CheckboxModule } from "primeng/checkbox";
 
 @NgModule({
     declarations: [CaseComponent, CaseFormComponent],
@@ -23,6 +24,7 @@ import { CustomInputComponent } from "../client/custom-input/custom-input.compon
         InputMaskModule,
         ToastModule,
         CustomInputComponent,
+        CheckboxModule,
         TableModule,
         SelectButtonModule,
         FormsModule,
