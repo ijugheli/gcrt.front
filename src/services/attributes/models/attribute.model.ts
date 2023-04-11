@@ -68,7 +68,6 @@ export class MAttribute {
 
             this.rows.get(value.value_id)?.append(value);
         });
-
         this.withOptions(this.values);
     }
 

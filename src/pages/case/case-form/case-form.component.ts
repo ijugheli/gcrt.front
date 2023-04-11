@@ -7,8 +7,11 @@ import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Attribute } from 'src/app/app.models';
 import { ATTR_TYPES } from 'src/app/app.config';
-import { CaseAttrs, ICase, ICaseSection, IConsultation, IDiagnosis, IReferral, MCaseSection } from '../case.model';
-import { flattenTree } from 'src/app/app.func';
+import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral } from '../case.model';
+import { flattenTree, parseTree } from 'src/app/app.func';
+import { carePlanMap, carePlanTreeID } from '../case-attrs/care-plan';
+import { CaseService } from 'src/services/case.service';
+import { formsOfViolenceMap, formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
 
 
 @Component({
@@ -19,15 +22,13 @@ import { flattenTree } from 'src/app/app.func';
 })
 
 export class CaseFormComponent implements OnInit {
-  public pageTitle: string = 'კლიენტის დამატება';
+  public pageTitle: string = 'ქეისი';
   public isLoading: boolean = false;
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
   public referral: IReferral = new IReferral();
   public diagnosis: IDiagnosis = new IDiagnosis();
   public consultation: IConsultation = new IConsultation();
-  public carePlan: ICaseSection = new ICaseSection();
-  public formsOfViolence: ICaseSection = new ICaseSection();
   public selectedSection: any = { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' };
   public options: any = [
     { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' },
@@ -46,8 +47,6 @@ export class CaseFormComponent implements OnInit {
   careplans!: any[];
   parents!: any[];
 
-  public onOptionClick(event: any) {
-  }
   public menuItems: MenuItem[] = [
     {
       label: 'HTML',
@@ -68,89 +67,27 @@ export class CaseFormComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private attrService: AttributesService,
+    public caseService: CaseService,
   ) { }
 
   ngOnInit() {
+    this.initTree('carePlanTree', carePlanTreeID);
+    this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
+  }
 
-    this.Case.care_plans[0] = {
-      case_id: 0,
-      category: 125657,
-      comment: 'ragaca'
-    };
-    //რეფერალური წყარო 
+  private initTree(treeKey: keyof CaseService, attrID: number) {
+    if (this.caseService[treeKey].length !== 0) return;
     this.attrService
-      .full(45, true)
-      .subscribe((d) => this.receiveResponse(d));
+      .full(attrID)
+      .subscribe((d) => this.caseService[treeKey] = this.caseService.parseTreeData(d));
   }
-
-
-
-
-  private receiveResponse(response: APIResponse<Attribute[]>) {
-    const attribute: Attribute[] = response.data!;
-
-    this.processAttribute(attribute);
-  }
-
-  private processAttribute(data: any,) {
-    if (!data || typeof data['type'] == 'undefined' || data['type'] == undefined) {
-      return;
-    }
-
-    const isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
-
-
-    if (isTree) {
-      this.referralSources = this.attrService.parseTree(data['tree']);;
-      this.careplans = this.parseCaseSection(flattenTree(this.referralSources));
-      this.parents = this.getCarePlanP();
-      console.log(this.careplans);
-      // console.log(rame);
-      return;
-    }
-  }
-
-  public getCarePlanP() {
-    return this.careplans.filter(e => e.p_value_id == 0);
-  }
-
-  public getCarePlanNodes(id: number) {
-    return this.careplans.filter(e => e.p_value_id == id);
-  }
-
-  public onNodeExpand(event: any) {
-    const node = event.node;
-    if (node.children.length > 0) {
-      return;
-    }
-
-    this.attrService.treeNodes(43, node.data.value_id, true).subscribe((items) => {
-      node.children = this.attrService.parseTree(items);
-      this.referralSources = [...this.referralSources];
-      node.expanded = true;
+  public onSave(event: any) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'შენახვა წარმატებით დასრულდა',
     });
   }
-
-  private parseCaseSection(tree: any[]): any[] {
-    return tree.map((node: any) => {
-      const temp = new MCaseSection();
-      temp.category = node.data.id;
-      temp.p_value_id = node.data.p_value_id;
-      temp.value_id = node.data.value_id;
-      temp.title = node.data.title;
-      temp.p_title = this.referralSources.find((e: any) => e.data.value_id == temp.p_value_id)?.data.title ?? '';
-
-      const carePlan = this.Case.care_plans.find(e => e.category == temp.category);
-      if (carePlan !== undefined) {
-        temp.isSelected = true;
-        temp.comment = carePlan.comment;
-      }
-      return temp;
-    });
-
-  }
-
-  private showSuccess(msg: string) {
+  public showSuccess(msg: string) {
     this.messageService.add({
       severity: 'success',
       summary: msg,

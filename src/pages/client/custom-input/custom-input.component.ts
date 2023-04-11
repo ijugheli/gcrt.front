@@ -9,11 +9,10 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TreeSelectModule } from 'primeng/treeselect';
-import { ATTR_TYPES } from 'src/app/app.config';
-import { flattenTree } from 'src/app/app.func';
+import { ATTR_TYPES, VIEW_TYPE_ID } from 'src/app/app.config';
+import { flattenTree, parseTree } from 'src/app/app.func';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Attribute } from 'src/app/app.models';
-import { MCaseSection } from 'src/pages/case/case.model';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 
 @Component({
@@ -39,23 +38,7 @@ export class CustomInputComponent implements OnInit {
   constructor(private attrService: AttributesService) { }
 
   ngOnInit() {
-    if (this.data['propertyID'] === null) {
-      this.initialized = true;
-      return;
-    }
-
-    if (this.data['type'] == 'tree') {
-      this.attrService
-        .full(this.data['propertyID'], true)
-        .subscribe((d) => this.receiveResponse(d));
-
-      this.initialized = true;
-      return;
-    }
-
-    this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
-    this.filter = this.options.length > 5;
-    this.initialized = true;
+    this.init();
   }
 
   public valid() {
@@ -73,14 +56,8 @@ export class CustomInputComponent implements OnInit {
     }
   }
 
-
   public onUpdate(event?: any) {
     if (this.data['type'] == 'tree') {
-      // const selectedNodeIDs = event.map((e: any) => e.data.id);
-      // this.selectedNodes = this.getTreeNodes(selectedNodeIDs);
-      // this.model = selectedNodeIDs;
-
-      console.log(event);
       this.selectedNode = this.getTreeNode(event.data.id);
       this.model = event.data.id;
     } else {
@@ -100,69 +77,54 @@ export class CustomInputComponent implements OnInit {
   public getTreeNode(nodeID: any[]): TreeNode | undefined {
     if (nodeID == null || this.options === undefined) return;
 
-    // return flattenTree(this.options).filter(e => ids.includes(e.data.id));
     return (this.options as TreeNode[]).filter(e => nodeID == e.data.id)[0] as TreeNode;
   }
 
-
-  private receiveResponse(response: APIResponse<Attribute[]>) {
-    const attribute: Attribute[] = response.data!;
-
-    this.processAttribute(attribute);
-  }
-
-  private processAttribute(data: any,) {
-    if (!data || typeof data['type'] == 'undefined' || data['type'] == undefined) {
-      return;
-    }
-
-    const isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
-
-    if (isTree) {
-      this.options = this.attrService.parseTree(data['tree']);
-
-
-      // console.log(this.options);
-      // const rame = this.parseee(data['tree']);
-      // console.log(rame);
-      // if (this.model !== undefined) {
-      //   this.selectedNodes = flattenTree(this.options).filter(e => this.model.includes(e.data.id));
-      // }
-
-      return;
-    }
-  }
-
-  // private parseee(tree: any[]) {
-  //   return (Array.from(Object.values(tree)) as TreeNode[])
-  //     .filter((item) => {
-  //       return item.data != undefined && item.data != null;
-  //     })
-  //     .map((node: any) => {
-  //       const temp = new MCaseSection();
-  //       if (node.children) {
-  //         temp.children = this.parseee(node.children);
-  //       }
-  //       temp.p_value_id = node.data.p_value_id;
-  //       temp.value_id = node.data.value_id;
-  //       temp.title = node.data.title;
-
-  //       return temp;
-  //     });
-
-  // }
   public onNodeExpand(event: any) {
     const node = event.node;
     if (node.children.length > 0) {
       return;
     }
+    node.expanded = true;
 
     this.attrService.treeNodes(this.data['propertyID'], node.data.value_id, true).subscribe((items) => {
-      node.children = this.attrService.parseTree(items);
+      node.children = parseTree(items as any);
       this.options = [...this.options];
-      node.expanded = true;
     });
   }
 
+  private init() {
+    if (this.data['propertyID'] === null) {
+      this.initialized = true;
+      return;
+    }
 
+    if (this.data['type'] == 'tree') {
+      this.initTreeOptions();
+      return;
+    }
+
+    this.initOptions();
+  }
+
+  private initOptions(): void {
+    this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
+
+    this.filter = this.options.length > 5;
+    this.initialized = true;
+  }
+
+  private initTreeOptions(): void {
+    this.attrService
+      .full(this.data['propertyID'], true)
+      .subscribe((d) => this.parseTreeOptions(d));
+
+    this.initialized = true;
+  }
+
+  private parseTreeOptions(response: APIResponse<Attribute[]>) {
+    const attribute: any = response.data!;
+
+    this.options = parseTree(attribute['tree']);
+  }
 }

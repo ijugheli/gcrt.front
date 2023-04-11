@@ -7,7 +7,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute } from '@angular/router';
 import { CaseFormComponent } from './case-form/case-form.component';
-import { MCaseSection } from './case.model';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Attribute } from 'src/app/app.models';
 import { ATTR_TYPES } from 'src/app/app.config';

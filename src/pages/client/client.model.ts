@@ -1,4 +1,4 @@
-import { Case, ICaseSection, IConsultation, IDiagnosis, IPsychodiagnosis, IReferral } from "../case/case.model";
+import { Case, IConsultation, IDiagnosis, IPsychodiagnosis, IReferral } from "../case/case.model";
 import { additionalMap } from "./client-attrs/client.additional";
 import { addressList, addressMap } from "./client-attrs/client.address";
 import { contactList, contactMap } from "./client-attrs/client.contact";
@@ -109,7 +109,6 @@ export class ICustomInput {
     additionalKey!: keyof ClientAdditional;
     caseKey!: keyof Case;
     diagnosisKey!: keyof IDiagnosis;
-    caseSectionKey!: keyof ICaseSection;
     referralKey!: keyof IReferral;
     consultationKey!: keyof IConsultation;
     psychodiagnosisKey!: keyof IPsychodiagnosis;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Attribute, GuardedService } from 'src/app/app.models';
 import { ThisReceiver } from '@angular/compiler';
-import { API_URL } from 'src/app/app.config';
+import { API_URL, VIEW_TYPE_ID } from 'src/app/app.config';
 import { AuthService } from '../AuthService.service';
 import { IAttribute } from './interfaces/attribute.interface';
 import { first } from 'rxjs';
@@ -16,6 +16,7 @@ import { MPropertyValue } from './models/property.value.model';
 import { APIResponse } from 'src/app/app.interfaces';
 import { of } from 'rxjs';
 import { TreeNode } from 'primeng/api';
+import { MOption } from './models/option.model';
 
 @Injectable({
     providedIn: 'root'
@@ -25,6 +26,7 @@ export class AttributesService extends GuardedService {
     private cacheKey = 'props';
     public attributes: Map<number, MAttribute> = new Map();
     public properties: Map<number, MProperty> = new Map();
+    public options: Map<number, MOption> = new Map();
     public values: Map<number, MPropertyValue> = new Map();
 
     public urls: any = {
@@ -331,6 +333,9 @@ export class AttributesService extends GuardedService {
             if (attribute)
                 property = property.withSource(attribute);
         });
+        const tempOptions = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source.options.length > 0).flatMap(e => e.source.options);
+
+        this.options = new Map(tempOptions.map(element => [element.id, element]));
     }
 
     private appendTabs() {
@@ -408,19 +413,4 @@ export class AttributesService extends GuardedService {
                 : 1;
         });
     }
-
-    public parseTree(tree: any) {
-        return (Array.from(Object.values(tree)) as TreeNode[])
-            .filter((item) => {
-                return item.data != undefined && item.data != null;
-            })
-            .map((node: any) => {
-                if (node.children) {
-                    node.children = this.parseTree(node.children);
-                }
-
-                return node;
-            });
-    }
-
 }

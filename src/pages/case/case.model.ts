@@ -8,9 +8,9 @@ import { referralList } from "./case-attrs/referral";
 
 export class ICase {
     public case!: Case;
-    public forms_of_violence: ICaseSection[] =[];
-    public care_plans: ICaseSection[] = [];
-    public diagnosis: IDiagnosis[] = [ ];
+    public forms_of_violence: IFormOfViolence[] = [];
+    public care_plans: ICarePlan[] = [];
+    public diagnosis: IDiagnosis[] = [];
     public referral: IReferral[] = [];
     public consultation: IConsultation[] = [];
     public psychodiagnosis!: IPsychodiagnosis;
@@ -38,16 +38,25 @@ export class Case {
     };
 }
 
-export class ICaseSection {
-    public case_id!: number | null;
+export abstract class CaseSharedInterface {
+    public case_id?: number | null;
     public category!: number | null; // treeselect
     public comment!: string | null;
-    public setNodeID?: any = (node: any, key: 'category') => {
-        this[key] = node.data.id;
-    };
 }
 
-export class MCaseSection {
+export class ICarePlan implements CaseSharedInterface {
+    public case_id?: number | null;
+    public category!: number | null;
+    public comment!: string | null;
+}
+
+export class IFormOfViolence implements CaseSharedInterface {
+    public case_id?: number | null;
+    public category!: number | null;
+    public comment!: string | null;
+}
+
+export class MCheckboxTableItem {
     public case_id!: number | null;
     public category!: number | null;
     public p_value_id!: number | null; // treeselect

@@ -1,4 +1,5 @@
 <section>
+  <p-toast position="top-right"></p-toast>
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
       <div class="heading-section-title font-medium align-items-center">
@@ -6,7 +7,7 @@
       </div>
     </div>
   </div>
-  <div class="relative w-100 h-100 m-3 mt-6">
+  <div class="relative w-100 h-100 m-3" style="margin-top: 2rem!important;">
     <div class="grid">
       <div
         class="col-fixed"
@@ -23,11 +24,11 @@
       </div>
       <div
         class="col-fixed"
-        style="width: 1000px;"
+        style="width: calc(100vw - 280px - 280px - 48px);"
       >
         <div
           *ngIf="selectedSection.value == 0"
-          class="flex flex-row gap-8"
+          class="flex flex-row gap-4"
         >
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
             animation-duration-200">
@@ -70,94 +71,23 @@
           *ngIf="selectedSection.value == 1"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
-          <custom-input
-            [model]="formsOfViolence.category"
-            [data]="CaseAttrs.formsOfViolenceMap.get('category')"
-            (onChange)="formsOfViolence.category = $event"
-          ></custom-input>
+          <!-- table -->
+          <app-checkbox-table
+            [initialTree]="caseService.formsOfViolenceTree"
+            [caseSectionModel]="Case.forms_of_violence"
+            (onSave)="onSave(Case.forms_of_violence = $event)"
+          ></app-checkbox-table>
         </div>
         <div
           *ngIf="selectedSection.value == 2"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
-          <!-- <custom-input
-            [model]="carePlan.category"
-            [data]="CaseAttrs.carePlanMap.get('category')"
-            (onChange)="carePlan.category = $event"
-          ></custom-input> -->
-          <p-table
-            [value]="parents"
-            styleClass="p-datatable-sm p-datatable-gridlines"
-            sortField="title"
-            sortMode="single"
-            dataKey="title"
-            rowExpandMode="single"
-            rowGroupMode="subheader"
-            groupRowsBy="value_id"
-            responsiveLayout="scroll"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th width="5%"></th>
-                <th width="45%">დასახელება</th>
-                <th width="50%">კომენტარი</th>
-              </tr>
-            </ng-template>
-            <ng-template
-              pTemplate="groupheader"
-              let-carePlan
-              let-rowIndex="rowIndex"
-              let-expanded="expanded"
-            >
-              <tr>
-                <td colspan="3">
-                  <div class="flex flex-row align-items-center">
-                    <button
-                      type="button"
-                      pButton
-                      pRipple
-                      [pRowToggler]="carePlan"
-                      class="p-button-text p-button-rounded p-button-plain mr-2"
-                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                    ></button>
-                    <span class="font-bold ml-2">{{carePlan.title}}</span>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template
-              pTemplate="rowexpansion"
-              let-parent
-            >
-
-              <tr *ngFor="let care of getCarePlanNodes(parent.value_id)">
-                <td width="5%">
-                  <p-checkbox [binary]="true" [(ngModel)]="care.isSelected"></p-checkbox>
-                </td>
-                <td width="45%">
-                  {{care.title}}
-                </td>
-                <td 
-                  width="50%"
-                  [pEditableColumn]="care.comment"
-                  pEditableColumnField="care.title"
-                >
-                  <p-cellEditor *ngIf="care.isSelected">
-                    <ng-template pTemplate="input">
-                      <input
-                        type="text"
-                        [(ngModel)]="care.comment"
-                      >
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      {{care.comment}}
-
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+          <app-checkbox-table
+            [initialTree]="caseService.carePlanTree"
+            [caseSectionModel]="Case.care_plans"
+            (onSave)="onSave(Case.care_plans = $event)"
+          ></app-checkbox-table>
+          <!-- table -->
         </div>
         <div
           *ngIf="selectedSection.value == 3"

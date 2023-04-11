@@ -202,6 +202,8 @@ export class DataTableComponent implements OnInit {
     }
 
     this.loading = true;
+    node.expanded = true;
+
     this.attributes.treeNodes(this.attrID, node.data.value_id).subscribe((items) => {
       node.children = this.parseTree(items);
       this.tree = [...this.tree];
