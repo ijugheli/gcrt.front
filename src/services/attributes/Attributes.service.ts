@@ -32,6 +32,7 @@ export class AttributesService extends GuardedService {
 
     treeMapChange: AsyncSubject<Map<number, TreeNode>> = new AsyncSubject<Map<number, TreeNode>>();
     dropdownOptionChange: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+    propertyChange: AsyncSubject<number> = new AsyncSubject<number>();
 
     public urls: any = {
         'static': API_URL + '/attrs/static',
@@ -339,6 +340,9 @@ export class AttributesService extends GuardedService {
             if (attribute)
                 property = property.withSource(attribute);
         });
+
+        this.propertyChange.next(this.properties.size);
+        this.propertyChange.complete();
     }
 
     private appendTabs() {
@@ -437,12 +441,11 @@ export class AttributesService extends GuardedService {
         if (cache != null) {
             this.dropdownOptions = new Map(cache);
         }
-        if (this.properties.size > 0) {
+        this.propertyChange.subscribe((propertyMapSize) => {
             const tempOptions = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
             this.parseDropdownOptions(tempOptions.map(element => [element.id, element]));
-
             this.cacheService.set('dropdown_options', Array.from(this.dropdownOptions.entries()));
-        }
+        })
     }
 
     public initTreeSelect() {
