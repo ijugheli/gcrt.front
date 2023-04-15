@@ -3,7 +3,6 @@ import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Attribute } from 'src/app/app.models';
 import { ATTR_TYPES } from 'src/app/app.config';
-import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MCheckboxTableItem, CaseSharedInterface } from '../../case.model';
 import { flattenTree } from 'src/app/app.func';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -11,14 +10,15 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
-import { DividerModule } from 'primeng/divider';
-
+import { SkeletonModule } from 'primeng/skeleton';
+import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
+// For Forms_of_violence and care_plan
 @Component({
   standalone: true,
   selector: 'app-checkbox-table',
   templateUrl: './checkbox-table.component.html',
   styleUrls: ['./checkbox-table.component.scss'],
-  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule]
+  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule]
 })
 
 export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
@@ -27,6 +27,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
   @Output() onSave = new EventEmitter<T[]>();
   public parsedTree: MCheckboxTableItem[] = [];
   public parents: MCheckboxTableItem[] = [];
+  public isLoading: boolean = true;
 
   constructor(
     private attrService: AttributesService,
@@ -40,28 +41,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
   private init() {
     this.parsedTree = this.parseModel(flattenTree(this.initialTree));
     this.parents = this.filterParents();
-  }
-  private receiveResponse(response: APIResponse<Attribute[]>) {
-    const attribute: Attribute[] = response.data!;
-
-    this.processAttribute(attribute);
-  }
-
-  private processAttribute(data: any,) {
-    if (!data || typeof data['type'] == 'undefined' || data['type'] == undefined) {
-      return;
-    }
-
-    const isTree = data['type'] && data['type'] == ATTR_TYPES.get('tree');
-
-    // if (isTree) {
-    //   this.referralSources = this.attrService.parseTree(data['tree']);;
-    //   this.careplans = this.parseCaseSection(flattenTree(this.referralSources));
-    //   this.parents = this.getCarePlanP();
-    //   console.log(this.careplans);
-    //   // console.log(rame);
-    //   return;
-    // }
+    this.isLoading = false;
   }
 
   public getNodes(id: number) {
@@ -79,6 +59,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
   private filterParents() {
     return this.parsedTree.filter(e => e.p_value_id == 0);
   }
+
   private parseModel(tree: any[]): any[] {
     return tree.map((node: any) => {
       const temp = new MCheckboxTableItem();

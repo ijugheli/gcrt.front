@@ -102,3 +102,5 @@ export const additionalMap: Map<string, any> = new Map(
         ],
     ]
 );
+
+export const additionalList = Array.from(additionalMap.values());

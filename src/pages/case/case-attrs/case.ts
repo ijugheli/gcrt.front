@@ -1,4 +1,4 @@
-import { ICustomInput } from "src/pages/client/client.model";
+import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
 
 export const caseMap: Map<string, any> = new Map(
     [
@@ -49,7 +49,7 @@ export const caseMap: Map<string, any> = new Map(
                 label: 'ფილიალი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: null,
+                propertyID: 202,
                 isRequired: true,
                 isDisabled: false,
             }
@@ -146,4 +146,6 @@ export const caseMap: Map<string, any> = new Map(
         ],
     ]
 );
+
 export const caseList: ICustomInput[] = Array.from(caseMap.values());
+export const caseCols: ICaseCol[] = caseList.map(e => new ICaseCol(e));

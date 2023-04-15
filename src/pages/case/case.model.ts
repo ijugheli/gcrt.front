@@ -68,6 +68,8 @@ export class MCheckboxTableItem {
 }
 
 export class IDiagnosis {
+    public generated_id?: number;
+    public id!: number | null;
     public case_id!: number | null;
     public status!: number | null;
     public type!: number | null;
@@ -77,9 +79,15 @@ export class IDiagnosis {
     public diagnosis_date!: Date | null;
     public links_with_trauma!: number | null;
     public comment!: string | null;
-    public setNodeID: any = (node: any, key: 'icd') => {
+    public setNodeID?: any = (node: any, key: 'icd') => {
         this[key] = node.data.id;
     };
+
+    constructor() {
+        if (this.id == null) {
+            this.generated_id = Date.now();
+        }
+    }
 }
 
 export class IReferral {

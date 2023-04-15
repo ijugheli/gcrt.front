@@ -7,11 +7,20 @@
     </ul> -->
     <!-- <p-menu #menu  [model]="items"></p-menu> -->
 
-    <div id="app-sidebar-1"
-        class="surface-section h-screen hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 border-right-1 surface-border select-none">
+    <div
+        id="app-sidebar-1"
+        class="surface-section h-screen hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 border-right-1 surface-border select-none"
+    >
         <div class="flex flex-column h-full">
-            <div class="flex align-items-center px-4 flex-shrink-0" style="height:60px">
-                <img src="assets/img/logo.png" alt="Image" height="40">
+            <div
+                class="flex align-items-center px-4 flex-shrink-0"
+                style="height:60px"
+            >
+                <img
+                    src="assets/img/logo.png"
+                    alt="Image"
+                    height="40"
+                >
             </div>
             <p-divider></p-divider>
 
@@ -19,8 +28,15 @@
                 <ul class="main-menu-list list-none p-2 m-0">
                     <!-- Entities -->
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-server mr-2"></i>
                             <span class="font-bold">მონაცემთა ბაზა</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
@@ -28,10 +44,26 @@
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
 
                             <li *ngFor="let item of objects">
-                                <a pRipple [routerLink]="item.action" class="menu-leaf main-menu-button">
+                                <a
+                                    pRipple
+                                    [routerLink]="item.action"
+                                    class="menu-leaf main-menu-button"
+                                >
                                     <span class="font-medium ">{{item.title}}</span>
                                     <span class="item-count-style item-count-text-style">
                                         {{item.count}}
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    pRipple
+                                    [routerLink]="'/client'"
+                                    class="menu-leaf main-menu-button"
+                                >
+                                    <span class="font-medium ">კლიენტი</span>
+                                    <span class="item-count-style item-count-text-style">
+                                        0
                                     </span>
                                 </a>
                             </li>
@@ -39,23 +71,41 @@
                     </li>
                     <!-- Normal Params -->
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-wrench mr-2"></i>
                             <span class="font-bold">პარამეტრები</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
                         </a>
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <li>
-                                <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                                    enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                                <a
+                                    pRipple
+                                    class="main-menu-button"
+                                    pStyleClass="@next"
+                                    enterClass="hidden"
+                                    enterActiveClass="slidedown"
+                                    leaveToClass="hidden"
+                                    leaveActiveClass="slideup"
+                                >
                                     <i class="pi pi-list mr-2"></i>
                                     <span class="font-bold">სტანდარტული</span>
                                     <i class="pi pi-chevron-down ml-auto"></i>
                                 </a>
                                 <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                                     <li *ngFor="let item of attributes">
-                                        <a pRipple routerLink="{{item.action}}" class="menu-leaf main-menu-button">
+                                        <a
+                                            pRipple
+                                            routerLink="{{item.action}}"
+                                            class="menu-leaf main-menu-button"
+                                        >
                                             <span class="font-medium">{{item.title}}</span>
                                             <span class="item-count-style item-count-text-style">
                                                 {{item.count}}
@@ -74,15 +124,26 @@
                                 </ul>
                             </li>
                             <li>
-                                <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                                    enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                                <a
+                                    pRipple
+                                    class="main-menu-button"
+                                    pStyleClass="@next"
+                                    enterClass="hidden"
+                                    enterActiveClass="slidedown"
+                                    leaveToClass="hidden"
+                                    leaveActiveClass="slideup"
+                                >
                                     <i class="pi pi-sitemap mr-2"></i>
                                     <span class="font-bold">მრავალ დონიანი</span>
                                     <i class="pi pi-chevron-down ml-auto"></i>
                                 </a>
                                 <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                                     <li *ngFor="let item of trees">
-                                        <a pRipple class="menu-leaf main-menu-button" routerLink="{{item.action}}">
+                                        <a
+                                            pRipple
+                                            class="menu-leaf main-menu-button"
+                                            routerLink="{{item.action}}"
+                                        >
                                             <span class="font-medium">{{item.title}}</span>
                                             <span class="item-count-style item-count-text-style">
                                                 {{item.count}}
@@ -94,8 +155,15 @@
                         </ul>
                     </li>
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-chart-line mr-2"></i>
                             <span class="font-bold">რეპორტინგი</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
@@ -148,27 +216,46 @@
                         </ul>
                     </li>
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-chart-bar mr-2"></i>
                             <span class="font-bold">მონაცემთა სქემები</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
                         </a>
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <li>
-                                <a routerLink="/structure/1" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/structure/1"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-list mr-2"></i>
                                     <span class="font-medium">სტანდარტული ატრიბუტები</span>
                                 </a>
                             </li>
                             <li>
-                                <a routerLink="/structure/2" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/structure/2"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-sitemap mr-2"></i>
                                     <span class="font-medium">ხისებრი ატრიბუტები</span>
                                 </a>
                             </li>
                             <li>
-                                <a routerLink="/structure/3" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/structure/3"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-box mr-2"></i>
                                     <span class="font-medium">ობიექტები</span>
                                 </a>
@@ -176,8 +263,15 @@
                         </ul>
                     </li>
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-book mr-2"></i>
                             <span class="font-bold">კითხვარები</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
@@ -185,8 +279,12 @@
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <ng-container *ngIf="surveyList !== null">
                                 <li *ngFor="let item of surveyList">
-                                    <a pRipple routerLink="{{ '/survey/' + item.id }}" class="main-menu-button"
-                                        pStyleClass="@next">
+                                    <a
+                                        pRipple
+                                        routerLink="{{ '/survey/' + item.id }}"
+                                        class="main-menu-button"
+                                        pStyleClass="@next"
+                                    >
                                         <span class="font-medium">{{item.title}}</span>
                                     </a>
                                 </li>
@@ -194,51 +292,88 @@
                         </ul>
                     </li>
                     <li>
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-users mr-2"></i>
                             <span class="font-bold">ადმინისტრაცია</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
                         </a>
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <li>
-                                <a routerLink="/users/add" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/users/add"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-user-plus mr-2"></i>
                                     <span class="font-cl">დამატება</span>
                                 </a>
                             </li>
                             <li>
-                                <a routerLink="/users" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/users"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-list mr-2"></i>
                                     <span class="font-medium">ადმინისტრატორები</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li *ngIf="user" class="mt-auto">
+                    <li
+                        *ngIf="user"
+                        class="mt-auto"
+                    >
                         <hr class="mb-3 mx-3 border-top-1 border-none surface-border">
 
-                        <a pRipple class="main-menu-button" pStyleClass="@next" enterClass="hidden"
-                            enterActiveClass="slidedown" leaveToClass="hidden" leaveActiveClass="slideup">
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
                             <i class="pi pi-user mr-2"></i>
                             <span class="font-medium">{{user.name}} {{user.lastname}}</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
                         </a>
                         <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <li>
-                                <a routerLink="/reports/users" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/reports/users"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-chart-bar mr-2"></i>
                                     <span class="font-cl">პირადი აქტივობა</span>
                                 </a>
                             </li>
                             <li>
-                                <a routerLink="/change-password" pRipple class="main-menu-button">
+                                <a
+                                    routerLink="/change-password"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-lock-open mr-2"></i>
                                     <span class="font-cl">პაროლის ცვლილება</span>
                                 </a>
                             </li>
                             <li>
-                                <a (click)="logout()" pRipple class="main-menu-button">
+                                <a
+                                    (click)="logout()"
+                                    pRipple
+                                    class="main-menu-button"
+                                >
                                     <i class="pi pi-sign-out mr-2"></i>
                                     <span class="font-medium">გასვლა</span>
                                 </a>

@@ -1,8 +1,28 @@
+<p-toast position="top-right"></p-toast>
 <section>
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
-      <div class="heading-section-title font-medium align-items-center">
+      <div class="flex flex-row font-medium align-items-center justify-content-start gap-3">
         <span>{{pageTitle}}</span>
+        <button
+          type="button"
+          class="border-btn mb-2 w-min"
+          [disabled]="clientService.isInputDisabled"
+          (click)="onSave($event)"
+        >
+
+          <i
+            *ngIf="!clientService.isInputDisabled"
+            class="pi pi-check mr-2"
+          >
+          </i>
+          <i
+            *ngIf="clientService.isInputDisabled"
+            class="pi pi-spin pi-spinner mr-2"
+          >
+          </i>
+          შენახვა
+        </button>
       </div>
     </div>
   </div>
@@ -14,7 +34,7 @@
       >
         <p-selectButton
           [(ngModel)]="selectedSection"
-          [options]="options"
+          [options]="menuOptions"
           optionLabel="label"
         ></p-selectButton>
       </div>
@@ -26,8 +46,8 @@
         style="width: 400px;"
       >
         <div
-          *ngIf="selectedSection.value == 0"
           class="flex flex-row gap-8"
+          [class.is-not-visible]="selectedSection.value != 0"
         >
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
             animation-duration-200">
@@ -35,7 +55,7 @@
               <custom-input
                 [model]="client.main[item.mainKey]"
                 [data]="item"
-                (onChange)="client.main[(item.mainKey)] = $event"
+                (onChange)="onUpdate(client.main[(item.mainKey)] = $event)"
               ></custom-input>
             </div>
           </div>
@@ -45,13 +65,13 @@
               <custom-input
                 [model]="client.main[item.mainKey]"
                 [data]="item"
-                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.mainKey)] = $event) : client.main[(item.mainKey)] = $event)"
+                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.mainKey)] = $event) : onUpdate(client.main[(item.mainKey)] = $event))"
               ></custom-input>
             </div>
           </div>
         </div>
         <div
-          *ngIf="selectedSection.value == 1"
+          [class.is-not-visible]="selectedSection.value != 1"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <custom-input
@@ -133,7 +153,7 @@
           </custom-input>
         </div>
         <div
-          *ngIf="selectedSection.value == 2"
+          [class.is-not-visible]="selectedSection.value != 2"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <div *ngFor="let item of ClientAttrs.contactList">
@@ -146,7 +166,7 @@
           </div>
         </div>
         <div
-          *ngIf="selectedSection.value == 3"
+          [class.is-not-visible]="selectedSection.value != 3"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <div *ngFor="let item of ClientAttrs.addressList">

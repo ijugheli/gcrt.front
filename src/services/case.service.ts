@@ -8,30 +8,33 @@ import { Attribute, GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 import { parseTree } from 'src/app/app.func';
 import { ICarePlan } from 'src/pages/case/case.model';
+import { consultationCols } from 'src/pages/case/case-attrs/consultation';
+import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
+import { referralCols } from 'src/pages/case/case-attrs/referral';
+import { caseCols } from 'src/pages/case/case-attrs/case';
+import { ICaseCol } from 'src/pages/client/client.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaseService extends GuardedService {
-
   public carePlanTree: any[] = [];
   public formsOfViolenceTree: any[] = [];
+  public diagnosisCols: ICaseCol[] = diagnosisCols;
+  public referralCols: ICaseCol[] = referralCols;
+  public consultationCols: ICaseCol[] = consultationCols;
+  public caseCols: ICaseCol[] = caseCols;
 
   public urls: any = {
-    'list': API_URL + '/users/list',
-    'add': API_URL + '/users/add',
-    'edit': API_URL + '/users/edit/{user_id}',
-    'details': API_URL + '/users/{user_id}',
-    'changePassword': API_URL + '/users/changePassword',
-    'delete': API_URL + '/users/{user_id}',
-    'updatePermission': API_URL + '/users/permissions/{user_id}/{attr_id}',
-    'updateBooleanProperties': API_URL + '/users/update-boolean-properties/{user_id}',
-    'updatePassword': API_URL + '/users/update-password',
-    'getReport': API_URL + '/user/report',
+    'create': API_URL + '/case/add',
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
     super(auth.getToken());
+  }
+
+  public create(data: any): Observable<any> {
+    return this.http.post(this.urls['create'], data, { headers: this.headers });
   }
 
   public parseTreeData(response: APIResponse<Attribute[]>) {

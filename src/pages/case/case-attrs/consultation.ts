@@ -1,4 +1,4 @@
-import { ICustomInput } from "src/pages/client/client.model";
+import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
 
 export const consultationMap: Map<string, any> = new Map(
     [
@@ -71,3 +71,4 @@ export const consultationMap: Map<string, any> = new Map(
     ]
 );
 export const consultationList: ICustomInput[] = Array.from(consultationMap.values());
+export const consultationCols: ICaseCol[] = consultationList.map(e => new ICaseCol(e));

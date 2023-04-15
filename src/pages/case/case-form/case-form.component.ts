@@ -12,6 +12,10 @@ import { flattenTree, parseTree } from 'src/app/app.func';
 import { carePlanMap, carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceMap, formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
+import { diagnosisCols } from '../case-attrs/diagnosis';
+import { referralCols } from '../case-attrs/referral';
+import { consultationCols } from '../case-attrs/consultation';
+import * as CaseConfig from '../case.config';
 
 
 @Component({
@@ -28,41 +32,12 @@ export class CaseFormComponent implements OnInit {
   public Case: ICase = new ICase();
   public referral: IReferral = new IReferral();
   public diagnosis: IDiagnosis = new IDiagnosis();
+  public copy: IDiagnosis = new IDiagnosis();
+  public menuOptions: any[] = CaseConfig.menuOptions;
   public consultation: IConsultation = new IConsultation();
-  public selectedSection: any = { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' };
-  public options: any = [
-    { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' },
-    { label: 'ძალადობის ფორმები', value: 1, icon: 'pi pi-list' },
-    { label: 'მოვლის გეგმა', value: 2, icon: 'pi pi-list' },
-    { label: 'დიაგნოზი', value: 3, icon: 'pi pi-copy' },
-    { label: 'რეფერალი', value: 4, icon: 'pi pi-building' },
-    { label: 'კონსულტაცია', value: 5, icon: 'pi pi-book' },
-    { label: 'ფსიქოდიაგნოსტირება', value: 6, icon: 'pi pi-book' },
-  ];
-  attribute: any;
+  public selectedSection: any = this.menuOptions[0];
   title: any;
   loading: boolean = false;
-  referralSources: any;
-  incidentSources: any;
-  careplans!: any[];
-  parents!: any[];
-
-  public menuItems: MenuItem[] = [
-    {
-      label: 'HTML',
-      items: [
-        {
-          label: 'HTML 1'
-        },
-        {
-          label: 'HTML 2'
-        }
-      ]
-    }];
-
-  public filters: { [key: string]: number | string | null } = {
-    'title': ''
-  };
 
   constructor(
     private messageService: MessageService,
@@ -73,20 +48,64 @@ export class CaseFormComponent implements OnInit {
   ngOnInit() {
     this.initTree('carePlanTree', carePlanTreeID);
     this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
+    var rame: IDiagnosis = {
+      id: null,
+      case_id: null,
+      generated_id: Date.now(),
+      comment: "dsadsda",
+      diagnosis_dsmiv: 126100,
+      icd: 100884,
+      status: 253,
+      type: 256,
+      diagnosis_icd10: null,
+      diagnosis_date: null,
+      links_with_trauma: null,
+    }
+    this.Case.diagnosis.push(rame);
+
   }
 
   private initTree(treeKey: keyof CaseService, attrID: number) {
-    if (this.caseService[treeKey].length !== 0) return;
-    this.attrService
-      .full(attrID)
-      .subscribe((d) => this.caseService[treeKey] = this.caseService.parseTreeData(d));
+    if (this.caseService[treeKey].length > 0) return;
+    this.caseService[treeKey] = this.attrService.treeMap.get(attrID);
   }
+
+  public onUpdate(event: any,) {
+    // console.log(this.diagnosis);
+  }
+
+  public onEditComplete() {
+    const id = this.diagnosis.id ?? this.diagnosis.generated_id;
+    const index = this.Case.diagnosis.findIndex(e => e.generated_id == id || e.id == id);
+    if (index !== -1) {
+      this.Case.diagnosis[index] = Object.assign({}, this.diagnosis);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'რედაქტირება წარმატებით დასრულდა',
+      });
+      this.diagnosis = Object.assign({}, new IDiagnosis());
+
+      return
+    } else {
+      this.Case.diagnosis.push(this.diagnosis);
+    }
+
+    this.diagnosis = Object.assign({}, new IDiagnosis());
+    console.log(this.diagnosis);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'წარმატებით დაემატა',
+    });
+  }
+
+
   public onSave(event: any) {
     this.messageService.add({
       severity: 'success',
       summary: 'შენახვა წარმატებით დასრულდა',
     });
   }
+
   public showSuccess(msg: string) {
     this.messageService.add({
       severity: 'success',

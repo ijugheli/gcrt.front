@@ -14,6 +14,8 @@ import { CaseComponent } from "./case.component";
 import { CustomInputComponent } from "../client/custom-input/custom-input.component";
 import { CheckboxModule } from "primeng/checkbox";
 import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table.component";
+import { SkeletonModule } from "primeng/skeleton";
+import { CaseSectionTable } from "./shared-components/case-section-table/case-section-table.component";
 
 @NgModule({
     declarations: [CaseComponent, CaseFormComponent],
@@ -30,7 +32,9 @@ import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table
         SelectButtonModule,
         FormsModule,
         KeyFilterModule,
-        CheckboxTable
+        CheckboxTable,
+        CaseSectionTable,
+        SkeletonModule
     ]
 })
 

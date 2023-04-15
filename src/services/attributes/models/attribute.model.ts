@@ -73,9 +73,45 @@ export class MAttribute {
 
 
     public withOptions(values: MPropertyValue[]) {
+        const hasCodeProperty = this.properties.length > 1 && this.properties.find(e => e.title.includes('კოდი'));
         this.options = values
-            .filter((value: MPropertyValue) => (this.properties.some((prop: MProperty) => (value.property_id == prop.id && prop.is_primary))))
+            .filter((value: MPropertyValue) => (this.properties.some((prop: MProperty) => {
+                if (hasCodeProperty) {
+                    return value.property_id == prop.id;
+                }
+                return value.property_id == prop.id && prop.is_primary;;
+            })))
             .map((value: MPropertyValue) => new MOption(value));
+
+        if (hasCodeProperty) {
+            this.options = this.mergeOptions();
+        }
+    }
+
+    public mergeOptions() {
+        const mergedOptions: MOption[] = [];
+
+        this.options.forEach((option: MOption) => {
+            const existingOptionIndex = mergedOptions.findIndex(
+                e => e!.value!.value_id === option!.value!.value_id
+            );
+
+            if (existingOptionIndex === -1) {
+                mergedOptions.push({ ...option, name: option.name + ' ' });
+                return;
+            }
+
+            const existingOption = mergedOptions[existingOptionIndex];
+
+            existingOption.name = option.name.length < 7 ? option.name + ' ' + existingOption.name : existingOption.name + ' ' + option.name;
+
+            if (this.properties.find(e => e.id == option!.value!.property_id)!.is_primary) {
+                existingOption.id = option.id;
+                existingOption.value = option.value;
+            }
+        });
+
+        return mergedOptions;
     }
 
     public extractProps(o: IAttribute) {

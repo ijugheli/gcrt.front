@@ -15,9 +15,9 @@ export const contactMap: Map<string, any> = new Map(
             }
         ],
         [
-            'home_number', {
-                fieldName: 'home_number',
-                contactKey: 'home_number',
+            'home_phone_number', {
+                fieldName: 'home_phone_number',
+                contactKey: 'home_phone_number',
                 label: 'სახლის ტელეფონი',
                 type: 'text',
                 icon: 'pi-pencil',

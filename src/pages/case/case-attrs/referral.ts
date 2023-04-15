@@ -1,4 +1,4 @@
-import { ICustomInput } from "src/pages/client/client.model";
+import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
 
 export const referralMap: Map<string, any> = new Map(
     [
@@ -83,3 +83,4 @@ export const referralMap: Map<string, any> = new Map(
     ]
 );
 export const referralList: ICustomInput[] = Array.from(referralMap.values());
+export const referralCols: ICaseCol[] = referralList.map(e => new ICaseCol(e));

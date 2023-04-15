@@ -2,13 +2,13 @@ import { ICustomInput } from "../client.model";
 
 export  const addressMap: Map<string, any> = new Map(
     [
-        ['location', {
-            fieldName: 'location',
-            addressKey: 'location',
+        ['location_id', {
+            fieldName: 'location_id',
+            addressKey: 'location_id',
             label: 'ლოკაცია',
             type: 'tree',
             icon: 'pi-sitemap',
-            propertyID: null,
+            propertyID: 27, //temporarysol
             isRequired: true,
             isDisabled: false,
         }
@@ -24,9 +24,9 @@ export  const addressMap: Map<string, any> = new Map(
             isDisabled: false,
         }
         ],
-        ['zip', {
-            fieldName: 'zip',
-            addressKey: 'zip',
+        ['zip_code', {
+            fieldName: 'zip_code',
+            addressKey: 'zip_code',
             label: 'ZIP/საფოსტო კოდი',
             type: 'text',
             icon: 'pi-pencil',

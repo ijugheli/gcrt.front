@@ -54,7 +54,7 @@
 
                 <p-dropdown
                     *ngIf="data['type'] == 'dropdown'"
-                    [disabled]="data['isDisabled']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [ngModel]="model"
                     [options]="options"
                     [placeholder]="data['label']"
@@ -74,13 +74,13 @@
                     *ngIf="data['type'] == 'textarea'"
                     [id]="data['fieldName']"
                     [ngModel]="model"
-                    [disabled]="data['isDisabled']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"
                     [autoResize]="true"
                     (ngModelChange)="onUpdate($event)"
                     rows="5"
-                    cols="60"
+                    cols="55"
                     pInputTextarea
                 >
                 </textarea>
@@ -89,7 +89,7 @@
                     *ngIf="data['type'] == 'text'"
                     [id]="data['fieldName']"
                     [ngModel]="model"
-                    [disabled]="data['isDisabled']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"
                     (ngModelChange)="onUpdate($event)"
@@ -101,7 +101,7 @@
                     *ngIf="data['type'] == 'int'"
                     [id]="data['fieldName']"
                     [(ngModel)]="model"
-                    [disabled]="data['isDisabled']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"
                     (ngModelChange)="onUpdate($event)"
@@ -115,7 +115,7 @@
                     *ngIf="data['type'] == 'double'"
                     [id]="data['fieldName']"
                     [(ngModel)]="model"
-                    [disabled]="data['isDisabled']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"
                     [maxFractionDigits]="2"
@@ -127,7 +127,7 @@
                 </p-inputNumber>
 
                 <label
-                    [class.p-disabled]="data['isDisabled']"
+                    [class.p-disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [for]="data['fieldName']"
                 >{{data['label']}}</label>
             </span>

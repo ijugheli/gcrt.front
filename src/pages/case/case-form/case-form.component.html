@@ -7,15 +7,18 @@
       </div>
     </div>
   </div>
-  <div class="relative w-100 h-100 m-3" style="margin-top: 2rem!important;">
+  <div
+    class="relative w-100 h-100 m-3"
+    style="margin-top: 2rem!important;"
+  >
     <div class="grid">
       <div
-        class="col-fixed"
+        class="col-fixed p-0"
         style="width:280px;"
       >
         <p-selectButton
           [(ngModel)]="selectedSection"
-          [options]="options"
+          [options]="menuOptions"
           optionLabel="label"
         ></p-selectButton>
       </div>
@@ -23,11 +26,11 @@
         <p-divider layout="vertical"></p-divider>
       </div>
       <div
-        class="col-fixed"
+        class="col-fixed p-0"
         style="width: calc(100vw - 280px - 280px - 48px);"
       >
         <div
-          *ngIf="selectedSection.value == 0"
+          [class.is-not-visible]="selectedSection.value != 0"
           class="flex flex-row gap-4"
         >
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
@@ -68,21 +71,23 @@
           </div>
         </div>
         <div
-          *ngIf="selectedSection.value == 1"
+          [class.is-not-visible]="selectedSection.value != 1"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <!-- table -->
           <app-checkbox-table
+            *ngIf="caseService.formsOfViolenceTree.length > 0"
             [initialTree]="caseService.formsOfViolenceTree"
             [caseSectionModel]="Case.forms_of_violence"
             (onSave)="onSave(Case.forms_of_violence = $event)"
           ></app-checkbox-table>
         </div>
         <div
-          *ngIf="selectedSection.value == 2"
+          [class.is-not-visible]="selectedSection.value != 2"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <app-checkbox-table
+            *ngIf="caseService.formsOfViolenceTree.length > 1"
             [initialTree]="caseService.carePlanTree"
             [caseSectionModel]="Case.care_plans"
             (onSave)="onSave(Case.care_plans = $event)"
@@ -90,39 +95,81 @@
           <!-- table -->
         </div>
         <div
-          *ngIf="selectedSection.value == 3"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+          [class.is-not-visible]="selectedSection.value != 3"
+          class="flex flex-row gap-4"
         >
-          <div *ngFor="let item of CaseAttrs.diagnosisList">
-            <custom-input
-              [model]="diagnosis[item.diagnosisKey]"
-              [data]="item"
-              (onChange)="diagnosis[item.diagnosisKey] = $event"
-            ></custom-input>
+          <div
+            class="flex flex-column align-content-center lg:justify-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+          >
+            <button
+              type="button"
+              class="border-btn mb-2 w-min"
+              (click)="onEditComplete()"
+            >
+              <i class="pi pi-check mr-2"></i>
+              შენახვა
+            </button>
+            <div *ngFor="let item of CaseAttrs.diagnosisList">
+              <custom-input
+                [model]="diagnosis[item.diagnosisKey]"
+                [data]="item"
+                (onChange)="onUpdate(diagnosis[item.diagnosisKey] = $event)"
+              ></custom-input>
+            </div>
+          </div>
+          <div
+            class="flex flex-column align-content-center fadeindown animation-ease-in animation-duration-200 flex-shrink-1 flex-grow-0"
+          >
+            <app-case-section-table
+              [data]="Case.diagnosis"
+              [columns]="caseService.diagnosisCols"
+              (onEdit)="diagnosis = $event"
+            >
+            </app-case-section-table>
           </div>
         </div>
         <div
-          *ngIf="selectedSection.value == 4"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+          [class.is-not-visible]="selectedSection.value != 4"
+          class="flex flex-row gap-4"
         >
-          <div *ngFor="let item of CaseAttrs.referralList">
-            <custom-input
-              [model]="referral[item.referralKey]"
-              [data]="item"
-              (onChange)="referral[item.referralKey] = $event"
-            ></custom-input>
+          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
+            <div *ngFor="let item of CaseAttrs.referralList">
+              <custom-input
+                [model]="referral[item.referralKey]"
+                [data]="item"
+                (onChange)="referral[item.referralKey] = $event"
+              ></custom-input>
+            </div>
+          </div>
+          <div
+            class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200 flex-grow-1"
+          >
+            <app-case-section-table
+              [data]="Case.referral"
+              [columns]="caseService.referralCols"
+            >
+            </app-case-section-table>
           </div>
         </div>
         <div
-          *ngIf="selectedSection.value == 5"
-          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+          [class.is-not-visible]="selectedSection.value != 5"
+          class="flex flex-row gap-4"
         >
-          <div *ngFor="let item of CaseAttrs.consultationList">
-            <custom-input
-              [model]="consultation[item.consultationKey]"
-              [data]="item"
-              (onChange)="consultation[item.consultationKey] = $event"
-            ></custom-input>
+          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
+            <div *ngFor="let item of CaseAttrs.consultationList">
+              <custom-input
+                [model]="consultation[item.consultationKey]"
+                [data]="item"
+                (onChange)="consultation[item.consultationKey] = $event"
+              ></custom-input>
+            </div>
+          </div>
+          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
+            <app-case-section-table
+              [data]="Case.consultation"
+              [columns]="caseService.consultationCols"
+            >
+            </app-case-section-table>
           </div>
         </div>
       </div>

@@ -4,12 +4,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
-import { APIResponse } from 'src/app/app.interfaces';
-import { Attribute } from 'src/app/app.models';
-import { ATTR_TYPES } from 'src/app/app.config';
-import { Client, ClientMain, ICustomInput, ClientAttrs } from '../client.model';
+import { Client, ClientAttrs } from '../client.model';
 import { calculateAge } from 'src/app/app.func';
+import { ClientService } from 'src/services/client.service';
 
+import * as ClientConfig from '../client.config';
 
 @Component({
   selector: 'app-client-form',
@@ -21,41 +20,17 @@ import { calculateAge } from 'src/app/app.func';
 export class ClientFormComponent implements OnInit {
   public pageTitle: string = 'კლიენტის დამატება';
   public client: Client = new Client();
+  public clientID!: number | null;
   public ClientAttrs: ClientAttrs = new ClientAttrs();
+  public menuOptions: any[] = ClientConfig.menuOptions;
   public isLoading: boolean = false;
   public hasSocialSupport: boolean = false;
   public hasInsurance: boolean = false;
-  public selectedSection: any = { label: 'ძირითადი მახასიათებლები', value: 0, icon: 'pi pi-user' };
-  public options: any = [
-    { label: 'ძირითადი მახასიათებლები', value: 0, icon: 'pi pi-user' },
-    { label: 'დამატებითი ინფორმაცია', value: 1, icon: 'pi pi-plus-circle' },
-    { label: 'საკონტაქტო ინფორმაცია', value: 2, icon: 'pi pi-phone' },
-    { label: 'სამისამართო ინფორმაცია', value: 3, icon: 'pi pi-map-marker' },
-  ];
-  categoryTree: any;
+  public selectedSection: any = ClientConfig.menuOptions[0];
+
   todayDate: any;
-
-  treeselect = [
-    {
-      key: '0',
-      label: 'კატეგორია1',
-      data: 'კატეგორია 1',
-      children: [
-        {
-          key: '0.0',
-          label: 'Child1',
-          data: 'Child1',
-        },
-        {
-          key: '0.1',
-          label: 'Child1',
-          data: 'Child1',
-        }
-      ]
-    },
-  ];
-
   constructor(
+    public clientService: ClientService,
     private messageService: MessageService,
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
@@ -65,11 +40,39 @@ export class ClientFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.clientService.values.clear();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id !== undefined && id !== null) {
+      this.clientID = parseInt(id);
+      this.client = this.clientService.clients.get(this.clientID)!;
+      this.pageTitle = 'კლიენტის რედაქტირება';
+      this.clientService.values.set('client_id', id);
+    }
+  }
+
+
+  public onSave(event: any): void {
+    if (!this.clientService.validate()) return;
+    this.clientService.isInputDisabled = true;
+    this.clientService.save(this.client).subscribe({
+      next: (data) => this.showSuccess(data.message),
+      error: (e) => this.showError(e.error.message),
+      complete: () => {
+        this.clientService.isInputDisabled = false;
+      }
+    });
+  }
+
+  public onUpdate(event: any) {
+    this.client.main.client_code = this.clientService.getClientCode();
   }
 
   public onSelect(event: any) {
     this.client.main.age = calculateAge(event);
     this.client.setAgeGroupID();
+    this.clientService.values.set('age', this.client.main.age);
+    this.clientService.values.set('age_group', this.client.main.age_group);
+    this.onUpdate(event);
   }
 
   private showSuccess(msg: string) {

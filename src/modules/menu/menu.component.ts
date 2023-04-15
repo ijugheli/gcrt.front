@@ -205,9 +205,9 @@ export class MenuComponent implements OnInit {
       return i['type'] == 2;
     }).map(this.mapAttributeType);
 
-    this.objects = attributeList.filter((i: any) => {
-      return i['type'] == 3;
-    }).map(this.mapAttributeType);
+    // this.objects = attributeList.filter((i: any) => {
+    //   return i['type'] == 3;
+    // }).map(this.mapAttributeType);
   }
 
   private mapAttributeType(attr: MAttribute) {

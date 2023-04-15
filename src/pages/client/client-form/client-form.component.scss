@@ -11,10 +11,9 @@ input,
     height: 40px;
 }
 
-// .p-editable-column  .p-element {
-//     display: flex;
-//     width: 100%;
-// }
+.is-not-visible {
+    display: none !important;
+}
 
 :where(.is-not-mandatory) {
 
@@ -24,7 +23,7 @@ input,
     ::ng-deep .p-dropdown,
     ::ng-deep .p-treeselect {
         max-width: unset;
-        width: calc(300px + 38px);
+        width: calc(300px + 38px) !important;
     }
 }
 

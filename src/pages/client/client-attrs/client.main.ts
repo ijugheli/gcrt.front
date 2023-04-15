@@ -10,7 +10,7 @@ export const mainMap: Map<string, any> = new Map(
                 label: 'ფილიალი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: null,
+                propertyID: 202,
                 isRequired: true,
                 isDisabled: false,
             }

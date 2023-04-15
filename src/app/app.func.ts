@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { TreeNode } from "primeng/api";
 
 export const reverseMap = (m: Map<number, string>) => {
@@ -21,6 +22,11 @@ export const validateEmail = (email: string) => {
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
 };
+
+export const formatDate = (date: any) => {
+    const pipe = new DatePipe('en_US');
+    return pipe.transform(date, 'd/M/yy');
+}
 
 export const calculateAge = (date: Date) => {
     let timeDiff = Math.abs(Date.now() - date.getTime());

@@ -1,4 +1,4 @@
-import { ICustomInput } from "src/pages/client/client.model";
+import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
 
 export const diagnosisMap: Map<string, any> = new Map(
     [
@@ -29,15 +29,15 @@ export const diagnosisMap: Map<string, any> = new Map(
             diagnosisKey: 'icd',
             label: 'ICD10 სარჩევი',
             type: 'tree',
-            icon: 'pi-sitemap', 
+            icon: 'pi-sitemap',
             propertyID: 43, // //attrID source for tree
             isRequired: false,
             isDisabled: false,
         }
         ],
-        ['dsmiv', {
-            fieldName: 'dsmiv',
-            diagnosisKey: 'dsmiv',
+        ['diagnosis_dsmiv', {
+            fieldName: 'diagnosis_dsmiv',
+            diagnosisKey: 'diagnosis_dsmiv',
             label: 'DSMIV',
             type: 'dropdown',
             icon: 'pi-list',
@@ -93,3 +93,4 @@ export const diagnosisMap: Map<string, any> = new Map(
     ]
 );
 export const diagnosisList: ICustomInput[] = Array.from(diagnosisMap.values());
+export const diagnosisCols: ICaseCol[] = diagnosisList.map(e => new ICaseCol(e));

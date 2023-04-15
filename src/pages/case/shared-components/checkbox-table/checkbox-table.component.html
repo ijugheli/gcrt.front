@@ -25,6 +25,23 @@
     </tr>
   </ng-template>
   <ng-template
+    pTemplate="body"
+    *ngIf="isLoading"
+  >
+    <tr style="height:46px">
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template
+    *ngIf="!isLoading"
     pTemplate="groupheader"
     let-parent
     let-rowIndex="rowIndex"
@@ -53,6 +70,7 @@
     </tr>
   </ng-template>
   <ng-template
+    *ngIf="!isLoading"
     pTemplate="rowexpansion"
     let-parent
   >
@@ -72,12 +90,14 @@
         [pEditableColumn]="node.comment"
         pEditableColumnField="care.title"
       >
-        <p-cellEditor *ngIf="node.isSelected">
+        <p-cellEditor>
           <ng-template pTemplate="input">
-            <input
-              type="text"
-              [(ngModel)]="node.comment"
-            >
+            <ng-container *ngIf="node.isSelected">
+              <input
+                type="text"
+                [(ngModel)]="node.comment"
+              >
+            </ng-container>
           </ng-template>
           <ng-template pTemplate="output">
             {{node.comment}}

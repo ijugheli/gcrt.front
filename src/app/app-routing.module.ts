@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'client', component: ClientComponent },
   { path: 'client/add', component: ClientFormComponent },
+  { path: 'client/edit/:id', component: ClientFormComponent },
   { path: 'case', component: CaseComponent },
   { path: 'case/add', component: CaseFormComponent },
   { path: 'otp', component: OTPComponent },

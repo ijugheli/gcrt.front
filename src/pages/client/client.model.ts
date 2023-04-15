@@ -1,31 +1,13 @@
+import { DatePipe } from "@angular/common";
 import { Case, IConsultation, IDiagnosis, IPsychodiagnosis, IReferral } from "../case/case.model";
 import { additionalMap } from "./client-attrs/client.additional";
 import { addressList, addressMap } from "./client-attrs/client.address";
 import { contactList, contactMap } from "./client-attrs/client.contact";
 import { mainFirstCol, mainMap, mainSecondCol } from "./client-attrs/client.main";
+import { formatDate } from "src/app/app.func";
+import { ageGroups } from "./client.config";
 
-const ageGroups = [
-    {
-        'from': 0,
-        'to': 15,
-        'id': 234,
-    },
-    {
-        'from': 16,
-        'to': 35,
-        'id': 236,
-    },
-    {
-        'from': 36,
-        'to': 55,
-        'id': 238,
-    },
-    {
-        'from': 56,
-        'to': 100,
-        'id': 240,
-    }
-];
+
 
 export class Client {
     public main!: ClientMain;
@@ -33,7 +15,7 @@ export class Client {
     public contact!: ClientContact;
     public address!: ClientAddress;
 
-    constructor() {
+    constructor(data?: any) {
         this.main = new ClientMain();
         this.additional = new ClientAdditional();
         this.contact = new ClientContact();
@@ -53,15 +35,19 @@ export class Client {
             }
         }
     }
+
+
 }
 
+
 export class ClientMain {
+    public id!: number | null;
     public branch!: number | null;
     public registration_date!: Date | null;
     public client_code!: string | null;
     public category_group_id!: number | null;
     public gender!: number | null;
-    public repeating_client!: number | null;
+    public repeating_client: boolean | null = false;
     public name!: string | null;
     public surname!: string | null;
     public birth_date!: Date | null;
@@ -71,6 +57,7 @@ export class ClientMain {
 }
 
 export class ClientAdditional {
+    public id!: number | null;
     public client_id!: number | null;
     public nationality!: number | null;
     public education!: number | null;
@@ -83,6 +70,7 @@ export class ClientAdditional {
 }
 
 export class ClientContact {
+    public id!: number | null;
     public client_id!: number | null;
     public phone_number!: string | null;
     public home_number!: string | null;
@@ -94,11 +82,12 @@ export class ClientContact {
 }
 
 export class ClientAddress {
+    public id!: number | null;
     public client_id!: number | null;
     public address!: string | null;
-    public zip!: string | null;
+    public zip_code!: string | null;
     public previous_address!: string | null;
-    public location!: number | null;
+    public location_id!: number | null;
 }
 
 export class ICustomInput {
@@ -120,6 +109,15 @@ export class ICustomInput {
     isDisabled!: boolean;
 }
 
+export class ICaseCol {
+    fieldName!: string;
+    label!: string;
+    constructor(data: any) {
+        this.fieldName = data.fieldName;
+        this.label = data.label;
+    }
+}
+
 export class ClientAttrs {
     public mainMap: Map<string, any> = mainMap;
     public mainFirstCol: ICustomInput[] = mainFirstCol;
@@ -131,3 +129,44 @@ export class ClientAttrs {
     public contactList: ICustomInput[] = contactList;
 
 }
+const clientKeys = [
+    'id',
+    'branch',
+    'registration_date',
+    'client_code',
+    'category_group_id',
+    'gender',
+    'repeating_client',
+    'name',
+    'surname',
+    'birth_date',
+    'age',
+    'age_group',
+    'personal_id',
+    'client_id',
+    'nationality',
+    'education',
+    'marital_status',
+    'family_members',
+    'has_social_support',
+    'has_insurance',
+    'work_address',
+    'profession',
+    'phone_number',
+    'home_phone_number',
+    'personal_email',
+    'work_phone_number',
+    'work_internal_phone_number',
+    'work_email',
+    'fax',
+    'address',
+    'zip_code',
+    'previous_address',
+    'location_id',
+];
+
+export const isClientKey = (key: string) => {
+    return clientKeys.includes(key);
+}
+
+
