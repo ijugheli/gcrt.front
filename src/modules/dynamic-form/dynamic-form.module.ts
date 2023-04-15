@@ -11,9 +11,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { MenuModule } from 'primeng/menu';
 import { CardModule } from 'primeng/card';
-import { DataTableModule } from '../data-table/data-table.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
@@ -22,12 +20,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
   imports: [
     CommonModule,
     BrowserModule,
-    BrowserAnimationsModule,
     TabViewModule,
     CardModule,
     FieldsetModule,
     ProgressBarModule,
-    DataTableModule,
     FormsModule,
     ButtonModule,
     MenuModule,

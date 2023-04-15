@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Attribute, GuardedService } from 'src/app/app.models';
-import { ThisReceiver } from '@angular/compiler';
-import { API_URL } from 'src/app/app.config';
+import { API_URL, VIEW_TYPE_ID } from 'src/app/app.config';
 import { AuthService } from '../AuthService.service';
 import { IAttribute } from './interfaces/attribute.interface';
-import { first } from 'rxjs';
+import { AsyncSubject, Observable, first } from 'rxjs';
 import { MAttribute } from './models/attribute.model';
 import { IProperty } from './interfaces/property.interface';
 import { MProperty } from './models/property.model';
-import { storageItemExists } from '../../app/app.func';
+import { flattenTree, parseTree, storageItemExists } from '../../app/app.func';
 import { MAttributeSection } from './models/section.model';
 import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
 import { APIResponse } from 'src/app/app.interfaces';
-import { of } from 'rxjs';
+import { TreeNode } from 'primeng/api';
+import { MOption } from './models/option.model';
+import { CacheService } from '../cache.service';
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +25,13 @@ export class AttributesService extends GuardedService {
     private cacheKey = 'props';
     public attributes: Map<number, MAttribute> = new Map();
     public properties: Map<number, MProperty> = new Map();
+    public dropdownOptions: Map<number, MOption> = new Map();
     public values: Map<number, MPropertyValue> = new Map();
+    public flatTreeMap: Map<number, TreeNode> = new Map();
+    public treeMap: Map<number, TreeNode> = new Map();
+
+    treeMapChange: AsyncSubject<Map<number, TreeNode>> = new AsyncSubject<Map<number, TreeNode>>();
+    dropdownOptionChange: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
 
     public urls: any = {
         'static': API_URL + '/attrs/static',
@@ -33,8 +40,11 @@ export class AttributesService extends GuardedService {
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
+        'fullWithSelect': API_URL + '/attrs/tree-select/{attr_id}/values',
+        'treeselectOptions': API_URL + '/attrs/tree-select-options',
         'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
         'tree': API_URL + '/attrs/{attr_id}/values/tree/{value_id}',
+        'treeSelect': API_URL + '/attrs/{attr_id}/values/tree-select/{value_id}',
         'title': API_URL + '/attrs/{attr_id}/title',
         'addValueCollection': API_URL + '/attrs/{attr_id}/values/add',
         'editValueCollection': API_URL + '/attrs/{attr_id}/values/{value_id}/edit',
@@ -49,7 +59,7 @@ export class AttributesService extends GuardedService {
         'removeProperty': API_URL + '/attrs/properties/{property_id}',
     };
 
-    constructor(private http: HttpClient, private auth: AuthService) {
+    constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService) {
         super(auth.getToken());
         this.load();
     }
@@ -153,9 +163,6 @@ export class AttributesService extends GuardedService {
         return Array.from(this.attributes.values());
     }
 
-
-
-
     // Individual Requests
     public add(data: any) {
         return this.http.post<APIResponse>(this.urls['addAttr'], data, { headers: this.headers });
@@ -181,6 +188,10 @@ export class AttributesService extends GuardedService {
         return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
     }
 
+    public getTreeselectOptions(): Observable<APIResponse<any>> {
+        return this.http.get<APIResponse<any>>(this.urls['treeselectOptions'], { headers: this.headers });
+    }
+
     public delete(attrID: number, values: any) {
         return this.http.post<APIResponse>(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
     }
@@ -189,8 +200,9 @@ export class AttributesService extends GuardedService {
         return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
     }
 
-    public full(attrID: number) {
-        return this.http.get<APIResponse<Attribute[]>>(this.urls['full'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+    public full(attrID: number, isTreeSelect: boolean = false) {
+        const url = isTreeSelect ? 'fullWithSelect' : 'full';
+        return this.http.get<APIResponse<Attribute[]>>(this.urls[url].replace('{attr_id}', attrID.toString()), { headers: this.headers });
     }
 
     public attribute(attrID: number) {
@@ -204,8 +216,9 @@ export class AttributesService extends GuardedService {
         );
     }
 
-    public treeNodes(attrID: number, valueID: number) {
-        return this.http.get<Attribute>(this.urls['tree']
+    public treeNodes(attrID: number, valueID: number, isTreeSelect: boolean = false) {
+        const url = isTreeSelect ? 'treeSelect' : 'tree';
+        return this.http.get<Attribute>(this.urls[url]
             .replace('{attr_id}', attrID.toString())
             .replace('{value_id}', valueID.toString()), { headers: this.headers }
         );
@@ -390,7 +403,7 @@ export class AttributesService extends GuardedService {
         });
 
         const regularProperties = attribute.properties.filter((property) => !property.isSection() && property.p_id == 0);
-        
+
         if (!attribute.hasSections() || regularProperties.length > 0) {
             attribute.appendSection((new MAttributeSection()).set({
                 title: 'მახასიათებლები',
@@ -402,7 +415,70 @@ export class AttributesService extends GuardedService {
                 ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
                 : 1;
         });
-
     }
 
+    /* For Case and Client  
+        AsyncSubjects for updating inputs(treeselect,dropdown) on data (options)
+        FlatTreeMap for getting title for Treeselect Columns
+        Treemap for getting options for Treeselect
+        dropdownOptions for getting options for Dropdowns
+     */
+
+    // For Tables
+    public getOptionTitle(data: any) {
+        if (typeof data == 'number') {
+            return this.dropdownOptions.get(data)?.name || this.flatTreeMap.get(data)?.label || data;
+        }
+        return data;
+    }
+
+    public initSelectOptions() {
+        const cache = this.cacheService.get('dropdown_options');
+        if (cache != null) {
+            this.dropdownOptions = new Map(cache);
+        }
+        if (this.properties.size > 0) {
+            const tempOptions = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
+            this.parseDropdownOptions(tempOptions.map(element => [element.id, element]));
+
+            this.cacheService.set('dropdown_options', Array.from(this.dropdownOptions.entries()));
+        }
+    }
+
+    public initTreeSelect() {
+        const cache = this.cacheService.get('tree_options');
+        if (cache != null) {
+            this.parseTrees(cache);
+            return
+        }
+
+        this.getTreeselectOptions().subscribe((data) => {
+            const parsedTrees: any = Object.entries(data.data).map(([key, value]) => {
+                return [parseInt(key), parseTree(value as any[])];
+            });
+            this.parseTrees(parsedTrees);
+
+            this.cacheService.set('tree_options', Array.from(this.treeMap.entries()));
+        });
+    }
+
+    private parseTrees(parsedTrees: any) {
+        this.treeMap = new Map(parsedTrees);
+
+        const trees = Array.from(this.treeMap.values()).flat();
+
+        for (let tree of flattenTree(trees)) {
+            if (!this.flatTreeMap.has(tree.data.id)) {
+                this.flatTreeMap.set(tree.data.id, tree);
+            }
+        }
+        this.treeMapChange.next(this.treeMap);
+        this.treeMapChange.complete();
+    }
+
+    private parseDropdownOptions(options: any) {
+        this.dropdownOptions = new Map(options);
+        this.dropdownOptionChange.next(this.dropdownOptions);
+        this.dropdownOptionChange.complete();
+    }
 }

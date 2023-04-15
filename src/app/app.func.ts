@@ -1,5 +1,18 @@
+import { DatePipe } from "@angular/common";
+import { TreeNode } from "primeng/api";
+
 export const reverseMap = (m: Map<number, string>) => {
     return new Map(Array.from(m, entry => [entry[1], entry[0]]));
+}
+
+export const flattenTree = (arr: any[]): any[] => {
+    return arr.reduce((acc, curr) => {
+        if (Array.isArray(curr.children)) {
+            return acc.concat(curr, flattenTree(curr.children));
+        } else {
+            return acc.concat(curr);
+        }
+    }, []);
 }
 
 export const validateEmail = (email: string) => {
@@ -9,6 +22,16 @@ export const validateEmail = (email: string) => {
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
 };
+
+export const formatDate = (date: any) => {
+    const pipe = new DatePipe('en_US');
+    return pipe.transform(date, 'd/M/yy');
+}
+
+export const calculateAge = (date: Date) => {
+    let timeDiff = Math.abs(Date.now() - date.getTime());
+    return Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25);
+}
 
 
 export const clone = (obj: any): any => {
@@ -49,4 +72,18 @@ export const clone = (obj: any): any => {
 export const storageItemExists = (key: string) => {
     const items = localStorage.getItem(key)
     return items != null && items !== undefined;
+}
+
+export const parseTree = (tree: any[]): TreeNode[] => {
+    return (Array.from(Object.values(tree)) as TreeNode[])
+        .filter((item) => {
+            return item.data != undefined && item.data != null;
+        })
+        .map((node: any) => {
+            if (node.children) {
+                node.children = parseTree(node.children);
+            }
+
+            return node;
+        });
 }

@@ -1,0 +1,184 @@
+<p-toast position="top-right"></p-toast>
+<section>
+  <div class="surface-section heading-section">
+    <div class="border-bottom-1 surface-border">
+      <div class="flex flex-row font-medium align-items-center justify-content-start gap-3">
+        <span>{{pageTitle}}</span>
+        <button
+          type="button"
+          class="border-btn mb-2 w-min"
+          [disabled]="clientService.isInputDisabled"
+          (click)="onSave($event)"
+        >
+
+          <i
+            *ngIf="!clientService.isInputDisabled"
+            class="pi pi-check mr-2"
+          >
+          </i>
+          <i
+            *ngIf="clientService.isInputDisabled"
+            class="pi pi-spin pi-spinner mr-2"
+          >
+          </i>
+          შენახვა
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="relative w-100 h-100 m-3 mt-6">
+    <div class="grid">
+      <div
+        class="col-fixed"
+        style="width:280px;"
+      >
+        <p-selectButton
+          [(ngModel)]="selectedSection"
+          [options]="menuOptions"
+          optionLabel="label"
+        ></p-selectButton>
+      </div>
+      <div class="col-fixed w-min">
+        <p-divider layout="vertical"></p-divider>
+      </div>
+      <div
+        class="col-fixed"
+        style="width: 400px;"
+      >
+        <div
+          class="flex flex-row gap-8"
+          [class.is-not-visible]="selectedSection.value != 0"
+        >
+          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
+            animation-duration-200">
+            <div *ngFor="let item of ClientAttrs.mainFirstCol">
+              <custom-input
+                [model]="client.main[item.mainKey]"
+                [data]="item"
+                (onChange)="onUpdate(client.main[(item.mainKey)] = $event)"
+              ></custom-input>
+            </div>
+          </div>
+          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
+            animation-duration-200">
+            <div *ngFor="let item of ClientAttrs.mainSecondCol">
+              <custom-input
+                [model]="client.main[item.mainKey]"
+                [data]="item"
+                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.mainKey)] = $event) : onUpdate(client.main[(item.mainKey)] = $event))"
+              ></custom-input>
+            </div>
+          </div>
+        </div>
+        <div
+          [class.is-not-visible]="selectedSection.value != 1"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <custom-input
+            [model]="client.additional.nationality"
+            [data]="ClientAttrs.additionalMap.get('nationality')"
+            (onChange)="client.additional.nationality = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.education"
+            [data]="ClientAttrs.additionalMap.get('education')"
+            (onChange)="client.additional.education = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.marital_status"
+            [data]=" ClientAttrs.additionalMap.get('marital_status')"
+            (onChange)="client.additional.marital_status = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.family_members"
+            [data]=" ClientAttrs.additionalMap.get('family_members')"
+            (onChange)="client.additional.family_members = $event"
+          >
+          </custom-input>
+
+          <div class="flex flex-row align-items-center justify-content-start gap-1">
+            <label for="social_help">იღებს თუ არა სოც. დახმარებას</label>
+            <p-inputSwitch
+              inputId="social_help"
+              [(ngModel)]="hasSocialSupport"
+            >
+            </p-inputSwitch>
+          </div>
+
+          <custom-input
+            *ngIf="hasSocialSupport"
+            [model]="client.additional.has_social_support"
+            [data]=" ClientAttrs.additionalMap.get('has_social_support')"
+            (onChange)="client.additional.has_social_support = $event"
+            class="fadeinup"
+          >
+          </custom-input>
+
+          <div class="flex flex-row align-items-center justify-content-start gap-1">
+            <label for="has_insurance">აქვს თუ არა ჯანმრთელობის დაზღვევა</label>
+            <p-inputSwitch
+              inputId="has_insurance"
+              [(ngModel)]="hasInsurance"
+            >
+            </p-inputSwitch>
+          </div>
+
+          <custom-input
+            *ngIf="hasInsurance"
+            [model]="client.additional.has_insurance"
+            [data]=" ClientAttrs.additionalMap.get('has_insurance')"
+            (onChange)="client.additional.has_insurance = $event"
+            class="fadeinup"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.work_address"
+            [data]=" ClientAttrs.additionalMap.get('work_address')"
+            (onChange)="client.additional.work_address = $event"
+          >
+          </custom-input>
+
+          <custom-input
+            [model]="client.additional.profession"
+            [data]=" ClientAttrs.additionalMap.get('profession')"
+            (onChange)="client.additional.profession = $event"
+          >
+          </custom-input>
+        </div>
+        <div
+          [class.is-not-visible]="selectedSection.value != 2"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <div *ngFor="let item of ClientAttrs.contactList">
+            <custom-input
+              [model]="client.contact[item.contactKey]"
+              [data]="item"
+              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.contactKey)] = $event) : client.contact[(item.contactKey)] = $event)"
+            >
+            </custom-input>
+          </div>
+        </div>
+        <div
+          [class.is-not-visible]="selectedSection.value != 3"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        >
+          <div *ngFor="let item of ClientAttrs.addressList">
+            <custom-input
+              [model]="client.address[item.addressKey]"
+              [data]="item"
+              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.addressKey)] = $event) : client.address[(item.addressKey)] = $event)"
+            >
+            </custom-input>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

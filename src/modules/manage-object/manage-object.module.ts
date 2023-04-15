@@ -6,26 +6,26 @@ import { FormsModule } from '@angular/forms';
 import { ListboxModule } from 'primeng/listbox';
 import { PanelModule } from 'primeng/panel';
 import { DividerModule } from 'primeng/divider';
-import { DataTableModule } from '../data-table/data-table.module';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { DynamicFormModule } from '../dynamic-form/dynamic-form.module';
+import { DataTableModule } from '../data-table/data-table.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     DividerModule,
+    DataTableModule,
     ListboxModule,
     PanelModule,
-    DataTableModule,
     ScrollPanelModule,
     DynamicFormModule
   ],
-  exports : [ManageObjectComponent],
+  exports: [ManageObjectComponent],
   declarations: [ManageObjectComponent]
 })
-export class ManageObjectModule { 
-  
+export class ManageObjectModule {
+
 
 
 

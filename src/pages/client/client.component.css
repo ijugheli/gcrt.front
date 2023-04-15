@@ -1,0 +1,31 @@
+label {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'roman';
+}
+
+span {
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'roman';
+}
+
+.structure-switch {
+    display: grid;
+    margin-top: 30px !important;
+}
+
+.structure-drop {
+    margin-right: 25px !important;
+}
+
+.form-actions {
+    width: 100%;
+    text-align: right;
+    margin: 10px 0px 0px 0px;
+}
+
+/* :host ::ng-deep .p-datatable-sm.p-datatable-gridlines.p-datatable.p-component { */
+/* width: calc(100vw - 500px); */
+/* } */

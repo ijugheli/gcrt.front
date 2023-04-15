@@ -1,6 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
-@import "primeflex/primeflex.css";
-@import "primeng/resources/themes/lara-dark-blue/theme.css";
+@import 'primeflex/primeflex.scss';
+@import "primeicons/primeicons.css";
+@import "primeng/resources/primeng.min.css";
+@import "primeng/resources/themes/saga-green/theme.css";
+@import "quill/dist/quill.core.css";
+@import "quill/dist/quill.snow.css";
+@import "ngx-spinner/animations/ball-scale-multiple.css";
+
+.main-menu-button {
+    @include styleclass('flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors');
+}
+
+.main-menu-ul {
+    @include styleclass('py-0 pl-2 pr-0 m-0 transition-all transition-duration-400 transition-ease-in-out')
+}
+
+.item-count-text-style {
+    @include styleclass('inline-flex align-items-center justify-content-center ml-auto bg-teal-500 text-0 border-circle')
+}
 
 html {
     scroll-behavior: smooth;
@@ -24,6 +41,14 @@ body {
     box-sizing: border-box;
 }
 
+.sd-root-modern ::-webkit-scrollbar-thumb {
+    background: var(--teal-500);
+}
+
+.sd-root-modern ::-webkit-scrollbar-thumb {
+    background: var(--teal-500);
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }
@@ -33,11 +58,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #2D972B;
+    background: var(--teal-500);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #2D972B;
+    background: var(--teal-600);
 }
 
 @font-face {
@@ -363,7 +388,16 @@ input:checked[type="checkbox"] {
 
 label {
     margin: 0;
+    font-family: 'roman' !important;
     line-height: 1;
+}
+
+th {
+    font-family: 'roman' !important;
+}
+
+input.p-inputtext {
+    font-family: roman !important;
 }
 
 input[type=number]::-webkit-outer-spin-button,
@@ -404,6 +438,7 @@ input:checked[type="radio"] {
     color: white;
     background-color: #46AB44;
 }
+
 .text ul {
     padding-left: 15px;
     list-style-type: disc;
@@ -541,6 +576,7 @@ $border: 1px solid $lightgrey;
     vertical-align: top;
     display: inline-block;
     height: 100vh;
+
     .list {
         padding: 20px;
 
@@ -1270,11 +1306,11 @@ section {
 .p-datatable .p-datatable-thead tr th {
     text-align: left;
     padding: 1rem 1rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid #e9ebed;
     border-width: 0 0 1px 0;
     font-weight: 600;
-    color: #495057;
-    background: #f8f9fa;
+    color: #555555;
+    background: #f7f6f9;
     transition: box-shadow 0.2s;
 }
 

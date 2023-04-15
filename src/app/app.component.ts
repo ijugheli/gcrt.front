@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AttributesService } from 'src/services/attributes/Attributes.service';
+import { VIEW_TYPE_ID } from './app.config';
+import { flattenTree, parseTree } from './app.func';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +19,11 @@ export class AppComponent {
     'otp'
   ];
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService) {
+    this.attrService.initSelectOptions();
+
+    this.attrService.initTreeSelect();
+
     const url = window.location.href.toString();
 
     console.log(activatedRoute.snapshot);
