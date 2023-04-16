@@ -56,7 +56,10 @@ export class ClientFormComponent implements OnInit {
     this.clientService.isInputDisabled = true;
     this.clientService.save(this.client).subscribe({
       next: (data) => this.showSuccess(data.message),
-      error: (e) => this.showError(e.error.message),
+      error: (e) => {
+        this.clientService.isInputDisabled = false;
+        this.showError(e.error.message);
+      },
       complete: () => {
         this.clientService.isInputDisabled = false;
       }

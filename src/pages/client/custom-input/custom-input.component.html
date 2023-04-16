@@ -33,6 +33,7 @@
                 <p-treeSelect
                     *ngIf="data['type'] == 'tree'"
                     [inputId]="data['fieldName']"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [ngModel]="selectedNode"
                     [options]="options"
                     [class.ng-invalid]="!valid()"
@@ -44,6 +45,7 @@
                 <p-calendar
                     *ngIf="data['type'] == 'date'"
                     [ngModel]="model"
+                    [disabled]="data['isDisabled'] || clientService.isInputDisabled"
                     [class.ng-invalid]="!valid()"
                     [class.ng-dirty]="!valid()"
                     [inputId]="data['fieldName']"
