@@ -30,9 +30,9 @@ export class CustomInputComponent implements OnInit, OnChanges {
   public isClientKey: boolean = false;
   public isCaseKey: boolean = false;
   public selectedNodes!: TreeNode[];
-  public flatTree: any;
+  public flatTree!: Map<number, TreeNode>;
   public selectedNode!: TreeNode | undefined;
-  public todayDate = new Date();
+  public todayDate: Date = new Date();
   public filter!: boolean;
 
   constructor(private attrService: AttributesService, public clientService: ClientService) { }
@@ -47,7 +47,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     }
   }
 
-  public valid() {
+  public isInputValid(): boolean {
     if (!this.data['isRequired'] || !this.clientService.isValidationEnabled) return true;
 
     switch (this.data['type']) {
@@ -62,7 +62,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     }
   }
 
-  public onUpdate(event?: any) {
+  public onUpdate(event?: any): void {
     if (this.data['type'] == 'tree') {
       this.selectedNode = this.getTreeNode(event.data.id);
       this.model = event.data.id;
@@ -70,7 +70,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
       this.model = event;
     }
 
-    if (!this.valid()) {
+    if (!this.isInputValid()) {
       this.onChange.emit(null);
       return;
     }
@@ -84,7 +84,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
 
 
-  public onNodeExpand(event: any) {
+  public onNodeExpand(event: any): void {
     const node = event.node;
     if (node.children.length > 0) {
       return;
@@ -99,7 +99,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   }
 
   // isClientKey for setting values in appropriate service for validation on submit
-  private init() {
+  private init(): void {
     this.isClientKey = isClientKey(this.data['fieldName']);
 
     if (this.isClientKey) {
@@ -151,7 +151,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     return this.flatTree.get(nodeID) as TreeNode;
   }
   // saving new treenodes for getTreeNode() 
-  private saveFlatTreeNodes() {
+  private saveFlatTreeNodes(): void {
     for (let tree of flattenTree(this.options)) {
       if (!this.attrService.flatTreeMap.has(tree.data.id)) {
         this.attrService.flatTreeMap.set(tree.data.id, tree.data);

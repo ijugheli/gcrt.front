@@ -1,4 +1,6 @@
-export const ageGroups: any[] = [
+import { IFormMenuOption } from "src/app/app.interfaces";
+
+export const ageGroups: Record<string, number>[] = [
     {
         'from': 0,
         'to': 15,
@@ -21,13 +23,13 @@ export const ageGroups: any[] = [
     }
 ];
 
-export const menuOptions: any[] = [
+export const menuOptions: IFormMenuOption[] = [
     { label: 'ძირითადი მახასიათებლები', value: 0, icon: 'pi pi-user' },
     { label: 'დამატებითი ინფორმაცია', value: 1, icon: 'pi pi-plus-circle' },
     { label: 'საკონტაქტო ინფორმაცია', value: 2, icon: 'pi pi-phone' },
     { label: 'სამისამართო ინფორმაცია', value: 3, icon: 'pi pi-map-marker' },
 ];
-export const detailTypes: any = {
+export const detailTypes: Record<number, string> = {
     0: 'main',
     1: 'additional',
     2: 'contact',

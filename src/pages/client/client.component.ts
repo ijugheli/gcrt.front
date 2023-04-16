@@ -12,6 +12,7 @@ import { additionalList } from './client-attrs/client.additional';
 import { contactList } from './client-attrs/client.contact';
 import { addressList } from './client-attrs/client.address';
 import * as ClientConfig from './client.config';
+import { APIResponse } from 'src/app/app.interfaces';
 
 
 @Component({
@@ -24,12 +25,11 @@ import * as ClientConfig from './client.config';
 export class ClientComponent implements OnInit {
   public pageTitle: string = 'კლიენტი';
   public isLoading: boolean = false;
-  public addPropertyButton = false;
   public attributes: MAttribute[] = [];
-  public selectedRow: any;
+  public selectedRow!: Client;
   public addPropertiesData: MProperty = new MProperty();
   public data: Client[] = [];
-  public loadingArray: any = Array(10);
+  public loadingArray: number[] = Array(10);
 
   public isSidebarVisible: boolean = false;
   public sidebarData!: any;
@@ -38,7 +38,6 @@ export class ClientComponent implements OnInit {
   constructor(
     public attrService: AttributesService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private router: Router,
     public clientService: ClientService,
   ) { }
@@ -47,7 +46,7 @@ export class ClientComponent implements OnInit {
     this.init();
   }
 
-  private init() {
+  private init(): void {
     this.isLoading = true;
     this.clientService.list().subscribe({
       next: (data) => this.setData(data),
@@ -56,18 +55,18 @@ export class ClientComponent implements OnInit {
     });
   }
 
-  public onEditClick() {
+  public onEditClick(): void {
     if (this.selectedRow != undefined) {
       this.router.navigate([`/client/edit/${this.selectedRow.main.id}`]);
     }
   }
 
-  public onAddClick() {
+  public onAddClick(): void {
     this.router.navigate(['/client/add']);
   }
 
-  public onDeleteClick() {
-    this.clientService.destroy(this.selectedRow.main.id).subscribe({
+  public onDeleteClick(): void {
+    this.clientService.destroy(this.selectedRow.main.id!).subscribe({
       next: (data) => {
         this.setData(data);
         this.showSuccess(data.message);
@@ -78,16 +77,16 @@ export class ClientComponent implements OnInit {
   }
 
 
-  private setData(data: any) {
+  private setData(data: APIResponse<Client[]>): void {
     if (data.data !== undefined) {
       this.clientService.mapClients(data.data);
       this.data = Array.from(this.clientService.clients.values());
     }
   }
 
-  public onDetailClick(type: any, data: any) {
+  public onDetailClick(type: number, data: any): void {
     this.sidebarData = data;
-    const types: any = ClientConfig.detailTypes;
+    const types: Record<number, string> = ClientConfig.detailTypes;
 
     switch (types[type]) {
       case 'main':
@@ -106,14 +105,14 @@ export class ClientComponent implements OnInit {
     this.isSidebarVisible = true;
   }
 
-  private showSuccess(msg: string) {
+  private showSuccess(msg: string): void {
     this.messageService.add({
       severity: 'success',
       summary: msg,
     });
   }
 
-  private showError(error: any) {
+  private showError(error: any): void {
     this.messageService.add({
       severity: 'error',
       summary: error,

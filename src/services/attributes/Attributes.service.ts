@@ -429,26 +429,28 @@ export class AttributesService extends GuardedService {
      */
 
     // For Tables
-    public getOptionTitle(data: any) {
+    public getOptionTitle(data: number | string): string {
         if (typeof data == 'number') {
-            return this.dropdownOptions.get(data)?.name || this.flatTreeMap.get(data)?.label || data;
+            return this.dropdownOptions.get(data)?.name || this.flatTreeMap.get(data)?.label || data.toString();
         }
         return data;
     }
 
-    public initSelectOptions() {
+    public initSelectOptions(): void {
         const cache = this.cacheService.get('dropdown_options');
+
         if (cache != null) {
             this.dropdownOptions = new Map(cache);
         }
+
         this.propertyChange.subscribe((propertyMapSize) => {
-            const tempOptions = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
+            const tempOptions: MProperty[] = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
             this.parseDropdownOptions(tempOptions.map(element => [element.id, element]));
             this.cacheService.set('dropdown_options', Array.from(this.dropdownOptions.entries()));
         })
     }
 
-    public initTreeSelect() {
+    public initTreeSelect(): void {
         const cache = this.cacheService.get('tree_options');
         if (cache != null) {
             this.parseTrees(cache);
@@ -456,7 +458,7 @@ export class AttributesService extends GuardedService {
         }
 
         this.getTreeselectOptions().subscribe((data) => {
-            const parsedTrees: any = Object.entries(data.data).map(([key, value]) => {
+            const parsedTrees = Object.entries(data.data).map(([key, value]) => {
                 return [parseInt(key), parseTree(value as any[])];
             });
             this.parseTrees(parsedTrees);
@@ -465,7 +467,7 @@ export class AttributesService extends GuardedService {
         });
     }
 
-    private parseTrees(parsedTrees: any) {
+    private parseTrees(parsedTrees: any): void {
         this.treeMap = new Map(parsedTrees);
 
         const trees = Array.from(this.treeMap.values()).flat();

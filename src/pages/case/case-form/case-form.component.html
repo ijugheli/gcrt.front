@@ -37,9 +37,9 @@
             animation-duration-200">
             <div *ngFor="let item of CaseAttrs.caseFirstCol">
               <custom-input
-                [model]="Case.case[item.caseKey]"
+                [model]="Case.case[item.fieldName]"
                 [data]="item"
-                (onChange)="Case.case[item.caseKey] = $event"
+                (onChange)="Case.case[item.fieldName] = $event"
               ></custom-input>
             </div>
           </div>
@@ -63,9 +63,9 @@
             </div>
             <div *ngFor="let item of CaseAttrs.caseSecondCol">
               <custom-input
-                [model]="Case.case[item.caseKey]"
+                [model]="Case.case[item.fieldName]"
                 [data]="item"
-                (onChange)="Case.case[item.caseKey] = $event"
+                (onChange)="Case.case[item.fieldName] = $event"
               ></custom-input>
             </div>
           </div>
@@ -111,9 +111,9 @@
             </button>
             <div *ngFor="let item of CaseAttrs.diagnosisList">
               <custom-input
-                [model]="diagnosis[item.diagnosisKey]"
+                [model]="diagnosis[item.fieldName]"
                 [data]="item"
-                (onChange)="onUpdate(diagnosis[item.diagnosisKey] = $event)"
+                (onChange)="onUpdate(diagnosis[item.fieldName] = $event)"
               ></custom-input>
             </div>
           </div>
@@ -135,9 +135,9 @@
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
             <div *ngFor="let item of CaseAttrs.referralList">
               <custom-input
-                [model]="referral[item.referralKey]"
+                [model]="referral[item.fieldName]"
                 [data]="item"
-                (onChange)="referral[item.referralKey] = $event"
+                (onChange)="referral[item.fieldName] = $event"
               ></custom-input>
             </div>
           </div>
@@ -158,9 +158,9 @@
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
             <div *ngFor="let item of CaseAttrs.consultationList">
               <custom-input
-                [model]="consultation[item.consultationKey]"
+                [model]="consultation[item.fieldName]"
                 [data]="item"
-                (onChange)="consultation[item.consultationKey] = $event"
+                (onChange)="consultation[item.fieldName] = $event"
               ></custom-input>
             </div>
           </div>

@@ -1,4 +1,6 @@
-export const menuOptions: any[] = [
+import { IFormMenuOption } from "src/app/app.interfaces";
+
+export const menuOptions: IFormMenuOption[] = [
     { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' },
     { label: 'ძალადობის ფორმები', value: 1, icon: 'pi pi-list' },
     { label: 'მოვლის გეგმა', value: 2, icon: 'pi pi-list' },

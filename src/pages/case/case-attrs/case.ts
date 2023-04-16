@@ -1,4 +1,4 @@
-import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
+import { ICustomInput, ICaseCol } from "src/app/app.interfaces";
 
 export const caseMap: Map<string, any> = new Map(
     [
@@ -6,7 +6,6 @@ export const caseMap: Map<string, any> = new Map(
             'project_id',
             {
                 fieldName: 'project_id',
-                caseKey: 'project_id',
                 label: 'პროექტი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -19,7 +18,6 @@ export const caseMap: Map<string, any> = new Map(
             'case_manager_id',
             {
                 fieldName: 'case_manager_id',
-                caseKey: 'case_manager_id',
                 label: 'ქეისის მენეჯერი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -32,7 +30,6 @@ export const caseMap: Map<string, any> = new Map(
             'client_id',
             {
                 fieldName: 'client_id',
-                caseKey: 'client_id',
                 label: 'კლიენტი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -45,7 +42,6 @@ export const caseMap: Map<string, any> = new Map(
             'branch',
             {
                 fieldName: 'branch',
-                caseKey: 'branch',
                 label: 'ფილიალი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -57,7 +53,6 @@ export const caseMap: Map<string, any> = new Map(
         [
             'registration_date', {
                 fieldName: 'registration_date',
-                caseKey: 'registration_date',
                 label: 'რეგისტრაციის თარიღი',
                 type: 'date',
                 icon: 'pi-calendar',
@@ -70,7 +65,6 @@ export const caseMap: Map<string, any> = new Map(
             'referral_body',
             {
                 fieldName: 'referral_body',
-                caseKey: 'referral_body',
                 label: 'რეფერალური ორგანო',
                 type: 'tree',
                 icon: 'pi-sitemap',
@@ -83,7 +77,6 @@ export const caseMap: Map<string, any> = new Map(
             'recommender',
             {
                 fieldName: 'recommender',
-                caseKey: 'recommender',
                 label: 'რეკომენდატორი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -96,7 +89,6 @@ export const caseMap: Map<string, any> = new Map(
             'incident',
             {
                 fieldName: 'incident',
-                caseKey: 'incident',
                 label: 'ინციდენტი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -109,7 +101,6 @@ export const caseMap: Map<string, any> = new Map(
             'incident_text',
             {
                 fieldName: 'incident_text',
-                caseKey: 'incident_text',
                 label: 'ინციდენტის აღწერა',
                 type: 'textarea',
                 icon: 'pi-pencil',
@@ -122,7 +113,6 @@ export const caseMap: Map<string, any> = new Map(
             'social_status',
             {
                 fieldName: 'social_status',
-                caseKey: 'social_status',
                 label: 'სოციალური მდგომარეობა',
                 type: 'textarea',
                 icon: 'pi-pencil',
@@ -135,7 +125,6 @@ export const caseMap: Map<string, any> = new Map(
             'legal_status',
             {
                 fieldName: 'legal_status',
-                caseKey: 'legal_status',
                 label: 'სამართლებრივი მდგომარეობა',
                 type: 'textarea',
                 icon: 'pi-pencil',

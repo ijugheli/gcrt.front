@@ -1,20 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService, TreeNode } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ActivatedRoute } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
-import { APIResponse } from 'src/app/app.interfaces';
-import { Attribute } from 'src/app/app.models';
-import { ATTR_TYPES } from 'src/app/app.config';
+import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
 import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral } from '../case.model';
-import { flattenTree, parseTree } from 'src/app/app.func';
-import { carePlanMap, carePlanTreeID } from '../case-attrs/care-plan';
+import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
-import { formsOfViolenceMap, formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
-import { diagnosisCols } from '../case-attrs/diagnosis';
-import { referralCols } from '../case-attrs/referral';
-import { consultationCols } from '../case-attrs/consultation';
+import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
 import * as CaseConfig from '../case.config';
 
 
@@ -33,9 +24,9 @@ export class CaseFormComponent implements OnInit {
   public referral: IReferral = new IReferral();
   public diagnosis: IDiagnosis = new IDiagnosis();
   public copy: IDiagnosis = new IDiagnosis();
-  public menuOptions: any[] = CaseConfig.menuOptions;
+  public menuOptions: IFormMenuOption[] = CaseConfig.menuOptions;
   public consultation: IConsultation = new IConsultation();
-  public selectedSection: any = this.menuOptions[0];
+  public selectedSection: IFormMenuOption = this.menuOptions[0];
   title: any;
   loading: boolean = false;
 
@@ -65,7 +56,7 @@ export class CaseFormComponent implements OnInit {
 
   }
 
-  private initTree(treeKey: keyof CaseService, attrID: number) {
+  private initTree(treeKey: keyof CaseService, attrID: number): void {
     if (this.caseService[treeKey].length > 0) return;
     this.caseService[treeKey] = this.attrService.treeMap.get(attrID);
   }
@@ -74,7 +65,7 @@ export class CaseFormComponent implements OnInit {
     // console.log(this.diagnosis);
   }
 
-  public onEditComplete() {
+  public onEditComplete(): void {
     const id = this.diagnosis.id ?? this.diagnosis.generated_id;
     const index = this.Case.diagnosis.findIndex(e => e.generated_id == id || e.id == id);
     if (index !== -1) {
@@ -99,21 +90,21 @@ export class CaseFormComponent implements OnInit {
   }
 
 
-  public onSave(event: any) {
+  public onSave(event: any): void {
     this.messageService.add({
       severity: 'success',
       summary: 'შენახვა წარმატებით დასრულდა',
     });
   }
 
-  public showSuccess(msg: string) {
+  public showSuccess(msg: string): void {
     this.messageService.add({
       severity: 'success',
       summary: msg,
     });
   }
 
-  private showError(error: any) {
+  private showError(error: any): void {
     this.messageService.add({
       severity: 'error',
       summary: error,

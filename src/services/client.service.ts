@@ -21,8 +21,8 @@ export class ClientService extends GuardedService {
   public isInputDisabled: boolean = false;
   public values: Map<number | string, string | Date | null | boolean | number> = new Map();
   public clients: Map<number, Client> = new Map();
-  public clientAttrs: Map<any, any> = new Map([...mainMap, ...additionalMap, ...contactMap, ...addressMap]);
-  public urls: any = {
+  public clientAttrs: Map<string, any> = new Map([...mainMap, ...additionalMap, ...contactMap, ...addressMap]);
+  public urls: Record<string, string> = {
     'save': API_URL + '/client/save',
     'list': API_URL + '/client/list',
     'destroy': API_URL + '/client/destroy/{client_id}',
@@ -41,7 +41,7 @@ export class ClientService extends GuardedService {
   }
 
   public destroy(clientID: number): Observable<APIResponse<Client[]>> {
-    return this.http.delete<APIResponse<Client[]>>(this.urls['destroy'].replace('{client_id}', clientID), { headers: this.headers });
+    return this.http.delete<APIResponse<Client[]>>(this.urls['destroy'].replace('{client_id}', clientID.toString()), { headers: this.headers });
   }
 
   public validate(): boolean {
@@ -58,7 +58,7 @@ export class ClientService extends GuardedService {
   }
 
   /// For generating client code  Category(parent)/category_Group(child)/gender/age_group/repeatingClient/id
-  public getClientCode() {
+  public getClientCode(): string {
     let categoryGroupID: any = this.values.get('category_group_id') as number;
     const genderCode = this.attrService.dropdownOptions.get(this.values.get('gender') as number)?.value!.value;
     const ageGroup = this.attrService.dropdownOptions.get(this.values.get('age_group') as number)?.value!.value;
@@ -73,7 +73,7 @@ export class ClientService extends GuardedService {
   }
 
   // get parent category and its group title
-  private getCategoryGroupTitle(id: number) {
+  private getCategoryGroupTitle(id: number): string {
     const categoryGroup: any = this.attrService.flatTreeMap.get(id);
     const array: any[] = Array.from(this.attrService.flatTreeMap.values());
     const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id).data.title;
@@ -92,7 +92,7 @@ export class ClientService extends GuardedService {
     return result;
   }
 
-  public mapClients(clients: Client[]) {
+  public mapClients(clients: Client[]): void {
     this.clients = new Map(clients.map(e => [e.main.id!, e as Client]));
   }
 }

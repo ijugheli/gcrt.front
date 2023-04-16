@@ -1,10 +1,9 @@
-import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
+import { ICaseCol, ICustomInput } from "src/app/app.interfaces";
 
 export const diagnosisMap: Map<string, any> = new Map(
     [
         ['status', {
             fieldName: 'status',
-            diagnosisKey: 'status',
             label: 'დიაგნოზის სტატუსი',
             type: 'dropdown',
             icon: 'pi-list',
@@ -15,7 +14,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['type', {
             fieldName: 'type',
-            diagnosisKey: 'type',
             label: 'დიაგნოზის ტიპი',
             type: 'dropdown',
             icon: 'pi-list',
@@ -26,7 +24,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['icd', {
             fieldName: 'icd',
-            diagnosisKey: 'icd',
             label: 'ICD10 სარჩევი',
             type: 'tree',
             icon: 'pi-sitemap',
@@ -37,7 +34,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['diagnosis_dsmiv', {
             fieldName: 'diagnosis_dsmiv',
-            diagnosisKey: 'diagnosis_dsmiv',
             label: 'DSMIV',
             type: 'dropdown',
             icon: 'pi-list',
@@ -48,7 +44,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['diagnosis_icd10', {
             fieldName: 'diagnosis_icd10',
-            diagnosisKey: 'diagnosis_icd10',
             label: 'დიაგნოზის ICD10',
             type: 'dropdown',
             icon: 'pi-list',
@@ -59,7 +54,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['diagnosis_date', {
             fieldName: 'diagnosis_date',
-            diagnosisKey: 'diagnosis_date',
             label: 'დიაგნოზის დასმის თარიღი',
             type: 'date',
             icon: 'pi-calendar',
@@ -70,7 +64,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['links_with_trauma', {
             fieldName: 'links_with_trauma',
-            diagnosisKey: 'links_with_trauma',
             label: 'ტრამვასთან კავშირი',
             type: 'dropdown',
             icon: 'pi-list',
@@ -81,7 +74,6 @@ export const diagnosisMap: Map<string, any> = new Map(
         ],
         ['comment', {
             fieldName: 'comment',
-            diagnosisKey: 'comment',
             label: 'კომენტარი',
             type: 'textarea',
             icon: 'pi-pencil',

@@ -1,3 +1,5 @@
+import { Case, IDiagnosis, IReferral, IConsultation, IPsychodiagnosis } from "src/pages/case/case.model";
+import { ClientAdditional, ClientAddress, ClientContact, ClientMain } from "src/pages/client/client.model";
 
 export interface City {
     name: string,
@@ -71,6 +73,35 @@ export class ISurveyResult {
     public group_title!: string | undefined | null;
     public sum!: number | undefined | null;
 }
+
+export class ICustomInput {
+    fieldName!: string;
+    label!: string;
+    type!: string;
+    icon!: string;
+    propertyID!: number | null;
+    isRequired!: boolean;
+    isDisabled!: boolean;
+}
+
+export class ICaseCol {
+    fieldName!: string;
+    label!: string;
+    constructor(data: any) {
+        this.fieldName = data.fieldName;
+        this.label = data.label;
+    }
+}
+
+export interface IObjectKeys {
+    [key: string]: any;
+}
+export class IFormMenuOption {
+    public label!: string;
+    public value!: number;
+    public icon!: string;
+}
+
 
 
 

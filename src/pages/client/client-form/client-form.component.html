@@ -53,9 +53,9 @@
             animation-duration-200">
             <div *ngFor="let item of ClientAttrs.mainFirstCol">
               <custom-input
-                [model]="client.main[item.mainKey]"
+                [model]="client.main[item.fieldName]"
                 [data]="item"
-                (onChange)="onUpdate(client.main[(item.mainKey)] = $event)"
+                (onChange)="onUpdate(client.main[(item.fieldName)] = $event)"
               ></custom-input>
             </div>
           </div>
@@ -63,9 +63,9 @@
             animation-duration-200">
             <div *ngFor="let item of ClientAttrs.mainSecondCol">
               <custom-input
-                [model]="client.main[item.mainKey]"
+                [model]="client.main[item.fieldName]"
                 [data]="item"
-                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.mainKey)] = $event) : onUpdate(client.main[(item.mainKey)] = $event))"
+                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.fieldName)] = $event) : onUpdate(client.main[(item.fieldName)] = $event))"
               ></custom-input>
             </div>
           </div>
@@ -158,9 +158,9 @@
         >
           <div *ngFor="let item of ClientAttrs.contactList">
             <custom-input
-              [model]="client.contact[item.contactKey]"
+              [model]="client.contact[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.contactKey)] = $event) : client.contact[(item.contactKey)] = $event)"
+              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.fieldName)] = $event) : client.contact[(item.fieldName)] = $event)"
             >
             </custom-input>
           </div>
@@ -171,9 +171,9 @@
         >
           <div *ngFor="let item of ClientAttrs.addressList">
             <custom-input
-              [model]="client.address[item.addressKey]"
+              [model]="client.address[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.addressKey)] = $event) : client.address[(item.addressKey)] = $event)"
+              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.fieldName)] = $event) : client.address[(item.fieldName)] = $event)"
             >
             </custom-input>
           </div>

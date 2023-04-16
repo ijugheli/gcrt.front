@@ -25,20 +25,6 @@ export class CaseComponent implements OnInit {
   public addPropertyButton = false;
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
-  private typeID = 0;
-  public attrType: any = {
-    'standard': 'სტანდარტული ატრიბუტები',
-    'tree': 'ხისებრი ატრიბუტები',
-    'entity': 'ობიექტი',
-    1: 'standard',
-    2: 'tree',
-    3: 'entity'
-  };
-
-  // public filters: { [key: string]: number | string | null } = {
-  //   'title': ''
-  // };
-
   public options: any;
   public isSidebarVisible: boolean = true;
 

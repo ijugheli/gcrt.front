@@ -1,4 +1,4 @@
-import { ICustomInput } from "../client/client.model";
+import { ICustomInput, } from "src/app/app.interfaces";
 import { carePlanMap } from "./case-attrs/care-plan";
 import { caseList, caseMap } from "./case-attrs/case";
 import { consultationList } from "./case-attrs/consultation";
@@ -33,6 +33,7 @@ export class Case {
     public incident_text!: string | null;
     public social_status!: string | null;
     public legal_status!: string | null;
+    [key: string]: any;
     public setNodeID: any = (node: any, key: 'referral_body') => {
         this[key] = node.data.id;
     };
@@ -42,18 +43,24 @@ export abstract class CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null; // treeselect
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class ICarePlan implements CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class IFormOfViolence implements CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class MCheckboxTableItem {
@@ -65,6 +72,7 @@ export class MCheckboxTableItem {
     public p_title!: string | null; // treeselect
     public value_id!: number | null; // treeselect
     public comment!: string | null;
+
 }
 
 export class IDiagnosis {
@@ -79,6 +87,7 @@ export class IDiagnosis {
     public diagnosis_date!: Date | null;
     public links_with_trauma!: number | null;
     public comment!: string | null;
+    [key: string]: any;
     public setNodeID?: any = (node: any, key: 'icd') => {
         this[key] = node.data.id;
     };
@@ -98,6 +107,8 @@ export class IReferral {
     public service_type!: number | null; // treeselect
     public price!: number | null;
     public result!: string | null;
+    [key: string]: any;
+
     public setNodeID: any = (node: any, key: 'service_type') => {
         this[key] = node.data.id;
     };
@@ -111,10 +122,13 @@ export class IConsultation {
     public duration!: number | null;
     public consultant_record!: string | null;
     public consultant_prescription!: string | null;
+    [key: string]: any;
 }
 
 export class IPsychodiagnosis {
     public case_id!: number | null;
+    [key: string]: any;
+
 }
 
 export class CaseAttrs {

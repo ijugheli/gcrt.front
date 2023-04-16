@@ -1,10 +1,9 @@
-import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
+import { ICustomInput, ICaseCol } from "src/app/app.interfaces";
 
 export const consultationMap: Map<string, any> = new Map(
     [
         ['consultant', {
             fieldName: 'consultant',
-            consultationKey: 'consultant',
             label: 'კონსულტანტი',
             type: 'dropdown',
             icon: 'pi-list',
@@ -15,7 +14,6 @@ export const consultationMap: Map<string, any> = new Map(
         ],
         ['date', {
             fieldName: 'date',
-            consultationKey: 'date',
             label: 'კონსულტაციის თარიღი',
             type: 'date',
             icon: 'pi-calendar',
@@ -26,7 +24,6 @@ export const consultationMap: Map<string, any> = new Map(
         ],
         ['type', {
             fieldName: 'type',
-            consultationKey: 'type',
             label: 'კონსულტაციის ტიპი',
             type: 'dropdown',
             icon: 'pi-list',
@@ -37,7 +34,6 @@ export const consultationMap: Map<string, any> = new Map(
         ],
         ['duration', {
             fieldName: 'duration',
-            consultationKey: 'duration',
             label: 'კონსულტაციის ხანგრძლივობა',
             type: 'dropdown',
             icon: 'pi-list',
@@ -48,7 +44,6 @@ export const consultationMap: Map<string, any> = new Map(
         ],
         ['consultant_record', {
             fieldName: 'consultant_record',
-            consultationKey: 'consultant_record',
             label: 'კონსულტანტის ჩანაწერი',
             type: 'textarea',
             icon: 'pi-pencil',
@@ -59,7 +54,6 @@ export const consultationMap: Map<string, any> = new Map(
         ],
         ['consultant_prescription', {
             fieldName: 'consultant_prescription',
-            consultationKey: 'consultant_prescription',
             label: 'კონსულტანტის დანიშნულება',
             type: 'textarea',
             icon: 'pi-pencil',
