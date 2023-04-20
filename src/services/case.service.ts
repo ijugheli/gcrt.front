@@ -57,16 +57,16 @@ export class CaseService extends GuardedService {
     return this.http.delete<APIResponse<ICase[]>>(this.urls['destroy'].replace('{id}', caseID.toString()), { headers: this.headers });
   }
 
-  public destroyReferral(id: number): Observable<APIResponse<IDiagnosis[]>> {
-    return this.http.delete<APIResponse<IDiagnosis[]>>(this.urls['destroyReferral'].replace('{id}', id.toString()), { headers: this.headers });
+  public destroyReferral(id: number): Observable<APIResponse<IReferral[]>> {
+    return this.http.delete<APIResponse<IReferral[]>>(this.urls['destroyReferral'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
-  public destroyDiagnosis(id: number): Observable<APIResponse<ICase[]>> {
-    return this.http.delete<APIResponse<ICase[]>>(this.urls['destroyDiagnosis'].replace('{id}', id.toString()), { headers: this.headers });
+  public destroyDiagnosis(id: number): Observable<APIResponse<IDiagnosis[]>> {
+    return this.http.delete<APIResponse<IDiagnosis[]>>(this.urls['destroyDiagnosis'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
-  public destroyConsultation(id: number): Observable<APIResponse<ICase[]>> {
-    return this.http.delete<APIResponse<ICase[]>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), { headers: this.headers });
+  public destroyConsultation(id: number): Observable<APIResponse<IConsultation[]>> {
+    return this.http.delete<APIResponse<IConsultation[]>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
   public storeCase(data: any): Observable<APIResponse<ICase>> {
