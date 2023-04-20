@@ -8,7 +8,7 @@
           type="button"
           class="border-btn mb-2 w-min"
           [disabled]="caseService.isInputDisabled"
-          (click)="onSave($event)"
+          (click)="onSave($event, true)"
         >
           <i
             *ngIf="!caseService.isInputDisabled"
