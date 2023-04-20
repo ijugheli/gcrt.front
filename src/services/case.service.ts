@@ -69,8 +69,8 @@ export class CaseService extends GuardedService {
     return this.http.delete<APIResponse<ICase[]>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
-  public storeCase(data: any): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['store'], data, { headers: this.headers });
+  public storeCase(data: any): Observable<APIResponse<ICase>> {
+    return this.http.post<APIResponse<ICase>>(this.urls['store'], data, { headers: this.headers });
   }
 
   public updateDiagnosis(data: any): Observable<APIResponse> {

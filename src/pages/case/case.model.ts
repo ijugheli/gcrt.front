@@ -41,6 +41,7 @@ export class Case {
 }
 
 export abstract class CaseSharedInterface {
+    public id?: number | null;
     public case_id?: number | null;
     public category!: number | null; // treeselect
     public comment!: string | null;
@@ -49,6 +50,7 @@ export abstract class CaseSharedInterface {
 }
 
 export class ICarePlan implements CaseSharedInterface {
+    public id?: number | null;
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
@@ -57,6 +59,7 @@ export class ICarePlan implements CaseSharedInterface {
 }
 
 export class IFormOfViolence implements CaseSharedInterface {
+    public id?: number | null;
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
@@ -65,6 +68,7 @@ export class IFormOfViolence implements CaseSharedInterface {
 }
 
 export class MCheckboxTableItem {
+    public id!: number | null;
     public case_id!: number | null;
     public category!: number | null;
     public p_value_id!: number | null; // treeselect
