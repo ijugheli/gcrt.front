@@ -31,6 +31,7 @@ export class CaseService extends GuardedService {
     'index': API_URL + '/case/index',
     'show': API_URL + '/case/show/{id}',
     'store': API_URL + '/case/store',
+    'destroy': API_URL + '/case/destroy/{id}',
     'updateDiagnosis': API_URL + '/case/diagnosis/update',
     'updateConsultation': API_URL + '/case/consultation/update',
     'updateReferral': API_URL + '/case/referral/update',
