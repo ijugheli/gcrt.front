@@ -11,9 +11,9 @@ export const menuOptions: IFormMenuOption[] = [
 ];
 
 export const caseSectionFormTypes: Record<number, string> = {
-    0: 'diagnosis',
-    1: 'referral',
-    2: 'consultation',
+    0: 'diagnoses',
+    1: 'referrals',
+    2: 'consultations',
 }
 
 export const detailTypes: Record<number, string> = {

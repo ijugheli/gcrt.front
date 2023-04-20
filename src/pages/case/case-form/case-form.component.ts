@@ -33,6 +33,7 @@ export class CaseFormComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private attrService: AttributesService,
+    private confirmationService: ConfirmationService,
     public caseService: CaseService,
     private route: ActivatedRoute,
     private router: Router
@@ -104,10 +105,23 @@ export class CaseFormComponent implements OnInit {
   }
 
   public onSectionItemDelete(event: MOnSectionEvent, type: number) {
-    this.updateSections(event, type);
-
-    // send delete request
-    this.showSuccess('ჩანაწერი წაიშალა');
+    this.confirmationService.confirm({
+      header: 'ჩანაწერის წაშლა',
+      acceptLabel: 'კი',
+      rejectLabel: 'გაუქმება',
+      message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
+      accept: () => {
+        if (event.data!.id !== null && event.data!.id !== undefined) {
+          this.deleteSection(event.data.id, type);
+        } else {
+          const index = this.Case[CaseConfig.caseSectionFormTypes[type]].findIndex((e: any) => e.generated_id == event.data.generated_id || e.id == event.data.id);
+          this.Case[CaseConfig.caseSectionFormTypes[type]].splice(index, 1);
+          this.Case[CaseConfig.caseSectionFormTypes[type]] = [...this.Case[CaseConfig.caseSectionFormTypes[type]]];
+        }
+        this.showSuccess(event.successMessage!);
+      }, reject: () => {
+      }
+    });
   }
 
   public onSave(event: any, isFormSubmit: boolean = false): void {
@@ -203,13 +217,22 @@ export class CaseFormComponent implements OnInit {
 
   private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
     if (event.data === undefined) return;
+    this.Case[CaseConfig.caseSectionFormTypes[type]] = event.data;
+  }
 
-    if (CaseConfig.caseSectionFormTypes[type] == 'diagnosis') {
-      this.Case.diagnoses = event.data;
-    } else if (CaseConfig.caseSectionFormTypes[type] == 'referral') {
-      this.Case.referrals = event.data;
+  private deleteSection(id: number, type: number): void {
+    if (CaseConfig.caseSectionFormTypes[type] == 'diagnoses') {
+      this.caseService.destroyDiagnosis(id).subscribe((data) => {
+        this.Case.diagnoses = data.data!;
+      });
+    } else if (CaseConfig.caseSectionFormTypes[type] == 'referrals') {
+      this.caseService.destroyReferral(id).subscribe((data) => {
+        this.Case.referrals = data.data!;
+      });
     } else {
-      this.Case.consultations = event.data;
+      this.caseService.destroyConsultation(id).subscribe((data) => {
+        this.Case.consultations = data.data!;
+      });
     }
   }
 }

@@ -14,6 +14,7 @@ export class ICase {
     public referrals: IReferral[] = [];
     public consultations: IConsultation[] = [];
     public psychodiagnoses!: IPsychodiagnosis;
+    [key: string]: any;
 
     constructor() {
         this.case = new Case();
@@ -177,7 +178,7 @@ export class CaseAttrs {
 }
 
 export class MOnSectionEvent {
-    data?: any[];
+    data?: any;
     model?: any;
     errorMessage?: string;
     successMessage?: string;

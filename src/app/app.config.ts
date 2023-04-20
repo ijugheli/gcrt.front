@@ -1,8 +1,8 @@
 import { reverseMap } from "./app.func";
 import { IActionItem, IMenuItem } from "./app.interfaces";
 
-// export const API_URL = 'http://localhost:8000';
-export const API_URL = 'https://gcrt.live/api';
+export const API_URL = 'http://localhost:8000';
+// export const API_URL = 'https://gcrt.live/api';
 
 export const ACTION_TYPES: Map<number, string> = new Map([
   [1, 'RECOVER_PASSWORD'],

@@ -83,47 +83,11 @@ export class CaseSectionForm implements OnInit {
   public onDeleteClick(selectedRow: any): void {
     if (selectedRow == undefined) return;
 
-    this.isDialogEnabled = true;
+    const event = new MOnSectionEvent();
+    event.data = selectedRow;
+    event.successMessage = 'ჩანაწერი წარმატებით წაიშალა';
 
-    this.confirmationService.confirm({
-      header: 'ჩანაწერის წაშლა',
-      acceptLabel: 'კი',
-      rejectLabel: 'გაუქმება',
-      message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
-      accept: () => {
-        const index = this.data.findIndex(e => e.generated_id == selectedRow.generated_id || e.id == selectedRow.id);
-
-        this.data.splice(index, 1);
-
-        this.data = [...this.data];
-
-        if (selectedRow.id !== null && selectedRow.id !== undefined) {
-          if (caseSectionFormTypes[this.sectionType] == 'diagnosis') {
-            this.caseService.destroyDiagnosis(selectedRow.id).subscribe((data) => {
-              this.data = data.data!;
-            });
-          } else if (caseSectionFormTypes[this.sectionType] == 'referral') {
-            this.caseService.destroyReferral(selectedRow.id).subscribe((data) => {
-              this.data = data.data!;
-            });
-          } else {
-            this.caseService.destroyConsultation(selectedRow.id).subscribe((data) => {
-              this.data = data.data!;
-            });
-          }
-        }
-
-        const event = new MOnSectionEvent();
-        event.data = this.data;
-        event.successMessage = 'ჩანაწერი წარმატებით წაიშალა';
-
-        this.onDelete.emit(event);
-        this.isDialogEnabled = false;
-
-      }, reject: () => {
-        this.isDialogEnabled = false;
-      }
-    });
+    this.onDelete.emit(event);
   }
 
   private getModel(): IDiagnosis | IConsultation | IReferral {
