@@ -5,9 +5,9 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
-import { ICaseCol } from 'src/pages/client/client.model';
 import { IDiagnosis } from '../../case.model';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ICaseCol } from 'src/app/app.interfaces';
 // For diagnosis, consultation, referral,
 @Component({
   standalone: true,
@@ -21,8 +21,9 @@ export class CaseSectionTable implements OnInit {
   @Input() data: any[] = [];
   @Input() columns: ICaseCol[] = [];
   @Output() onEdit = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<number>();
   public loading: boolean = true;
-  public selectedRow: any = [];
+  public selectedRow: any;
   public checked: boolean = false;
 
   constructor(
@@ -39,6 +40,12 @@ export class CaseSectionTable implements OnInit {
 
   public onEditClick() {
     this.onEdit.emit(Object.assign({}, this.selectedRow));
+    this.selectedRow = undefined;
+  }
+
+  public onDeleteClick() {
+    this.onDelete.emit(this.selectedRow);
+    this.selectedRow = undefined;
   }
 
   public getFieldValue(field: any) {
@@ -46,6 +53,6 @@ export class CaseSectionTable implements OnInit {
       return field;
     }
 
-    return this.attrService.dropdownOptions.get(field)?.name;
+    return this.attrService.dropdownOptions.get(field)?.name || field;
   }
 }

@@ -28,9 +28,9 @@ export class AttributesService extends GuardedService {
     public dropdownOptions: Map<number, MOption> = new Map();
     public values: Map<number, MPropertyValue> = new Map();
     public flatTreeMap: Map<number, TreeNode> = new Map();
-    public treeMap: Map<number, TreeNode> = new Map();
+    public treeMap: Map<number, TreeNode[]> = new Map();
 
-    treeMapChange: AsyncSubject<Map<number, TreeNode>> = new AsyncSubject<Map<number, TreeNode>>();
+    treeMapChange: AsyncSubject<Map<number, TreeNode[]>> = new AsyncSubject<Map<number, TreeNode[]>>();
     dropdownOptionChange: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
     propertyChange: AsyncSubject<number> = new AsyncSubject<number>();
 
@@ -431,7 +431,7 @@ export class AttributesService extends GuardedService {
     // For Tables
     public getOptionTitle(data: number | string): string {
         if (typeof data == 'number') {
-            return this.dropdownOptions.get(data)?.name || this.flatTreeMap.get(data)?.label || data.toString();
+            return this.flatTreeMap.get(data)?.label || this.dropdownOptions.get(data)?.name || data.toString();
         }
         return data;
     }

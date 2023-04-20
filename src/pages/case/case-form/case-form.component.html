@@ -2,12 +2,31 @@
   <p-toast position="top-right"></p-toast>
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
-      <div class="heading-section-title font-medium align-items-center">
+      <div class="flex flex-row font-medium align-items-center justify-content-start gap-3">
         <span>{{pageTitle}}</span>
+        <button
+          type="button"
+          class="border-btn mb-2 w-min"
+          [disabled]="caseService.isInputDisabled"
+          (click)="onSave($event)"
+        >
+          <i
+            *ngIf="!caseService.isInputDisabled"
+            class="pi pi-check mr-2"
+          >
+          </i>
+          <i
+            *ngIf="caseService.isInputDisabled"
+            class="pi pi-spin pi-spinner mr-2"
+          >
+          </i>
+          შენახვა
+        </button>
       </div>
     </div>
   </div>
   <div
+    *ngIf="!isLoading"
     class="relative w-100 h-100 m-3"
     style="margin-top: 2rem!important;"
   >
@@ -78,8 +97,8 @@
           <app-checkbox-table
             *ngIf="caseService.formsOfViolenceTree.length > 0"
             [initialTree]="caseService.formsOfViolenceTree"
-            [caseSectionModel]="Case.forms_of_violence"
-            (onSave)="onSave(Case.forms_of_violence = $event)"
+            [caseSectionModel]="Case.forms_of_violences"
+            (onSave)="onSave(Case.forms_of_violences = $event)"
           ></app-checkbox-table>
         </div>
         <div
@@ -87,90 +106,51 @@
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <app-checkbox-table
-            *ngIf="caseService.formsOfViolenceTree.length > 1"
+            *ngIf="caseService.carePlanTree.length > 0"
             [initialTree]="caseService.carePlanTree"
             [caseSectionModel]="Case.care_plans"
             (onSave)="onSave(Case.care_plans = $event)"
           ></app-checkbox-table>
           <!-- table -->
         </div>
-        <div
-          [class.is-not-visible]="selectedSection.value != 3"
-          class="flex flex-row gap-4"
-        >
-          <div
-            class="flex flex-column align-content-center lg:justify-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
+        <div [class.is-not-visible]="selectedSection.value != 3">
+          <app-case-section-form
+            [inputAttrs]="CaseAttrs.diagnosisList"
+            [tableCols]="caseService.diagnosisCols"
+            [sectionType]="0"
+            [data]="Case.diagnoses"
+            [caseID]="Case.case.id"
+            (onSave)="onSectionSave($event,0)"
+            (onDelete)="onSectionItemDelete($event,0)"
+            class="flex flex-row gap-4"
           >
-            <button
-              type="button"
-              class="border-btn mb-2 w-min"
-              (click)="onEditComplete()"
-            >
-              <i class="pi pi-check mr-2"></i>
-              შენახვა
-            </button>
-            <div *ngFor="let item of CaseAttrs.diagnosisList">
-              <custom-input
-                [model]="diagnosis[item.fieldName]"
-                [data]="item"
-                (onChange)="onUpdate(diagnosis[item.fieldName] = $event)"
-              ></custom-input>
-            </div>
-          </div>
-          <div
-            class="flex flex-column align-content-center fadeindown animation-ease-in animation-duration-200 flex-shrink-1 flex-grow-0"
-          >
-            <app-case-section-table
-              [data]="Case.diagnosis"
-              [columns]="caseService.diagnosisCols"
-              (onEdit)="diagnosis = $event"
-            >
-            </app-case-section-table>
-          </div>
+          </app-case-section-form>
         </div>
-        <div
-          [class.is-not-visible]="selectedSection.value != 4"
-          class="flex flex-row gap-4"
-        >
-          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-            <div *ngFor="let item of CaseAttrs.referralList">
-              <custom-input
-                [model]="referral[item.fieldName]"
-                [data]="item"
-                (onChange)="referral[item.fieldName] = $event"
-              ></custom-input>
-            </div>
-          </div>
-          <div
-            class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200 flex-grow-1"
+        <div [class.is-not-visible]="selectedSection.value != 4">
+          <app-case-section-form
+            [inputAttrs]="CaseAttrs.referralList"
+            [tableCols]="caseService.referralCols"
+            [sectionType]="1"
+            [data]="Case.referrals"
+            [caseID]="Case.case.id"
+            (onSave)="onSectionSave($event,1)"
+            (onDelete)="onSectionItemDelete($event,1)"
+            class="flex flex-row gap-4"
           >
-            <app-case-section-table
-              [data]="Case.referral"
-              [columns]="caseService.referralCols"
-            >
-            </app-case-section-table>
-          </div>
+          </app-case-section-form>
         </div>
-        <div
-          [class.is-not-visible]="selectedSection.value != 5"
-          class="flex flex-row gap-4"
-        >
-          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-            <div *ngFor="let item of CaseAttrs.consultationList">
-              <custom-input
-                [model]="consultation[item.fieldName]"
-                [data]="item"
-                (onChange)="consultation[item.fieldName] = $event"
-              ></custom-input>
-            </div>
-          </div>
-          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200">
-            <app-case-section-table
-              [data]="Case.consultation"
-              [columns]="caseService.consultationCols"
-            >
-            </app-case-section-table>
-          </div>
+        <div [class.is-not-visible]="selectedSection.value != 5">
+          <app-case-section-form
+            [inputAttrs]="CaseAttrs.consultationList"
+            [tableCols]="caseService.consultationCols"
+            [sectionType]="2"
+            [data]="Case.consultations"
+            [caseID]="Case.case.id"
+            (onSave)="onSectionSave($event,2)"
+            (onDelete)="onSectionItemDelete($event, 2)"
+            class="flex flex-row gap-4"
+          >
+          </app-case-section-form>
         </div>
       </div>
     </div>

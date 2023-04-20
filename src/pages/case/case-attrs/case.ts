@@ -21,7 +21,7 @@ export const caseMap: Map<string, any> = new Map(
                 label: 'ქეისის მენეჯერი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: null,
+                propertyID: 199, // TODO 
                 isRequired: true,
                 isDisabled: false,
             }
@@ -33,7 +33,7 @@ export const caseMap: Map<string, any> = new Map(
                 label: 'კლიენტი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: null,
+                propertyID: 199, // TODO
                 isRequired: true,
                 isDisabled: false,
             }
@@ -93,7 +93,7 @@ export const caseMap: Map<string, any> = new Map(
                 type: 'dropdown',
                 icon: 'pi-list',
                 propertyID: 118,
-                isRequired: false,
+                isRequired: true,
                 isDisabled: false,
             }
         ],
@@ -105,7 +105,7 @@ export const caseMap: Map<string, any> = new Map(
                 type: 'textarea',
                 icon: 'pi-pencil',
                 propertyID: null,
-                isRequired: false,
+                isRequired: true,
                 isDisabled: false,
             }
         ],

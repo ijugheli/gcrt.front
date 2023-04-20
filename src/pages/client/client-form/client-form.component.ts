@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { Client, ClientAttrs } from '../client.model';
 import { calculateAge } from 'src/app/app.func';
@@ -34,6 +34,7 @@ export class ClientFormComponent implements OnInit {
     private messageService: MessageService,
     private route: ActivatedRoute,
     private attrService: AttributesService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -42,8 +43,10 @@ export class ClientFormComponent implements OnInit {
 
   public onSave(event: any): void {
     if (!this.clientService.validate()) return;
+    this.clientService.isValidationEnabled = false;
     this.clientService.isInputDisabled = true;
-    this.clientService.save(this.client).subscribe({
+
+    this.clientService.store(this.client).subscribe({
       next: (data) => this.showSuccess(data.message),
       error: (e) => {
         this.clientService.isInputDisabled = false;
@@ -78,7 +81,27 @@ export class ClientFormComponent implements OnInit {
 
     if (id !== undefined && id !== null) {
       this.clientID = parseInt(id);
-      this.client = this.clientService.clients.get(this.clientID)!;
+      this.isLoading = true;
+
+      if (this.clientService.clients.has(this.clientID)) {
+        this.client = this.clientService.clients.get(this.clientID)!;
+        this.isLoading = false;
+      } else {
+        this.clientService.show(this.clientID).subscribe({
+          next: (data) => {
+            this.client = data.data!
+          },
+          error: (e) => {
+            this.showError(e.error.message);
+            setTimeout(() => {
+              this.router.navigate([`/client`]);
+            }, 2000);
+          },
+          complete: () => {
+            this.isLoading = false;
+          }
+        });
+      }
       this.pageTitle = 'კლიენტის რედაქტირება';
       this.clientService.values.set('client_id', id);
     }

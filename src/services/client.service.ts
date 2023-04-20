@@ -23,25 +23,30 @@ export class ClientService extends GuardedService {
   public clients: Map<number, Client> = new Map();
   public clientAttrs: Map<string, any> = new Map([...mainMap, ...additionalMap, ...contactMap, ...addressMap]);
   public urls: Record<string, string> = {
-    'save': API_URL + '/client/save',
-    'list': API_URL + '/client/list',
-    'destroy': API_URL + '/client/destroy/{client_id}',
+    'store': API_URL + '/client/store',
+    'index': API_URL + '/client/index',
+    'show': API_URL + '/client/show/{id}',
+    'destroy': API_URL + '/client/destroy/{id}',
   };
 
   constructor(private http: HttpClient, private auth: AuthService, private attrService: AttributesService) {
     super(auth.getToken());
   }
 
-  public save(data: any): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['save'], data, { headers: this.headers });
+  public store(data: any): Observable<APIResponse> {
+    return this.http.post<APIResponse>(this.urls['store'], data, { headers: this.headers });
   }
 
-  public list(): Observable<APIResponse<Client[]>> {
-    return this.http.get<APIResponse<Client[]>>(this.urls['list'], { headers: this.headers });
+  public index(): Observable<APIResponse<Client[]>> {
+    return this.http.get<APIResponse<Client[]>>(this.urls['index'], { headers: this.headers });
+  }
+
+  public show(clientID: number): Observable<APIResponse<Client>> {
+    return this.http.get<APIResponse<Client>>(this.urls['show'].replace('{id}', clientID.toString()), { headers: this.headers });
   }
 
   public destroy(clientID: number): Observable<APIResponse<Client[]>> {
-    return this.http.delete<APIResponse<Client[]>>(this.urls['destroy'].replace('{client_id}', clientID.toString()), { headers: this.headers });
+    return this.http.delete<APIResponse<Client[]>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers });
   }
 
   public validate(): boolean {

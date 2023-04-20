@@ -25,9 +25,7 @@ import { APIResponse } from 'src/app/app.interfaces';
 export class ClientComponent implements OnInit {
   public pageTitle: string = 'კლიენტი';
   public isLoading: boolean = false;
-  public attributes: MAttribute[] = [];
   public selectedRow!: Client;
-  public addPropertiesData: MProperty = new MProperty();
   public data: Client[] = [];
   public loadingArray: number[] = Array(10);
 
@@ -40,6 +38,7 @@ export class ClientComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     public clientService: ClientService,
+    public confirmationService: ConfirmationService
   ) { }
 
   ngOnInit() {
@@ -48,7 +47,7 @@ export class ClientComponent implements OnInit {
 
   private init(): void {
     this.isLoading = true;
-    this.clientService.list().subscribe({
+    this.clientService.index().subscribe({
       next: (data) => this.setData(data),
       error: (e) => { },
       complete: () => this.isLoading = false
@@ -66,14 +65,25 @@ export class ClientComponent implements OnInit {
   }
 
   public onDeleteClick(): void {
-    this.clientService.destroy(this.selectedRow.main.id!).subscribe({
-      next: (data) => {
-        this.setData(data);
-        this.showSuccess(data.message);
-      },
-      error: (e: any) => this.showError(e.error.message),
-      complete: () => { }
+    this.confirmationService.confirm({
+      header: 'ჩანაწერის წაშლა',
+      acceptLabel: 'კი',
+      rejectLabel: 'გაუქმება',
+      message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
+      accept: () => {
+        this.clientService.destroy(this.selectedRow.main.id!).subscribe({
+          next: (data) => {
+            this.setData(data);
+            this.showSuccess(data.message);
+          },
+          error: (e: any) => this.showError(e.error.message),
+          complete: () => { }
+        });
+      }, reject: () => {
+
+      }
     });
+
   }
 
 

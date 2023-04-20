@@ -1,14 +1,18 @@
 input,
-::ng-deep .p-inputnumber.p-input-text,
 ::ng-deep p-calendar input.p-inputtext,
 ::ng-deep .p-dropdown,
-::ng-deep .p-treeselect {
+::ng-deep .p-treeselect,
+::ng-deep p-inputnumber .p-inputtext    {
     border-radius: 0 6px 6px 0;
     min-width: 300px;
     max-width: 300px;
     border: 1px solid #D3DFEB;
     font-size: 0.875rem !important;
     height: 40px;
+}
+
+textarea {
+    min-height: 100px;
 }
 
 .is-not-visible {
@@ -37,7 +41,7 @@ input,
     display: flex !important;
     font-family: roman;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 ::ng-deep .p-treeselect-label-container .p-treeselect-label {

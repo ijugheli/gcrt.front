@@ -9,3 +9,18 @@ export const menuOptions: IFormMenuOption[] = [
     { label: 'კონსულტაცია', value: 5, icon: 'pi pi-book' },
     { label: 'ფსიქოდიაგნოსტირება', value: 6, icon: 'pi pi-book' },
 ];
+
+export const caseSectionFormTypes: Record<number, string> = {
+    0: 'diagnosis',
+    1: 'referral',
+    2: 'consultation',
+}
+
+export const detailTypes: Record<number, string> = {
+    0: 'diagnosis',
+    1: 'referral',
+    2: 'consultation',
+    3: 'formsOfViolence',
+    4: 'carePlan',
+    5: 'psychoDiagnosis',
+}

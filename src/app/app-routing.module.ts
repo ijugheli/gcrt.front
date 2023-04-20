@@ -24,16 +24,10 @@ import { CaseFormComponent } from 'src/pages/case/case-form/case-form.component'
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'client', component: ClientComponent },
-  { path: 'client/add', component: ClientFormComponent },
-  { path: 'client/edit/:id', component: ClientFormComponent },
-  { path: 'case', component: CaseComponent },
-  { path: 'case/add', component: CaseFormComponent },
   { path: 'otp', component: OTPComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'update-password', component: UpdatePasswordComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'survey/:survey_id', component: SurveyComponent, canActivate: [AuthGuard] },
   {
     path: 'manage/:attr_id',
     component: AttributePageComponent,
@@ -54,6 +48,13 @@ const routes: Routes = [
     component: AttributeFormComponent,
     canActivate: [AuthGuard]
   },
+  { path: 'client', component: ClientComponent, canActivate: [AuthGuard] },
+  { path: 'client/add', component: ClientFormComponent, canActivate: [AuthGuard] },
+  { path: 'client/edit/:id', component: ClientFormComponent, canActivate: [AuthGuard] },
+  { path: 'case', component: CaseComponent, canActivate: [AuthGuard] },
+  { path: 'case/add', component: CaseFormComponent, canActivate: [AuthGuard] },
+  { path: 'case/edit/:id', component: CaseFormComponent, canActivate: [AuthGuard] },
+  { path: 'survey/:survey_id', component: SurveyComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard] },
   { path: 'reports/users', component: UserReportComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
@@ -68,5 +69,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-
 }

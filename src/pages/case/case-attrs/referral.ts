@@ -6,7 +6,7 @@ export const referralMap: Map<string, any> = new Map(
             'service_date',
             {
                 fieldName: 'service_date',
-                label: 'მომსახურების ტარიღი',
+                label: 'მომსახურების თარიღი',
                 type: 'date',
                 icon: 'pi-calendar',
                 propertyID: null,
