@@ -126,7 +126,7 @@ export class CaseFormComponent implements OnInit {
     if (!this.hasCaseID && !isFormSubmit) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'სექციის დასამატებლად შეავსეთ ქეისის სავალდებულო ველები',
+        summary: 'სექციის დასამატებლად შეავსეთ დაამატეთ ქეისი',
       });
       return;
     }
