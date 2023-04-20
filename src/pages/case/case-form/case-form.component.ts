@@ -110,7 +110,7 @@ export class CaseFormComponent implements OnInit {
     this.showSuccess('ჩანაწერი წაიშალა');
   }
 
-  public onSave(event: any): void {
+  public onSave(event: any, isFormSubmit: boolean = false): void {
     if (!this.caseService.validate()) {
       this.messageService.add({
         severity: 'warn',
@@ -123,23 +123,24 @@ export class CaseFormComponent implements OnInit {
 
       return
     };
-    if (!this.hasCaseID) {
+    if (!this.hasCaseID && !isFormSubmit) {
       this.messageService.add({
         severity: 'warn',
         summary: 'სექციის დასამატებლად შეავსეთ ქეისის სავალდებულო ველები',
       });
+      return;
     }
 
     this.caseService.isValidationEnabled = false;
     this.caseService.isInputDisabled = true;
 
     this.caseService.storeCase(this.Case).subscribe({
-      next: (data) => { 
-        this.Case  = data.data!;
+      next: (data) => {
+        this.Case = data.data!;
         this.Case.forms_of_violences = this.Case.forms_of_violences;
         this.Case.care_plans = this.Case.care_plans;
         this.showSuccess(data.message)
-       },
+      },
       error: (e) => {
         this.caseService.isInputDisabled = false;
         this.showError(e.error.message);
