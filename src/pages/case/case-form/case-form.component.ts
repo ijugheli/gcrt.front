@@ -26,7 +26,7 @@ export class CaseFormComponent implements OnInit {
   public menuOptions: IFormMenuOption[] = CaseConfig.menuOptions;
   public consultation: IConsultation = new IConsultation();
   public selectedSection: IFormMenuOption = this.menuOptions[0];
-  public hasCaseID: boolean = this.Case.case.id !== null && this.Case.case.id !== undefined;
+  public hasCaseID: boolean = false;
   title: any;
   loading: boolean = false;
 
@@ -42,7 +42,6 @@ export class CaseFormComponent implements OnInit {
     this.initTree('carePlanTree', carePlanTreeID);
     this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
     this.init();
-    this.hasCaseID = this.Case.case.id !== null && this.Case.case.id !== undefined;
   }
 
   private initTree(treeKey: keyof CaseService, attrID: number): void {
@@ -136,7 +135,12 @@ export class CaseFormComponent implements OnInit {
     this.caseService.isInputDisabled = true;
 
     this.caseService.storeCase(this.Case).subscribe({
-      next: (data) => this.showSuccess(data.message),
+      next: (data) => { 
+        this.Case  = data.data!;
+        this.Case.forms_of_violences = this.Case.forms_of_violences;
+        this.Case.care_plans = this.Case.care_plans;
+        this.showSuccess(data.message)
+       },
       error: (e) => {
         this.caseService.isInputDisabled = false;
         this.showError(e.error.message);
@@ -179,6 +183,7 @@ export class CaseFormComponent implements OnInit {
         });
       }
       this.pageTitle = 'ქეისის რედაქტირება';
+      this.hasCaseID = this.caseID !== null;
     }
   }
 

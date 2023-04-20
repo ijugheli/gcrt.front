@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { flattenTree } from 'src/app/app.func';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
   imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule]
 })
 
-export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
+export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnChanges {
   @Input() initialTree: any[] = [];
   @Input() caseSectionModel: T[] = [];
   @Output() onSave = new EventEmitter<T[]>();
@@ -34,6 +34,11 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
     this.init();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['caseSectionModel'].currentValue.length > 0) {
+      this.parsedTree = this.parseModel(flattenTree(this.initialTree));
+    }
+  }
 
   private init() {
     this.parsedTree = this.parseModel(flattenTree(this.initialTree));
@@ -69,6 +74,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
       const model = this.caseSectionModel.find(e => e.category == temp.category);
 
       if (model !== undefined) {
+        temp.id = model.id ?? null;
         temp.case_id = model.case_id ?? null;
         temp.isSelected = true;
         temp.comment = model.comment;
@@ -81,6 +87,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit {
   public onComplete() {
     const parsedModel = this.parsedTree.filter(e => e.isSelected && e.p_value_id !== 0).map((e) => {
       let model: any = {};
+      model.id = e.id;
       model.category = e.category;
       model.case_id = e.case_id;
       model.comment = e.comment;
