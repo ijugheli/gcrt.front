@@ -128,7 +128,6 @@ export class CaseFormComponent implements OnInit {
         severity: 'warn',
         summary: 'სექციის დასამატებლად შეავსეთ ქეისის სავალდებულო ველები',
       });
-      return;
     }
 
     this.caseService.isValidationEnabled = false;
