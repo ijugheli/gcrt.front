@@ -1,4 +1,4 @@
-import { ICustomInput } from "../client.model";
+import { ICustomInput } from "src/app/app.interfaces";
 
 export const mainMap: Map<string, any> = new Map(
     [
@@ -6,7 +6,6 @@ export const mainMap: Map<string, any> = new Map(
             'branch',
             {
                 fieldName: 'branch',
-                mainKey: 'branch',
                 label: 'ფილიალი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -19,7 +18,6 @@ export const mainMap: Map<string, any> = new Map(
             'registration_date',
             {
                 fieldName: 'registration_date',
-                mainKey: 'registration_date',
                 label: 'რეგისტრაციის თარიღი',
                 type: 'date',
                 icon: 'pi-calendar',
@@ -31,7 +29,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'client_code', {
                 fieldName: 'client_code',
-                mainKey: 'client_code',
                 label: 'კლიენტის კოდი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -44,7 +41,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'category_group_id', {
                 fieldName: 'category_group_id',
-                mainKey: 'category_group_id',
                 label: 'კატეგორია',
                 type: 'tree',
                 icon: 'pi-sitemap',
@@ -56,7 +52,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'gender', {
                 fieldName: 'gender',
-                mainKey: 'gender',
                 label: 'სქესი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -68,7 +63,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'repeating_client', {
                 fieldName: 'repeating_client',
-                mainKey: 'repeating_client',
                 label: 'განმეორებადი კლიენტი',
                 type: 'switch',
                 icon: 'pi-list',
@@ -80,7 +74,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'name', {
                 fieldName: 'name',
-                mainKey: 'name',
                 label: 'სახელი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -92,7 +85,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'surname', {
                 fieldName: 'surname',
-                mainKey: 'surname',
                 label: 'გვარი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -104,7 +96,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'birth_date', {
                 fieldName: 'birth_date',
-                mainKey: 'birth_date',
                 label: 'დაბადების თარიღი',
                 type: 'date',
                 icon: 'pi-calendar',
@@ -116,7 +107,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'age', {
                 fieldName: 'age',
-                mainKey: 'age',
                 label: 'ასაკი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -128,7 +118,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'age_group', {
                 fieldName: 'age_group',
-                mainKey: 'age_group',
                 label: 'ასაკობრივი ჯგუფი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -140,7 +129,6 @@ export const mainMap: Map<string, any> = new Map(
         [
             'personal_id', {
                 fieldName: 'personal_id',
-                mainKey: 'personal_id',
                 label: 'პირადი ნომერი',
                 type: 'text',
                 icon: 'pi-pencil',

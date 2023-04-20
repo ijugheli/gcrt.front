@@ -6,6 +6,7 @@ import { contactList, contactMap } from "./client-attrs/client.contact";
 import { mainFirstCol, mainMap, mainSecondCol } from "./client-attrs/client.main";
 import { formatDate } from "src/app/app.func";
 import { ageGroups } from "./client.config";
+import { ICustomInput } from "src/app/app.interfaces";
 
 
 
@@ -54,6 +55,8 @@ export class ClientMain {
     public age!: number | null;
     public age_group!: number | null;
     public personal_id!: string | null;
+    [key: string]: any;
+
 }
 
 export class ClientAdditional {
@@ -67,6 +70,8 @@ export class ClientAdditional {
     public has_insurance!: string | null;
     public work_address!: string | null;
     public profession!: string | null;
+    [key: string]: any;
+
 }
 
 export class ClientContact {
@@ -79,6 +84,8 @@ export class ClientContact {
     public work_internal_phone_number!: string | null;
     public work_email!: string | null;
     public fax!: string | null;
+    [key: string]: any;
+
 }
 
 export class ClientAddress {
@@ -88,34 +95,8 @@ export class ClientAddress {
     public zip_code!: string | null;
     public previous_address!: string | null;
     public location_id!: number | null;
-}
+    [key: string]: any;
 
-export class ICustomInput {
-    fieldName!: string;
-    mainKey!: keyof ClientMain;
-    addressKey!: keyof ClientAddress;
-    contactKey!: keyof ClientContact;
-    additionalKey!: keyof ClientAdditional;
-    caseKey!: keyof Case;
-    diagnosisKey!: keyof IDiagnosis;
-    referralKey!: keyof IReferral;
-    consultationKey!: keyof IConsultation;
-    psychodiagnosisKey!: keyof IPsychodiagnosis;
-    label!: string;
-    type!: string;
-    icon!: string;
-    propertyID!: number | null;
-    isRequired!: boolean;
-    isDisabled!: boolean;
-}
-
-export class ICaseCol {
-    fieldName!: string;
-    label!: string;
-    constructor(data: any) {
-        this.fieldName = data.fieldName;
-        this.label = data.label;
-    }
 }
 
 export class ClientAttrs {

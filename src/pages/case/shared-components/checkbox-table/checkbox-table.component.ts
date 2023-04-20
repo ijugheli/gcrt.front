@@ -1,8 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
-import { APIResponse } from 'src/app/app.interfaces';
-import { Attribute } from 'src/app/app.models';
-import { ATTR_TYPES } from 'src/app/app.config';
 import { flattenTree } from 'src/app/app.func';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';

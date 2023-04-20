@@ -2,7 +2,6 @@ export const formsOfViolenceMap: Map<string, any> = new Map(
     [
         ['category', {
             fieldName: 'category',
-            additionalKey: 'category',
             label: 'აირჩიეთ ძალადობის ფორმა',
             type: 'tree',
             icon: 'pi-sitemap',

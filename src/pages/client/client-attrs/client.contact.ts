@@ -1,11 +1,10 @@
-import { ICustomInput } from "../client.model";
+import { ICustomInput } from "src/app/app.interfaces";
 
 export const contactMap: Map<string, any> = new Map(
     [
         [
             'phone_number', {
                 fieldName: 'phone_number',
-                contactKey: 'phone_number',
                 label: 'ტელეფონის ნომერი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -17,7 +16,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'home_phone_number', {
                 fieldName: 'home_phone_number',
-                contactKey: 'home_phone_number',
                 label: 'სახლის ტელეფონი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -29,7 +27,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'personal_email', {
                 fieldName: 'personal_email',
-                contactKey: 'personal_email',
                 label: 'პირადი ელ. ფოსტა',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -41,7 +38,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'work_phone_number', {
                 fieldName: 'work_phone_number',
-                contactKey: 'work_phone_number',
                 label: 'სამსახურის ტელეფონი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -53,7 +49,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'work_internal_phone_number', {
                 fieldName: 'work_internal_phone_number',
-                contactKey: 'work_internal_phone_number',
                 label: 'სამსახურის შიდა ნომერი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -65,7 +60,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'fax', {
                 fieldName: 'fax',
-                contactKey: 'fax',
                 label: 'ფაქსი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -77,7 +71,6 @@ export const contactMap: Map<string, any> = new Map(
         [
             'work_email', {
                 fieldName: 'work_email',
-                contactKey: 'work_email',
                 label: 'სამსახურის ელ. ფოსტა',
                 type: 'text',
                 icon: 'pi-pencil',

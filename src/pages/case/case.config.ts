@@ -1,4 +1,6 @@
-export const menuOptions: any[] = [
+import { IFormMenuOption } from "src/app/app.interfaces";
+
+export const menuOptions: IFormMenuOption[] = [
     { label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' },
     { label: 'ძალადობის ფორმები', value: 1, icon: 'pi pi-list' },
     { label: 'მოვლის გეგმა', value: 2, icon: 'pi pi-list' },
@@ -7,3 +9,18 @@ export const menuOptions: any[] = [
     { label: 'კონსულტაცია', value: 5, icon: 'pi pi-book' },
     { label: 'ფსიქოდიაგნოსტირება', value: 6, icon: 'pi pi-book' },
 ];
+
+export const caseSectionFormTypes: Record<number, string> = {
+    0: 'diagnosis',
+    1: 'referral',
+    2: 'consultation',
+}
+
+export const detailTypes: Record<number, string> = {
+    0: 'diagnosis',
+    1: 'referral',
+    2: 'consultation',
+    3: 'formsOfViolence',
+    4: 'carePlan',
+    5: 'psychoDiagnosis',
+}

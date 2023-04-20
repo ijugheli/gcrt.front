@@ -1,10 +1,11 @@
+import { ICustomInput } from "src/app/app.interfaces";
+
 export const additionalMap: Map<string, any> = new Map(
     [
         [
             'nationality',
             {
                 fieldName: 'nationality',
-                additionalKey: 'nationality',
                 label: 'ეროვნება',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -17,7 +18,6 @@ export const additionalMap: Map<string, any> = new Map(
             'education',
             {
                 fieldName: 'education',
-                additionalKey: 'education',
                 label: 'განათლება',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -30,7 +30,6 @@ export const additionalMap: Map<string, any> = new Map(
             'marital_status',
             {
                 fieldName: 'marital_status',
-                additionalKey: 'marital_status',
                 label: 'ოჯახური მდგომარეობა',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -43,7 +42,6 @@ export const additionalMap: Map<string, any> = new Map(
             'family_members',
             {
                 fieldName: 'family_members',
-                additionalKey: 'family_members',
                 label: 'ოჯახის წევრები',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -55,7 +53,6 @@ export const additionalMap: Map<string, any> = new Map(
         [
             'has_social_support', {
                 fieldName: 'has_social_support',
-                additionalKey: 'has_social_support',
                 label: 'სოც. დახმარების დასახელება',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -67,7 +64,6 @@ export const additionalMap: Map<string, any> = new Map(
         [
             'has_insurance', {
                 fieldName: 'has_insurance',
-                additionalKey: 'has_insurance',
                 label: 'სადაზღვეო კომპანიის დასახელება',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -79,7 +75,6 @@ export const additionalMap: Map<string, any> = new Map(
         [
             'work_address', {
                 fieldName: 'work_address',
-                additionalKey: 'work_address',
                 label: 'სამუშაო ადგილი',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -91,7 +86,6 @@ export const additionalMap: Map<string, any> = new Map(
         [
             'profession', {
                 fieldName: 'profession',
-                additionalKey: 'profession',
                 label: 'პროფესია',
                 type: 'text',
                 icon: 'pi-pencil',
@@ -103,4 +97,4 @@ export const additionalMap: Map<string, any> = new Map(
     ]
 );
 
-export const additionalList = Array.from(additionalMap.values());
+export const additionalList: ICustomInput[] = Array.from(additionalMap.values());

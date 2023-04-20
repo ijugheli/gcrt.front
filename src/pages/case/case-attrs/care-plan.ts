@@ -2,7 +2,6 @@ export const carePlanMap: Map<string, any> = new Map(
     [
         ['category', {
             fieldName: 'category',
-            additionalKey: 'category',
             label: 'აირჩიეთ ჩარევის სახეობა',
             type: 'tree',
             icon: 'pi-sitemap',

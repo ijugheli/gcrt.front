@@ -57,7 +57,7 @@ export class CacheService {
         localStorage.clear();
     }
 
-    private getTTL() {
+    private getTTL(): number {
         return Date.now() + this.defaultTTL;
     }
 

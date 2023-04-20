@@ -1,4 +1,4 @@
-import { ICustomInput } from "../client/client.model";
+import { ICustomInput, } from "src/app/app.interfaces";
 import { carePlanMap } from "./case-attrs/care-plan";
 import { caseList, caseMap } from "./case-attrs/case";
 import { consultationList } from "./case-attrs/consultation";
@@ -8,12 +8,12 @@ import { referralList } from "./case-attrs/referral";
 
 export class ICase {
     public case!: Case;
-    public forms_of_violence: IFormOfViolence[] = [];
+    public forms_of_violences: IFormOfViolence[] = [];
     public care_plans: ICarePlan[] = [];
-    public diagnosis: IDiagnosis[] = [];
-    public referral: IReferral[] = [];
-    public consultation: IConsultation[] = [];
-    public psychodiagnosis!: IPsychodiagnosis;
+    public diagnoses: IDiagnosis[] = [];
+    public referrals: IReferral[] = [];
+    public consultations: IConsultation[] = [];
+    public psychodiagnoses!: IPsychodiagnosis;
 
     constructor() {
         this.case = new Case();
@@ -22,6 +22,7 @@ export class ICase {
 }
 
 export class Case {
+    public id!: number | null;
     public project_id!: number | null; // 199
     public case_manager_id!: number | null;
     public client_id!: number | null;
@@ -33,6 +34,7 @@ export class Case {
     public incident_text!: string | null;
     public social_status!: string | null;
     public legal_status!: string | null;
+    [key: string]: any;
     public setNodeID: any = (node: any, key: 'referral_body') => {
         this[key] = node.data.id;
     };
@@ -42,18 +44,24 @@ export abstract class CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null; // treeselect
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class ICarePlan implements CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class IFormOfViolence implements CaseSharedInterface {
     public case_id?: number | null;
     public category!: number | null;
     public comment!: string | null;
+    [key: string]: any;
+
 }
 
 export class MCheckboxTableItem {
@@ -65,6 +73,7 @@ export class MCheckboxTableItem {
     public p_title!: string | null; // treeselect
     public value_id!: number | null; // treeselect
     public comment!: string | null;
+
 }
 
 export class IDiagnosis {
@@ -79,6 +88,7 @@ export class IDiagnosis {
     public diagnosis_date!: Date | null;
     public links_with_trauma!: number | null;
     public comment!: string | null;
+    [key: string]: any;
     public setNodeID?: any = (node: any, key: 'icd') => {
         this[key] = node.data.id;
     };
@@ -91,6 +101,8 @@ export class IDiagnosis {
 }
 
 export class IReferral {
+    public generated_id?: number;
+    public id!: number | null;
     public case_id!: number | null;
     public service_date!: Date | null;
     public type!: number | null;
@@ -98,12 +110,22 @@ export class IReferral {
     public service_type!: number | null; // treeselect
     public price!: number | null;
     public result!: string | null;
-    public setNodeID: any = (node: any, key: 'service_type') => {
+    [key: string]: any;
+
+    public setNodeID?: any = (node: any, key: 'service_type') => {
         this[key] = node.data.id;
     };
+
+    constructor() {
+        if (this.id == null) {
+            this.generated_id = Date.now();
+        }
+    }
 }
 
 export class IConsultation {
+    public generated_id?: number;
+    public id!: number | null;
     public case_id!: number | null;
     public consultant!: number | null;
     public date!: Date | null;
@@ -111,10 +133,23 @@ export class IConsultation {
     public duration!: number | null;
     public consultant_record!: string | null;
     public consultant_prescription!: string | null;
+    [key: string]: any;
+
+    public setNodeID?: any = (node: any, key: 'service_type') => {
+        this[key] = node.data.id;
+    };
+
+    constructor() {
+        if (this.id == null) {
+            this.generated_id = Date.now();
+        }
+    }
 }
 
 export class IPsychodiagnosis {
     public case_id!: number | null;
+    [key: string]: any;
+
 }
 
 export class CaseAttrs {
@@ -135,5 +170,30 @@ export class CaseAttrs {
     // public additionalMap: Map<string, any> = additionalMap;
     // public contactMap: Map<string, any> = contactMap;
     // public contactList: ICustomInput[] = contactList;
+}
 
+export class MOnSectionEvent {
+    data?: any[];
+    model?: any;
+    errorMessage?: string;
+    successMessage?: string;
+
+}
+
+const caseKeys = [
+    'project_id',
+    'case_manager_id',
+    'client_id',
+    'branch',
+    'registration_date',
+    'referral_body',
+    'recommender',
+    'incident',
+    'incident_text',
+    'social_status',
+    'legal_status',
+];
+
+export const isCaseKey = (key: string) => {
+    return caseKeys.includes(key);
 }

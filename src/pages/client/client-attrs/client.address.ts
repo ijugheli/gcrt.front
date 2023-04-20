@@ -1,10 +1,9 @@
-import { ICustomInput } from "../client.model";
+import { ICustomInput } from "src/app/app.interfaces";
 
-export  const addressMap: Map<string, any> = new Map(
+export const addressMap: Map<string, any> = new Map(
     [
         ['location_id', {
             fieldName: 'location_id',
-            addressKey: 'location_id',
             label: 'ლოკაცია',
             type: 'tree',
             icon: 'pi-sitemap',
@@ -15,7 +14,6 @@ export  const addressMap: Map<string, any> = new Map(
         ],
         ['address', {
             fieldName: 'address',
-            addressKey: 'address',
             label: 'მისამართი',
             type: 'text',
             icon: 'pi-pencil',
@@ -26,7 +24,6 @@ export  const addressMap: Map<string, any> = new Map(
         ],
         ['zip_code', {
             fieldName: 'zip_code',
-            addressKey: 'zip_code',
             label: 'ZIP/საფოსტო კოდი',
             type: 'text',
             icon: 'pi-pencil',
@@ -37,7 +34,6 @@ export  const addressMap: Map<string, any> = new Map(
         ],
         ['previous_address', {
             fieldName: 'previous_address',
-            addressKey: 'previous_address',
             label: 'მისამართი გადაადგილებამდე',
             type: 'text',
             icon: 'pi-pencil',

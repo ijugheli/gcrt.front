@@ -1,4 +1,4 @@
-import { ICaseCol, ICustomInput } from "src/pages/client/client.model";
+import { ICustomInput, ICaseCol } from "src/app/app.interfaces";
 
 export const referralMap: Map<string, any> = new Map(
     [
@@ -6,8 +6,7 @@ export const referralMap: Map<string, any> = new Map(
             'service_date',
             {
                 fieldName: 'service_date',
-                referralKey: 'service_date',
-                label: 'მომსახურების ტარიღი',
+                label: 'მომსახურების თარიღი',
                 type: 'date',
                 icon: 'pi-calendar',
                 propertyID: null,
@@ -19,7 +18,6 @@ export const referralMap: Map<string, any> = new Map(
             'type',
             {
                 fieldName: 'type',
-                referralKey: 'type',
                 label: 'რეფერალის ტიპი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -32,7 +30,6 @@ export const referralMap: Map<string, any> = new Map(
             'provider',
             {
                 fieldName: 'provider',
-                referralKey: 'provider',
                 label: 'პროვაიდერი',
                 type: 'dropdown',
                 icon: 'pi-list',
@@ -45,7 +42,6 @@ export const referralMap: Map<string, any> = new Map(
             'service_type',
             {
                 fieldName: 'service_type',
-                referralKey: 'service_type',
                 label: 'მომსახურების ტიპი',
                 type: 'tree',
                 icon: 'pi-sitemap',
@@ -57,7 +53,6 @@ export const referralMap: Map<string, any> = new Map(
         [
             'price', {
                 fieldName: 'price',
-                referralKey: 'price',
                 label: 'მომსახურების ღირებულება',
                 type: 'double',
                 icon: 'pi-money-bill',
@@ -70,7 +65,6 @@ export const referralMap: Map<string, any> = new Map(
             'result',
             {
                 fieldName: 'result',
-                referralKey: 'result',
                 label: 'მომსახურების შედეგი',
                 type: 'textarea',
                 icon: 'pi-sitemap',
