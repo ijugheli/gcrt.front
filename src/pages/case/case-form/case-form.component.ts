@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService, TreeNode } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
-import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../case.model';
+import { CaseAttrs, ICase, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
-import * as CaseConfig from '../case.config';
+import { caseSectionForms, menuOptions } from '../case.config';
 import { ActivatedRoute, Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-case-form',
@@ -23,12 +22,9 @@ export class CaseFormComponent implements OnInit {
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
   public caseID!: number | null;
-  public menuOptions: IFormMenuOption[] = CaseConfig.menuOptions;
-  public consultation: IConsultation = new IConsultation();
+  public menuOptions: IFormMenuOption[] = menuOptions;
   public selectedSection: IFormMenuOption = this.menuOptions[0];
   public hasCaseID: boolean = false;
-  title: any;
-  loading: boolean = false;
 
   constructor(
     private messageService: MessageService,
@@ -52,10 +48,6 @@ export class CaseFormComponent implements OnInit {
     })
   }
 
-  public onUpdate(event: any,) {
-    // console.log(this.diagnosis);
-  }
-
   public onSectionSave(event: MOnSectionEvent, type: any): void {
     this.updateSections(event, type);
 
@@ -72,36 +64,7 @@ export class CaseFormComponent implements OnInit {
       return;
     }
 
-    if (CaseConfig.caseSectionFormTypes[type] == 'diagnosis') {
-      this.caseService.updateDiagnosis(event.model).subscribe({
-        next: (data) => {
-          this.updateSections(data, type);
-          this.showSuccess(data.message);
-        },
-        error: (e) => { },
-        complete: () => this.isLoading = false
-      });
-
-    } else if (CaseConfig.caseSectionFormTypes[type] == 'referral') {
-      this.caseService.updateReferral(event.model).subscribe({
-        next: (data) => {
-          this.updateSections(data, type);
-          this.showSuccess(data.message);
-        },
-        error: (e) => {
-          this.showError(e.e.message);
-        },
-        complete: () => this.isLoading = false
-      });
-    } else {
-      this.caseService.updateConsultation(event.model).subscribe({
-        next: (data) => {
-          this.updateSections(data, type);
-        },
-        error: (e) => { },
-        complete: () => this.isLoading = false
-      });
-    }
+    this.updateSectionRequests(event, type);
   }
 
   public onSectionItemDelete(event: MOnSectionEvent, type: number) {
@@ -111,12 +74,12 @@ export class CaseFormComponent implements OnInit {
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
       accept: () => {
-        if (event.data!.id !== null && event.data!.id !== undefined) {
+        if (event.data?.id !== null && event.data?.id !== undefined) {
           this.deleteSection(event.data.id, type);
         } else {
-          const index = this.Case[CaseConfig.caseSectionFormTypes[type]].findIndex((e: any) => e.generated_id == event.data.generated_id || e.id == event.data.id);
-          this.Case[CaseConfig.caseSectionFormTypes[type]].splice(index, 1);
-          this.Case[CaseConfig.caseSectionFormTypes[type]] = [...this.Case[CaseConfig.caseSectionFormTypes[type]]];
+          const index = this.Case[caseSectionForms[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
+          this.Case[caseSectionForms[type]].splice(index, 1);
+          this.Case[caseSectionForms[type]] = [...this.Case[caseSectionForms[type]]];
         }
         this.showSuccess(event.successMessage!);
       }, reject: () => {
@@ -134,9 +97,9 @@ export class CaseFormComponent implements OnInit {
         severity: 'error',
         summary: 'შეავსეთ ქეისის სავალდებულო ველები',
       });
+      return;
+    }
 
-      return
-    };
     if (!this.hasCaseID && !isFormSubmit) {
       this.messageService.add({
         severity: 'warn',
@@ -173,29 +136,30 @@ export class CaseFormComponent implements OnInit {
   private initCase(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
-    if (id !== undefined && id !== null) {
-      this.caseID = parseInt(id);
-      this.isLoading = true;
+    if (id === undefined && id === null) return;
 
-      if (this.caseService.cases.has(this.caseID)) {
-        this.Case = this.caseService.cases.get(this.caseID)!;
-        this.isLoading = false;
-      } else {
-        this.caseService.show(this.caseID).subscribe({
-          next: (data) => {
-            this.Case = data.data!
-          },
-          error: (e) => {
-            this.showError(e.error.message);
-            setTimeout(() => {
-              this.router.navigate([`/case`]);
-            }, 2000);
-          },
-          complete: () => {
-            this.isLoading = false;
-          }
-        });
-      }
+    this.caseID = parseInt(id!);
+    this.isLoading = true;
+
+    if (this.caseService.cases.has(this.caseID)) {
+      this.Case = this.caseService.cases.get(this.caseID)!;
+      this.isLoading = false;
+    } else {
+      this.caseService.show(this.caseID).subscribe({
+        next: (data) => {
+          this.Case = data.data!
+        },
+        error: (e) => {
+          this.showError(e.error.message);
+          setTimeout(() => {
+            this.router.navigate([`/case`]);
+          }, 2000);
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
+
       this.pageTitle = 'ქეისის რედაქტირება';
       this.hasCaseID = this.caseID !== null;
     }
@@ -217,22 +181,42 @@ export class CaseFormComponent implements OnInit {
 
   private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
     if (event.data === undefined) return;
-    this.Case[CaseConfig.caseSectionFormTypes[type]] = event.data;
+    this.Case[caseSectionForms[type]] = event.data;
+  }
+
+  private updateSectionRequests(event: MOnSectionEvent, type: number) {
+    const method =
+      caseSectionForms[type] == "diagnoses"
+        ? 'updateDiagnosis'
+        : caseSectionForms[type] == "referrals"
+          ? 'updateReferral'
+          : 'updateConsultation';
+
+    this.caseService[method](event.model).subscribe({
+      next: (data) => {
+        this.updateSections(data, type);
+        this.showSuccess(data.message);
+      },
+      error: (e) => {
+        this.showError(e.e.message);
+        this.isLoading = false
+      },
+      complete: () => this.isLoading = false
+    });
+
   }
 
   private deleteSection(id: number, type: number): void {
-    if (CaseConfig.caseSectionFormTypes[type] == 'diagnoses') {
-      this.caseService.destroyDiagnosis(id).subscribe((data) => {
-        this.Case.diagnoses = data.data!;
-      });
-    } else if (CaseConfig.caseSectionFormTypes[type] == 'referrals') {
-      this.caseService.destroyReferral(id).subscribe((data) => {
-        this.Case.referrals = data.data!;
-      });
-    } else {
-      this.caseService.destroyConsultation(id).subscribe((data) => {
-        this.Case.consultations = data.data!;
-      });
+    const method =
+      caseSectionForms[type] == "diagnoses"
+        ? 'destroyDiagnosis'
+        : caseSectionForms[type] == "referrals"
+          ? 'destroyReferral'
+          : 'destroyConsultation';
+
+    this.caseService[method](id).subscribe((data) => {
+      this.Case[caseSectionForms[type]] = data.data;
     }
+    );
   }
 }

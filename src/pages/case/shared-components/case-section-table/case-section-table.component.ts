@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
-import { IDiagnosis } from '../../case.model';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ICaseCol } from 'src/app/app.interfaces';
 // For diagnosis, consultation, referral,

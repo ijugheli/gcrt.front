@@ -10,7 +10,7 @@ export const menuOptions: IFormMenuOption[] = [
     { label: 'ფსიქოდიაგნოსტირება', value: 6, icon: 'pi pi-book' },
 ];
 
-export const caseSectionFormTypes: Record<number, string> = {
+export const caseSectionForms: Record<number, string> = {
     0: 'diagnoses',
     1: 'referrals',
     2: 'consultations',
