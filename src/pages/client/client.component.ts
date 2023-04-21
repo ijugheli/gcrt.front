@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MAttribute } from '../../services/attributes/models/attribute.model';
 import { AttributesService } from '../../services/attributes/Attributes.service';
-import { MProperty } from 'src/services/attributes/models/property.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ClientService } from 'src/services/client.service';
-import { Client, ClientAdditional, ClientAddress, ClientContact, ClientMain } from './client.model';
+import { Client } from './client.model';
 import { mainList } from './client-attrs/client.main';
 import { additionalList } from './client-attrs/client.additional';
 import { contactList } from './client-attrs/client.contact';
@@ -79,9 +76,7 @@ export class ClientComponent implements OnInit {
           error: (e: any) => this.showError(e.error.message),
           complete: () => { }
         });
-      }, reject: () => {
-
-      }
+      },
     });
 
   }

@@ -1,69 +1,73 @@
 <ng-container *ngIf="data.length > 0">
-  <div class="header">
-    <button
-      type="button"
-      class="border-btn mb-2"
-      [class.p-disabled]="selectedRow === undefined"
-      (click)="onEditClick()"
-      [disabled]="selectedRow === undefined"
+  <div [style.max-width]="'calc(100vw - 280px - 280px - 400px - 48px)'">
+
+
+    <div class="header">
+      <button
+        type="button"
+        class="border-btn mb-2"
+        [class.p-disabled]="selectedRow === undefined"
+        (click)="onEditClick()"
+        [disabled]="selectedRow === undefined"
+      >
+        <i class="pi pi-file-edit mr-2"></i>
+        რედაქტირება
+      </button>
+      <button
+        type="button"
+        class="border-btn mb-2"
+        [class.p-disabled]="selectedRow === undefined"
+        (click)="onDeleteClick()"
+        [disabled]="selectedRow === undefined"
+      >
+        <i class="pi pi-trash mr-2"></i>
+        წაშლა
+      </button>
+    </div>
+    <p-table
+      [value]="data"
+      [responsive]="true"
+      [(selection)]="selectedRow"
+      styleClass="p-datatable-sm p-datatable-gridlines"
+      [style.max-width]="'calc(100vw - 280px - 280px - 400px - 48px)'"
+      responsiveLayout="scroll"
+      selectionMode="single"
+      dataKey="generated_id"
+      dataKey="id"
     >
-      <i class="pi pi-file-edit mr-2"></i>
-      რედაქტირება
-    </button>
-    <button
-      type="button"
-      class="border-btn mb-2"
-      [class.p-disabled]="selectedRow === undefined"
-      (click)="onDeleteClick()"
-      [disabled]="selectedRow === undefined"
-    >
-      <i class="pi pi-trash mr-2"></i>
-      წაშლა
-    </button>
+      <ng-template pTemplate="header">
+        <tr>
+          <th></th>
+          <th *ngFor="let col of columns">
+            {{col.label}}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        *ngIf="loading == true"
+      >
+        <tr style="height:46px">
+          <td *ngFor="let col of columns">
+            <p-skeleton></p-skeleton>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-model
+      >
+        <tr>
+          <td>
+            <p-tableRadioButton [value]="model"></p-tableRadioButton>
+          </td>
+          <td *ngFor="let col of columns">
+            {{
+            getFieldValue(model[col.fieldName])
+            }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
-  <p-table
-    [value]="data"
-    [responsive]="true"
-    [(selection)]="selectedRow"
-    styleClass="p-datatable-sm p-datatable-gridlines"
-    [style.max-width]="'calc(100vw - 280px - 280px - 400px - 48px)'"
-    responsiveLayout="scroll"
-    selectionMode="single"
-    dataKey="generated_id"
-    dataKey="id"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th></th>
-        <th *ngFor="let col of columns">
-          {{col.label}}
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="body"
-      *ngIf="loading == true"
-    >
-      <tr style="height:46px">
-        <td *ngFor="let col of columns">
-          <p-skeleton></p-skeleton>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-model
-    >
-      <tr>
-        <td>
-          <p-tableRadioButton [value]="model"></p-tableRadioButton>
-        </td>
-        <td *ngFor="let col of columns">
-          {{
-          getFieldValue(model[col.fieldName])
-          }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
 </ng-container>

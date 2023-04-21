@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { flattenTree } from 'src/app/app.func';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -26,9 +25,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnC
   public parents: MCheckboxTableItem[] = [];
   public isLoading: boolean = true;
 
-  constructor(
-    private attrService: AttributesService,
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     this.init();
@@ -52,10 +49,6 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnC
 
   public getSelectedNodeCount(id: number): string {
     return this.parsedTree.filter(e => e.p_value_id == id && e.isSelected).length.toString();
-  }
-
-  public onchange(event: any) {
-    console.log(this.parsedTree);
   }
 
   private filterParents() {

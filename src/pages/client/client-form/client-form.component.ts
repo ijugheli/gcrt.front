@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { DialogService } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { Client, ClientAttrs } from '../client.model';

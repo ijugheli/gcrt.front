@@ -1,14 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { SkeletonModule } from 'primeng/skeleton';
 import { IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../../case.model';
-import { CheckboxModule } from 'primeng/checkbox';
 import { ICaseCol, ICustomInput } from 'src/app/app.interfaces';
-import { caseSectionFormTypes } from '../../case.config';
+import { caseSectionForms } from '../../case.config';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
 import { CaseSectionTable } from '../case-section-table/case-section-table.component';
 import { ConfirmationService } from 'primeng/api';
@@ -31,7 +28,6 @@ export class CaseSectionForm implements OnInit {
   @Input() sectionType!: number;
   @Output() onSave = new EventEmitter<MOnSectionEvent>();
   @Output() onDelete = new EventEmitter<MOnSectionEvent>();
-  isDialogEnabled: boolean = false;
 
   model!: IDiagnosis | IConsultation | IReferral;
 
@@ -54,8 +50,6 @@ export class CaseSectionForm implements OnInit {
       return;
     }
 
-    const id = this.model.id ?? this.model.generated_id;
-    const index = this.data.findIndex(e => e.generated_id == id || e.id == id);
     const onSectionSave = new MOnSectionEvent();
 
     if (!this.caseService.isValidModel(this.model, this.inputAttrs)) {
@@ -64,6 +58,8 @@ export class CaseSectionForm implements OnInit {
       return;
     }
 
+    const id = this.model.id ?? this.model.generated_id;
+    const index = this.data.findIndex(e => e.generated_id == id || e.id == id);
     this.caseService.isValidationEnabled = false;
     this.model.case_id = this.caseID;
 
@@ -91,9 +87,9 @@ export class CaseSectionForm implements OnInit {
   }
 
   private getModel(): IDiagnosis | IConsultation | IReferral {
-    if (caseSectionFormTypes[this.sectionType] == 'diagnosis') {
+    if (caseSectionForms[this.sectionType] == 'diagnoses') {
       return new IDiagnosis();
-    } else if (caseSectionFormTypes[this.sectionType] == 'referral') {
+    } else if (caseSectionForms[this.sectionType] == 'referrals') {
       return new IReferral();
     }
 
