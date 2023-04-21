@@ -6,7 +6,7 @@ import { CaseAttrs, ICase, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
-import { caseSectionForms, menuOptions } from '../case.config';
+import * as CaseConfig from '../case.config';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -22,7 +22,7 @@ export class CaseFormComponent implements OnInit {
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
   public caseID!: number | null;
-  public menuOptions: IFormMenuOption[] = menuOptions;
+  public menuOptions: IFormMenuOption[] = CaseConfig.menuOptions;
   public selectedSection: IFormMenuOption = this.menuOptions[0];
   public hasCaseID: boolean = false;
 
@@ -52,7 +52,7 @@ export class CaseFormComponent implements OnInit {
     this.updateSections(event, type);
 
     if (event.errorMessage !== undefined) {
-      this.showError(event.errorMessage);
+      this.showMsg(event.errorMessage, 'error');
       return;
     }
 
@@ -77,11 +77,11 @@ export class CaseFormComponent implements OnInit {
         if (event.data?.id !== null && event.data?.id !== undefined) {
           this.deleteSection(event.data.id, type);
         } else {
-          const index = this.Case[caseSectionForms[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
-          this.Case[caseSectionForms[type]].splice(index, 1);
-          this.Case[caseSectionForms[type]] = [...this.Case[caseSectionForms[type]]];
+          const index = this.Case[CaseConfig.caseSectionForms[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
+          this.Case[CaseConfig.caseSectionForms[type]].splice(index, 1);
+          this.Case[CaseConfig.caseSectionForms[type]] = [...this.Case[CaseConfig.caseSectionForms[type]]];
         }
-        this.showSuccess(event.successMessage!);
+        this.showMsg(event.successMessage!, 'success');
       }, reject: () => {
       }
     });
@@ -89,22 +89,15 @@ export class CaseFormComponent implements OnInit {
 
   public onSave(event: any, isFormSubmit: boolean = false): void {
     if (!this.caseService.validate()) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'სექციის დასამატებლად შეავსეთ ქეისის სავალდებულო ველები',
-      });
-      this.messageService.add({
-        severity: 'error',
-        summary: 'შეავსეთ ქეისის სავალდებულო ველები',
-      });
+      this.showMsg('სექციის დასამატებლად შეავსეთ ქეისის სავალდებულო ველები', 'warn');
+      this.showMsg('შეავსეთ ქეისის სავალდებულო ველები', 'error');
       return;
     }
 
     if (!this.hasCaseID && !isFormSubmit) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'სექციის დასამატებლად შეავსეთ დაამატეთ ქეისი',
-      });
+      console.log(this.caseID);
+      console.log(this.hasCaseID);
+      this.showMsg('სექციის დასამატებლად შეავსეთ დაამატეთ ქეისი', 'warn')
       return;
     }
 
@@ -116,11 +109,11 @@ export class CaseFormComponent implements OnInit {
         this.Case = data.data!;
         this.Case.forms_of_violences = this.Case.forms_of_violences;
         this.Case.care_plans = this.Case.care_plans;
-        this.showSuccess(data.message)
+        this.showMsg(data.message, 'success')
       },
       error: (e) => {
         this.caseService.isInputDisabled = false;
-        this.showError(e.error.message);
+        this.showMsg(e.error.message, 'error');
       },
       complete: () => {
         this.caseService.isInputDisabled = false;
@@ -150,7 +143,7 @@ export class CaseFormComponent implements OnInit {
           this.Case = data.data!
         },
         error: (e) => {
-          this.showError(e.error.message);
+          this.showMsg(e.error.message, 'error');
           setTimeout(() => {
             this.router.navigate([`/case`]);
           }, 2000);
@@ -159,46 +152,40 @@ export class CaseFormComponent implements OnInit {
           this.isLoading = false;
         }
       });
-
-      this.pageTitle = 'ქეისის რედაქტირება';
-      this.hasCaseID = this.caseID !== null;
     }
+    this.hasCaseID = this.caseID != null;
+    this.pageTitle = this.hasCaseID ? 'ქეისის რედაქტირება' : this.pageTitle;
   }
 
-  public showSuccess(msg: string): void {
+
+  private showMsg(msg: string, type: string): void {
     this.messageService.add({
-      severity: 'success',
+      severity: type,
       summary: msg,
-    });
-  }
-
-  private showError(error: any): void {
-    this.messageService.add({
-      severity: 'error',
-      summary: error,
     });
   }
 
   private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
     if (event.data === undefined) return;
-    this.Case[caseSectionForms[type]] = event.data;
+    this.Case[CaseConfig.caseSectionForms[type]] = event.data;
   }
 
   private updateSectionRequests(event: MOnSectionEvent, type: number) {
     const method =
-      caseSectionForms[type] == "diagnoses"
+      CaseConfig.caseSectionForms[type] == "diagnoses"
         ? 'updateDiagnosis'
-        : caseSectionForms[type] == "referrals"
+        : CaseConfig.caseSectionForms[type] == "referrals"
           ? 'updateReferral'
           : 'updateConsultation';
 
+    console.log('here');
     this.caseService[method](event.model).subscribe({
       next: (data) => {
         this.updateSections(data, type);
-        this.showSuccess(data.message);
+        this.showMsg(data.message, 'success');
       },
       error: (e) => {
-        this.showError(e.e.message);
+        this.showMsg(e.e.message, 'error');
         this.isLoading = false
       },
       complete: () => this.isLoading = false
@@ -208,14 +195,14 @@ export class CaseFormComponent implements OnInit {
 
   private deleteSection(id: number, type: number): void {
     const method =
-      caseSectionForms[type] == "diagnoses"
+      CaseConfig.caseSectionForms[type] == "diagnoses"
         ? 'destroyDiagnosis'
-        : caseSectionForms[type] == "referrals"
+        : CaseConfig.caseSectionForms[type] == "referrals"
           ? 'destroyReferral'
           : 'destroyConsultation';
 
     this.caseService[method](id).subscribe((data) => {
-      this.Case[caseSectionForms[type]] = data.data;
+      this.Case[CaseConfig.caseSectionForms[type]] = data.data;
     }
     );
   }
