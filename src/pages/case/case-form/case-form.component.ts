@@ -95,8 +95,6 @@ export class CaseFormComponent implements OnInit {
     }
 
     if (!this.hasCaseID && !isFormSubmit) {
-      console.log(this.caseID);
-      console.log(this.hasCaseID);
       this.showMsg('სექციის დასამატებლად შეავსეთ დაამატეთ ქეისი', 'warn')
       return;
     }
@@ -178,7 +176,6 @@ export class CaseFormComponent implements OnInit {
           ? 'updateReferral'
           : 'updateConsultation';
 
-    console.log('here');
     this.caseService[method](event.model).subscribe({
       next: (data) => {
         this.updateSections(data, type);
