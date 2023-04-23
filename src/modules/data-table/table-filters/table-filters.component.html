@@ -25,7 +25,7 @@
     <!-- Date Filter -->
     <ng-container *ngIf="property.hasDateFilter()">
         <p-columnFilter
-            [matchModeOptions]="table.filterOptions.filterOptions['date']"
+            [matchModeOptions]="table.filterOptions['date']"
             matchMode="custom-dateIs"
             [showClearButton]="false"
             [showOperator]="false"

@@ -78,8 +78,7 @@ export class CaseFormComponent implements OnInit {
           this.deleteSection(event.data.id, type);
         } else {
           const index = this.Case[CaseConfig.caseSectionForms[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
-          this.Case[CaseConfig.caseSectionForms[type]].splice(index, 1);
-          this.Case[CaseConfig.caseSectionForms[type]] = [...this.Case[CaseConfig.caseSectionForms[type]]];
+          this.Case[CaseConfig.caseSectionForms[type]] = this.Case[CaseConfig.caseSectionForms[type]].slice(index, 1);
         }
         this.showMsg(event.successMessage!, 'success');
       }, reject: () => {
