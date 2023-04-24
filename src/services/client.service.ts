@@ -56,8 +56,15 @@ export class ClientService extends GuardedService {
     let invalids = list.filter((attr: any) => {
       if (!attr['isRequired']) return false;
 
-      return this.values.get(attr['fieldName']) === null || this.values.get(attr['fieldName']) === undefined;
+      const value = this.values.get(attr['fieldName']);
+
+      if (attr['type'] === 'text') {
+        return value === null || value === undefined || value === '';
+      }
+
+      return value === null || value === undefined;
     });
+
 
     return invalids.length <= 0;
   }
