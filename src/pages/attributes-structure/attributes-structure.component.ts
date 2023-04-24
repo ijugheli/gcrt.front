@@ -46,7 +46,8 @@ export class AttributesStructureComponent implements OnInit {
     2: { name: 'int', id: 2, title: 'მთელი რიცხვი' },
     3: { name: 'double', id: 3, title: 'წილადი რიცხვი' },
     4: { name: 'date', id: 4, title: 'თარიღი' },
-    5: { name: 'boolean', id: 5, title: 'კი/არა' },
+    5: { name: 'datetime', id: 5, title: 'დრო-თარიღი' },
+    6: { name: 'boolean', id: 6, title: 'კი/არა' },
   };
 
   public viewTypesMap: any = {
@@ -60,8 +61,8 @@ export class AttributesStructureComponent implements OnInit {
     8: { name: 'multiselect', id: 8, title: 'მრავალმნიშვნელოვანი სარჩევი' },
     // 9 : {name : 'searchable-multiselect', id : 9, title : 'searchable-multiselect'},
     10: { name: 'datepicker', id: 10, title: 'თარიღის სარჩევი' },
-    // 11 : {name : 'timepicker', id : 11, title : 'timepicker'},
-    // 12 : {name : 'datetimepicker', id : 12, title : 'datetimepicker'},
+    11: { name: 'timepicker', id: 11, title: 'დროის სარჩევი' },
+    12: { name: 'datetimepicker', id: 12, title: 'დრო/თარიღის სარჩევი' },
     13: { name: 'treeselect', id: 13, title: 'ხისებრი სარჩევი' },
     // 14 : {name : 'tableselect', id : 14, title : 'tableselect'},
   };
@@ -157,7 +158,7 @@ export class AttributesStructureComponent implements OnInit {
         this.attributesService.removeAttribute(attrID).subscribe((data) => {
           const response: APIResponse = data;
 
-          this.attributes.splice(this.attributes.findIndex((i) => i.id === attrID), 1);
+          this.attributes = this.attributes.slice(this.attributes.findIndex((i) => i.id === attrID), 1);
 
           this.showSuccess(response.message);
         }, (error) => {

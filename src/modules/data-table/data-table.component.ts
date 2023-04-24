@@ -136,7 +136,6 @@ export class DataTableComponent implements OnInit {
     this.parseProperties(attribute);
     this.parseRows(attribute);
     this.hideLoader();
-    console.log(this.attribute);
   }
 
   private processAttribute(data: any) {
