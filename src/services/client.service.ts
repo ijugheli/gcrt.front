@@ -82,6 +82,11 @@ export class ClientService extends GuardedService {
     const categoryGroup: any = this.attrService.flatTreeMap.get(id);
     const array: any[] = Array.from(this.attrService.flatTreeMap.values());
     const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id).data.title;
+
+    if (categoryGroup.p_value_id === 0 || categoryGroup.p_value_id === null) {
+      return `[${categoryGroup.data.title}]`;
+    }
+    
     return `[${category}][${categoryGroup.data.title}]`;
   }
 
