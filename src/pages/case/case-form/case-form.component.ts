@@ -126,7 +126,7 @@ export class CaseFormComponent implements OnInit {
   private initCase(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
-    if (id === undefined && id === null) return;
+    if (id === undefined || id === null) return;
 
     this.caseID = parseInt(id!);
     this.isLoading = true;
