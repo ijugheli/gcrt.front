@@ -51,11 +51,11 @@ export class ClientService extends GuardedService {
 
   public validate(): boolean {
     this.isValidationEnabled = true;
-    const list = Array.from(this.clientAttrs);
+    const list = Array.from(this.clientAttrs.values());
 
     let invalids = list.filter((attr: any) => {
       if (!attr['isRequired']) return false;
-
+      
       const value = this.values.get(attr['fieldName']);
 
       if (attr['type'] === 'text') {
