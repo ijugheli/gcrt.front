@@ -81,12 +81,12 @@ export class ClientService extends GuardedService {
   private getCategoryGroupTitle(id: number): string {
     const categoryGroup: any = this.attrService.flatTreeMap.get(id);
     const array: any[] = Array.from(this.attrService.flatTreeMap.values());
-    const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id).data.title;
+    const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id)?.data.title;
 
-    if (categoryGroup.p_value_id === 0 || categoryGroup.p_value_id === null) {
+    if (categoryGroup.data.p_value_id === 0 || categoryGroup.data.p_value_id === null) {
       return `[${categoryGroup.data.title}]`;
     }
-    
+
     return `[${category}][${categoryGroup.data.title}]`;
   }
 
