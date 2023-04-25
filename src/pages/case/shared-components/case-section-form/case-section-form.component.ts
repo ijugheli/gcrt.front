@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../../case.model';
 import { ICaseCol, ICustomInput } from 'src/app/app.interfaces';
-import { caseSectionForms } from '../../case.config';
+import { detailTypes } from '../../case.config';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
 import { CaseSectionTable } from '../case-section-table/case-section-table.component';
 import { ConfirmationService } from 'primeng/api';
@@ -26,10 +26,9 @@ export class CaseSectionForm implements OnInit {
   @Input() inputAttrs: ICustomInput[] = [];
   @Input() tableCols: ICaseCol[] = [];
   @Input() sectionType!: number;
+  @Input() model: IDiagnosis | IConsultation | IReferral = this.getModel(); // if user clicks edit/add in main case section table
   @Output() onSave = new EventEmitter<MOnSectionEvent>();
   @Output() onDelete = new EventEmitter<MOnSectionEvent>();
-
-  model!: IDiagnosis | IConsultation | IReferral;
 
   constructor(
     private attrService: AttributesService,
@@ -38,11 +37,9 @@ export class CaseSectionForm implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.init();
-  }
-
-  private init() {
-    this.model = this.getModel();
+    if (this.model === null) {
+      this.model = this.getModel();
+    }
   }
 
   public onSaveClick() {
@@ -87,9 +84,9 @@ export class CaseSectionForm implements OnInit {
   }
 
   private getModel(): IDiagnosis | IConsultation | IReferral {
-    if (caseSectionForms[this.sectionType] == 'diagnoses') {
+    if (detailTypes[this.sectionType] == 'diagnoses') {
       return new IDiagnosis();
-    } else if (caseSectionForms[this.sectionType] == 'referrals') {
+    } else if (detailTypes[this.sectionType] == 'referrals') {
       return new IReferral();
     }
 

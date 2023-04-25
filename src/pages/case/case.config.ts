@@ -10,17 +10,20 @@ export const menuOptions: IFormMenuOption[] = [
     { label: 'ფსიქოდიაგნოსტირება', value: 6, icon: 'pi pi-book' },
 ];
 
-export const caseSectionForms: Record<number, string> = {
-    0: 'diagnoses',
-    1: 'referrals',
-    2: 'consultations',
+export const detailTypes: Record<number, string> = {
+    1: 'forms_of_violences',
+    2: 'care_plans',
+    3: 'diagnoses',
+    4: 'referrals',
+    5: 'consultations',
+    6: 'psychoDiagnoses',
 }
 
-export const detailTypes: Record<number, string> = {
-    0: 'diagnosis',
-    1: 'referral',
-    2: 'consultation',
-    3: 'formsOfViolence',
-    4: 'carePlan',
-    5: 'psychoDiagnosis',
-}
+export const detailTypeIDS: Record<string, number> = {
+    forms_of_violences: 1,
+    care_plans: 2,
+    diagnoses: 3,
+    referrals: 4,
+    consultations: 5,
+    psychoDiagnoses: 6,
+};

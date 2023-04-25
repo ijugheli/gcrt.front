@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ICaseCol } from 'src/app/app.interfaces';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MOnSectionEvent } from '../../case.model';
 // For diagnosis, consultation, referral,
 @Component({
   standalone: true,
@@ -19,39 +21,49 @@ import { ICaseCol } from 'src/app/app.interfaces';
 export class CaseSectionTable implements OnInit {
   @Input() data: any[] = [];
   @Input() columns: ICaseCol[] = [];
+  @Input() isFormTable: boolean = true;
   @Output() onEdit = new EventEmitter<any>();
-  @Output() onDelete = new EventEmitter<number>();
+  @Output() onAdd = new EventEmitter();
+  @Output() onDelete = new EventEmitter<MOnSectionEvent>();
   public loading: boolean = true;
   public selectedRow: any;
   public checked: boolean = false;
 
   constructor(
-    private attrService: AttributesService,
+    public attrService: AttributesService,
+    public ref: DynamicDialogRef,
+    public dialog: DynamicDialogConfig,
+
   ) { }
 
   ngOnInit() {
     this.init();
   }
 
-  private init() {
+  private init(): void {
     this.loading = false;
   }
 
-  public onEditClick() {
+  public onAddClick(): void {
+    this.onAdd.emit();
+  }
+
+  public onEditClick(): void {
     this.onEdit.emit(Object.assign({}, this.selectedRow));
     this.selectedRow = undefined;
   }
 
-  public onDeleteClick() {
-    this.onDelete.emit(this.selectedRow);
-    this.selectedRow = undefined;
-  }
-
-  public getFieldValue(field: any) {
-    if (typeof field == 'string' || field instanceof String) {
-      return field;
+  public onDeleteClick(): void {
+    if (this.isFormTable) {
+      this.onDelete.emit(this.selectedRow);
+      this.selectedRow = undefined;
+      return;
     }
 
-    return this.attrService.dropdownOptions.get(field)?.name || field;
+    const event = new MOnSectionEvent();
+    event.data = this.selectedRow;
+    event.successMessage = 'წარმატებით წაიშალა';
+    this.selectedRow = undefined;
+    this.onDelete.emit(event);
   }
 }

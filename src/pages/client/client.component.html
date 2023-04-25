@@ -175,8 +175,9 @@
               <button
                 class="border-btn"
                 (click)="onDetailClick(0,data.main)"
-              >დეტალები</button> </div>
-              
+              >დეტალები</button>
+            </div>
+
           </td>
           <td>
             <div class="flex justify-content-center">
@@ -210,17 +211,23 @@
     </p-table>
     <div
       *ngIf="isSidebarVisible"
-      class="w-20rem h-screen border-left-1 border-top-1 surface-border p-1 pt-2 flex flex-column justify-content-start align-items-center gap-3"
+      style="background:#f7f6f9; height: calc(100vh - 120px)"
+      class="w-20rem border-left-1 border-top-1 surface-border p-1 pt-2 flex flex-column justify-content-start align-items-start gap-3"
     >
       <div
         *ngFor="let col of sidebarCols"
-        class="flex flex-column justify-content-center align-items-center gap-1"
+        class="flex flex-column justify-content-center align-items-start gap-1 w-full"
       >
-        <label for="username2">{{ col['label']}}</label>
-        <div class="w-max border-round-lg border-1  surface-border m-1 p-2 shadow-1">
-          <span>
-            {{attrService.getOptionTitle(sidebarData[(col['fieldName'])]) }}
-          </span>
+        <label
+          for="username2"
+          class="text-sm"
+        >{{ col['label']}}</label>
+        <span style="margin-left: 6px;">
+          {{col['type'] == 'switch' ? (sidebarData[(col['fieldName'])] ? 'კი':'არა') :
+          attrService.getOptionTitle(sidebarData[(col['fieldName'])]) }}
+        </span>
+        <div style="width: calc(100% - 24px);">
+          <p-divider></p-divider>
         </div>
       </div>
     </div>

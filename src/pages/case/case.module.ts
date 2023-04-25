@@ -17,12 +17,14 @@ import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table
 import { SkeletonModule } from "primeng/skeleton";
 import { CaseSectionTable } from "./shared-components/case-section-table/case-section-table.component";
 import { CaseSectionForm } from "./shared-components/case-section-form/case-section-form.component";
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
     declarations: [CaseComponent, CaseFormComponent],
     imports: [
         ButtonModule,
         CommonModule,
+        DialogModule,
         ConfirmDialogModule,
         DividerModule,
         InputMaskModule,
@@ -36,7 +38,7 @@ import { CaseSectionForm } from "./shared-components/case-section-form/case-sect
         KeyFilterModule,
         CheckboxTable,
         CaseSectionTable,
-        SkeletonModule
+        SkeletonModule,
     ]
 })
 

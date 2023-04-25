@@ -8,6 +8,7 @@ import { ClientService } from 'src/services/client.service';
 
 import * as ClientConfig from '../client.config';
 import { IFormMenuOption } from 'src/app/app.interfaces';
+import { CaseService } from 'src/services/case.service';
 
 @Component({
   selector: 'app-client-form',
@@ -29,6 +30,7 @@ export class ClientFormComponent implements OnInit {
   public todayDate!: Date;
   constructor(
     public clientService: ClientService,
+    public caseService: CaseService,
     private messageService: MessageService,
     private route: ActivatedRoute,
     private attrService: AttributesService,
@@ -52,6 +54,7 @@ export class ClientFormComponent implements OnInit {
       },
       complete: () => {
         this.clientService.isInputDisabled = false;
+        this.caseService.initClients(true);
       }
     });
   }

@@ -1,8 +1,18 @@
 <ng-container *ngIf="data.length > 0">
-  <div [style.max-width]="'calc(100vw - 280px - 280px - 400px - 48px)'">
+  <div [style.max-width]="isFormTable ? 'calc(100vw - 280px - 280px - 400px - 48px)' : '100%' ">
 
 
-    <div class="header">
+    <div class="header justify-content-start gap-2">
+      <ng-container *ngIf="!isFormTable">
+        <button
+          type="button"
+          class="border-btn mb-2"
+          (click)="onAddClick()"
+        >
+          <i class="pi pi-file mr-2"></i>
+          დამატება
+        </button>
+      </ng-container>
       <button
         type="button"
         class="border-btn mb-2"
@@ -29,7 +39,7 @@
       [responsive]="true"
       [(selection)]="selectedRow"
       styleClass="p-datatable-sm p-datatable-gridlines"
-      [style.max-width]="'calc(100vw - 280px - 280px - 400px - 48px)'"
+      [style.max-width]="isFormTable ? 'calc(100vw - 280px - 280px - 400px - 48px)' : '100%' "
       responsiveLayout="scroll"
       selectionMode="single"
       dataKey="generated_id"
@@ -63,7 +73,7 @@
           </td>
           <td *ngFor="let col of columns">
             {{
-            getFieldValue(model[col.fieldName])
+            this.attrService.getOptionTitle(model[col.fieldName])
             }}
           </td>
         </tr>

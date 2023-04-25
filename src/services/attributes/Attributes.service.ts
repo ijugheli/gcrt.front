@@ -436,11 +436,14 @@ export class AttributesService extends GuardedService {
         return data;
     }
 
-    public initSelectOptions(): void {
+    public async initSelectOptions(): Promise<void> {
         const cache = this.cacheService.get('dropdown_options');
 
         if (cache != null) {
             this.dropdownOptions = new Map(cache);
+            this.dropdownOptionChange.next(this.dropdownOptions);
+            this.dropdownOptionChange.complete();
+            return;
         }
 
         this.propertyChange.subscribe((propertyMapSize) => {
@@ -450,11 +453,11 @@ export class AttributesService extends GuardedService {
         })
     }
 
-    public initTreeSelect(): void {
+    public async initTreeSelect(): Promise<void> {
         const cache = this.cacheService.get('tree_options');
         if (cache != null) {
             this.parseTrees(cache);
-            return
+            return;
         }
 
         this.getTreeselectOptions().subscribe((data) => {

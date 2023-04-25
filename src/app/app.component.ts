@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { VIEW_TYPE_ID } from './app.config';
 import { flattenTree, parseTree } from './app.func';
+import { CaseService } from 'src/services/case.service';
 
 @Component({
   selector: 'app-root',
@@ -19,10 +20,13 @@ export class AppComponent {
     'otp'
   ];
 
-  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService) {
+  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService, public caseService: CaseService) {
     this.attrService.initSelectOptions();
 
     this.attrService.initTreeSelect();
+
+    this.caseService.initCaseManagers();
+    this.caseService.initClients();
 
     const url = window.location.href.toString();
 
