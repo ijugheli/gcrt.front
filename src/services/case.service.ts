@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { AsyncSubject, catchError, lastValueFrom, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, ICaseCol, ICustomInput, IUserPermission } from 'src/app/app.interfaces';
@@ -12,6 +12,8 @@ import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
 import { referralCols } from 'src/pages/case/case-attrs/referral';
 import { caseCols, caseList } from 'src/pages/case/case-attrs/case';
 import { IDiagnosis, IConsultation, IReferral, CaseAttrs, Case, ICase } from 'src/pages/case/case.model';
+import { MOption } from './attributes/models/option.model';
+import { CacheService } from './cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +27,20 @@ export class CaseService extends GuardedService {
   public caseCols: ICaseCol[] = caseCols;
   public isValidationEnabled: boolean = false;
   public isInputDisabled: boolean = false;
+  // dropdown options for case manager and client 
+  public caseManagers: Map<number, MOption> = new Map();
+  public clients: Map<number, MOption> = new Map();
+  caseManagerChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+  clientChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+
   public cases: Map<number, ICase> = new Map();
+
   public values: Map<number | string, string | Date | null | boolean | number> = new Map();
+
+  // for Case section detail table clicks
+  public selectedSection: number | null = null;
+  public selectedSectionModel: any | null = null;
+
   public urls: any = {
     'index': API_URL + '/case/index',
     'show': API_URL + '/case/show/{id}',
@@ -40,9 +54,11 @@ export class CaseService extends GuardedService {
     'destroyConsultation': API_URL + '/case/consultation/destroy/{id}',
     'destroyReferral': API_URL + '/case/referral/destroy/{id}',
     'destroyDiagnosis': API_URL + '/case/diagnosis/destroy/{id}',
+    'caseManagers': API_URL + '/case/case-managers',
+    'clients': API_URL + '/case/clients',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService) {
     super(auth.getToken());
   }
 
@@ -87,6 +103,69 @@ export class CaseService extends GuardedService {
 
   public updateFormsOfViolence(data: any): Observable<any> {
     return this.http.post<APIResponse>(this.urls['updateFormsOfViolence'], data, { headers: this.headers });
+  }
+
+  public getClients(): Observable<APIResponse> {
+    return this.http.get<APIResponse>(this.urls['clients'], { headers: this.headers });
+  }
+
+  public getCaseManagers(): Observable<APIResponse> {
+    return this.http.get<APIResponse>(this.urls['caseManagers'], { headers: this.headers });
+  }
+
+
+  public async initClients(shouldRefresh: boolean = false): Promise<void> {
+    const cache = this.cacheService.get('clients');
+
+    if (cache != null && !shouldRefresh) {
+      this.clients = new Map(cache);
+      this.clientChanges.next(this.clients);
+      this.clientChanges.complete();
+      return;
+    }
+
+    this.getClients().subscribe((data: any) => {
+      const response: any[] = Object.entries(data.data).map(([key, value]) => {
+        const model: any = value;
+        return [parseInt(model.id), {
+          id: model.id,
+          name: model.client_code + ' ' + model.name + ' ' + model.surname
+        } as MOption
+        ];
+      });
+
+      this.clients = new Map(response);
+      this.clientChanges.next(this.clients);
+      this.clientChanges.complete();
+      this.cacheService.set('clients', Array.from(this.clients.entries()));
+    });
+  }
+
+  public async initCaseManagers(shouldRefresh: boolean = false): Promise<void> {
+    const cache = this.cacheService.get('case_managers');
+
+    if (cache != null && !shouldRefresh) {
+      this.caseManagers = new Map(cache);
+      this.caseManagerChanges.next(this.caseManagers);
+      this.caseManagerChanges.complete();
+      return;
+    }
+
+    this.getCaseManagers().subscribe((data: any) => {
+      const response: any[] = Object.entries(data.data).map(([key, value]) => {
+        const model: any = value;
+        return [parseInt(model.id), {
+          id: model.id,
+          name: model.name + ' ' + model.lastname
+        } as MOption
+        ];
+      });
+
+      this.caseManagers = new Map(response);
+      this.caseManagerChanges.next(this.caseManagers);
+      this.caseManagerChanges.complete();
+      this.cacheService.set('case_managers', Array.from(this.caseManagers.entries()));
+    })
   }
 
   public parseTreeData(response: APIResponse<Attribute[]>) {
@@ -137,5 +216,13 @@ export class CaseService extends GuardedService {
     });
 
     return invalids.length <= 0;
+  }
+
+  public getClientName(id: number): string {
+    return this.clients.get(id)!.name;
+  }
+
+  public getCaseManagerName(id: number): string {
+    return this.caseManagers.get(id)!.name;
   }
 }

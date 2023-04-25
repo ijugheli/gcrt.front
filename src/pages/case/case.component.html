@@ -64,7 +64,7 @@
       styleClass="p-datatable-sm p-datatable-gridlines"
       [paginator]="true"
       [rows]="25"
-      [style.width]="isSidebarVisible ? 'calc(98vw - 500px) !important' : '100% !important'"
+      [style.width]="'100% !important'"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
       [rowsPerPageOptions]="[10, 25, 50]"
       [showCurrentPageReport]="true"
@@ -89,11 +89,11 @@
           <th>ქეისის მენეჯერი</th>
           <th>პროექტის დასახელება</th>
           <th>რეგისტრაციის თარიღი</th>
+          <th style="text-align: center !important">დიაგნოზები</th>
+          <th style="text-align: center !important">რეფერალები</th>
+          <th style="text-align: center !important">კონსულტაციები</th>
           <th style="text-align: center !important">მოვლის გეგმა</th>
           <th style="text-align: center !important">ძალადობის ფორმები</th>
-          <th style="text-align: center !important">კონსულტაციები</th>
-          <th style="text-align: center !important">რეფერალები</th>
-          <th style="text-align: center !important">დიაგნოზები</th>
           <th style="text-align: center !important">ფსიქოდიაგნოსტირება</th>
         </tr>
         <tr>
@@ -167,23 +167,23 @@
             {{data.case.id}}
           </td>
           <td>
-            {{data.case.client_id}}
+            {{ caseService.getClientName(data.case.client_id) }}
           </td>
           <td>
-            {{data.case.case_manager_id }}
+            {{ caseService.getCaseManagerName(data.case.case_manager_id) }}
           </td>
           <td>
-            {{attrService.getOptionTitle(attrService.getOptionTitle(data.case.case_manager_id))}}
+            {{attrService.getOptionTitle(data.case.project_id)}}
           </td>
           <td>
             {{data.case.registration_date}}
           </td>
-          <!-- types in clientService -->
+          <!-- types in caseConfig -->
           <td>
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
-                (click)="onDetailClick(0,data.main)"
+                (click)="onDetailClick(CaseConfig.detailTypeIDS['diagnoses'],data.diagnoses, data.case.id)"
               >დეტალები</button>
             </div>
           </td>
@@ -191,7 +191,7 @@
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
-                (click)="onDetailClick(0,data.main)"
+                (click)="onDetailClick(CaseConfig.detailTypeIDS['referrals'],data.referrals, data.case.id)"
               >დეტალები</button>
             </div>
           </td>
@@ -199,53 +199,50 @@
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
-                (click)="onDetailClick(1,data.additional)"
+                (click)="onDetailClick(CaseConfig.detailTypeIDS['consultations'],data.consultations, data.case.id)"
               >დეტალები</button>
             </div>
           </td>
           <td>
             <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(2,data.contact)"
-              >დეტალები</button>
+              <button class="border-btn">დეტალები</button>
             </div>
           </td>
           <td>
             <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(3,data.address)"
-              >დეტალები</button>
+              <button class="border-btn">დეტალები</button>
             </div>
           </td>
           <td>
             <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(3,data.address)"
-              >დეტალები</button>
+              <button class="border-btn">დეტალები</button>
             </div>
           </td>
         </tr>
       </ng-template>
     </p-table>
-    <div
-      *ngIf="isSidebarVisible"
-      class="w-20rem h-screen border-left-1 border-top-1 surface-border p-1 pt-2 flex flex-column justify-content-start align-items-center gap-3"
+    <p-dialog
+      header="დეტალები"
+      [(visible)]="isModalVisible"
+      [modal]="true"
+      position="top"
+      [style]="{ width: '70vw' }"
+      [maximizable]="true"
+      [draggable]="false"
+      [resizable]="false"
+      (onHide)="onModalHide($event)"
     >
-      <div
-        *ngFor="let col of sidebarCols"
-        class="flex flex-column justify-content-center align-items-center gap-1"
+      <app-case-section-table
+        *ngIf="isModalVisible"
+        [data]="detailData"
+        [columns]="detailCols"
+        [isFormTable]="false"
+        (onAdd)="onDetailAdd()"
+        (onEdit)="onDetailEdit($event)"
+        (onDelete)="onDetailDelete($event, caseService.selectedSection!)"
       >
-        <label for="username2">{{ col['label']}}</label>
-        <div class="w-max border-round-lg border-1  surface-border m-1 p-2 shadow-1">
-          <span>
-            {{attrService.getOptionTitle(sidebarData[(col['fieldName'])]) }}
-          </span>
-        </div>
-      </div>
-    </div>
+      </app-case-section-table>
+    </p-dialog>
   </div>
 
 </section>

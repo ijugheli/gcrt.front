@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserComponent } from './manage-user/manage-user.component';
 import { APIResponse } from 'src/app/app.interfaces';
+import { CaseService } from 'src/services/case.service';
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -31,6 +32,7 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private caseService: CaseService,
     private messageService: MessageService,
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
@@ -74,7 +76,11 @@ export class UsersComponent implements OnInit {
       data: { userID: typeof userID != 'undefined' ? userID : null, },
       width: '30%',
       position: 'top',
-    }).onClose.subscribe((data: any) => this.getUsers());
+    }).onClose.subscribe((data: any) => {
+      this.getUsers();
+      this.caseService.initCaseManagers(true);
+    }
+    );
   }
 
   public onPermissions(userID: number) {

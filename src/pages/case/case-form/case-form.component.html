@@ -121,11 +121,12 @@
           <app-case-section-form
             [inputAttrs]="CaseAttrs.diagnosisList"
             [tableCols]="caseService.diagnosisCols"
-            [sectionType]="0"
+            [sectionType]="CaseConfig.detailTypeIDS['diagnoses']"
             [data]="Case.diagnoses"
             [caseID]="Case.case.id"
-            (onSave)="onSectionSave($event,0)"
-            (onDelete)="onSectionItemDelete($event,0)"
+            [model]="selectedSectionModel"
+            (onSave)="onSectionSave($event,CaseConfig.detailTypeIDS['diagnoses'])"
+            (onDelete)="onSectionItemDelete($event,CaseConfig.detailTypeIDS['diagnoses'])"
             class="flex flex-row gap-4"
           >
           </app-case-section-form>
@@ -134,11 +135,12 @@
           <app-case-section-form
             [inputAttrs]="CaseAttrs.referralList"
             [tableCols]="caseService.referralCols"
-            [sectionType]="1"
+            [sectionType]="CaseConfig.detailTypeIDS['referrals']"
             [data]="Case.referrals"
             [caseID]="Case.case.id"
-            (onSave)="onSectionSave($event,1)"
-            (onDelete)="onSectionItemDelete($event,1)"
+            [model]="selectedSectionModel"
+            (onSave)="onSectionSave($event,CaseConfig.detailTypeIDS['referrals'])"
+            (onDelete)="onSectionItemDelete($event,CaseConfig.detailTypeIDS['referrals'])"
             class="flex flex-row gap-4"
           >
           </app-case-section-form>
@@ -147,11 +149,12 @@
           <app-case-section-form
             [inputAttrs]="CaseAttrs.consultationList"
             [tableCols]="caseService.consultationCols"
-            [sectionType]="2"
+            [sectionType]="CaseConfig.detailTypeIDS['consultations']"
             [data]="Case.consultations"
             [caseID]="Case.case.id"
-            (onSave)="onSectionSave($event,2)"
-            (onDelete)="onSectionItemDelete($event, 2)"
+            [model]="selectedSectionModel"
+            (onSave)="onSectionSave($event,CaseConfig.detailTypeIDS['consultations'])"
+            (onDelete)="onSectionItemDelete($event, CaseConfig.detailTypeIDS['consultations'])"
             class="flex flex-row gap-4"
           >
           </app-case-section-form>

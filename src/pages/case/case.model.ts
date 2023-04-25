@@ -182,7 +182,6 @@ export class MOnSectionEvent {
     model?: any;
     errorMessage?: string;
     successMessage?: string;
-
 }
 
 const caseKeys = [

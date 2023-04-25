@@ -6,7 +6,7 @@ import { CaseAttrs, ICase, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
-import * as CaseConfig from '../case.config';
+import * as caseConfig from '../case.config';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -22,8 +22,10 @@ export class CaseFormComponent implements OnInit {
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
   public caseID!: number | null;
-  public menuOptions: IFormMenuOption[] = CaseConfig.menuOptions;
+  public CaseConfig = caseConfig;
+  public menuOptions: IFormMenuOption[] = caseConfig.menuOptions;
   public selectedSection: IFormMenuOption = this.menuOptions[0];
+  public selectedSectionModel: any = null; // for initializing section model when user clicks edit/add in Case section detail table
   public hasCaseID: boolean = false;
 
   constructor(
@@ -77,8 +79,9 @@ export class CaseFormComponent implements OnInit {
         if (event.data?.id !== null && event.data?.id !== undefined) {
           this.deleteSection(event.data.id, type);
         } else {
-          const index = this.Case[CaseConfig.caseSectionForms[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
-          this.Case[CaseConfig.caseSectionForms[type]] = this.Case[CaseConfig.caseSectionForms[type]].slice(index, 1);
+          const index = this.Case[this.CaseConfig.detailTypes[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
+          this.Case[this.CaseConfig.detailTypes[type]].splice(index, 1);
+          this.Case[this.CaseConfig.detailTypes[type]] = [...this.Case[this.CaseConfig.detailTypes[type]]];
         }
         this.showMsg(event.successMessage!, 'success');
       }, reject: () => {
@@ -126,6 +129,13 @@ export class CaseFormComponent implements OnInit {
   private initCase(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
+    // for initializing selected section and its model when user clicks edit/add from main case table
+    if (this.caseService.selectedSection !== null) {
+      this.selectedSection = this.menuOptions[this.caseService.selectedSection];
+      this.selectedSectionModel = this.caseService.selectedSectionModel;
+      this.caseService.selectedSection = this.caseService.selectedSectionModel = null;
+    }
+
     if (id === undefined || id === null) return;
 
     this.caseID = parseInt(id!);
@@ -150,6 +160,7 @@ export class CaseFormComponent implements OnInit {
         }
       });
     }
+
     this.hasCaseID = this.caseID != null;
     this.pageTitle = this.hasCaseID ? 'ქეისის რედაქტირება' : this.pageTitle;
   }
@@ -164,14 +175,14 @@ export class CaseFormComponent implements OnInit {
 
   private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
     if (event.data === undefined) return;
-    this.Case[CaseConfig.caseSectionForms[type]] = event.data;
+    this.Case[this.CaseConfig.detailTypes[type]] = event.data;
   }
 
   private updateSectionRequests(event: MOnSectionEvent, type: number) {
     const method =
-      CaseConfig.caseSectionForms[type] == "diagnoses"
+      this.CaseConfig.detailTypes[type] == "diagnoses"
         ? 'updateDiagnosis'
-        : CaseConfig.caseSectionForms[type] == "referrals"
+        : this.CaseConfig.detailTypes[type] == "referrals"
           ? 'updateReferral'
           : 'updateConsultation';
 
@@ -191,15 +202,14 @@ export class CaseFormComponent implements OnInit {
 
   private deleteSection(id: number, type: number): void {
     const method =
-      CaseConfig.caseSectionForms[type] == "diagnoses"
+      this.CaseConfig.detailTypes[type] == "diagnoses"
         ? 'destroyDiagnosis'
-        : CaseConfig.caseSectionForms[type] == "referrals"
+        : this.CaseConfig.detailTypes[type] == "referrals"
           ? 'destroyReferral'
           : 'destroyConsultation';
 
     this.caseService[method](id).subscribe((data) => {
-      this.Case[CaseConfig.caseSectionForms[type]] = data.data;
-    }
-    );
+      this.Case[this.CaseConfig.detailTypes[type]] = data.data;
+    });
   }
 }

@@ -139,12 +139,24 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   // dropdownOptionChange listens to data for init
   private initOptions(): void {
-    this.attrService.dropdownOptionChange.subscribe(data => {
-      this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
-      this.filter = this.options.length > 5;
-    });
-    this.initialized = true;
+    if (this.data['fieldName'] == 'case_manager_id') {
+      this.caseService.caseManagerChanges.subscribe((data) => {
+        this.options = Array.from(data.values());
+        this.filter = this.options.length > 5;
+      })
+    } else if (this.data['fieldName'] == 'client_id') {
+      this.caseService.clientChanges.subscribe((data) => {
+        this.options = Array.from(data.values());
+        this.filter = this.options.length > 5;
+      })
+    } else {
+      this.attrService.dropdownOptionChange.subscribe(data => {
+        this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
+        this.filter = this.options.length > 5;
+      });
+    }
 
+    this.initialized = true;
   }
 
   // treeMapChange listens to data for init

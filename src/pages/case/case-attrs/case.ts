@@ -21,7 +21,7 @@ export const caseMap: Map<string, any> = new Map(
                 label: 'ქეისის მენეჯერი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: 199, // TODO 
+                propertyID: 'caseManagers',
                 isRequired: true,
                 isDisabled: false,
             }
@@ -33,7 +33,7 @@ export const caseMap: Map<string, any> = new Map(
                 label: 'კლიენტი',
                 type: 'dropdown',
                 icon: 'pi-list',
-                propertyID: 199, // TODO
+                propertyID: 'clients',
                 isRequired: true,
                 isDisabled: false,
             }
