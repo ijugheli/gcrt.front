@@ -5,6 +5,7 @@ import { consultationList } from "./case-attrs/consultation";
 import { diagnosisList } from "./case-attrs/diagnosis";
 import { formsOfViolenceMap } from "./case-attrs/forms-of-violence";
 import { referralList } from "./case-attrs/referral";
+import { generateRandomNumber } from "src/app/app.func";
 
 export class ICase {
     public case!: Case;
@@ -16,8 +17,21 @@ export class ICase {
     public psychodiagnoses!: IPsychodiagnosis;
     [key: string]: any;
 
-    constructor() {
-        this.case = new Case();
+    constructor(data?: any) {
+        this.case = data?.case ?? new Case();
+        this.forms_of_violences = data?.forms_of_violences ?? [];
+        this.care_plans = data?.care_plans ?? [];
+        if (data?.diagnoses.length > 0 && data?.diagnoses !== undefined) {
+            this.diagnoses = data.diagnoses.map((item: IDiagnosis) => new IDiagnosis(item));
+        }
+
+        if (data?.consultations.length > 0 && data?.consultations !== undefined) {
+            this.consultations = data.consultations.map((item: IConsultation) => new IConsultation(item));
+        }
+
+        if (data?.referrals.length > 0 && data?.referrals !== undefined) {
+            this.referrals = data.referrals.map((item: IReferral) => new IReferral(item));
+        }
     }
 
 }
@@ -98,10 +112,9 @@ export class IDiagnosis {
         this[key] = node.data.id;
     };
 
-    constructor() {
-        if (this.id == null) {
-            this.generated_id = Date.now();
-        }
+    constructor(data?: IDiagnosis) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
     }
 }
 
@@ -121,10 +134,9 @@ export class IReferral {
         this[key] = node.data.id;
     };
 
-    constructor() {
-        if (this.id == null) {
-            this.generated_id = Date.now();
-        }
+    constructor(data?: IReferral) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
     }
 }
 
@@ -144,10 +156,9 @@ export class IConsultation {
         this[key] = node.data.id;
     };
 
-    constructor() {
-        if (this.id == null) {
-            this.generated_id = Date.now();
-        }
+    constructor(data?: IConsultation) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
     }
 }
 

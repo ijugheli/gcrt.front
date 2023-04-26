@@ -91,8 +91,6 @@ export class CustomInputComponent implements OnInit, OnChanges {
     this.onChange.emit(this.model);
   }
 
-
-
   public onNodeExpand(event: any): void {
     const node = event.node;
     if (node.children.length > 0) {
@@ -132,7 +130,6 @@ export class CustomInputComponent implements OnInit, OnChanges {
       this.initTreeOptions();
       return;
     }
-
 
     this.initOptions();
   }

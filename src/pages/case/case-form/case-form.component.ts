@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
-import { CaseAttrs, ICase, MOnSectionEvent } from '../case.model';
+import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
@@ -38,16 +38,7 @@ export class CaseFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initTree('carePlanTree', carePlanTreeID);
-    this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
     this.init();
-  }
-
-  private initTree(treeKey: keyof CaseService, attrID: number): void {
-    if (this.caseService[treeKey].length > 0) return;
-    this.attrService.treeMapChange.subscribe((treeMap) => {
-      this.caseService[treeKey] = treeMap.get(attrID);
-    })
   }
 
   public onSectionSave(event: MOnSectionEvent, type: any): void {
@@ -79,9 +70,9 @@ export class CaseFormComponent implements OnInit {
         if (event.data?.id !== null && event.data?.id !== undefined) {
           this.deleteSection(event.data.id, type);
         } else {
-          const index = this.Case[this.CaseConfig.detailTypes[type]].findIndex((e: any) => e.generated_id == event.data.generated_id);
-          this.Case[this.CaseConfig.detailTypes[type]].splice(index, 1);
-          this.Case[this.CaseConfig.detailTypes[type]] = [...this.Case[this.CaseConfig.detailTypes[type]]];
+          let model: any[] = this.Case[this.CaseConfig.detailTypes[type]];
+          const index = model.findIndex((e: any) => e.generated_id == event.data.generated_id);
+          model.splice(index, 1);
         }
         this.showMsg(event.successMessage!, 'success');
       }, reject: () => {
@@ -147,7 +138,7 @@ export class CaseFormComponent implements OnInit {
     } else {
       this.caseService.show(this.caseID).subscribe({
         next: (data) => {
-          this.Case = data.data!
+          this.Case = new ICase(data.data);
         },
         error: (e) => {
           this.showMsg(e.error.message, 'error');
@@ -165,17 +156,11 @@ export class CaseFormComponent implements OnInit {
     this.pageTitle = this.hasCaseID ? 'ქეისის რედაქტირება' : this.pageTitle;
   }
 
-
   private showMsg(msg: string, type: string): void {
     this.messageService.add({
       severity: type,
       summary: msg,
     });
-  }
-
-  private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
-    if (event.data === undefined) return;
-    this.Case[this.CaseConfig.detailTypes[type]] = event.data;
   }
 
   private updateSectionRequests(event: MOnSectionEvent, type: number) {
@@ -201,15 +186,29 @@ export class CaseFormComponent implements OnInit {
   }
 
   private deleteSection(id: number, type: number): void {
+    const sectionType = this.CaseConfig.detailTypes[type];
     const method =
-      this.CaseConfig.detailTypes[type] == "diagnoses"
+      sectionType == "diagnoses"
         ? 'destroyDiagnosis'
-        : this.CaseConfig.detailTypes[type] == "referrals"
+        : sectionType == "referrals"
           ? 'destroyReferral'
           : 'destroyConsultation';
 
     this.caseService[method](id).subscribe((data) => {
-      this.Case[this.CaseConfig.detailTypes[type]] = data.data;
+      this.updateSections(data, type);
     });
+  }
+
+  private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
+    if (event.data === undefined) return;
+    const sectionType = this.CaseConfig.detailTypes[type];
+
+    if (sectionType == 'diagnoses') {
+      this.Case[sectionType] = event.data.map((value: any) => new IDiagnosis(value));
+    } else if (sectionType == 'referrals') {
+      this.Case[sectionType] = event.data.map((value: any) => new IReferral(value));
+    } else {
+      this.Case[sectionType] = event.data.map((value: any) => new IConsultation(value));
+    }
   }
 }

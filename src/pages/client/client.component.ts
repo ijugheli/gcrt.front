@@ -78,9 +78,7 @@ export class ClientComponent implements OnInit {
         });
       },
     });
-
   }
-
 
   private setData(data: APIResponse<Client[]>): void {
     if (data.data !== undefined) {

@@ -3,9 +3,11 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
-import { ICase, MOnSectionEvent } from './case.model';
+import { Case, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from './case.model';
 import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
+import { carePlanTreeID } from './case-attrs/care-plan';
+import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
 
 
 @Component({
@@ -21,13 +23,17 @@ export class CaseComponent implements OnInit {
   public selectedRow!: ICase;
   public data: ICase[] = [];
   public loadingArray: number[] = Array(10);
+  public CaseConfig = caseConfig;
 
+  // for case section detail table (diagnoses, consultations, referrals)
   public isModalVisible: boolean = false;
   public detailData!: any;
   public detailCols: any;
-  public CaseConfig = caseConfig;
   public caseID: number | null = null;
-  template: any;
+
+  // for tree checkbox table (formsOfViolences, carePlans)
+  public isTreeModalVisible: boolean = false;
+  public tree: any = [];
 
   constructor(
     public attrService: AttributesService,
@@ -39,7 +45,8 @@ export class CaseComponent implements OnInit {
 
   ngOnInit() {
     this.init();
-    console.log(this.caseService.clients);
+    this.initTree('carePlanTree', carePlanTreeID);
+    this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
   }
 
   private init(): void {
@@ -79,14 +86,7 @@ export class CaseComponent implements OnInit {
     });
   }
 
-  private setData(data: APIResponse<ICase[]>): void {
-    if (data.data !== undefined) {
-      this.caseService.mapCases(data.data);
-      this.data = Array.from(this.caseService.cases.values());
-    }
-  }
-
-  public onDetailClick(type: number, data: any, caseID: number): void {
+  public onDetailClick(type: number, data: any, caseID: number, isTree: boolean = false): void {
     const types: Record<number, string> = this.CaseConfig.detailTypes;
     this.caseID = caseID;
     this.caseService.selectedSection = type;
@@ -104,12 +104,17 @@ export class CaseComponent implements OnInit {
         this.detailCols = this.caseService.consultationCols;
         this.detailData = data;
         break;
-      // default:
-      //   this.sidebarCols = [];
-      //   break;
+      case 'forms_of_violences':
+        this.tree = this.caseService.formsOfViolenceTree;
+        this.detailData = data;
+        break;
+      case 'care_plans':
+        this.tree = this.caseService.carePlanTree;
+        this.detailData = data;
+        break;
     }
 
-    this.isModalVisible = true;
+    isTree ? this.isTreeModalVisible = true : this.isModalVisible = true;
   }
 
   public onDetailAdd() {
@@ -122,36 +127,62 @@ export class CaseComponent implements OnInit {
     this.router.navigate([`/case/edit/${this.caseID}`]);
   }
 
-  public onModalHide(event: any) {
+  public onModalHide(event: any, isTree: boolean = false) {
     this.caseService.selectedSection = null;
+    isTree ? this.isTreeModalVisible = false : this.isModalVisible = false;
   }
 
-  public onDetailDelete(event: MOnSectionEvent, type: number) {
+  public onDetailDelete(event: MOnSectionEvent) {
     this.confirmationService.confirm({
       header: 'ჩანაწერის წაშლა',
       acceptLabel: 'კი',
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
       accept: () => {
-        this.deleteSection(event.data.id, type);
+        this.deleteSection(event.data.id, this.caseService.selectedSection!);
 
         this.showMsg(event.successMessage!, 'success');
       }
     });
   }
 
-  private deleteSection(id: number, type: number): void {
+  public onTreeSave(event: any[]) {
+    const sectionType = this.CaseConfig.detailTypes[this.caseService.selectedSection!];
     const method =
-      this.CaseConfig.detailTypes[type] == "diagnoses"
+      sectionType == "forms_of_violences"
+        ? 'updateFormsOfViolences'
+        : 'updateCarePlans'
+
+    this.caseService[method](event, this.caseID!).subscribe((data) => {
+      this.updateSections(data, this.caseService.selectedSection!);
+    });
+  }
+
+  private setData(data: APIResponse<ICase[]>): void {
+    if (data.data !== undefined) {
+      this.caseService.mapCases(data.data);
+      this.data = Array.from(this.caseService.cases.values());
+    }
+  }
+
+  private initTree(treeKey: keyof CaseService, attrID: number): void {
+    if (this.caseService[treeKey].length > 0) return;
+    this.attrService.treeMapChange.subscribe((treeMap) => {
+      this.caseService[treeKey] = treeMap.get(attrID);
+    })
+  }
+
+  private deleteSection(id: number, type: number): void {
+    const sectionType = this.CaseConfig.detailTypes[type];
+    const method =
+      sectionType == "diagnoses"
         ? 'destroyDiagnosis'
-        : this.CaseConfig.detailTypes[type] == "referrals"
+        : sectionType == "referrals"
           ? 'destroyReferral'
           : 'destroyConsultation';
 
     this.caseService[method](id).subscribe((data) => {
-      this.caseService.cases.get(data.data[0].case_id)![this.CaseConfig.detailTypes[type]] = data.data;
-      this.data = Array.from(this.caseService.cases.values());
-      this.detailData = this.caseService.cases.get(data.data[0].case_id)![this.CaseConfig.detailTypes[type]];
+      this.updateSections(data, type);
     });
   }
 
@@ -160,5 +191,25 @@ export class CaseComponent implements OnInit {
       severity: type,
       summary: msg,
     });
+  }
+
+  private updateSections(response: APIResponse<any>, type: number) {
+    const sectionType = this.CaseConfig.detailTypes[type];
+    const ICase: ICase = this.caseService.cases.get(response.data[0].id)!;
+
+    if (sectionType == 'diagnoses') {
+      ICase[sectionType] = response.data.map((value: any) => new IDiagnosis(value));
+    } else if (sectionType == 'referrals') {
+      ICase[sectionType] = response.data.map((value: any) => new IReferral(value));
+    } else if (sectionType == 'forms_of_violences') {
+      ICase[sectionType] = response.data;
+    } else if (sectionType == 'care_plans') {
+      ICase[sectionType] = response.data;
+    } else {
+      ICase[sectionType] = response.data.map((value: any) => new IConsultation(value));
+    }
+
+    this.data = Array.from(this.caseService.cases.values());
+    this.detailData = ICase[sectionType];
   }
 }

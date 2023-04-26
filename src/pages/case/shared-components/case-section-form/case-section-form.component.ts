@@ -8,8 +8,6 @@ import { ICaseCol, ICustomInput } from 'src/app/app.interfaces';
 import { detailTypes } from '../../case.config';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
 import { CaseSectionTable } from '../case-section-table/case-section-table.component';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CaseService } from 'src/services/case.service';
 // For diagnosis, consultation, referral,
 @Component({
@@ -17,7 +15,7 @@ import { CaseService } from 'src/services/case.service';
   selector: 'app-case-section-form',
   templateUrl: './case-section-form.component.html',
   styleUrls: ['./case-section-form.component.scss', '../../../client/client-form/client-form.component.scss'],
-  imports: [CommonModule, FormsModule, ButtonModule, CustomInputComponent, CaseSectionTable, ConfirmDialogModule]
+  imports: [CommonModule, FormsModule, ButtonModule, CustomInputComponent, CaseSectionTable]
 })
 
 export class CaseSectionForm implements OnInit {
@@ -33,7 +31,6 @@ export class CaseSectionForm implements OnInit {
   constructor(
     private attrService: AttributesService,
     private caseService: CaseService,
-    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit() {
