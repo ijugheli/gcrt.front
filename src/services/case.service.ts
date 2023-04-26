@@ -177,7 +177,6 @@ export class CaseService extends GuardedService {
 
   public mapCases(cases: ICase[]): void {
     this.cases = new Map(cases.map(e => [e['case'].id!, new ICase(e)]));
-    console.log(this.cases);
   }
 
   // validate new section model / check if it has atleast 1 filled field
