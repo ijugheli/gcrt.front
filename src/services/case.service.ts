@@ -1,17 +1,17 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AsyncSubject, catchError, lastValueFrom, throwError } from 'rxjs';
+import { AsyncSubject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
-import { APIResponse, ICaseCol, ICustomInput, IUserPermission } from 'src/app/app.interfaces';
-import { Attribute, GuardedService, User } from '../app/app.models';
+import { APIResponse, ICaseCol, ICustomInput } from 'src/app/app.interfaces';
+import { Attribute, GuardedService} from '../app/app.models';
 import { AuthService } from './AuthService.service';
 import { parseTree } from 'src/app/app.func';
 import { consultationCols } from 'src/pages/case/case-attrs/consultation';
 import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
 import { referralCols } from 'src/pages/case/case-attrs/referral';
 import { caseCols, caseList } from 'src/pages/case/case-attrs/case';
-import { IDiagnosis, IConsultation, IReferral, CaseAttrs, Case, ICase } from 'src/pages/case/case.model';
+import { IDiagnosis, IConsultation, IReferral, ICase } from 'src/pages/case/case.model';
 import { MOption } from './attributes/models/option.model';
 import { CacheService } from './cache.service';
 
@@ -125,11 +125,10 @@ export class CaseService extends GuardedService {
     }
 
     this.getClients().subscribe((data: any) => {
-      const response: any[] = Object.entries(data.data).map(([key, value]) => {
-        const model: any = value;
-        return [parseInt(model.id), {
-          id: model.id,
-          name: model.client_code + ' ' + model.name + ' ' + model.surname
+      const response: any[] = data.data.map((value: any) => {
+        return [parseInt(value.id), {
+          id: value.id,
+          name: value.client_code + ' ' + value.name + ' ' + value.surname
         } as MOption
         ];
       });
@@ -152,11 +151,10 @@ export class CaseService extends GuardedService {
     }
 
     this.getCaseManagers().subscribe((data: any) => {
-      const response: any[] = Object.entries(data.data).map(([key, value]) => {
-        const model: any = value;
-        return [parseInt(model.id), {
-          id: model.id,
-          name: model.name + ' ' + model.lastname
+      const response: any[] = data.data.map((value: any) => {
+        return [parseInt(value.id), {
+          id: value.id,
+          name: value.name + ' ' + value.lastname
         } as MOption
         ];
       });
@@ -175,7 +173,8 @@ export class CaseService extends GuardedService {
   }
 
   public mapCases(cases: ICase[]): void {
-    this.cases = new Map(cases.map(e => [e['case'].id!, e as ICase]));
+    this.cases = new Map(cases.map(e => [e['case'].id!, new ICase(e)]));
+    console.log(this.cases);
   }
 
   // validate new section model / check if it has atleast 1 filled field

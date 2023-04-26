@@ -3,7 +3,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
-import { ICase, MOnSectionEvent } from './case.model';
+import { Case, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from './case.model';
 import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 
@@ -21,13 +21,13 @@ export class CaseComponent implements OnInit {
   public selectedRow!: ICase;
   public data: ICase[] = [];
   public loadingArray: number[] = Array(10);
+  public CaseConfig = caseConfig;
 
+  // for case section detail table
   public isModalVisible: boolean = false;
   public detailData!: any;
   public detailCols: any;
-  public CaseConfig = caseConfig;
   public caseID: number | null = null;
-  template: any;
 
   constructor(
     public attrService: AttributesService,
@@ -39,7 +39,6 @@ export class CaseComponent implements OnInit {
 
   ngOnInit() {
     this.init();
-    console.log(this.caseService.clients);
   }
 
   private init(): void {
@@ -83,6 +82,7 @@ export class CaseComponent implements OnInit {
     if (data.data !== undefined) {
       this.caseService.mapCases(data.data);
       this.data = Array.from(this.caseService.cases.values());
+      console.log(this.data[0].diagnoses);
     }
   }
 
@@ -141,17 +141,16 @@ export class CaseComponent implements OnInit {
   }
 
   private deleteSection(id: number, type: number): void {
+    const sectionType = this.CaseConfig.detailTypes[type];
     const method =
-      this.CaseConfig.detailTypes[type] == "diagnoses"
+      sectionType == "diagnoses"
         ? 'destroyDiagnosis'
-        : this.CaseConfig.detailTypes[type] == "referrals"
+        : sectionType == "referrals"
           ? 'destroyReferral'
           : 'destroyConsultation';
 
     this.caseService[method](id).subscribe((data) => {
-      this.caseService.cases.get(data.data[0].case_id)![this.CaseConfig.detailTypes[type]] = data.data;
-      this.data = Array.from(this.caseService.cases.values());
-      this.detailData = this.caseService.cases.get(data.data[0].case_id)![this.CaseConfig.detailTypes[type]];
+      this.updateSections(data, type);
     });
   }
 
@@ -160,5 +159,21 @@ export class CaseComponent implements OnInit {
       severity: type,
       summary: msg,
     });
+  }
+
+  private updateSections(response: APIResponse<any>, type: number) {
+    const sectionType = this.CaseConfig.detailTypes[type];
+    const ICase: ICase = this.caseService.cases.get(response.data[0].id)!;
+
+    if (sectionType == 'diagnoses') {
+      ICase[sectionType] = response.data.map((value: any) => new IDiagnosis(value));
+    } else if (sectionType == 'referrals') {
+      ICase[sectionType] = response.data.map((value: any) => new IReferral(value));
+    } else {
+      ICase[sectionType] = response.data.map((value: any) => new IConsultation(value));
+    }
+
+    this.data = Array.from(this.caseService.cases.values());
+    this.detailData = ICase[sectionType];
   }
 }

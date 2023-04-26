@@ -23,6 +23,10 @@ export const validateEmail = (email: string) => {
         );
 };
 
+export const generateRandomNumber = (): number => {
+    return Math.floor(Math.random() * (5000000 - 30000 + 1) + 30000);
+}
+
 export const formatDate = (date: any) => {
     const pipe = new DatePipe('en_US');
     return pipe.transform(date, 'd/M/yy');
