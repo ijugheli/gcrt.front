@@ -8,6 +8,7 @@ import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 import { carePlanTreeID } from './case-attrs/care-plan';
 import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
+import { combineLatestAll, forkJoin } from 'rxjs';
 
 
 @Component({
@@ -51,8 +52,14 @@ export class CaseComponent implements OnInit {
 
   private init(): void {
     this.isLoading = true;
-    this.caseService.index().subscribe({
-      next: (data) => this.setData(data),
+
+    forkJoin({
+      response: this.caseService.index(),
+      clients: this.caseService.clientChanges,
+      caseManagers: this.caseService.caseManagerChanges
+    }
+    ).subscribe({
+      next: ({ response, clients, caseManagers }) => this.setData(response),
       error: (e) => { },
       complete: () => this.isLoading = false
     });
