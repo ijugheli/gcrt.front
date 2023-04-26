@@ -19,6 +19,8 @@ export class ICase {
 
     constructor(data?: any) {
         this.case = data?.case ?? new Case();
+        this.forms_of_violences = data?.forms_of_violences ?? [];
+        this.care_plans = data?.care_plans ?? [];
         if (data?.diagnoses.length > 0 && data?.diagnoses !== undefined) {
             this.diagnoses = data.diagnoses.map((item: IDiagnosis) => new IDiagnosis(item));
         }

@@ -4,7 +4,7 @@ import { AsyncSubject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, ICaseCol, ICustomInput } from 'src/app/app.interfaces';
-import { Attribute, GuardedService} from '../app/app.models';
+import { Attribute, GuardedService } from '../app/app.models';
 import { AuthService } from './AuthService.service';
 import { parseTree } from 'src/app/app.func';
 import { consultationCols } from 'src/pages/case/case-attrs/consultation';
@@ -49,8 +49,8 @@ export class CaseService extends GuardedService {
     'updateDiagnosis': API_URL + '/case/diagnosis/update',
     'updateConsultation': API_URL + '/case/consultation/update',
     'updateReferral': API_URL + '/case/referral/update',
-    'updateFormsOfViolence': API_URL + '/case/forms-of-violence/update',
-    'updateCarePlans': API_URL + '/case/care-plans/update',
+    'updateFormsOfViolences': API_URL + '/case/forms-of-violence/update/{case_id}',
+    'updateCarePlans': API_URL + '/case/care-plan/update/{case_id}',
     'destroyConsultation': API_URL + '/case/consultation/destroy/{id}',
     'destroyReferral': API_URL + '/case/referral/destroy/{id}',
     'destroyDiagnosis': API_URL + '/case/diagnosis/destroy/{id}',
@@ -101,8 +101,11 @@ export class CaseService extends GuardedService {
     return this.http.post<APIResponse>(this.urls['updateReferral'], data, { headers: this.headers });
   }
 
-  public updateFormsOfViolence(data: any): Observable<any> {
-    return this.http.post<APIResponse>(this.urls['updateFormsOfViolence'], data, { headers: this.headers });
+  public updateFormsOfViolences(data: any, caseID: number): Observable<any> {
+    return this.http.post<APIResponse>(this.urls['updateFormsOfViolences'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
+  }
+  public updateCarePlans(data: any, caseID: number): Observable<any> {
+    return this.http.post<APIResponse>(this.urls['updateCarePlans'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
   }
 
   public getClients(): Observable<APIResponse> {

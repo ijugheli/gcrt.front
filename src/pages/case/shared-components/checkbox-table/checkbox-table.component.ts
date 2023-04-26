@@ -20,6 +20,7 @@ import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
 export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnChanges {
   @Input() initialTree: any[] = [];
   @Input() caseSectionModel: T[] = [];
+  @Input() caseID: number | null = null;
   @Output() onSave = new EventEmitter<T[]>();
   public parsedTree: MCheckboxTableItem[] = [];
   public parents: MCheckboxTableItem[] = [];
@@ -68,7 +69,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnC
 
       if (model !== undefined) {
         temp.id = model.id ?? null;
-        temp.case_id = model.case_id ?? null;
+        temp.case_id = this.caseID ?? model.case_id ?? null;
         temp.isSelected = true;
         temp.comment = model.comment;
       }
@@ -82,7 +83,7 @@ export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnC
       let model: any = {};
       model.id = e.id;
       model.category = e.category;
-      model.case_id = e.case_id;
+      model.case_id = this.caseID ?? e.case_id ?? null;
       model.comment = e.comment;
       return model;
     }) as T[];
