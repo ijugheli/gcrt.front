@@ -155,7 +155,8 @@ export class CaseComponent implements OnInit {
 
     this.caseService[method](event, this.caseID!).subscribe((data) => {
       this.updateSections(data, this.caseService.selectedSection!);
-    });
+      this.showMsg(data.message, 'success')
+    }, (e) => this.showMsg(e.e.message, 'error'));
   }
 
   private setData(data: APIResponse<ICase[]>): void {
@@ -195,7 +196,7 @@ export class CaseComponent implements OnInit {
 
   private updateSections(response: APIResponse<any>, type: number) {
     const sectionType = this.CaseConfig.detailTypes[type];
-    const ICase: ICase = this.caseService.cases.get(response.data[0].id)!;
+    const ICase: ICase = this.caseService.cases.get(this.caseID!)!;
 
     if (sectionType == 'diagnoses') {
       ICase[sectionType] = response.data.map((value: any) => new IDiagnosis(value));
