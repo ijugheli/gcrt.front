@@ -39,6 +39,8 @@ export class CaseFormComponent implements OnInit {
 
   ngOnInit() {
     this.init();
+    this.initTree('carePlanTree', carePlanTreeID);
+    this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
   }
 
   public onSectionSave(event: MOnSectionEvent, type: any): void {
@@ -210,5 +212,12 @@ export class CaseFormComponent implements OnInit {
     } else {
       this.Case[sectionType] = event.data.map((value: any) => new IConsultation(value));
     }
+  }
+
+  private initTree(treeKey: keyof CaseService, attrID: number): void {
+    if (this.caseService[treeKey].length > 0) return;
+    this.attrService.treeMapChange.subscribe((treeMap) => {
+      this.caseService[treeKey] = treeMap.get(attrID);
+    })
   }
 }
