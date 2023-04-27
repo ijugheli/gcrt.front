@@ -62,7 +62,7 @@
       [showLoader]="false"
       sortMode="single"
       styleClass="p-datatable-sm p-datatable-gridlines"
-      [paginator]="true"
+      [paginator]="data.length > 24"
       [rows]="25"
       [style.width]="isSidebarVisible ? 'calc(98vw - 500px) !important' : '100% !important'"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
@@ -83,11 +83,23 @@
           <!-- <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th> -->
           <!-- <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th> -->
           <!-- <th>სტატუსი</th> -->
-          <th></th>
-          <th>კლიენტის კოდი</th>
-          <th>სახელი</th>
-          <th>გვარი</th>
-          <th>რეგისტრაციის თარიღი</th>
+          <th pSortableColumn="main.id">ID <p-sortIcon field="main.id"></p-sortIcon></th>
+          <th pSortableColumn="main.client_code">
+            კლიენტის კოდი
+            <p-sortIcon field="main.client_code"></p-sortIcon>
+          </th>
+          <th pSortableColumn="main.name">
+            სახელი
+            <p-sortIcon field="main.name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="main.surname">
+            გვარი
+            <p-sortIcon field="main.surname"></p-sortIcon>
+          </th>
+          <th pSortableColumn="main.registration_date">
+            რეგისტრაციის თარიღი
+            <p-sortIcon field="main.registration_date"></p-sortIcon>
+          </th>
           <th style="text-align: center !important">ძირითადი მახასიათებლები</th>
           <th style="text-align: center !important">დამატებითი ინფორმაცია</th>
           <th style="text-align: center !important">საკონტაქტო ინფორმაცია</th>
@@ -95,10 +107,39 @@
         </tr>
         <tr>
           <th></th>
-          <th></th>
-          <th> </th>
-          <th></th>
-          <th></th>
+          <th>
+            <p-columnFilter
+              field="main.client_code"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter
+              field="main.name"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter
+              field="main.surname"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
+          </th>
+          <th>
+            <!-- <p-columnFilter
+              field="main.registration_date"
+              type="date"
+            ></p-columnFilter> -->
+          </th>
           <th></th>
           <th></th>
           <th></th>
@@ -212,16 +253,23 @@
     <div
       *ngIf="isSidebarVisible"
       style="background:#f7f6f9; height: calc(100vh - 120px)"
-      class="w-20rem border-left-1 border-top-1 surface-border p-1 pt-2 flex flex-column justify-content-start align-items-start gap-3"
+      class="w-20rem border-left-1 border-top-1 surface-border p-1 pt-2"
     >
       <div
         *ngFor="let col of sidebarCols"
-        class="flex flex-column justify-content-center align-items-start gap-1 w-full"
+        class="flex flex-column justify-content-center align-items-between gap-1 w-full"
       >
-        <label
-          for="username2"
-          class="text-sm"
-        >{{ col['label']}}</label>
+        <div class="flex flex-row justify-content-between align-items-center gap-3">
+          <label
+            for="username2"
+            class="text-sm"
+          >{{ col['label']}}</label>
+          <p-button
+            (click)="copyToClipboard(attrService.getOptionTitle(sidebarData[(col['fieldName'])]))"
+            icon="pi pi-copy"
+            styleClass="p-button-rounded p-button-secondary p-button-outlined mr-5"
+          ></p-button>
+        </div>
         <span style="margin-left: 6px;">
           {{col['type'] == 'switch' ? (sidebarData[(col['fieldName'])] ? 'კი':'არა') :
           attrService.getOptionTitle(sidebarData[(col['fieldName'])]) }}

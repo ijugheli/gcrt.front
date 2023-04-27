@@ -7,7 +7,8 @@
         <button
           type="button"
           class="border-btn mb-2 w-min"
-          [disabled]="clientService.isInputDisabled"
+          [disabled]="clientService.isInputDisabled || !isDirty"
+          [class.p-disabled]="clientService.isInputDisabled || !isDirty "
           (click)="onSave($event)"
         >
 
@@ -33,7 +34,7 @@
     <div class="grid">
       <div
         class="col-fixed"
-        style="width:280px;"
+        style="width:250px;"
       >
         <p-selectButton
           [(ngModel)]="selectedSection"

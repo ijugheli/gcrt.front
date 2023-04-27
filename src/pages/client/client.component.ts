@@ -10,7 +10,7 @@ import { contactList } from './client-attrs/client.contact';
 import { addressList } from './client-attrs/client.address';
 import * as ClientConfig from './client.config';
 import { APIResponse } from 'src/app/app.interfaces';
-
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-client-page',
@@ -35,7 +35,8 @@ export class ClientComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     public clientService: ClientService,
-    public confirmationService: ConfirmationService
+    public confirmationService: ConfirmationService,
+    private clipboard: Clipboard,
   ) { }
 
   ngOnInit() {
@@ -71,9 +72,9 @@ export class ClientComponent implements OnInit {
         this.clientService.destroy(this.selectedRow.main.id!).subscribe({
           next: (data) => {
             this.setData(data);
-            this.showSuccess(data.message);
+            this.showMsg(data.message, 'success');
           },
-          error: (e: any) => this.showError(e.error.message),
+          error: (e: any) => this.showMsg(e.error.message, 'error'),
           complete: () => { }
         });
       },
@@ -108,17 +109,17 @@ export class ClientComponent implements OnInit {
     this.isSidebarVisible = true;
   }
 
-  private showSuccess(msg: string): void {
+  private showMsg(msg: string, type: string): void {
     this.messageService.add({
-      severity: 'success',
+      severity: type,
       summary: msg,
     });
   }
 
-  private showError(error: any): void {
-    this.messageService.add({
-      severity: 'error',
-      summary: error,
-    });
+  public copyToClipboard(text: string): void {
+    this.clipboard.copy(text);
+    this.messageService.clear();
+    this.showMsg('წარმატებით დაკოპირდა', 'info');
   }
+
 }

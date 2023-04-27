@@ -36,6 +36,8 @@ export class CaseSectionForm implements OnInit {
   ngOnInit() {
     if (this.model === null) {
       this.model = this.getModel();
+    } else {
+      console.log(this.model);
     }
   }
 

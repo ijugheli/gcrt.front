@@ -18,12 +18,13 @@ import { CaseService } from 'src/services/case.service';
 })
 
 export class ClientFormComponent implements OnInit {
-  public pageTitle: string = 'კლიენტის დამატება';
+  public pageTitle: string = '';
   public client: Client = new Client();
   public clientID!: number | null;
   public ClientAttrs: ClientAttrs = new ClientAttrs();
   public menuOptions: IFormMenuOption[] = ClientConfig.menuOptions;
   public isLoading: boolean = false;
+  public isDirty: boolean = false;
   public hasSocialSupport: boolean = false;
   public hasInsurance: boolean = false;
   public selectedSection: IFormMenuOption = ClientConfig.menuOptions[0];
@@ -34,7 +35,7 @@ export class ClientFormComponent implements OnInit {
     private messageService: MessageService,
     private route: ActivatedRoute,
     private attrService: AttributesService,
-    private router: Router
+    public router: Router
   ) { }
 
   ngOnInit() {
@@ -54,6 +55,7 @@ export class ClientFormComponent implements OnInit {
       },
       complete: () => {
         this.clientService.isInputDisabled = false;
+        this.isDirty = false;
         this.caseService.initClients(true);
       }
     });
@@ -61,6 +63,7 @@ export class ClientFormComponent implements OnInit {
 
   public onUpdate(event: any): void {
     this.client.main.client_code = this.clientService.getClientCode();
+    this.isDirty = true;
   }
 
   public onSelect(event: any): void {
@@ -79,34 +82,55 @@ export class ClientFormComponent implements OnInit {
 
   private initClient(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.pageTitle = 'კლიენტის დამატება';
+      return
+    };
 
-    if (id !== undefined && id !== null) {
-      this.clientID = parseInt(id);
-      this.isLoading = true;
+    this.clientID = parseInt(id);
+    this.isLoading = true;
 
-      if (this.clientService.clients.has(this.clientID)) {
-        this.client = this.clientService.clients.get(this.clientID)!;
-        this.isLoading = false;
-      } else {
-        this.clientService.show(this.clientID).subscribe({
-          next: (data) => {
-            this.client = data.data!
-          },
-          error: (e) => {
-            this.showError(e.error.message);
-            setTimeout(() => {
-              this.router.navigate([`/client`]);
-            }, 2000);
-          },
-          complete: () => {
-            this.isLoading = false;
-          }
-        });
-      }
-      this.pageTitle = 'კლიენტის რედაქტირება';
+    if (this.clientService.clients.has(this.clientID)) {
+      this.client = this.clientService.clients.get(this.clientID)!;
+      this.isLoading = false;
+      this.initSwitchModels();
+      this.initPageTitle();
+    } else {
+      this.clientService.show(this.clientID).subscribe({
+        next: (data) => {
+          this.client = data.data!;
+          this.initSwitchModels();
+        },
+        error: (e) => {
+          this.showError(e.error.message);
+          setTimeout(() => {
+            this.router.navigate([`/client`]);
+          }, 2000);
+        },
+        complete: () => {
+          this.isLoading = false;
+          this.initPageTitle();
+        }
+      });
+
       this.clientService.values.set('client_id', id);
     }
   }
+  // hasInsurance and hasSocialSupport input switches for edit
+  private initSwitchModels() {
+    if (this.client.additional.has_insurance) {
+      this.hasInsurance = true;
+    }
+
+    if (this.client.additional.has_social_support) {
+      this.hasSocialSupport = true;
+    }
+  }
+
+  private initPageTitle() {
+    this.pageTitle = 'კლიენტის რედაქტირება - ' + this.client.main.client_code + ' ' + this.client.main.name + ' ' + this.client.main.surname;
+  }
+
   private showSuccess(msg: string): void {
     this.messageService.add({
       severity: 'success',

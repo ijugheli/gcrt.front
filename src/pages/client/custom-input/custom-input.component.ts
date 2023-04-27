@@ -71,6 +71,8 @@ export class CustomInputComponent implements OnInit, OnChanges {
     if (this.data['type'] == 'tree') {
       this.selectedNode = this.getTreeNode(event.data.id);
       this.model = event.data.id;
+    } else if (this.data['type'] == 'date') {
+      this.model = this.setDate(event);
     } else {
       this.model = event;
     }
@@ -119,8 +121,8 @@ export class CustomInputComponent implements OnInit, OnChanges {
     }
 
     if (this.data['propertyID'] === null) {
-      if (this.data['type'] == 'date' && this.model != undefined) {
-        this.model = new Date(this.model);
+      if (this.data['type'] == 'date' && this.model) {
+        this.model = this.model;
       }
       this.initialized = true;
       return;
@@ -178,5 +180,10 @@ export class CustomInputComponent implements OnInit, OnChanges {
         this.attrService.flatTreeMap.set(tree.data.id, tree);
       }
     }
+  }
+
+  private setDate(value: Date) {
+    if (!value) return null;
+    return new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate()));
   }
 }
