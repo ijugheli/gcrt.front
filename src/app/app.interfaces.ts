@@ -98,6 +98,7 @@ export interface IObjectKeys {
 }
 export class IFormMenuOption {
     public label!: string;
+    public anchor!: string;
     public value!: number;
     public icon!: string;
 }

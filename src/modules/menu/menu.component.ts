@@ -25,6 +25,9 @@ export class MenuComponent implements OnInit {
 
   public user: User | null = null;
 
+  public activeMenuParent: string = '';
+  public activeMenuChild: string = '';
+
   constructor(
     private attrsService: AttributesService,
     private activatedRoute: ActivatedRoute,
@@ -238,6 +241,15 @@ export class MenuComponent implements OnInit {
     window.location.href = '/manage/' + attrID;
   }
 
+  public setMenuParent(title: string): void {
+    this.activeMenuParent = this.activeMenuParent == title ? '' : title;
+  }
+
+
+
+  public setMenuChild(title: string): void {
+    this.activeMenuChild = title;
+  }
   // private asMenuItem(attr: IMenuItem): IMenuItem {
   //   // return {
   //   //   id: attr.id,
