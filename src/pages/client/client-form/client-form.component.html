@@ -81,28 +81,28 @@
           <custom-input
             [model]="client.additional.nationality"
             [data]="ClientAttrs.additionalMap.get('nationality')"
-            (onChange)="client.additional.nationality = $event"
+            (onChange)="onUpdate(client.additional.nationality = $event)"
           >
           </custom-input>
 
           <custom-input
             [model]="client.additional.education"
             [data]="ClientAttrs.additionalMap.get('education')"
-            (onChange)="client.additional.education = $event"
+            (onChange)="onUpdate(client.additional.education = $event)"
           >
           </custom-input>
 
           <custom-input
             [model]="client.additional.marital_status"
             [data]=" ClientAttrs.additionalMap.get('marital_status')"
-            (onChange)="client.additional.marital_status = $event"
+            (onChange)="onUpdate(client.additional.marital_status = $event)"
           >
           </custom-input>
 
           <custom-input
             [model]="client.additional.family_members"
             [data]=" ClientAttrs.additionalMap.get('family_members')"
-            (onChange)="client.additional.family_members = $event"
+            (onChange)="onUpdate(client.additional.family_members = $event)"
           >
           </custom-input>
 
@@ -119,7 +119,7 @@
             *ngIf="hasSocialSupport"
             [model]="client.additional.has_social_support"
             [data]=" ClientAttrs.additionalMap.get('has_social_support')"
-            (onChange)="client.additional.has_social_support = $event"
+            (onChange)="onUpdate(client.additional.has_social_support = $event)"
             class="fadeinup"
           >
           </custom-input>
@@ -137,7 +137,7 @@
             *ngIf="hasInsurance"
             [model]="client.additional.has_insurance"
             [data]=" ClientAttrs.additionalMap.get('has_insurance')"
-            (onChange)="client.additional.has_insurance = $event"
+            (onChange)="onUpdate(client.additional.has_insurance = $event)"
             class="fadeinup"
           >
           </custom-input>
@@ -145,14 +145,14 @@
           <custom-input
             [model]="client.additional.work_address"
             [data]=" ClientAttrs.additionalMap.get('work_address')"
-            (onChange)="client.additional.work_address = $event"
+            (onChange)="onUpdate(client.additional.work_address = $event)"
           >
           </custom-input>
 
           <custom-input
             [model]="client.additional.profession"
             [data]=" ClientAttrs.additionalMap.get('profession')"
-            (onChange)="client.additional.profession = $event"
+            (onChange)="onUpdate(client.additional.profession = $event)"
           >
           </custom-input>
         </div>
@@ -164,7 +164,7 @@
             <custom-input
               [model]="client.contact[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.fieldName)] = $event) : client.contact[(item.fieldName)] = $event)"
+              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.fieldName)] = $event) : onUpdate(client.contact[(item.fieldName)] = $event))"
             >
             </custom-input>
           </div>
@@ -177,7 +177,7 @@
             <custom-input
               [model]="client.address[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.fieldName)] = $event) : client.address[(item.fieldName)] = $event)"
+              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.fieldName)] = $event) : onUpdate(client.address[(item.fieldName)] = $event))"
             >
             </custom-input>
           </div>
