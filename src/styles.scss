@@ -1573,3 +1573,7 @@ app-attribute-form .p-panel .p-panel-content {
 .p-toast.p-toast-message.p-toast-message-content.p-toast-summary {
     font-family: roman;
 }
+
+.p-ripple.p-element.p-button.p-component  span.p-button-label {
+    width: max-content;
+}
