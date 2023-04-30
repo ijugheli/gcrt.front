@@ -71,7 +71,7 @@
       responsiveLayout="scroll"
       [(selection)]="selectedRow"
       selectionMode="single"
-      [value]="data"
+      [value]="tableData"
       dataKey="case.id"
     >
       <ng-template
@@ -84,10 +84,12 @@
           <!-- <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th> -->
           <!-- <th>სტატუსი</th> -->
           <th></th>
-          <th>ქეისის #</th>
-          <th>კლიენტი</th>
-          <th>ქეისის მენეჯერი</th>
-          <th>პროექტის დასახელება</th>
+          <th pSortableColumn="case.id">ქეისის # <p-sortIcon field="case.id"></p-sortIcon></th>
+          <th pSortableColumn="case.client_id">კლიენტი <p-sortIcon field="case.client_id"></p-sortIcon></th>
+          <th pSortableColumn="case.case_manager_id">ქეისის მენეჯერი <p-sortIcon
+              field="case.case_manager_id"></p-sortIcon></th>
+          <th pSortableColumn="case.project_id">პროექტის დასახელება <p-sortIcon field="case.project_id"></p-sortIcon>
+          </th>
           <th>რეგისტრაციის თარიღი</th>
           <th style="text-align: center !important">დიაგნოზები</th>
           <th style="text-align: center !important">რეფერალები</th>
@@ -98,10 +100,34 @@
         </tr>
         <tr>
           <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th> </th>
+          <th>
+            <p-columnFilter
+              field="case.client_id"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter
+              field="case.case_manager_id"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter
+            field="case.project_id"
+            type="text"
+            matchMode="contains"
+            [showClearButton]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+          </th>
           <th></th>
           <th></th>
           <th></th>
@@ -167,13 +193,13 @@
             {{data.case.id}}
           </td>
           <td>
-            {{ caseService.getClientName(data.case.client_id) }}
+            {{ data.case.client_id }}
           </td>
           <td>
-            {{ caseService.getCaseManagerName(data.case.case_manager_id) }}
+            {{ data.case.case_manager_id }}
           </td>
           <td>
-            {{attrService.getOptionTitle(data.case.project_id)}}
+            {{data.case.project_id}}
           </td>
           <td>
             {{data.case.registration_date}}
@@ -241,6 +267,7 @@
       <app-case-section-table
         *ngIf="isModalVisible"
         [data]="detailData"
+        [parsedData]="parsedDetailData"
         [columns]="detailCols"
         [isFormTable]="false"
         (onAdd)="onDetailAdd()"

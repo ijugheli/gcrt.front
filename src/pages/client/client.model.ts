@@ -1,5 +1,4 @@
 import { DatePipe } from "@angular/common";
-import { Case, IConsultation, IDiagnosis, IPsychodiagnosis, IReferral } from "../case/case.model";
 import { additionalMap } from "./client-attrs/client.additional";
 import { addressList, addressMap } from "./client-attrs/client.address";
 import { contactList, contactMap } from "./client-attrs/client.contact";
