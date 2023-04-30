@@ -11,9 +11,10 @@ import { consultationCols } from 'src/pages/case/case-attrs/consultation';
 import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
 import { referralCols } from 'src/pages/case/case-attrs/referral';
 import { caseCols, caseList } from 'src/pages/case/case-attrs/case';
-import { IDiagnosis, IConsultation, IReferral, ICase } from 'src/pages/case/case.model';
+import { IDiagnosis, IConsultation, IReferral, ICase, checkCaseKeys, MCase, MCaseMain, MDiagnosis, MConsultation, MReferral } from 'src/pages/case/case.model';
 import { MOption } from './attributes/models/option.model';
 import { CacheService } from './cache.service';
+import { AttributesService } from './attributes/Attributes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class CaseService extends GuardedService {
   clientChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
 
   public cases: Map<number, ICase> = new Map();
+  public parsedCases: Map<number, MCase> = new Map();
 
   public values: Map<number | string, string | Date | null | boolean | number> = new Map();
 
@@ -58,7 +60,7 @@ export class CaseService extends GuardedService {
     'clients': API_URL + '/case/clients',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService) {
+  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService, private attrService: AttributesService) {
     super(auth.getToken());
   }
 
@@ -115,7 +117,6 @@ export class CaseService extends GuardedService {
   public getCaseManagers(): Observable<APIResponse> {
     return this.http.get<APIResponse>(this.urls['caseManagers'], { headers: this.headers });
   }
-
 
   public async initClients(shouldRefresh: boolean = false): Promise<void> {
     const cache = this.cacheService.get('clients');
@@ -176,8 +177,13 @@ export class CaseService extends GuardedService {
   }
 
   public mapCases(cases: ICase[]): void {
-    this.cases = new Map(cases.map(e => [e['case'].id!, new ICase(e)]));
-    console.log(this.cases);
+    this.parsedCases = new Map();
+    this.cases = new Map(cases.map(e => {
+      const item = new ICase(e);
+      this.parsedCases.set(e['case'].id!, this.parseCase(item));
+      return [e['case'].id!, item];
+    }));
+
   }
 
   // validate new section model / check if it has atleast 1 filled field
@@ -227,4 +233,43 @@ export class CaseService extends GuardedService {
   public getCaseManagerName(id: number): string {
     return this.caseManagers.get(id)!.name;
   }
+
+
+  public parseCase(iCase: any) {
+    const item = Object.assign({}, iCase);
+    item.case = this.parseModel(item.case) as MCaseMain;
+
+    if (item?.diagnoses.length > 0) {
+      item.diagnoses = item.diagnoses.map((item: IDiagnosis) => this.parseModel(item) as MDiagnosis);
+    }
+
+    if (item?.consultations.length > 0) {
+      item.consultations = item.consultations.map((item: IConsultation) => this.parseModel(item) as MConsultation);
+    }
+
+    if (item?.referrals.length > 0) {
+      item.referrals = item.referrals.map((item: IReferral) => this.parseModel(item) as MReferral);
+    }
+
+    return new MCase(item);
+  }
+
+  // parse case section models for table (to search strings)
+  public parseModel(data: any) {
+    return Object.entries(data).reduce((item: any, [key, value]: [string, any]) => {
+      if (key == 'case_manager_id') {
+        item[key] = this.getCaseManagerName(value);
+      } else if (key == 'client_id') {
+        item[key] = this.getClientName(value);
+      } else if (checkCaseKeys(key)) {
+        item[key] = this.attrService.getOptionTitle(value);
+      } else {
+        item[key] = value;
+      }
+      return item;
+    }, {})
+  }
+
+
+
 }

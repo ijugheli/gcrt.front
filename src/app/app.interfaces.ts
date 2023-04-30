@@ -1,5 +1,3 @@
-import { Case, IDiagnosis, IReferral, IConsultation, IPsychodiagnosis } from "src/pages/case/case.model";
-import { ClientAdditional, ClientAddress, ClientContact, ClientMain } from "src/pages/client/client.model";
 
 export interface City {
     name: string,

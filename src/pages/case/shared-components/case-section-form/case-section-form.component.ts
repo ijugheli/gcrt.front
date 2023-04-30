@@ -20,6 +20,7 @@ import { CaseService } from 'src/services/case.service';
 
 export class CaseSectionForm implements OnInit {
   @Input() data: any[] = [];
+  @Input() parsedData: any[] = [];
   @Input() caseID: number | null = null;
   @Input() inputAttrs: ICustomInput[] = [];
   @Input() tableCols: ICaseCol[] = [];
@@ -36,8 +37,6 @@ export class CaseSectionForm implements OnInit {
   ngOnInit() {
     if (this.model === null) {
       this.model = this.getModel();
-    } else {
-      console.log(this.model);
     }
   }
 

@@ -3,12 +3,13 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
-import { Case, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from './case.model';
+import { ICase, IConsultation, IDiagnosis, IReferral, MCase, MOnSectionEvent } from './case.model';
 import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 import { carePlanTreeID } from './case-attrs/care-plan';
 import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
 import { combineLatestAll, forkJoin } from 'rxjs';
+import { generateRandomNumber } from 'src/app/app.func';
 
 
 @Component({
@@ -21,14 +22,16 @@ import { combineLatestAll, forkJoin } from 'rxjs';
 export class CaseComponent implements OnInit {
   public pageTitle: string = 'ქეისი';
   public isLoading: boolean = false;
-  public selectedRow!: ICase;
+  public selectedRow!: MCase;
   public data: ICase[] = [];
+  public tableData: MCase[] = [];
   public loadingArray: number[] = Array(10);
   public CaseConfig = caseConfig;
 
   // for case section detail table (diagnoses, consultations, referrals)
   public isModalVisible: boolean = false;
   public detailData!: any;
+  public parsedDetailData!: any;
   public detailCols: any;
   public caseID: number | null = null;
 
@@ -60,7 +63,7 @@ export class CaseComponent implements OnInit {
     }
     ).subscribe({
       next: ({ response, clients, caseManagers }) => this.setData(response),
-      error: (e) => { },
+      error: (e) => this.showMsg(e.error.message, 'danger'),
       complete: () => this.isLoading = false
     });
   }
@@ -74,6 +77,7 @@ export class CaseComponent implements OnInit {
   public onAddClick(): void {
     this.router.navigate(['/case/add']);
   }
+
 
   public onDeleteClick(): void {
     this.confirmationService.confirm({
@@ -97,27 +101,24 @@ export class CaseComponent implements OnInit {
     const types: Record<number, string> = this.CaseConfig.detailTypes;
     this.caseID = caseID;
     this.caseService.selectedSection = type;
+    this.parsedDetailData = data;
+    this.detailData = this.caseService.cases.get(this.caseID)![types[type]];
 
     switch (types[type]) {
       case 'diagnoses':
         this.detailCols = this.caseService.diagnosisCols;
-        this.detailData = data;
         break;
       case 'referrals':
         this.detailCols = this.caseService.referralCols;
-        this.detailData = data;
         break;
       case 'consultations':
         this.detailCols = this.caseService.consultationCols;
-        this.detailData = data;
         break;
       case 'forms_of_violences':
         this.tree = this.caseService.formsOfViolenceTree;
-        this.detailData = data;
         break;
       case 'care_plans':
         this.tree = this.caseService.carePlanTree;
-        this.detailData = data;
         break;
     }
 
@@ -170,6 +171,7 @@ export class CaseComponent implements OnInit {
     if (data.data !== undefined) {
       this.caseService.mapCases(data.data);
       this.data = Array.from(this.caseService.cases.values());
+      this.tableData = Array.from(this.caseService.parsedCases.values());
     }
   }
 
@@ -204,20 +206,29 @@ export class CaseComponent implements OnInit {
   private updateSections(response: APIResponse<any>, type: number) {
     const sectionType = this.CaseConfig.detailTypes[type];
     const ICase: ICase = this.caseService.cases.get(this.caseID!)!;
+    const MCase: MCase = this.caseService.parsedCases.get(this.caseID!)!;
+    let newParsedArray: any[] = [];
 
-    if (sectionType == 'diagnoses') {
-      ICase[sectionType] = response.data.map((value: any) => new IDiagnosis(value));
-    } else if (sectionType == 'referrals') {
-      ICase[sectionType] = response.data.map((value: any) => new IReferral(value));
-    } else if (sectionType == 'forms_of_violences') {
+    if (sectionType == 'diagnoses' || 'referrals' || 'consultations') {
+      ICase[sectionType] = response.data.map((value: any) => {
+        return this.parseNewDetails(value, newParsedArray);
+      });
+    } else if (sectionType == 'forms_of_violences' || 'care_plans') {
       ICase[sectionType] = response.data;
-    } else if (sectionType == 'care_plans') {
-      ICase[sectionType] = response.data;
-    } else {
-      ICase[sectionType] = response.data.map((value: any) => new IConsultation(value));
+      newParsedArray = response.data;
     }
 
     this.data = Array.from(this.caseService.cases.values());
     this.detailData = ICase[sectionType];
+    MCase[sectionType] = newParsedArray;
+    this.parsedDetailData = MCase[sectionType];
+  }
+
+  public parseNewDetails(value: any, newParsedArray: any[]) {
+    const item = Object.assign({}, value);
+    item.generated_id = Date.now() + generateRandomNumber();
+    const copy = Object.assign({}, item);
+    newParsedArray.push(this.caseService.parseModel(copy));
+    return item;
   }
 }

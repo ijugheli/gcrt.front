@@ -35,20 +35,36 @@
       </button>
     </div>
     <p-table
-      [value]="data"
+      [value]="parsedData"
       [responsive]="true"
-      [(selection)]="selectedRow"
+      [selection]="selectedRow"
       styleClass="p-datatable-sm p-datatable-gridlines"
       [style.max-width]="isFormTable ? 'calc(100vw - 280px - 280px - 400px - 48px)' : '100%' "
       responsiveLayout="scroll"
       selectionMode="single"
+      (onRowSelect)="onRowSelect($event)"
       dataKey="generated_id"
     >
       <ng-template pTemplate="header">
         <tr>
           <th></th>
+          <th
+            *ngFor="let col of columns"
+            [pSortableColumn]="col['fieldName']"
+          >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
+          </th>
+        </tr>
+        <tr>
+          <th></th>
           <th *ngFor="let col of columns">
-            {{col.label}}
+            <p-columnFilter
+              *ngIf="!col.fieldName.includes('date')"
+              [field]="col.fieldName"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
           </th>
         </tr>
       </ng-template>
@@ -72,7 +88,7 @@
           </td>
           <td *ngFor="let col of columns">
             {{
-            this.attrService.getOptionTitle(model[col.fieldName])
+            model[col.fieldName]
             }}
           </td>
         </tr>

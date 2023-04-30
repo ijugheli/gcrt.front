@@ -20,6 +20,7 @@ import { MOnSectionEvent } from '../../case.model';
 
 export class CaseSectionTable implements OnInit {
   @Input() data: any[] = [];
+  @Input() parsedData: any[] = [];
   @Input() columns: ICaseCol[] = [];
   @Input() isFormTable: boolean = true;
   @Output() onEdit = new EventEmitter<any>();
@@ -49,9 +50,8 @@ export class CaseSectionTable implements OnInit {
   }
 
   public onEditClick(): void {
+    this.data.find(e => e.id == this.selectedRow.id || e.generated_id == this.selectedRow.generated_id)
     this.onEdit.emit(Object.assign({}, this.selectedRow));
-    console.log(Object.assign({}, this.selectedRow));
-    console.log(this.selectedRow);
     this.selectedRow = undefined;
   }
 
@@ -67,5 +67,9 @@ export class CaseSectionTable implements OnInit {
     event.successMessage = 'წარმატებით წაიშალა';
     this.selectedRow = undefined;
     this.onDelete.emit(event);
+  }
+
+  public onRowSelect(event: any) {
+    this.selectedRow = this.data.find(e => e.generated_id == event.data.generated_id);
   }
 }

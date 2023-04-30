@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
-import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../case.model';
+import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MCase, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
@@ -21,6 +21,7 @@ export class CaseFormComponent implements OnInit {
   public isLoading: boolean = false;
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
+  public parsedCase!: MCase;
   public caseID!: number | null;
   public CaseConfig = caseConfig;
   public menuOptions: IFormMenuOption[] = caseConfig.menuOptions;
@@ -129,18 +130,23 @@ export class CaseFormComponent implements OnInit {
       this.caseService.selectedSection = this.caseService.selectedSectionModel = null;
     }
 
-    if (id === undefined || id === null) return;
+    if (id === undefined || id === null) {
+      this.parsedCase = new MCase(this.Case);
+      return;
+    };
 
     this.caseID = parseInt(id!);
     this.isLoading = true;
 
     if (this.caseService.cases.has(this.caseID)) {
       this.Case = this.caseService.cases.get(this.caseID)!;
+      this.parsedCase = this.caseService.parsedCases.get(this.caseID)!;
       this.isLoading = false;
     } else {
       this.caseService.show(this.caseID).subscribe({
         next: (data) => {
           this.Case = new ICase(data.data);
+          this.parsedCase = this.caseService.parseCase(Object.assign(this.Case));
         },
         error: (e) => {
           this.showMsg(e.error.message, 'error');
@@ -204,14 +210,32 @@ export class CaseFormComponent implements OnInit {
   private updateSections(event: MOnSectionEvent | APIResponse, type: number): void {
     if (event.data === undefined) return;
     const sectionType = this.CaseConfig.detailTypes[type];
+    const newParsedArray: any[] = [];
 
     if (sectionType == 'diagnoses') {
-      this.Case[sectionType] = event.data.map((value: any) => new IDiagnosis(value));
+      this.Case[sectionType] = event.data.map((value: any) => {
+        const item = new IDiagnosis(value);
+        const copy = Object.assign({}, item);
+        newParsedArray.push(this.caseService.parseModel(copy));
+        return item;
+      });
     } else if (sectionType == 'referrals') {
-      this.Case[sectionType] = event.data.map((value: any) => new IReferral(value));
+      this.Case[sectionType] = event.data.map((value: any) => {
+        const item = new IReferral(value)
+        const copy = Object.assign({}, item);
+        newParsedArray.push(this.caseService.parseModel(copy));
+        return item;
+      });
     } else {
-      this.Case[sectionType] = event.data.map((value: any) => new IConsultation(value));
+      this.Case[sectionType] = event.data.map((value: any) => {
+        const item = new IConsultation(value);
+        const copy = Object.assign({}, item);
+        newParsedArray.push(this.caseService.parseModel(copy));
+        return item;
+      });
     }
+    this.parsedCase[sectionType] = newParsedArray;
+
   }
 
   private initTree(treeKey: keyof CaseService, attrID: number): void {

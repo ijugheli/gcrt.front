@@ -6,9 +6,11 @@ import { diagnosisList } from "./case-attrs/diagnosis";
 import { formsOfViolenceMap } from "./case-attrs/forms-of-violence";
 import { referralList } from "./case-attrs/referral";
 import { generateRandomNumber } from "src/app/app.func";
+import { AttributesService } from "src/services/attributes/Attributes.service";
+import { inject } from "@angular/core";
 
 export class ICase {
-    public case!: Case;
+    public case!: ICaseMain;
     public forms_of_violences: IFormOfViolence[] = [];
     public care_plans: ICarePlan[] = [];
     public diagnoses: IDiagnosis[] = [];
@@ -18,7 +20,7 @@ export class ICase {
     [key: string]: any;
 
     constructor(data?: any) {
-        this.case = data?.case ?? new Case();
+        this.case = data?.case ?? new ICaseMain();
         this.forms_of_violences = data?.forms_of_violences ?? [];
         this.care_plans = data?.care_plans ?? [];
         if (data?.diagnoses.length > 0 && data?.diagnoses !== undefined) {
@@ -36,7 +38,22 @@ export class ICase {
 
 }
 
-export class Case {
+export class MCase {
+    public case!: MCaseMain;
+    public forms_of_violences: IFormOfViolence[] = [];
+    public care_plans: ICarePlan[] = [];
+    public diagnoses: MDiagnosis[] = [];
+    public referrals: MReferral[] = [];
+    public consultations: MConsultation[] = [];
+    public psychodiagnoses!: IPsychodiagnosis;
+    [key: string]: any;
+
+    constructor(data: any) {
+        Object.assign(this, data);
+    }
+}
+
+export class ICaseMain {
     public id!: number | null;
     public project_id!: number | null; // 199
     public case_manager_id!: number | null;
@@ -53,6 +70,22 @@ export class Case {
     public setNodeID: any = (node: any, key: 'referral_body') => {
         this[key] = node.data.id;
     };
+}
+
+export class MCaseMain {
+    public id!: number | null;
+    public project_id!: string | null; // 199
+    public case_manager_id!: string | null;
+    public client_id!: string | null;
+    public branch!: string | null;
+    public registration_date!: Date | null;
+    public referral_body!: string | null;
+    public recommender!: string | null;
+    public incident!: string | null;
+    public incident_text!: string | null;
+    public social_status!: string | null;
+    public legal_status!: string | null;
+    [key: string]: any;
 }
 
 export abstract class CaseSharedInterface {
@@ -92,7 +125,6 @@ export class MCheckboxTableItem {
     public p_title!: string | null; // treeselect
     public value_id!: number | null; // treeselect
     public comment!: string | null;
-
 }
 
 export class IDiagnosis {
@@ -118,6 +150,22 @@ export class IDiagnosis {
     }
 }
 
+export class MDiagnosis {
+    public generated_id?: number;
+    public id!: number | null;
+    public case_id!: number | null;
+    public status!: string | null;
+    public type!: string | null;
+    public icd!: string | null; // treeselect
+    public diagnosis_icd10!: string | null; // treeselect combined
+    public diagnosis_dsmiv!: string | null;
+    public diagnosis_date!: Date | null;
+    public links_with_trauma!: string | null;
+    public comment!: string | null;
+    [key: string]: any;
+}
+
+
 export class IReferral {
     public generated_id?: number;
     public id!: number | null;
@@ -130,15 +178,25 @@ export class IReferral {
     public result!: string | null;
     [key: string]: any;
 
-    public setNodeID?: any = (node: any, key: 'service_type') => {
-        this[key] = node.data.id;
-    };
-
     constructor(data?: IReferral) {
         Object.assign(this, data);
         this.generated_id = Date.now() + generateRandomNumber();
     }
 }
+
+export class MReferral {
+    public generated_id?: number;
+    public id!: number | null;
+    public case_id!: number | null;
+    public service_date!: Date | null;
+    public type!: string | null;
+    public provider!: string | null;
+    public service_type!: string | null; // treeselect
+    public price!: number | null;
+    public result!: string | null;
+    [key: string]: any;
+}
+
 
 export class IConsultation {
     public generated_id?: number;
@@ -162,10 +220,22 @@ export class IConsultation {
     }
 }
 
+export class MConsultation {
+    public generated_id?: number;
+    public id!: number | null;
+    public case_id!: number | null;
+    public consultant!: string | null;
+    public date!: Date | null;
+    public type!: string | null;
+    public duration!: string | null;
+    public consultant_record!: string | null;
+    public consultant_prescription!: string | null;
+    [key: string]: any;
+}
+
 export class IPsychodiagnosis {
     public case_id!: number | null;
     [key: string]: any;
-
 }
 
 export class CaseAttrs {
@@ -209,6 +279,15 @@ const caseKeys = [
     'legal_status',
 ];
 
-export const isCaseKey = (key: string) => {
-    return caseKeys.includes(key);
-}
+const caseINTKeys = [
+    'id',
+    'status_id',
+    'generated_id',
+    'case_id'
+];
+
+
+export const checkCaseKeys = (key: string) => !caseINTKeys.includes(key);
+
+export const isCaseKey = (key: string) => caseKeys.includes(key);
+
