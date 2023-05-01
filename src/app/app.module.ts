@@ -26,6 +26,7 @@ import { ReportsModule } from '../pages/reports/reports.module';
 import { UsersModule } from '../pages/users/users.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import { AppComponent } from './app.component';
     AttributesStructureModule,
     SurveyPageModule,
   ],
-  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService,
+  providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,

@@ -3,7 +3,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ClientService } from 'src/services/client.service';
-import { Client } from './client.model';
+import { IClient, MClient } from './client.model';
 import { mainList } from './client-attrs/client.main';
 import { additionalList } from './client-attrs/client.additional';
 import { contactList } from './client-attrs/client.contact';
@@ -22,8 +22,9 @@ import { Clipboard } from '@angular/cdk/clipboard';
 export class ClientComponent implements OnInit {
   public pageTitle: string = 'კლიენტი';
   public isLoading: boolean = false;
-  public selectedRow!: Client;
-  public data: Client[] = [];
+  public selectedRow!: IClient;
+  public clients: IClient[] = [];
+  public parsedClients: MClient[] = [];
   public loadingArray: number[] = Array(10);
 
   public isSidebarVisible: boolean = false;
@@ -81,10 +82,11 @@ export class ClientComponent implements OnInit {
     });
   }
 
-  private setData(data: APIResponse<Client[]>): void {
+  private setData(data: APIResponse<IClient[]>): void {
     if (data.data !== undefined) {
       this.clientService.mapClients(data.data);
-      this.data = Array.from(this.clientService.clients.values());
+      this.clients = Array.from(this.clientService.clients.values());
+      this.parsedClients = Array.from(this.clientService.parsedClients.values());
     }
   }
 

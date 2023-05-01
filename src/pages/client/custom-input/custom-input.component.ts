@@ -9,7 +9,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TreeSelectModule } from 'primeng/treeselect';
-import { flattenTree, parseTree } from 'src/app/app.func';
+import { flattenTree, formatDate, parseTree } from 'src/app/app.func';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { isClientKey } from '../client.model';
 import { ClientService } from 'src/services/client.service';
@@ -95,10 +95,11 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   public onNodeExpand(event: any): void {
     const node = event.node;
+    node.expanded = true;
+
     if (node.children.length > 0) {
       return;
     }
-    node.expanded = true;
 
     this.attrService.treeNodes(this.data['propertyID'], node.data.value_id, true).subscribe((items) => {
       node.children = parseTree(items as any);
@@ -184,6 +185,6 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   private setDate(value: Date) {
     if (!value) return null;
-    return new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate()));
+    return formatDate(value);
   }
 }

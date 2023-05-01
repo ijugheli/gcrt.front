@@ -4,20 +4,22 @@ import { AsyncSubject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, ICaseCol, ICustomInput } from 'src/app/app.interfaces';
-import { Attribute, GuardedService } from '../app/app.models';
+import { Attribute, GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
-import { parseTree } from 'src/app/app.func';
+import { formatDate, parseTree } from 'src/app/app.func';
 import { consultationCols } from 'src/pages/case/case-attrs/consultation';
 import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
 import { referralCols } from 'src/pages/case/case-attrs/referral';
 import { caseCols, caseList } from 'src/pages/case/case-attrs/case';
-import { IDiagnosis, IConsultation, IReferral, ICase, checkCaseKeys, MCase, MCaseMain, MDiagnosis, MConsultation, MReferral } from 'src/pages/case/case.model';
+import { IDiagnosis, IConsultation, IReferral, ICase, checkCaseKeys, MCase, MCaseMain, MDiagnosis, MConsultation, MReferral, ICaseMain, IFormOfViolence, ICarePlan } from 'src/pages/case/case.model';
 import { MOption } from './attributes/models/option.model';
 import { CacheService } from './cache.service';
 import { AttributesService } from './attributes/Attributes.service';
+import { IClientMain } from 'src/pages/client/client.model';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CaseService extends GuardedService {
   public carePlanTree: any[] = [];
@@ -31,8 +33,8 @@ export class CaseService extends GuardedService {
   // dropdown options for case manager and client 
   public caseManagers: Map<number, MOption> = new Map();
   public clients: Map<number, MOption> = new Map();
-  caseManagerChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
-  clientChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+  public caseManagerChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+  public clientChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
 
   public cases: Map<number, ICase> = new Map();
   public parsedCases: Map<number, MCase> = new Map();
@@ -60,7 +62,7 @@ export class CaseService extends GuardedService {
     'clients': API_URL + '/case/clients',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService, private attrService: AttributesService) {
+  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService, private attrService: AttributesService, private datePipe: DatePipe) {
     super(auth.getToken());
   }
 
@@ -87,35 +89,35 @@ export class CaseService extends GuardedService {
     return this.http.delete<APIResponse<any>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
-  public storeCase(data: any): Observable<APIResponse<ICase>> {
+  public storeCase(data: ICase): Observable<APIResponse<ICase>> {
     return this.http.post<APIResponse<ICase>>(this.urls['store'], data, { headers: this.headers });
   }
 
-  public updateDiagnosis(data: any): Observable<APIResponse> {
+  public updateDiagnosis(data: IDiagnosis[]): Observable<APIResponse> {
     return this.http.post<APIResponse>(this.urls['updateDiagnosis'], data, { headers: this.headers });
   }
 
-  public updateConsultation(data: any): Observable<APIResponse> {
+  public updateConsultation(data: IConsultation[]): Observable<APIResponse> {
     return this.http.post<APIResponse>(this.urls['updateConsultation'], data, { headers: this.headers });
   }
 
-  public updateReferral(data: any): Observable<APIResponse> {
+  public updateReferral(data: IReferral[]): Observable<APIResponse> {
     return this.http.post<APIResponse>(this.urls['updateReferral'], data, { headers: this.headers });
   }
 
-  public updateFormsOfViolences(data: any, caseID: number): Observable<any> {
-    return this.http.post<APIResponse>(this.urls['updateFormsOfViolences'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
+  public updateFormsOfViolences(data: IFormOfViolence[], caseID: number): Observable<APIResponse<any>> {
+    return this.http.post<APIResponse<any>>(this.urls['updateFormsOfViolences'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
   }
-  public updateCarePlans(data: any, caseID: number): Observable<any> {
-    return this.http.post<APIResponse>(this.urls['updateCarePlans'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
-  }
-
-  public getClients(): Observable<APIResponse> {
-    return this.http.get<APIResponse>(this.urls['clients'], { headers: this.headers });
+  public updateCarePlans(data: ICarePlan[], caseID: number): Observable<APIResponse<any>> {
+    return this.http.post<APIResponse<any>>(this.urls['updateCarePlans'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
   }
 
-  public getCaseManagers(): Observable<APIResponse> {
-    return this.http.get<APIResponse>(this.urls['caseManagers'], { headers: this.headers });
+  public getClients(): Observable<APIResponse<IClientMain[]>> {
+    return this.http.get<APIResponse<IClientMain[]>>(this.urls['clients'], { headers: this.headers });
+  }
+
+  public getCaseManagers(): Observable<APIResponse<User[]>> {
+    return this.http.get<APIResponse<User[]>>(this.urls['caseManagers'], { headers: this.headers });
   }
 
   public async initClients(shouldRefresh: boolean = false): Promise<void> {
@@ -128,9 +130,9 @@ export class CaseService extends GuardedService {
       return;
     }
 
-    this.getClients().subscribe((data: any) => {
-      const response: any[] = data.data.map((value: any) => {
-        return [parseInt(value.id), {
+    this.getClients().subscribe((data: APIResponse<IClientMain[]>) => {
+      const response: any[] = data.data!.map((value: IClientMain) => {
+        return [value.id, {
           id: value.id,
           name: value.client_code + ' ' + value.name + ' ' + value.surname
         } as MOption
@@ -154,9 +156,9 @@ export class CaseService extends GuardedService {
       return;
     }
 
-    this.getCaseManagers().subscribe((data: any) => {
-      const response: any[] = data.data.map((value: any) => {
-        return [parseInt(value.id), {
+    this.getCaseManagers().subscribe((data: APIResponse<User[]>) => {
+      const response: any[] = data.data!.map((value: User) => {
+        return [value.id, {
           id: value.id,
           name: value.name + ' ' + value.lastname
         } as MOption
@@ -179,17 +181,16 @@ export class CaseService extends GuardedService {
   public mapCases(cases: ICase[]): void {
     this.parsedCases = new Map();
     this.cases = new Map(cases.map(e => {
-      const item = new ICase(e);
-      this.parsedCases.set(e['case'].id!, this.parseCase(item));
-      return [e['case'].id!, item];
+      const item: ICase = new ICase(e);
+      this.parsedCases.set(e.case.id!, this.parseCase(item));
+      return [e.case.id!, item];
     }));
-
   }
 
   // validate new section model / check if it has atleast 1 filled field
   public isValidNewModel(model: IDiagnosis | IConsultation | IReferral): boolean {
-    const defaultKeys = ['generated_id', 'setNodeID'];
-    const keys = Object.keys(model);
+    const defaultKeys: string[] = ['generated_id', 'setNodeID'];
+    const keys: string[] = Object.keys(model);
 
     return (keys.length > defaultKeys.length);
   }
@@ -198,9 +199,11 @@ export class CaseService extends GuardedService {
     this.isValidationEnabled = true;
 
     const invalids: ICustomInput[] = attrs.filter((attr: any) => {
+      let value = model[attr['fieldName']];
+
       if (!attr['isRequired']) return false;
 
-      return model[attr['fieldName']] === null || model[attr['fieldName']] === undefined;
+      return value === null || value === undefined;
     });
 
     return invalids.length <= 0;
@@ -209,9 +212,9 @@ export class CaseService extends GuardedService {
   // validate case only because others are validated on section update
   public validate(): boolean {
     this.isValidationEnabled = true;
-    const list = Array.from(caseList);
+    const list: ICustomInput[] = Array.from(caseList);
 
-    let invalids = list.filter((attr: any) => {
+    let invalids: ICustomInput[] = list.filter((attr: any) => {
       if (!attr['isRequired']) return false;
 
       const value = this.values.get(attr['fieldName']);
@@ -234,28 +237,22 @@ export class CaseService extends GuardedService {
     return this.caseManagers.get(id)!.name;
   }
 
-
   public parseCase(iCase: any) {
     const item = Object.assign({}, iCase);
-    item.case = this.parseModel(item.case) as MCaseMain;
+    const keys: string[] = ['diagnoses', 'consultations', 'referrals'];
+    item.case = this.parseSection(item.case) as MCaseMain;
 
-    if (item?.diagnoses.length > 0) {
-      item.diagnoses = item.diagnoses.map((item: IDiagnosis) => this.parseModel(item) as MDiagnosis);
-    }
-
-    if (item?.consultations.length > 0) {
-      item.consultations = item.consultations.map((item: IConsultation) => this.parseModel(item) as MConsultation);
-    }
-
-    if (item?.referrals.length > 0) {
-      item.referrals = item.referrals.map((item: IReferral) => this.parseModel(item) as MReferral);
-    }
+    keys.forEach((key: string) => {
+      if (item?.[key].length > 0) {
+        item[key] = item[key].map((item: IDiagnosis | IConsultation | IReferral) => this.parseSection(item));
+      }
+    })
 
     return new MCase(item);
   }
 
-  // parse case section models for table (to search strings)
-  public parseModel(data: any) {
+  // set dropdown and treeselect option titles for case table ui and searching
+  public parseSection(data: ICaseMain | IDiagnosis | IConsultation | IReferral) {
     return Object.entries(data).reduce((item: any, [key, value]: [string, any]) => {
       if (key == 'case_manager_id') {
         item[key] = this.getCaseManagerName(value);
@@ -266,10 +263,8 @@ export class CaseService extends GuardedService {
       } else {
         item[key] = value;
       }
+
       return item;
-    }, {})
+    }, {});
   }
-
-
-
 }

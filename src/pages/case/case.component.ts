@@ -218,17 +218,17 @@ export class CaseComponent implements OnInit {
       newParsedArray = response.data;
     }
 
+    MCase[sectionType] = newParsedArray;
     this.data = Array.from(this.caseService.cases.values());
     this.detailData = ICase[sectionType];
-    MCase[sectionType] = newParsedArray;
     this.parsedDetailData = MCase[sectionType];
   }
 
-  public parseNewDetails(value: any, newParsedArray: any[]) {
+  private parseNewDetails(value: any, newParsedArray: any[]) {
     const item = Object.assign({}, value);
     item.generated_id = Date.now() + generateRandomNumber();
     const copy = Object.assign({}, item);
-    newParsedArray.push(this.caseService.parseModel(copy));
+    newParsedArray.push(this.caseService.parseSection(copy));
     return item;
   }
 }

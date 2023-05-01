@@ -11,7 +11,8 @@ import { additionalMap } from 'src/pages/client/client-attrs/client.additional';
 import { mainMap } from 'src/pages/client/client-attrs/client.main';
 import { contactMap } from 'src/pages/client/client-attrs/client.contact';
 import { addressMap } from 'src/pages/client/client-attrs/client.address';
-import { Client } from 'src/pages/client/client.model';
+import { IClient, MClient, MClientAdditional, MClientAddress, MClientMain, checkClientKeys } from 'src/pages/client/client.model';
+import { MCase } from 'src/pages/case/case.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class ClientService extends GuardedService {
   public isValidationEnabled: boolean = false;
   public isInputDisabled: boolean = false;
   public values: Map<number | string, string | Date | null | boolean | number> = new Map();
-  public clients: Map<number, Client> = new Map();
+  public clients: Map<number, IClient> = new Map();
+  public parsedClients: Map<number, MClient> = new Map();
   public clientAttrs: Map<string, any> = new Map([...mainMap, ...additionalMap, ...contactMap, ...addressMap]);
   public urls: Record<string, string> = {
     'store': API_URL + '/client/store',
@@ -37,16 +39,16 @@ export class ClientService extends GuardedService {
     return this.http.post<APIResponse>(this.urls['store'], data, { headers: this.headers });
   }
 
-  public index(): Observable<APIResponse<Client[]>> {
-    return this.http.get<APIResponse<Client[]>>(this.urls['index'], { headers: this.headers });
+  public index(): Observable<APIResponse<IClient[]>> {
+    return this.http.get<APIResponse<IClient[]>>(this.urls['index'], { headers: this.headers });
   }
 
-  public show(clientID: number): Observable<APIResponse<Client>> {
-    return this.http.get<APIResponse<Client>>(this.urls['show'].replace('{id}', clientID.toString()), { headers: this.headers });
+  public show(clientID: number): Observable<APIResponse<IClient>> {
+    return this.http.get<APIResponse<IClient>>(this.urls['show'].replace('{id}', clientID.toString()), { headers: this.headers });
   }
 
-  public destroy(clientID: number): Observable<APIResponse<Client[]>> {
-    return this.http.delete<APIResponse<Client[]>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers });
+  public destroy(clientID: number): Observable<APIResponse<IClient[]>> {
+    return this.http.delete<APIResponse<IClient[]>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers });
   }
 
   public validate(): boolean {
@@ -55,7 +57,7 @@ export class ClientService extends GuardedService {
 
     let invalids = list.filter((attr: any) => {
       if (!attr['isRequired']) return false;
-      
+
       const value = this.values.get(attr['fieldName']);
 
       if (attr['type'] === 'text') {
@@ -77,7 +79,7 @@ export class ClientService extends GuardedService {
     const clientID = (this.values.get('client_id') as number);
     const repeating = (this.values.get('repeating_client') as boolean) ? 'მეორადი' : 'პირველადი';
 
-    if (categoryGroupID != undefined) {
+    if (categoryGroupID) {
       categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);
     }
 
@@ -90,7 +92,8 @@ export class ClientService extends GuardedService {
     const array: any[] = Array.from(this.attrService.flatTreeMap.values());
     const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id)?.data.title;
 
-    if (categoryGroup.data.p_value_id === 0 || categoryGroup.data.p_value_id === null) {
+    // if parent doesnt exist
+    if (!categoryGroup.data.p_value_id) {
       return `[${categoryGroup.data.title}]`;
     }
 
@@ -109,7 +112,33 @@ export class ClientService extends GuardedService {
     return result;
   }
 
-  public mapClients(clients: Client[]): void {
-    this.clients = new Map(clients.map(e => [e.main.id!, e as Client]));
+  public mapClients(clients: IClient[]): void {
+    this.parsedClients = new Map();
+    this.clients = new Map(clients.map(e => {
+      this.parsedClients.set(e.main.id!, this.parseClient(e))
+      return [e.main.id!, e as IClient];
+    }));
+  }
+
+  private parseClient(client: any) {
+    const item = Object.assign({}, client);
+
+    Object.keys(client).forEach(key => {
+      item[key] = this.parseSection(item[key]);
+    });
+
+    return item as MClient;
+  }
+
+  // set dropdown and treeselect option titles for client table ui and searching
+  private parseSection(client: IClient): any {
+    return Object.entries(client).reduce((item: any, [key, value]: [string, any]) => {
+      if (checkClientKeys(key)) {
+        item[key] = this.attrService.getOptionTitle(value);
+      } else {
+        item[key] = value;
+      }
+      return item;
+    }, {});
   }
 }
