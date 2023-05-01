@@ -9,22 +9,23 @@ import { ICustomInput } from "src/app/app.interfaces";
 
 
 
-export class Client {
-    public main!: ClientMain;
-    public additional!: ClientAdditional;
-    public contact!: ClientContact;
-    public address!: ClientAddress;
+export class IClient {
+    public main!: IClientMain;
+    public additional!: IClientAdditional;
+    public contact!: IClientContact;
+    public address!: IClientAddress;
 
     constructor(data?: any) {
-        this.main = new ClientMain();
-        this.additional = new ClientAdditional();
-        this.contact = new ClientContact();
-        this.address = new ClientAddress();
+        this.main = new IClientMain();
+        this.additional = new IClientAdditional();
+        this.contact = new IClientContact();
+        this.address = new IClientAddress();
     }
 
     public setCategory(node: any) {
         this.main.category_group_id = node.data.id;
     }
+
     public setAgeGroupID() {
         const age: number = this.main.age!;
 
@@ -38,9 +39,14 @@ export class Client {
 
 
 }
+export class MClient {
+    public main!: MClientMain;
+    public additional!: MClientAdditional;
+    public contact!: MClientContact;
+    public address!: MClientAddress;
+}
 
-
-export class ClientMain {
+export class IClientMain {
     public id!: number | null;
     public branch!: number | null;
     public registration_date!: Date | null;
@@ -58,7 +64,25 @@ export class ClientMain {
 
 }
 
-export class ClientAdditional {
+export class MClientMain {
+    public id!: number | null;
+    public branch!: number | null;
+    public registration_date!: Date | null;
+    public client_code!: string | null;
+    public category_group_id!: string | null;
+    public gender!: string | null;
+    public repeating_client: boolean | null = false;
+    public name!: string | null;
+    public surname!: string | null;
+    public birth_date!: Date | null;
+    public age!: string | null;
+    public age_group!: string | null;
+    public personal_id!: string | null;
+    [key: string]: any;
+
+}
+
+export class IClientAdditional {
     public id!: number | null;
     public client_id!: number | null;
     public nationality!: number | null;
@@ -73,7 +97,22 @@ export class ClientAdditional {
 
 }
 
-export class ClientContact {
+export class MClientAdditional {
+    public id!: number | null;
+    public client_id!: number | null;
+    public nationality!: string | null;
+    public education!: string | null;
+    public marital_status!: string | null;
+    public family_members!: string | null;
+    public has_social_support!: string | null;
+    public has_insurance!: string | null;
+    public work_address!: string | null;
+    public profession!: string | null;
+    [key: string]: any;
+
+}
+
+export class IClientContact {
     public id!: number | null;
     public client_id!: number | null;
     public phone_number!: string | null;
@@ -87,7 +126,21 @@ export class ClientContact {
 
 }
 
-export class ClientAddress {
+export class MClientContact {
+    public id!: number | null;
+    public client_id!: number | null;
+    public phone_number!: string | null;
+    public home_number!: string | null;
+    public personal_email!: string | null;
+    public work_phone_number!: string | null;
+    public work_internal_phone_number!: string | null;
+    public work_email!: string | null;
+    public fax!: string | null;
+    [key: string]: any;
+
+}
+
+export class IClientAddress {
     public id!: number | null;
     public client_id!: number | null;
     public address!: string | null;
@@ -97,8 +150,18 @@ export class ClientAddress {
     [key: string]: any;
 
 }
+export class MClientAddress {
+    public id!: number | null;
+    public client_id!: number | null;
+    public address!: string | null;
+    public zip_code!: string | null;
+    public previous_address!: string | null;
+    public location_id!: string | null;
+    [key: string]: any;
 
-export class ClientAttrs {
+}
+
+export class IClientAttrs {
     public mainMap: Map<string, any> = mainMap;
     public mainFirstCol: ICustomInput[] = mainFirstCol;
     public mainSecondCol: ICustomInput[] = mainSecondCol;
@@ -148,5 +211,14 @@ const clientKeys = [
 export const isClientKey = (key: string) => {
     return clientKeys.includes(key);
 }
+
+
+const clientINTKeys: string[] = [
+    'id',
+    'status_id', 'client_id'
+];
+
+
+export const checkClientKeys = (key: string) => !clientINTKeys.includes(key);
 
 

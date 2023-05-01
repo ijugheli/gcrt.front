@@ -164,7 +164,7 @@
             <custom-input
               [model]="client.contact[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.contact[(item.fieldName)] = $event) : onUpdate(client.contact[(item.fieldName)] = $event))"
+              (onChange)="onUpdate(client.contact[(item.fieldName)] = $event)"
             >
             </custom-input>
           </div>
@@ -177,7 +177,7 @@
             <custom-input
               [model]="client.address[item.fieldName]"
               [data]="item"
-              (onChange)="(item.type == 'date' ?  onSelect(client.address[(item.fieldName)] = $event) : onUpdate(client.address[(item.fieldName)] = $event))"
+              (onChange)="onUpdate(client.address[(item.fieldName)] = $event)"
             >
             </custom-input>
           </div>

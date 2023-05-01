@@ -67,7 +67,7 @@ export class ICaseMain {
     public social_status!: string | null;
     public legal_status!: string | null;
     [key: string]: any;
-    public setNodeID: any = (node: any, key: 'referral_body') => {
+    public setNodeID?: any = (node: any, key: 'referral_body') => {
         this[key] = node.data.id;
     };
 }
@@ -248,14 +248,6 @@ export class CaseAttrs {
     public carePlanMap: Map<string, any> = carePlanMap;
     public consultationList: ICustomInput[] = consultationList;
     public referralList: ICustomInput[] = referralList;
-    // public mainMap: Map<string, any> = mainMap;
-    // public mainFirstCol: ICustomInput[] = mainFirstCol;
-    // public mainSecondCol: ICustomInput[] = mainSecondCol;
-    // public addressMap: Map<string, any> = addressMap;
-    // public addressList: ICustomInput[] = addressList;
-    // public additionalMap: Map<string, any> = additionalMap;
-    // public contactMap: Map<string, any> = contactMap;
-    // public contactList: ICustomInput[] = contactList;
 }
 
 export class MOnSectionEvent {
@@ -279,7 +271,7 @@ const caseKeys = [
     'legal_status',
 ];
 
-const caseINTKeys = [
+const caseINTKeys: string[] = [
     'id',
     'status_id',
     'generated_id',

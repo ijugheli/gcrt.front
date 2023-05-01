@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
-import { Client, ClientAttrs } from '../client.model';
+import { IClient, IClientAttrs } from '../client.model';
 import { calculateAge } from 'src/app/app.func';
 import { ClientService } from 'src/services/client.service';
 
@@ -19,9 +19,9 @@ import { CaseService } from 'src/services/case.service';
 
 export class ClientFormComponent implements OnInit {
   public pageTitle: string = '';
-  public client: Client = new Client();
+  public client: IClient = new IClient();
   public clientID!: number | null;
-  public ClientAttrs: ClientAttrs = new ClientAttrs();
+  public ClientAttrs: IClientAttrs = new IClientAttrs();
   public menuOptions: IFormMenuOption[] = ClientConfig.menuOptions;
   public isLoading: boolean = false;
   public isDirty: boolean = false;
@@ -64,6 +64,7 @@ export class ClientFormComponent implements OnInit {
   public onUpdate(event: any): void {
     this.client.main.client_code = this.clientService.getClientCode();
     this.isDirty = true;
+    console.log(this.isDirty);
   }
 
   public onSelect(event: any): void {
@@ -73,7 +74,6 @@ export class ClientFormComponent implements OnInit {
     this.clientService.values.set('age_group', this.client.main.age_group);
     this.onUpdate(event);
   }
-
 
   private init(): void {
     this.clientService.values.clear();
@@ -98,7 +98,10 @@ export class ClientFormComponent implements OnInit {
     } else {
       this.clientService.show(this.clientID).subscribe({
         next: (data) => {
-          this.client = data.data!;
+          const client = new IClient();
+          this.client = data.data! as IClient;
+          this.client.setAgeGroupID = client.setAgeGroupID;
+          this.client.setCategory = client.setCategory;
           this.initSwitchModels();
         },
         error: (e) => {

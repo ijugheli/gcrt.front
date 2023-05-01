@@ -81,18 +81,16 @@
                             pRipple
                             class="main-menu-button"
                             pStyleClass="@next"
+                            enterClass="hidden"
                             enterActiveClass="slidedown"
+                            leaveToClass="hidden"
                             leaveActiveClass="slideup"
-                            (click)="setMenuParent('პარამეტრები')"
                         >
                             <i class="pi pi-wrench mr-2"></i>
                             <span class="font-bold">პარამეტრები</span>
                             <i class="pi pi-chevron-down ml-auto"></i>
                         </a>
-                        <ul
-                            class="main-menu-list overflow-y-hidden main-menu-ul"
-                            [class.hidden]="activeMenuParent !== 'პარამეტრები'"
-                        >
+                        <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
                             <li>
                                 <a
                                     pRipple
@@ -388,6 +386,41 @@
                             </li>
                         </ul>
                     </li>
+                    <!-- <li>
+                        <a
+                            pRipple
+                            class="main-menu-button"
+                            pStyleClass="@next"
+                            enterClass="hidden"
+                            enterActiveClass="slidedown"
+                            leaveToClass="hidden"
+                            leaveActiveClass="slideup"
+                        >
+                            <i class="pi pi-user mr-2"></i>
+                            <span class="font-bold">მომხმარებელი</span>
+                            <i class="pi pi-chevron-down ml-auto"></i>
+                        </a>
+                        <ul class="main-menu-list hidden overflow-y-hidden main-menu-ul">
+                            <li>
+                                <a
+                                    pRipple
+                                    class="main-menu-button"
+                                >
+                                    <i class="pi pi-lock-open mr-2"></i>
+                                    <span class="font-cl">პაროლის ცვლილება</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    pRipple
+                                    class="main-menu-button"
+                                >
+                                    <i class="pi pi-sign-out mr-2"></i>
+                                    <span class="font-medium">გასვლა</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li> -->
                 </ul>
             </div>
 

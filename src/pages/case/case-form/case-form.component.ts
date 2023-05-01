@@ -8,6 +8,7 @@ import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
 import * as caseConfig from '../case.config';
 import { ActivatedRoute, Router } from '@angular/router';
+import { generateRandomNumber } from 'src/app/app.func';
 
 @Component({
   selector: 'app-case-form',
@@ -212,30 +213,19 @@ export class CaseFormComponent implements OnInit {
     const sectionType = this.CaseConfig.detailTypes[type];
     const newParsedArray: any[] = [];
 
-    if (sectionType == 'diagnoses') {
-      this.Case[sectionType] = event.data.map((value: any) => {
-        const item = new IDiagnosis(value);
-        const copy = Object.assign({}, item);
-        newParsedArray.push(this.caseService.parseModel(copy));
-        return item;
-      });
-    } else if (sectionType == 'referrals') {
-      this.Case[sectionType] = event.data.map((value: any) => {
-        const item = new IReferral(value)
-        const copy = Object.assign({}, item);
-        newParsedArray.push(this.caseService.parseModel(copy));
-        return item;
-      });
-    } else {
-      this.Case[sectionType] = event.data.map((value: any) => {
-        const item = new IConsultation(value);
-        const copy = Object.assign({}, item);
-        newParsedArray.push(this.caseService.parseModel(copy));
-        return item;
-      });
-    }
-    this.parsedCase[sectionType] = newParsedArray;
+    this.Case[sectionType] = event.data.map((value: any) => {
+      return this.parseNewDetails(value, newParsedArray);
+    })
 
+    this.parsedCase[sectionType] = newParsedArray;
+  }
+
+  private parseNewDetails(value: any, newParsedArray: any[]): Object {
+    const item = Object.assign({}, value);
+    item.generated_id = Date.now() + generateRandomNumber();
+    const copy = Object.assign({}, item);
+    newParsedArray.push(this.caseService.parseSection(copy));
+    return item;
   }
 
   private initTree(treeKey: keyof CaseService, attrID: number): void {
