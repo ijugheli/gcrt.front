@@ -82,14 +82,6 @@ export class ClientComponent implements OnInit {
     });
   }
 
-  private setData(data: APIResponse<IClient[]>): void {
-    if (data.data !== undefined) {
-      this.clientService.mapClients(data.data);
-      this.clients = Array.from(this.clientService.clients.values());
-      this.parsedClients = Array.from(this.clientService.parsedClients.values());
-    }
-  }
-
   public onDetailClick(type: number, data: any): void {
     this.sidebarData = data;
     const types: Record<number, string> = ClientConfig.detailTypes;
@@ -111,17 +103,24 @@ export class ClientComponent implements OnInit {
     this.isSidebarVisible = true;
   }
 
-  private showMsg(msg: string, type: string): void {
-    this.messageService.add({
-      severity: type,
-      summary: msg,
-    });
-  }
-
   public copyToClipboard(text: string): void {
     this.clipboard.copy(text);
     this.messageService.clear();
     this.showMsg('წარმატებით დაკოპირდა', 'info');
   }
 
+  private showMsg(msg: string, type: string): void {
+    this.messageService.add({
+      severity: type,
+      summary: msg,
+    });
+  }
+  
+  private setData(data: APIResponse<IClient[]>): void {
+    if (data.data !== undefined) {
+      this.clientService.mapClients(data.data);
+      this.clients = Array.from(this.clientService.clients.values());
+      this.parsedClients = Array.from(this.clientService.parsedClients.values());
+    }
+  }
 }

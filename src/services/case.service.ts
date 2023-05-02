@@ -189,6 +189,7 @@ export class CaseService extends GuardedService {
 
   // validate new section model / check if it has atleast 1 filled field
   public isValidNewModel(model: IDiagnosis | IConsultation | IReferral): boolean {
+    this.isValidationEnabled = true;
     const defaultKeys: string[] = ['generated_id', 'setNodeID'];
     const keys: string[] = Object.keys(model);
 

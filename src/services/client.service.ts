@@ -67,7 +67,10 @@ export class ClientService extends GuardedService {
       return value === null || value === undefined;
     });
 
-
+    console.log('invalids.length');
+    console.log(invalids.length);
+    console.log(invalids);
+    console.log('invalids.length');
     return invalids.length <= 0;
   }
 

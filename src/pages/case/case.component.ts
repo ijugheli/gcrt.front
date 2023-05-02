@@ -3,14 +3,13 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
-import { ICase, IConsultation, IDiagnosis, IReferral, MCase, MOnSectionEvent } from './case.model';
+import { ICase, MCase, MOnSectionEvent } from './case.model';
 import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 import { carePlanTreeID } from './case-attrs/care-plan';
 import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
-import { combineLatestAll, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { generateRandomNumber } from 'src/app/app.func';
-
 
 @Component({
   selector: 'app-case-page',
@@ -77,7 +76,6 @@ export class CaseComponent implements OnInit {
   public onAddClick(): void {
     this.router.navigate(['/case/add']);
   }
-
 
   public onDeleteClick(): void {
     this.confirmationService.confirm({
