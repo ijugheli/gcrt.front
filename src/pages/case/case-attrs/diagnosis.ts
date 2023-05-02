@@ -67,7 +67,7 @@ export const diagnosisMap: Map<string, any> = new Map(
             label: 'ტრამვასთან კავშირი',
             type: 'dropdown',
             icon: 'pi-list',
-            propertyID: null,
+            propertyID: 205,
             isRequired: false,
             isDisabled: false,
         }

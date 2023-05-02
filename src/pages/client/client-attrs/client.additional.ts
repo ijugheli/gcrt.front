@@ -43,8 +43,8 @@ export const additionalMap: Map<string, any> = new Map(
             {
                 fieldName: 'family_members',
                 label: 'ოჯახის წევრები',
-                type: 'dropdown',
-                icon: 'pi-list',
+                type: 'text',
+                icon: 'pi-pencil',
                 propertyID: null,
                 isRequired: false,
                 isDisabled: false,
