@@ -24,8 +24,8 @@ import { isCaseKey } from 'src/pages/case/case.model';
 })
 export class CustomInputComponent implements OnInit, OnChanges {
   @Input('data') public data!: any;
-  @Output('onChange') public onChange = new EventEmitter<any>();
   @Input('model') public model?: any;
+  @Output('onChange') public onChange = new EventEmitter<any>();
 
   public initialized: boolean = false;
   public options: any;
@@ -34,7 +34,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   public selectedNodes!: TreeNode[];
   public selectedNode!: TreeNode | undefined;
   public todayDate: Date = new Date();
-  public filter!: boolean;
+  public hasFilter!: boolean;
 
   constructor(
     private attrService: AttributesService,
@@ -68,10 +68,10 @@ export class CustomInputComponent implements OnInit, OnChanges {
   }
 
   public onUpdate(event?: any): void {
-    if (this.data['type'] == 'tree') {
+    if (this.data['type'] === 'tree') {
       this.selectedNode = this.getTreeNode(event.data.id);
       this.model = event.data.id;
-    } else if (this.data['type'] == 'date') {
+    } else if (this.data['type'] === 'date') {
       this.model = this.setDate(event);
     } else {
       this.model = event;
@@ -139,20 +139,20 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   // dropdownOptionChange listens to data for init
   private initOptions(): void {
-    if (this.data['fieldName'] == 'case_manager_id') {
+    if (this.data['fieldName'] === 'case_manager_id') {
       this.caseService.caseManagerChanges.subscribe((data) => {
         this.options = Array.from(data.values());
-        this.filter = this.options.length > 5;
+        this.hasFilter = this.options.length > 5;
       })
-    } else if (this.data['fieldName'] == 'client_id') {
+    } else if (this.data['fieldName'] === 'client_id') {
       this.caseService.clientChanges.subscribe((data) => {
         this.options = Array.from(data.values());
-        this.filter = this.options.length > 5;
+        this.hasFilter = this.options.length > 5;
       })
     } else {
       this.attrService.dropdownOptionChange.subscribe(data => {
         this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
-        this.filter = this.options.length > 5;
+        this.hasFilter = this.options.length > 5;
       });
     }
 
@@ -183,8 +183,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     }
   }
 
-  private setDate(value: Date) {
-    if (!value) return null;
-    return formatDate(value);
+  private setDate(value: Date): string | null {
+    return value ? formatDate(value) : null;
   }
 }

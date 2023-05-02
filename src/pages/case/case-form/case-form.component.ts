@@ -79,7 +79,6 @@ export class CaseFormComponent implements OnInit {
           model.splice(index, 1);
         }
         this.showMsg(event.successMessage!, 'success');
-      }, reject: () => {
       }
     });
   }
@@ -101,9 +100,8 @@ export class CaseFormComponent implements OnInit {
 
     this.caseService.storeCase(this.Case).subscribe({
       next: (data) => {
-        this.Case = data.data!;
-        this.Case.forms_of_violences = this.Case.forms_of_violences;
-        this.Case.care_plans = this.Case.care_plans;
+        this.Case = new ICase(data.data!);
+        this.parsedCase = this.caseService.parseCase(this.Case);
         this.showMsg(data.message, 'success')
       },
       error: (e) => {
@@ -173,6 +171,7 @@ export class CaseFormComponent implements OnInit {
   }
 
   private updateSectionRequests(event: MOnSectionEvent, type: number) {
+    this.caseService.isInputDisabled = true;
     const method =
       this.CaseConfig.detailTypes[type] == "diagnoses"
         ? 'updateDiagnosis'
@@ -187,11 +186,14 @@ export class CaseFormComponent implements OnInit {
       },
       error: (e) => {
         this.showMsg(e.e.message, 'error');
-        this.isLoading = false
+        this.isLoading = false;
+        this.caseService.isInputDisabled = false;
       },
-      complete: () => this.isLoading = false
+      complete: () => {
+        this.caseService.isInputDisabled = false;
+        this.isLoading = false;
+      }
     });
-
   }
 
   private deleteSection(id: number, type: number): void {

@@ -50,7 +50,6 @@ export class CaseSectionTable implements OnInit {
   }
 
   public onEditClick(): void {
-    this.data.find(e => e.id == this.selectedRow.id || e.generated_id == this.selectedRow.generated_id)
     this.onEdit.emit(Object.assign({}, this.selectedRow));
     this.selectedRow = undefined;
   }

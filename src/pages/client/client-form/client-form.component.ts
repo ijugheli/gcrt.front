@@ -5,7 +5,6 @@ import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { IClient, IClientAttrs } from '../client.model';
 import { calculateAge } from 'src/app/app.func';
 import { ClientService } from 'src/services/client.service';
-
 import * as ClientConfig from '../client.config';
 import { IFormMenuOption } from 'src/app/app.interfaces';
 import { CaseService } from 'src/services/case.service';
@@ -29,12 +28,13 @@ export class ClientFormComponent implements OnInit {
   public hasInsurance: boolean = false;
   public selectedSection: IFormMenuOption = ClientConfig.menuOptions[0];
   public todayDate!: Date;
+
   constructor(
     public clientService: ClientService,
     public caseService: CaseService,
     private messageService: MessageService,
-    private route: ActivatedRoute,
     private attrService: AttributesService,
+    private route: ActivatedRoute,
     public router: Router
   ) { }
 
@@ -43,15 +43,18 @@ export class ClientFormComponent implements OnInit {
   }
 
   public onSave(event: any): void {
-    if (!this.clientService.validate()) return;
+    if (!this.clientService.validate()) {
+      this.showMsg('შეავსეთ სავალდებულო ველები', 'error');
+      return;
+    }
+
     this.clientService.isValidationEnabled = false;
     this.clientService.isInputDisabled = true;
-
     this.clientService.store(this.client).subscribe({
-      next: (data) => this.showSuccess(data.message),
+      next: (data) => this.showMsg(data.message, 'success'),
       error: (e) => {
         this.clientService.isInputDisabled = false;
-        this.showError(e.error.message);
+        this.showMsg(e.error.message, 'error');
       },
       complete: () => {
         this.clientService.isInputDisabled = false;
@@ -63,8 +66,8 @@ export class ClientFormComponent implements OnInit {
 
   public onUpdate(event: any): void {
     this.client.main.client_code = this.clientService.getClientCode();
+    this.clientService.values.set('client_code', this.client.main.client_code);
     this.isDirty = true;
-    console.log(this.isDirty);
   }
 
   public onSelect(event: any): void {
@@ -105,7 +108,7 @@ export class ClientFormComponent implements OnInit {
           this.initSwitchModels();
         },
         error: (e) => {
-          this.showError(e.error.message);
+          this.showMsg(e.error?.message ?? 'დაფიქსირდა შეცდომა', 'error');
           setTimeout(() => {
             this.router.navigate([`/client`]);
           }, 2000);
@@ -134,17 +137,10 @@ export class ClientFormComponent implements OnInit {
     this.pageTitle = 'კლიენტის რედაქტირება - ' + this.client.main.client_code + ' ' + this.client.main.name + ' ' + this.client.main.surname;
   }
 
-  private showSuccess(msg: string): void {
+  private showMsg(msg: string, type: string): void {
     this.messageService.add({
-      severity: 'success',
+      severity: type,
       summary: msg,
-    });
-  }
-
-  private showError(error: any): void {
-    this.messageService.add({
-      severity: 'error',
-      summary: error,
     });
   }
 }

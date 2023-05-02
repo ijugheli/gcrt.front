@@ -29,6 +29,7 @@ export class IClient {
     public setAgeGroupID() {
         const age: number = this.main.age!;
 
+        console.log(age);
         for (let group of ageGroups) {
             if (age >= group['from'] && age <= group['to']) {
                 this.main.age_group = group['id'];

@@ -40,7 +40,7 @@ export class CaseSectionForm implements OnInit {
     }
   }
 
-  public onSaveClick() {
+  public onSaveClick() {    
     if (!this.caseService.isValidNewModel(this.model)) {
       return;
     }

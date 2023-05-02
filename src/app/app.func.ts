@@ -28,20 +28,21 @@ export const generateRandomNumber = (): number => {
 }
 
 export const formatDate = (date: any) => {
-    const pipe = new DatePipe('en_US');
-    return pipe.transform(date, 'dd/MM/yy');
+    const pipe: DatePipe = new DatePipe('en_US');
+    return pipe.transform(date, 'dd/MM/yyyy');
 }
 
 export const calculateAge = (date: Date) => {
+    if (!date) return null;
     const [day, month, year] = date.toString().split('/').map(str => parseInt(str, 10));
-
-    const dob = new Date(year < 2000 ? 2000 + year : 1900 + year, month - 1, day); // Convert the date string to a JavaScript Date obje
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
+    const today: Date = new Date();
+    const dob: Date = new Date(year, month - 1, day); // Convert the date string to a JavaScript Date obje
+    let age: number = today.getFullYear() - dob.getFullYear();
 
     if (today < new Date(today.getFullYear(), dob.getMonth(), dob.getDate())) {
         age--;
     }
+
     return age;
 }
 
