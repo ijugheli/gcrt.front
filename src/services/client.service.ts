@@ -35,8 +35,8 @@ export class ClientService extends GuardedService {
     super(auth.getToken());
   }
 
-  public store(data: any): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['store'], data, { headers: this.headers });
+  public store(data: any): Observable<APIResponse<IClient>> {
+    return this.http.post<APIResponse<IClient>>(this.urls['store'], data, { headers: this.headers });
   }
 
   public index(): Observable<APIResponse<IClient[]>> {

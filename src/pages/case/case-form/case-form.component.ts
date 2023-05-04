@@ -101,8 +101,14 @@ export class CaseFormComponent implements OnInit {
     this.caseService.storeCase(this.Case).subscribe({
       next: (data) => {
         this.Case = new ICase(data.data!);
+        this.caseID = this.Case.case.id;
         this.parsedCase = this.caseService.parseCase(this.Case);
-        this.showMsg(data.message, 'success')
+        this.showMsg(data.message, 'success');
+        if (!this.hasCaseID) {
+          this.initPageTitle();
+          window.history.replaceState({}, '', `/case  /edit/${this.caseID}`);
+          this.hasCaseID = true;
+        }
       },
       error: (e) => {
         this.caseService.isInputDisabled = false;
@@ -160,7 +166,9 @@ export class CaseFormComponent implements OnInit {
     }
 
     this.hasCaseID = this.caseID != null;
-    this.pageTitle = this.hasCaseID ? 'ქეისის რედაქტირება' : this.pageTitle;
+    if (this.hasCaseID) {
+      this.initPageTitle();
+    }
   }
 
   private showMsg(msg: string, type: string): void {
@@ -235,5 +243,9 @@ export class CaseFormComponent implements OnInit {
     this.attrService.treeMapChange.subscribe((treeMap) => {
       this.caseService[treeKey] = treeMap.get(attrID);
     })
+  }
+
+  private initPageTitle() {
+    this.pageTitle = `ქეისის რედაქტირება - #${this.caseID} - ${this.caseService.clients.get(this.Case.case.client_id!)?.name}`;
   }
 }
