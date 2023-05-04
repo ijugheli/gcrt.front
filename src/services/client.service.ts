@@ -66,11 +66,6 @@ export class ClientService extends GuardedService {
 
       return value === null || value === undefined;
     });
-
-    console.log('invalids.length');
-    console.log(invalids.length);
-    console.log(invalids);
-    console.log('invalids.length');
     return invalids.length <= 0;
   }
 
@@ -81,6 +76,9 @@ export class ClientService extends GuardedService {
     const ageGroup = this.attrService.dropdownOptions.get(this.values.get('age_group') as number)?.value!.value;
     const clientID = (this.values.get('client_id') as number);
     const repeating = (this.values.get('repeating_client') as boolean) ? 'მეორადი' : 'პირველადი';
+    console.log('clientID');
+    console.log(clientID);
+    console.log('clientID');
 
     if (categoryGroupID) {
       categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);

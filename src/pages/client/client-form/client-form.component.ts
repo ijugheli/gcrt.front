@@ -58,7 +58,6 @@ export class ClientFormComponent implements OnInit {
           if (!this.clientID) {
             this.clientID = this.client.main.id;
             this.clientService.values.set('client_id', this.clientID);
-            this.initPageTitle();
             window.history.replaceState({}, '', `/client/edit/${this.clientID}`);
           }
         }
@@ -73,6 +72,7 @@ export class ClientFormComponent implements OnInit {
         this.clientService.isInputDisabled = false;
         this.isDirty = false;
         this.caseService.initClients(true);
+        this.initPageTitle();
       }
     });
   }
@@ -105,7 +105,7 @@ export class ClientFormComponent implements OnInit {
 
     this.clientID = parseInt(id);
     this.isLoading = true;
-
+    this.clientService.values.set('client_id', id);
     if (this.clientService.clients.has(this.clientID)) {
       this.client = this.clientService.clients.get(this.clientID)!;
       this.isLoading = false;
@@ -131,8 +131,6 @@ export class ClientFormComponent implements OnInit {
           this.initPageTitle();
         }
       });
-
-      this.clientService.values.set('client_id', id);
     }
   }
   // hasInsurance and hasSocialSupport input switches for edit
