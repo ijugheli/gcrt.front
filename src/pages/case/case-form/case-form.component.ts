@@ -105,7 +105,7 @@ export class CaseFormComponent implements OnInit {
         this.parsedCase = this.caseService.parseCase(this.Case);
         this.showMsg(data.message, 'success');
         if (!this.hasCaseID) {
-          window.history.replaceState({}, '', `/case  /edit/${this.caseID}`);
+          window.history.replaceState({}, '', `/case/edit/${this.caseID}`);
           this.hasCaseID = true;
         }
       },
