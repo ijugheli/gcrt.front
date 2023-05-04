@@ -51,7 +51,20 @@ export class ClientFormComponent implements OnInit {
     this.clientService.isValidationEnabled = false;
     this.clientService.isInputDisabled = true;
     this.clientService.store(this.client).subscribe({
-      next: (data) => this.showMsg(data.message, 'success'),
+      next: (data) => {
+        if (typeof data.data !== 'undefined') {
+          this.client = data.data;
+
+          if (!this.clientID) {
+            this.clientID = this.client.main.id;
+            this.clientService.values.set('client_id', this.clientID);
+            this.initPageTitle();
+            window.history.replaceState({}, '', `/client/edit/${this.clientID}`);
+          }
+        }
+
+        this.showMsg(data.message, 'success');
+      },
       error: (e) => {
         this.clientService.isInputDisabled = false;
         this.showMsg(e.error.message, 'error');
