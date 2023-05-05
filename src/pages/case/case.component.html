@@ -31,8 +31,8 @@
           type="button"
           class="border-btn"
           (click)="onEditClick()"
-          [disabled]="selectedRow === undefined"
-          [class.p-disabled]="selectedRow === undefined"
+          [disabled]="!selectedRow"
+          [class.p-disabled]="!selectedRow"
         >
           <i class="pi pi-pencil"></i>
           რედაქტირება
@@ -43,8 +43,8 @@
           type="button"
           class="border-btn"
           (click)="onDeleteClick()"
-          [disabled]="selectedRow === undefined"
-          [class.p-disabled]="selectedRow === undefined"
+          [disabled]="!selectedRow"
+          [class.p-disabled]="!selectedRow"
         >
           <i class="pi pi-trash"></i>
           წაშლა

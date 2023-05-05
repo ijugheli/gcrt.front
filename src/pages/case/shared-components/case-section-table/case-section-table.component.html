@@ -16,8 +16,8 @@
         type="button"
         class="border-btn mb-2"
         (click)="onEditClick()"
-        [class.p-disabled]="selectedRow === undefined"
-        [disabled]="selectedRow === undefined"
+        [class.p-disabled]="!selectedRow"
+        [disabled]="!selectedRow"
       >
         <i class="pi pi-file-edit mr-2"></i>
         რედაქტირება
@@ -25,9 +25,9 @@
       <button
         type="button"
         class="border-btn mb-2"
-        [class.p-disabled]="selectedRow === undefined"
+        [class.p-disabled]="!selectedRow"
         (click)="onDeleteClick()"
-        [disabled]="selectedRow === undefined"
+        [disabled]="!selectedRow"
       >
         <i class="pi pi-trash mr-2"></i>
         წაშლა
