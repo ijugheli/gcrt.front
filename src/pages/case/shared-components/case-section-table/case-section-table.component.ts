@@ -50,7 +50,7 @@ export class CaseSectionTable implements OnInit {
   }
 
   public onRowUnselect(event: any): void {
-    this.selectedRow = undefined;
+    this.selectedRow = null;
   }
 
   public onEditClick(): void {
