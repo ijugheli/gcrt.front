@@ -63,6 +63,9 @@ export class ClientComponent implements OnInit {
     this.router.navigate(['/client/add']);
   }
 
+  public onRow(event:any) {
+    console.log(this.selectedRow);
+  }
   public onDeleteClick(): void {
     this.confirmationService.confirm({
       header: 'ჩანაწერის წაშლა',

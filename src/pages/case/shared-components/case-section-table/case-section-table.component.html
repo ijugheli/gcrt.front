@@ -42,6 +42,7 @@
       responsiveLayout="scroll"
       selectionMode="single"
       (onRowSelect)="onRowSelect($event)"
+      (onRowUnselect)="onRowUnselect($event)"
       dataKey="generated_id"
     >
       <ng-template pTemplate="header" *ngIf="data.length >0">

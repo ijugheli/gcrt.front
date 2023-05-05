@@ -49,6 +49,10 @@ export class CaseSectionTable implements OnInit {
     this.onAdd.emit();
   }
 
+  public onRowUnselect(event: any): void {
+    this.selectedRow = undefined;
+  }
+
   public onEditClick(): void {
     this.onEdit.emit(Object.assign({}, this.selectedRow));
     this.selectedRow = undefined;
