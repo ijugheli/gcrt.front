@@ -1,4 +1,3 @@
-<ng-container *ngIf="data.length > 0">
   <div [style.max-width]="isFormTable ? 'calc(100vw - 275px - 280px - 400px - 48px)' : '100%' ">
 
 
@@ -16,8 +15,8 @@
       <button
         type="button"
         class="border-btn mb-2"
-        [class.p-disabled]="selectedRow === undefined"
         (click)="onEditClick()"
+        [class.p-disabled]="selectedRow === undefined"
         [disabled]="selectedRow === undefined"
       >
         <i class="pi pi-file-edit mr-2"></i>
@@ -45,7 +44,7 @@
       (onRowSelect)="onRowSelect($event)"
       dataKey="generated_id"
     >
-      <ng-template pTemplate="header">
+      <ng-template pTemplate="header" *ngIf="data.length >0">
         <tr>
           <th></th>
           <th
@@ -93,6 +92,10 @@
           </td>
         </tr>
       </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <div class="flex justify-content-center">
+          <span class="text-xl text-center m-5" style="font-family: roman;">ჩანაწერები არ მოიძებნა</span>
+        </div>
+    </ng-template>
     </p-table>
   </div>
-</ng-container>
