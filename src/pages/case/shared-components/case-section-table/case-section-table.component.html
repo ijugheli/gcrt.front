@@ -45,7 +45,7 @@
       (onRowUnselect)="onRowUnselect($event)"
       dataKey="generated_id"
     >
-      <ng-template pTemplate="header" *ngIf="data.length >0">
+      <ng-template pTemplate="header" *ngIf="parsedData.length > 0">
         <tr>
           <th></th>
           <th
