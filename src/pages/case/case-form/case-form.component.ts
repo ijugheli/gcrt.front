@@ -18,7 +18,7 @@ import { generateRandomNumber } from 'src/app/app.func';
 })
 
 export class CaseFormComponent implements OnInit {
-  public pageTitle: string = 'ქეისი';
+  public pageTitle: string = 'ქეისის';
   public isLoading: boolean = false;
   public CaseAttrs: CaseAttrs = new CaseAttrs();
   public Case: ICase = new ICase();
@@ -136,6 +136,7 @@ export class CaseFormComponent implements OnInit {
     }
 
     if (id === undefined || id === null) {
+      this.pageTitle = 'ქეისის დამატება';
       this.parsedCase = new MCase(this.Case);
       return;
     };
@@ -147,6 +148,7 @@ export class CaseFormComponent implements OnInit {
       this.Case = this.caseService.cases.get(this.caseID)!;
       this.parsedCase = this.caseService.parsedCases.get(this.caseID)!;
       this.isLoading = false;
+      this.initPageTitle();
     } else {
       this.caseService.show(this.caseID).subscribe({
         next: (data) => {
@@ -161,14 +163,12 @@ export class CaseFormComponent implements OnInit {
         },
         complete: () => {
           this.isLoading = false;
+          this.initPageTitle();
         }
       });
     }
 
     this.hasCaseID = this.caseID != null;
-    if (this.hasCaseID) {
-      this.initPageTitle();
-    }
   }
 
   private showMsg(msg: string, type: string): void {
@@ -246,6 +246,8 @@ export class CaseFormComponent implements OnInit {
   }
 
   private initPageTitle() {
-    this.pageTitle = `ქეისის რედაქტირება - #${this.caseID} - ${this.caseService.clients.get(this.Case.case.client_id!)?.name}`;
+    this.caseService.clientChanges.subscribe((_) => {
+      this.pageTitle = `ქეისის რედაქტირება - #${this.caseID} - ${this.caseService.clients.get(this.Case.case.client_id!)?.name}`;
+    });
   }
 }
