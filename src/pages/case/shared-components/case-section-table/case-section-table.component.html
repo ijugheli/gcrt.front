@@ -94,9 +94,9 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        <div class="flex justify-content-center">
-          <span class="text-xl text-center m-5" style="font-family: roman;">ჩანაწერები არ მოიძებნა</span>
-        </div>
+          <tr>
+            <td [colSpan]="columns.length + 1"><span class="text-xl text-center flex justify-content-center m-5" style="font-family: roman;">ჩანაწერები არ მოიძებნა</span></td>
+        </tr>
     </ng-template>
     </p-table>
   </div>
