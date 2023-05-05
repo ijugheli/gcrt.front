@@ -31,8 +31,8 @@
           type="button"
           class="border-btn"
           (click)="onEditClick()"
-          [disabled]="!selectedRow"
-          [class.p-disabled]="!selectedRow"
+          [disabled]="selectedRow === undefined"
+          [class.p-disabled]="selectedRow === undefined"
         >
           <i class="pi pi-pencil"></i>
           რედაქტირება
@@ -43,8 +43,8 @@
           type="button"
           class="border-btn"
           (click)="onDeleteClick()"
-          [disabled]="!selectedRow"
-          [class.p-disabled]="!selectedRow"
+          [disabled]="selectedRow === undefined"
+          [class.p-disabled]="selectedRow === undefined"
         >
           <i class="pi pi-trash"></i>
           წაშლა
@@ -73,7 +73,8 @@
       [rowsPerPageOptions]="[10, 25, 50]"
       [showCurrentPageReport]="true"
       responsiveLayout="scroll"
-      [(selection)]="selectedRow!"="single"
+      [(selection)]="selectedRow"
+      selectionMode="single"
       [value]="parsedClients"
       dataKey="main.id"
     >
