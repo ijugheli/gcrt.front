@@ -38,6 +38,7 @@ export class ICase {
 
 }
 
+export type ParsedCases = { cases: ICase[], parsedCases: MCase[] };
 export class MCase {
     public case!: MCaseMain;
     public forms_of_violences: IFormOfViolence[] = [];
