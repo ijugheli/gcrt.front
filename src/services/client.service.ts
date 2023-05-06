@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { catchError, lastValueFrom, map, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
@@ -11,7 +11,7 @@ import { additionalMap } from 'src/pages/client/client-attrs/client.additional';
 import { mainMap } from 'src/pages/client/client-attrs/client.main';
 import { contactMap } from 'src/pages/client/client-attrs/client.contact';
 import { addressMap } from 'src/pages/client/client-attrs/client.address';
-import { IClient, MClient, MClientAdditional, MClientAddress, MClientMain, checkClientKeys } from 'src/pages/client/client.model';
+import { IClient, MClient, MClientAdditional, MClientAddress, MClientMain, ParsedClients, checkClientKeys } from 'src/pages/client/client.model';
 import { MCase } from 'src/pages/case/case.model';
 
 @Injectable({
@@ -39,16 +39,16 @@ export class ClientService extends GuardedService {
     return this.http.post<APIResponse<IClient>>(this.urls['store'], data, { headers: this.headers });
   }
 
-  public index(): Observable<APIResponse<IClient[]>> {
-    return this.http.get<APIResponse<IClient[]>>(this.urls['index'], { headers: this.headers });
+  public index(): Observable<APIResponse<ParsedClients>> {
+    return this.http.get<APIResponse<any>>(this.urls['index'], { headers: this.headers }).pipe(map(data => this.mapClientResponse(data)));
   }
 
   public show(clientID: number): Observable<APIResponse<IClient>> {
     return this.http.get<APIResponse<IClient>>(this.urls['show'].replace('{id}', clientID.toString()), { headers: this.headers });
   }
 
-  public destroy(clientID: number): Observable<APIResponse<IClient[]>> {
-    return this.http.delete<APIResponse<IClient[]>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers });
+  public destroy(clientID: number): Observable<APIResponse<ParsedClients>> {
+    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers }).pipe(map(data => this.mapClientResponse(data)));
   }
 
   public validate(): boolean {
@@ -76,9 +76,6 @@ export class ClientService extends GuardedService {
     const ageGroup = this.attrService.dropdownOptions.get(this.values.get('age_group') as number)?.value!.value;
     const clientID = (this.values.get('client_id') as number);
     const repeating = (this.values.get('repeating_client') as boolean) ? 'მეორადი' : 'პირველადი';
-    console.log('clientID');
-    console.log(clientID);
-    console.log('clientID');
 
     if (categoryGroupID) {
       categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);
@@ -113,12 +110,27 @@ export class ClientService extends GuardedService {
     return result;
   }
 
-  public mapClients(clients: IClient[]): void {
+  public mapClients(clients: IClient[]): ParsedClients {
     this.parsedClients = new Map();
     this.clients = new Map(clients.map(e => {
       this.parsedClients.set(e.main.id!, this.parseClient(e))
       return [e.main.id!, e as IClient];
     }));
+
+    return { clients: this.clientList(), parsedClients: this.parsedClientList() };
+  }
+
+  public clientList(): IClient[] {
+    return Array.from(this.clients.values());
+  }
+
+  public parsedClientList(): MClient[] {
+    return Array.from(this.parsedClients.values());
+  }
+
+  private mapClientResponse(data: APIResponse<any>): APIResponse<ParsedClients> {
+    data.data = this.mapClients(data.data!) as ParsedClients;
+    return data as APIResponse<ParsedClients>;
   }
 
   private parseClient(client: any) {
