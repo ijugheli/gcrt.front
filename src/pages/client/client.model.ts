@@ -1,13 +1,11 @@
-import { DatePipe } from "@angular/common";
 import { additionalMap } from "./client-attrs/client.additional";
 import { addressList, addressMap } from "./client-attrs/client.address";
 import { contactList, contactMap } from "./client-attrs/client.contact";
 import { mainFirstCol, mainMap, mainSecondCol } from "./client-attrs/client.main";
-import { formatDate } from "src/app/app.func";
 import { ageGroups } from "./client.config";
 import { ICustomInput } from "src/app/app.interfaces";
 
-
+export type ParsedClients = { clients: IClient[], parsedClients: MClient[] };
 
 export class IClient {
     public main!: IClientMain;

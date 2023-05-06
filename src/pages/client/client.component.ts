@@ -3,7 +3,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ClientService } from 'src/services/client.service';
-import { IClient, MClient } from './client.model';
+import { IClient, MClient, ParsedClients } from './client.model';
 import { mainList } from './client-attrs/client.main';
 import { additionalList } from './client-attrs/client.additional';
 import { contactList } from './client-attrs/client.contact';
@@ -115,12 +115,11 @@ export class ClientComponent implements OnInit {
       summary: msg,
     });
   }
-  
-  private setData(data: APIResponse<IClient[]>): void {
+
+  private setData(data: APIResponse<ParsedClients>): void {
     if (data.data !== undefined) {
-      this.clientService.mapClients(data.data);
-      this.clients = Array.from(this.clientService.clients.values());
-      this.parsedClients = Array.from(this.clientService.parsedClients.values());
+      this.clients = data.data.clients;
+      this.parsedClients = data.data.parsedClients;
     }
   }
 }
