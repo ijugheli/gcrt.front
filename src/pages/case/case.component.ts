@@ -3,7 +3,7 @@ import { AttributesService } from '../../services/attributes/Attributes.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
-import { ICase, MCase, MOnSectionEvent } from './case.model';
+import { ICase, MCase, MOnSectionEvent, ParsedCases } from './case.model';
 import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 import { carePlanTreeID } from './case-attrs/care-plan';
@@ -165,11 +165,10 @@ export class CaseComponent implements OnInit {
     }, (e) => this.showMsg(e.e.message, 'error'));
   }
 
-  private setData(data: APIResponse<ICase[]>): void {
+  private setData(data: APIResponse<ParsedCases>): void {
     if (data.data !== undefined) {
-      this.caseService.mapCases(data.data);
-      this.data = Array.from(this.caseService.cases.values());
-      this.tableData = Array.from(this.caseService.parsedCases.values());
+      this.data = data.data.cases;
+      this.tableData = data.data.parsedCases;
     }
   }
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AsyncSubject } from 'rxjs';
+import { AsyncSubject, map } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse, ICaseCol, ICustomInput } from 'src/app/app.interfaces';
@@ -11,7 +11,7 @@ import { consultationCols } from 'src/pages/case/case-attrs/consultation';
 import { diagnosisCols } from 'src/pages/case/case-attrs/diagnosis';
 import { referralCols } from 'src/pages/case/case-attrs/referral';
 import { caseCols, caseList } from 'src/pages/case/case-attrs/case';
-import { IDiagnosis, IConsultation, IReferral, ICase, checkCaseKeys, MCase, MCaseMain, MDiagnosis, MConsultation, MReferral, ICaseMain, IFormOfViolence, ICarePlan } from 'src/pages/case/case.model';
+import { IDiagnosis, IConsultation, IReferral, ICase, checkCaseKeys, MCase, MCaseMain, MDiagnosis, MConsultation, MReferral, ICaseMain, IFormOfViolence, ICarePlan, ParsedCases } from 'src/pages/case/case.model';
 import { MOption } from './attributes/models/option.model';
 import { CacheService } from './cache.service';
 import { AttributesService } from './attributes/Attributes.service';
@@ -66,15 +66,15 @@ export class CaseService extends GuardedService {
     super(auth.getToken());
   }
 
-  public index(): Observable<APIResponse<ICase[]>> {
-    return this.http.get<APIResponse<ICase[]>>(this.urls['index'], { headers: this.headers });
+  public index(): Observable<APIResponse<ParsedCases>> {
+    return this.http.get<APIResponse<any>>(this.urls['index'], { headers: this.headers }).pipe(map(data => this.mapCaseResponse(data)));
   }
   public show(id: number): Observable<APIResponse<ICase>> {
     return this.http.get<APIResponse<ICase>>(this.urls['show'].replace('{id}', id.toString()), { headers: this.headers });
   }
 
-  public destroy(caseID: number): Observable<APIResponse<ICase[]>> {
-    return this.http.delete<APIResponse<ICase[]>>(this.urls['destroy'].replace('{id}', caseID.toString()), { headers: this.headers });
+  public destroy(caseID: number): Observable<APIResponse<ParsedCases>> {
+    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', caseID.toString()), { headers: this.headers }).pipe(map(data => this.mapCaseResponse(data)));
   }
 
   public destroyReferral(id: number): Observable<APIResponse<any>> {
@@ -178,13 +178,15 @@ export class CaseService extends GuardedService {
     return parseTree(data['tree']);
   }
 
-  public mapCases(cases: ICase[]): void {
+  public mapCases(cases: ICase[]): ParsedCases {
     this.parsedCases = new Map();
     this.cases = new Map(cases.map(e => {
       const item: ICase = new ICase(e);
       this.parsedCases.set(e.case.id!, this.parseCase(item));
       return [e.case.id!, item];
     }));
+
+    return { cases: this.caseList(), parsedCases: this.parsedCaseList() };
   }
 
   // validate new section model / check if it has atleast 1 filled field
@@ -267,5 +269,18 @@ export class CaseService extends GuardedService {
 
       return item;
     }, {});
+  }
+
+  private mapCaseResponse(data: APIResponse<any>): APIResponse<ParsedCases> {
+    data.data = this.mapCases(data.data!) as ParsedCases;
+    return data as APIResponse<ParsedCases>;
+  }
+
+  public caseList() {
+    return Array.from(this.cases.values());
+  }
+
+  public parsedCaseList() {
+    return Array.from(this.parsedCases.values());
   }
 }
