@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AttrPermissionTypes, ATTR_TYPES_IDS_NAME } from 'src/app/app.config';
+import { getRouteParam } from 'src/app/app.func';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { MUserPermission, User } from 'src/app/app.models';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
@@ -21,10 +21,9 @@ export class ManageUserPermissionsComponent implements OnInit {
     private attributes: AttributesService,
     private userService: UserService,
     private messageService: MessageService,
-    private route: ActivatedRoute
   ) { }
 
-  public userID: number = 0;
+  public userID: number = parseInt(getRouteParam('user_id'));
   public selectedTypes: any;
   public user!: User | null;
   public attributesList: MAttribute[] = [];
@@ -79,7 +78,6 @@ export class ManageUserPermissionsComponent implements OnInit {
   private async init() {
     this.isLoading = true;
 
-    this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
     this.user = await this.userService.getUser(this.userID);
 
     this.pageTitle = this.pageTitle + ' - ' + this.user.name + ' ' + this.user.lastname;

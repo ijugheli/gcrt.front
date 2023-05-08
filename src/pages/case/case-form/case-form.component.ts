@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
-import { CaseAttrs, ICase, IConsultation, IDiagnosis, IReferral, MCase, MOnSectionEvent } from '../case.model';
+import { CaseAttrs, ICase, MCase, MOnSectionEvent } from '../case.model';
 import { carePlanTreeID } from '../case-attrs/care-plan';
 import { CaseService } from 'src/services/case.service';
 import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
 import * as caseConfig from '../case.config';
-import { ActivatedRoute, Router } from '@angular/router';
-import { generateRandomNumber } from 'src/app/app.func';
+import { Router } from '@angular/router';
+import { generateRandomNumber, getRouteParam } from 'src/app/app.func';
 
 @Component({
   selector: 'app-case-form',
@@ -29,13 +29,15 @@ export class CaseFormComponent implements OnInit {
   public selectedSection: IFormMenuOption = this.menuOptions[0];
   public selectedSectionModel: any = null; // for initializing section model when user clicks edit/add in Case section detail table
   public hasCaseID: boolean = false;
+  public id: string | null | undefined = getRouteParam('id');
+
+
 
   constructor(
     private messageService: MessageService,
     private attrService: AttributesService,
     private confirmationService: ConfirmationService,
     public caseService: CaseService,
-    private route: ActivatedRoute,
     private router: Router
   ) { }
 
@@ -126,8 +128,6 @@ export class CaseFormComponent implements OnInit {
   }
 
   private initCase(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-
     // for initializing selected section and its model when user clicks edit/add from main case table
     if (this.caseService.selectedSection !== null) {
       this.selectedSection = this.menuOptions[this.caseService.selectedSection];
@@ -135,13 +135,13 @@ export class CaseFormComponent implements OnInit {
       this.caseService.selectedSection = this.caseService.selectedSectionModel = null;
     }
 
-    if (id === undefined || id === null) {
+    if (this.id === undefined || this.id === null) {
       this.pageTitle = 'ქეისის დამატება';
       this.parsedCase = new MCase(this.Case);
       return;
     };
 
-    this.caseID = parseInt(id!);
+    this.caseID = parseInt(this.id!);
     this.isLoading = true;
 
     if (this.caseService.cases.has(this.caseID)) {

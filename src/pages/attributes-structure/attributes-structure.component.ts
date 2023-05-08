@@ -12,7 +12,7 @@ import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 import { MAttributeSection } from 'src/services/attributes/models/section.model';
-import { ActivatedRoute } from '@angular/router';
+import { getRouteParam } from 'src/app/app.func';
 
 
 @Component({
@@ -28,7 +28,6 @@ export class AttributesStructureComponent implements OnInit {
   public addPropertyButton = false;
   public attributes: MAttribute[] = [];
   public addPropertiesData: MProperty = new MProperty();
-  private typeID = 0;
   public attrType: any = {
     'standard': 'სტანდარტული ატრიბუტები',
     'tree': 'ხისებრი ატრიბუტები',
@@ -37,6 +36,8 @@ export class AttributesStructureComponent implements OnInit {
     2: 'tree',
     3: 'entity'
   };
+  public typeID: number = parseInt(getRouteParam('type_id')!);;
+
 
   public expandedSection: { [s: string]: boolean; } = {};
   public expandedAttr: { [s: string]: boolean; } = {};
@@ -83,7 +84,6 @@ export class AttributesStructureComponent implements OnInit {
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -232,7 +232,6 @@ export class AttributesStructureComponent implements OnInit {
     this.isLoading = true;
     this.spinner.show();
 
-    this.typeID = parseInt(this.route.snapshot.paramMap.get('type_id')!);;
     this.pageTitle = this.pageTitle + ' - ' + this.getAttrTypeName(this.typeID);
 
     await this.initializeAttrList();

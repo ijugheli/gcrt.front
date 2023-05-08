@@ -1,0 +1,47 @@
+<button
+  type="button"
+  class="border-btn mb-2"
+  (click)="onComplete()"
+>
+  <i class="pi pi-check mr-2"></i>
+  შენახვა
+</button>
+<p-table
+  [value]="parents"
+  styleClass="p-datatable-sm p-datatable-gridlines"
+  sortField="title"
+  sortMode="single"
+  dataKey="title"
+  responsiveLayout="scroll"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th width="5%"></th>
+      <th width="75%">დასახელება</th>
+      <th width="20%">სიმპტომის გამოხატვის დონე</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body">
+    <tr
+      *ngIf="isLoading"
+      style="height:46px"
+    >
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+    </tr>
+    <tr>
+      <td width="5%">
+        <p-checkbox [binary]="true"></p-checkbox>
+      </td>
+      <td width="75%"></td>
+      <td width="20%"></td>
+    </tr>
+  </ng-template>
+</p-table>

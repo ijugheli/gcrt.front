@@ -6,8 +6,6 @@ import { diagnosisList } from "./case-attrs/diagnosis";
 import { formsOfViolenceMap } from "./case-attrs/forms-of-violence";
 import { referralList } from "./case-attrs/referral";
 import { generateRandomNumber } from "src/app/app.func";
-import { AttributesService } from "src/services/attributes/Attributes.service";
-import { inject } from "@angular/core";
 
 export class ICase {
     public case!: ICaseMain;
@@ -96,6 +94,64 @@ export abstract class CaseSharedInterface {
     public comment!: string | null;
     [key: string]: any;
 
+}
+
+export abstract class ICaseSharedSymptom {
+    public id?: number | null;
+    public generated_id?: number | null;
+    public case_id?: number | null;
+    public symptom_id!: number | null;
+    public symptom_severity!: string | null;
+    public registration_date!: Date | null;
+    [key: string]: any;
+
+    constructor(data?: IOtherSymptom) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
+    }
+}
+
+export class IMentalSymptom extends ICaseSharedSymptom {
+    public override id?: number | null;
+    public override generated_id?: number | null;
+    public override case_id?: number | null;
+    public override symptom_id!: number | null;
+    public override symptom_severity!: string | null;
+    public override registration_date!: Date | null;
+    [key: string]: any;
+
+    constructor(data?: IOtherSymptom) {
+        super(data);
+    }
+}
+
+export class ISomaticSymptom extends ICaseSharedSymptom {
+    public override id?: number | null;
+    public override generated_id?: number | null;
+    public override case_id?: number | null;
+    public override symptom_id!: number | null;
+    public override symptom_severity!: string | null;
+    public override registration_date!: Date | null;
+    [key: string]: any;
+
+    constructor(data?: IOtherSymptom) {
+        super(data);
+    }
+}
+
+export class IOtherSymptom {
+    public id?: number | null;
+    public generated_id?: number | null;
+    public case_id?: number | null;
+    public comment!: number | null;
+    public registration_date!: Date | null;
+
+    [key: string]: any;
+
+    constructor(data?: IOtherSymptom) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
+    }
 }
 
 export class ICarePlan implements CaseSharedInterface {
