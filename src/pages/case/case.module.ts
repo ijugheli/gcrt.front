@@ -13,7 +13,7 @@ import { CaseFormComponent } from "./case-form/case-form.component";
 import { CaseComponent } from "./case.component";
 import { CustomInputComponent } from "../client/custom-input/custom-input.component";
 import { CheckboxModule } from "primeng/checkbox";
-import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table.component";
+import { TreeCheckboxTable } from "./shared-components/tree-checkbox-table/tree-checkbox-table.component";
 import { SkeletonModule } from "primeng/skeleton";
 import { CaseSectionTable } from "./shared-components/case-section-table/case-section-table.component";
 import { CaseSectionForm } from "./shared-components/case-section-form/case-section-form.component";
@@ -36,7 +36,7 @@ import { DialogModule } from 'primeng/dialog';
         SelectButtonModule,
         FormsModule,
         KeyFilterModule,
-        CheckboxTable,
+        TreeCheckboxTable,
         CaseSectionTable,
         SkeletonModule,
     ]

@@ -11,13 +11,13 @@ import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
 // For Forms_of_violence and care_plan
 @Component({
   standalone: true,
-  selector: 'app-checkbox-table',
-  templateUrl: './checkbox-table.component.html',
-  styleUrls: ['./checkbox-table.component.scss'],
+  selector: 'app-tree-checkbox-table',
+  templateUrl: './tree-checkbox-table.component.html',
+  styleUrls: ['./tree-checkbox-table.component.scss'],
   imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule]
 })
 
-export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnChanges {
+export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit, OnChanges {
   @Input() initialTree: any[] = [];
   @Input() caseSectionModel: T[] = [];
   @Input() caseID: number | null = null;

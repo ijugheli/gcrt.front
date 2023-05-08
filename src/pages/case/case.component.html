@@ -291,13 +291,13 @@
       [resizable]="false"
       (onHide)="onModalHide($event, true)"
     >
-      <app-checkbox-table
+      <app-tree-checkbox-table
         *ngIf="isTreeModalVisible && tree.length > 0"
         [initialTree]="tree"
         [caseID]="caseID"
         [caseSectionModel]="detailData"
         (onSave)="onTreeSave($event)"
-      ></app-checkbox-table>
+      ></app-tree-checkbox-table>
     </p-dialog>
 
   </div>

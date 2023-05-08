@@ -98,23 +98,23 @@
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
           <!-- table -->
-          <app-checkbox-table
+          <app-tree-checkbox-table
             *ngIf="caseService.formsOfViolenceTree.length > 0"
             [initialTree]="caseService.formsOfViolenceTree"
             [caseSectionModel]="Case.forms_of_violences"
             (onSave)="onSave(Case.forms_of_violences = $event)"
-          ></app-checkbox-table>
+          ></app-tree-checkbox-table>
         </div>
         <div
           [class.is-not-visible]="selectedSection.value != 2"
           class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in animation-duration-200"
         >
-          <app-checkbox-table
+          <app-tree-checkbox-table
             *ngIf="caseService.carePlanTree.length > 0"
             [initialTree]="caseService.carePlanTree"
             [caseSectionModel]="Case.care_plans"
             (onSave)="onSave(Case.care_plans = $event)"
-          ></app-checkbox-table>
+          ></app-tree-checkbox-table>
           <!-- table -->
         </div>
         <div [class.is-not-visible]="selectedSection.value != 3">
