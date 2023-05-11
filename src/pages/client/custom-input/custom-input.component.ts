@@ -23,9 +23,10 @@ import { isCaseKey } from 'src/pages/case/case.model';
   imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, InputNumberModule, InputTextareaModule, InputSwitchModule, CalendarModule, TreeSelectModule]
 })
 export class CustomInputComponent implements OnInit, OnChanges {
-  @Input('data') public data!: any;
-  @Input('model') public model?: any;
-  @Output('onChange') public onChange = new EventEmitter<any>();
+  @Input() public data!: any;
+  @Input() public isTableInput: boolean = false;
+  @Input() public model?: any;
+  @Output() public onChange = new EventEmitter<any>();
 
   public initialized: boolean = false;
   public options: any;
@@ -151,6 +152,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
       })
     } else {
       this.attrService.dropdownOptionChange.subscribe(data => {
+        console.log(this.attrService.properties.get(209));
         this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
         this.hasFilter = this.options.length > 5;
       });
