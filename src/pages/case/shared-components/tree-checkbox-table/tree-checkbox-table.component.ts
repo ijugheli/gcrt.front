@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
+import { CaseSharedInterface, MCheckboxTableItem, MTreeCheckboxTableItem } from '../../case.model';
 // For Forms_of_violence and care_plan
 @Component({
   standalone: true,
@@ -22,8 +22,8 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
   @Input() caseSectionModel: T[] = [];
   @Input() caseID: number | null = null;
   @Output() onSave = new EventEmitter<T[]>();
-  public parsedTree: MCheckboxTableItem[] = [];
-  public parents: MCheckboxTableItem[] = [];
+  public parsedTree: MTreeCheckboxTableItem[] = [];
+  public parents: MTreeCheckboxTableItem[] = [];
   public isLoading: boolean = true;
 
   constructor() { }
@@ -58,18 +58,18 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
 
   private parseModel(tree: any[]): any[] {
     return tree.map((node: any) => {
-      const temp = new MCheckboxTableItem();
+      const temp = new MTreeCheckboxTableItem();
       temp.category = node.data.id;
       temp.p_value_id = node.data.p_value_id;
       temp.value_id = node.data.value_id;
       temp.title = node.data.title;
+      temp.case_id = this.caseID ?? null;
       temp.p_title = this.initialTree.find((e: any) => e.data.value_id == temp.p_value_id)?.data.title ?? '';
 
       const model = this.caseSectionModel.find(e => e.category == temp.category);
 
       if (model !== undefined) {
         temp.id = model.id ?? null;
-        temp.case_id = this.caseID ?? model.case_id ?? null;
         temp.isSelected = true;
         temp.comment = model.comment;
       }
@@ -83,7 +83,6 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
       let model: any = {};
       model.id = e.id;
       model.category = e.category;
-      model.case_id = this.caseID ?? e.case_id ?? null;
       model.comment = e.comment;
       return model;
     }) as T[];

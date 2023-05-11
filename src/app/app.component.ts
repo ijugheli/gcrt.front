@@ -27,6 +27,7 @@ export class AppComponent {
 
     this.caseService.initCaseManagers();
     this.caseService.initClients();
+    this.caseService.initSymptomOptions();
 
     const url = window.location.href.toString();
 

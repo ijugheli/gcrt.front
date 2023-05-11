@@ -17,6 +17,8 @@ import { CacheService } from './cache.service';
 import { AttributesService } from './attributes/Attributes.service';
 import { IClientMain } from 'src/pages/client/client.model';
 import { DatePipe } from '@angular/common';
+import { mentalSymptomMap } from 'src/pages/case/case-attrs/mental-symptom';
+import { somaticSymptomMap } from 'src/pages/case/case-attrs/somatic-symptom';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +46,10 @@ export class CaseService extends GuardedService {
   // for Case section detail table clicks
   public selectedSection: number | null = null;
   public selectedSectionModel: any | null = null;
+
+  // symptom options for form
+  public mentalSymptomOptions: MOption[] = [];
+  public somaticSymptomOptions: MOption[] = [];
 
   public urls: any = {
     'index': API_URL + '/case/index',
@@ -169,6 +175,13 @@ export class CaseService extends GuardedService {
       this.caseManagerChanges.next(this.caseManagers);
       this.caseManagerChanges.complete();
       this.cacheService.set('case_managers', Array.from(this.caseManagers.entries()));
+    })
+  }
+
+  public initSymptomOptions() {
+    this.attrService.propertyChange.subscribe((_) => {
+      this.mentalSymptomOptions = this.attrService.properties.get(mentalSymptomMap.get('symptom_id').propertyID)?.source.options;
+      this.somaticSymptomOptions = this.attrService.properties.get(somaticSymptomMap.get('symptom_id').propertyID)?.source.options;
     })
   }
 

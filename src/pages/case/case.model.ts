@@ -14,6 +14,9 @@ export class ICase {
     public diagnoses: IDiagnosis[] = [];
     public referrals: IReferral[] = [];
     public consultations: IConsultation[] = [];
+    public mental_symptoms: IMentalSymptom[] = [];
+    public somatic_symptoms: ISomaticSymptom[] = [];
+    public other_symptoms: IOtherSymptom[] = [];
     public psychodiagnoses!: IPsychodiagnosis;
     [key: string]: any;
 
@@ -44,6 +47,9 @@ export class MCase {
     public diagnoses: MDiagnosis[] = [];
     public referrals: MReferral[] = [];
     public consultations: MConsultation[] = [];
+    public mental_symptoms: MMentalSymptom[] = [];
+    public somatic_symptoms: MSomaticSymptom[] = [];
+    public other_symptoms: MOtherSymptom[] = [];
     public psychodiagnoses!: IPsychodiagnosis;
     [key: string]: any;
 
@@ -101,7 +107,7 @@ export abstract class ICaseSharedSymptom {
     public generated_id?: number | null;
     public case_id?: number | null;
     public symptom_id!: number | null;
-    public symptom_severity!: string | null;
+    public symptom_severity!: number | null;
     public registration_date!: Date | null;
     [key: string]: any;
 
@@ -116,7 +122,7 @@ export class IMentalSymptom extends ICaseSharedSymptom {
     public override generated_id?: number | null;
     public override case_id?: number | null;
     public override symptom_id!: number | null;
-    public override symptom_severity!: string | null;
+    public override symptom_severity!: number | null;
     public override registration_date!: Date | null;
     [key: string]: any;
 
@@ -130,7 +136,7 @@ export class ISomaticSymptom extends ICaseSharedSymptom {
     public override generated_id?: number | null;
     public override case_id?: number | null;
     public override symptom_id!: number | null;
-    public override symptom_severity!: string | null;
+    public override symptom_severity!: number | null;
     public override registration_date!: Date | null;
     [key: string]: any;
 
@@ -143,7 +149,44 @@ export class IOtherSymptom {
     public id?: number | null;
     public generated_id?: number | null;
     public case_id?: number | null;
-    public comment!: number | null;
+    public comment!: string | null;
+    public registration_date!: Date | null;
+
+    [key: string]: any;
+
+    constructor(data?: IOtherSymptom) {
+        Object.assign(this, data);
+        this.generated_id = Date.now() + generateRandomNumber();
+    }
+}
+
+export class MMentalSymptom {
+    public id?: number | null;
+    public generated_id?: number | null;
+    public case_id?: number | null;
+    public symptom_id!: string | null;
+    public symptom_severity!: string | null;
+    public registration_date!: Date | null;
+    [key: string]: any;
+
+}
+
+export class MSomaticSymptom {
+    public id?: number | null;
+    public generated_id?: number | null;
+    public case_id?: number | null;
+    public symptom_id!: string | null;
+    public symptom_severity!: string | null;
+    public registration_date!: Date | null;
+    [key: string]: any;
+
+}
+
+export class MOtherSymptom {
+    public id?: number | null;
+    public generated_id?: number | null;
+    public case_id?: number | null;
+    public comment!: string | null;
     public registration_date!: Date | null;
 
     [key: string]: any;
@@ -172,7 +215,7 @@ export class IFormOfViolence implements CaseSharedInterface {
 
 }
 
-export class MCheckboxTableItem {
+export class MTreeCheckboxTableItem {
     public id!: number | null;
     public case_id!: number | null;
     public category!: number | null;
@@ -182,6 +225,15 @@ export class MCheckboxTableItem {
     public p_title!: string | null; // treeselect
     public value_id!: number | null; // treeselect
     public comment!: string | null;
+}
+export class MCheckboxTableItem {
+    public id!: number | null;
+    public case_id!: number | null;
+    public symptom_id!: number | null;
+    public title!: string | null; // treeselect
+    public isSelected?: boolean = false;
+    public symptom_severity!: number | null;
+    public registration_date!: number | null;
 }
 
 export class IDiagnosis {

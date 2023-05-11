@@ -440,9 +440,7 @@ export class AttributesService extends GuardedService {
         const cache = this.cacheService.get('dropdown_options');
 
         if (cache != null) {
-            this.dropdownOptions = new Map(cache);
-            this.dropdownOptionChange.next(this.dropdownOptions);
-            this.dropdownOptionChange.complete();
+            this.parseDropdownOptions(cache);
             return;
         }
 

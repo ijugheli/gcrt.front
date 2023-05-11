@@ -162,6 +162,43 @@
           >
           </app-case-section-form>
         </div>
+        <div [class.is-not-visible]="selectedSection.value != 6">
+          <app-checkbox-table
+            [initialOptions]="caseService.mentalSymptomOptions"
+            [caseSectionModel]="Case.mental_symptoms"
+            (onSave)="onSave(Case.mental_symptoms = $event)"
+          ></app-checkbox-table>
+        </div>
+        <div [class.is-not-visible]="selectedSection.value != 7">
+          <app-case-section-form
+            [inputAttrs]="CaseAttrs.consultationList"
+            [tableCols]="caseService.consultationCols"
+            [sectionType]="CaseConfig.detailTypeIDS['consultations']"
+            [data]="Case.consultations"
+            [parsedData]="parsedCase.consultations"
+            [caseID]="Case.case.id"
+            [model]="selectedSectionModel"
+            (onSave)="onSectionSave($event,CaseConfig.detailTypeIDS['consultations'])"
+            (onDelete)="onSectionItemDelete($event, CaseConfig.detailTypeIDS['consultations'])"
+            class="flex flex-row gap-4"
+          >
+          </app-case-section-form>
+        </div>
+        <div [class.is-not-visible]="selectedSection.value != 8">
+          <app-case-section-form
+            [inputAttrs]="CaseAttrs.consultationList"
+            [tableCols]="caseService.consultationCols"
+            [sectionType]="CaseConfig.detailTypeIDS['consultations']"
+            [data]="Case.consultations"
+            [parsedData]="parsedCase.consultations"
+            [caseID]="Case.case.id"
+            [model]="selectedSectionModel"
+            (onSave)="onSectionSave($event,CaseConfig.detailTypeIDS['consultations'])"
+            (onDelete)="onSectionItemDelete($event, CaseConfig.detailTypeIDS['consultations'])"
+            class="flex flex-row gap-4"
+          >
+          </app-case-section-form>
+        </div>
       </div>
     </div>
   </div>
