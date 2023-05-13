@@ -81,7 +81,7 @@
           [(ngModel)]="node.isSelected"
         ></p-checkbox>
       </td>
-      <td width="45%">
+      <td width="45%" [class.p-disabled]="!node.isSelected">
         {{node.title}}
       </td>
       <td

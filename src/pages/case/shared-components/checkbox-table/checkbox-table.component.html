@@ -1,13 +1,19 @@
 <button
   type="button"
-  class="border-btn mb-2"
+  class="border-btn mb-4"
+  (click)="onComplete()"
 >
   <i class="pi pi-check mr-2"></i>
   შენახვა
 </button>
+<custom-input
+  [model]="dateModel"
+  [data]="dateAttr"
+  (onChange)="onDateChange($event)"
+></custom-input>
 <p-table
   [value]="parsedOptions"
-  styleClass="p-datatable-sm p-datatable-gridlines"
+  styleClass="p-datatable-sm p-datatable-gridlines mt-4"
   sortField="title"
   sortMode="single"
   dataKey="title"
@@ -18,6 +24,19 @@
       <th width="5%"></th>
       <th width="75%">დასახელება</th>
       <th width="20%">სიმპტომის გამოხატვის დონე</th>
+    </tr>
+    <tr>
+      <th width="5%"></th>
+      <th width="75%">
+        <p-columnFilter
+          field="title"
+          type="text"
+          matchMode="contains"
+          [showClearButton]="false"
+          [showMenu]="false"
+        ></p-columnFilter>
+      </th>
+      <th width="20%"></th>
     </tr>
   </ng-template>
   <ng-template
@@ -40,47 +59,18 @@
     </tr>
     <tr *ngIf="!isLoading">
       <td width="5%">
-        <p-checkbox [binary]="true"></p-checkbox>
+        <p-checkbox
+          [binary]="true"
+          [(ngModel)]="option.isSelected"
+        ></p-checkbox>
       </td>
-      <td width="75%">{{option.title}}</td>
+      <td
+        width="75%"
+        [class.p-disabled]="!option.isSelected"
+      >{{option.title}}</td>
       <td width="20%"><custom-input
           [isTableInput]="true"
-          [model]="option.symptom_severity"
-          [data]="symptomSeverityAttr"
-          (onChange)="option.symptom_severity = $event"
-        ></custom-input></td>
-    </tr>
-    <tr *ngIf="!isLoading">
-      <td width="5%">
-        <p-checkbox [binary]="true"></p-checkbox>
-      </td>
-      <td width="75%">{{option.title}}</td>
-      <td width="20%"><custom-input
-          [isTableInput]="true"
-          [model]="option.symptom_severity"
-          [data]="symptomSeverityAttr"
-          (onChange)="option.symptom_severity = $event"
-        ></custom-input></td>
-    </tr>
-    <tr *ngIf="!isLoading">
-      <td width="5%">
-        <p-checkbox [binary]="true"></p-checkbox>
-      </td>
-      <td width="75%">{{option.title}}</td>
-      <td width="20%"><custom-input
-          [isTableInput]="true"
-          [model]="option.symptom_severity"
-          [data]="symptomSeverityAttr"
-          (onChange)="option.symptom_severity = $event"
-        ></custom-input></td>
-    </tr>
-    <tr *ngIf="!isLoading">
-      <td width="5%">
-        <p-checkbox [binary]="true"></p-checkbox>
-      </td>
-      <td width="75%">{{option.title}}</td>
-      <td width="20%"><custom-input
-          [isTableInput]="true"
+          [isDisabled]="!option.isSelected"
           [model]="option.symptom_severity"
           [data]="symptomSeverityAttr"
           (onChange)="option.symptom_severity = $event"

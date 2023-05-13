@@ -122,8 +122,14 @@ export class AttributesService extends GuardedService {
     }
 
     private parse(data: IAttribute[]) {
+        console.log('data');
+        console.log(data);
         this.parseProperties(data);
+        console.log('this.parseProperties(data)');
+        console.log(data);
         this.parseAttributes(data);
+        console.log('this.parseAttributes');
+        console.log(data);
         this.appendChildren();
         this.appendSections();
         this.appendTabs();

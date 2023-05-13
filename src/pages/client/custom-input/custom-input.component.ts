@@ -15,6 +15,7 @@ import { isClientKey } from '../client.model';
 import { ClientService } from 'src/services/client.service';
 import { CaseService } from 'src/services/case.service';
 import { isCaseKey } from 'src/pages/case/case.model';
+import { ICustomInput } from 'src/app/app.interfaces';
 @Component({
   standalone: true,
   selector: 'custom-input',
@@ -25,6 +26,7 @@ import { isCaseKey } from 'src/pages/case/case.model';
 export class CustomInputComponent implements OnInit, OnChanges {
   @Input() public data!: any;
   @Input() public isTableInput: boolean = false;
+  @Input() public isDisabled: boolean = false;
   @Input() public model?: any;
   @Output() public onChange = new EventEmitter<any>();
 
@@ -152,7 +154,6 @@ export class CustomInputComponent implements OnInit, OnChanges {
       })
     } else {
       this.attrService.dropdownOptionChange.subscribe(data => {
-        console.log(this.attrService.properties.get(209));
         this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
         this.hasFilter = this.options.length > 5;
       });
@@ -187,5 +188,9 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   private setDate(value: Date): string | null {
     return value ? formatDate(value) : null;
+  }
+
+  public isInputDisabled(data: ICustomInput): boolean {
+    return this.isDisabled || data['isDisabled'] || this.clientService.isInputDisabled || this.caseService.isInputDisabled;
   }
 }

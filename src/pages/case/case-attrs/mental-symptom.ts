@@ -17,6 +17,16 @@ export const mentalSymptomMap: Map<string, any> = new Map(
             propertyID: 209,
             isRequired: true,
             isDisabled: false,
-        }]
+        }],
+        ['registration_date', {
+            fieldName: 'registration_date',
+            label: 'რეგისტრაციის თარიღი',
+            type: 'date',
+            icon: 'pi-calendar',
+            propertyID: null,
+            isRequired: true,
+            isDisabled: false,
+        }
+        ],
     ]
 );

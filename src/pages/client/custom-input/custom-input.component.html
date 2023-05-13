@@ -33,7 +33,7 @@
                 <ng-container *ngTemplateOutlet="inputs">
                 </ng-container>
                 <label
-                    [class.p-disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+                    [class.p-disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
                     [for]="data['fieldName']"
                 >{{data['label']}}</label>
             </span>
@@ -49,11 +49,11 @@
     <p-treeSelect
         *ngIf="data['type'] == 'tree'"
         [inputId]="data['fieldName']"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
         [ngModel]="selectedNode"
         [options]="options"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         [filter]="hasFilter"
         [placeholder]="data['label']"
         (onNodeExpand)="onNodeExpand($event)"
@@ -63,9 +63,9 @@
     <p-calendar
         *ngIf="data['type'] == 'date'"
         [ngModel]="model"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         [inputId]="data['fieldName']"
         [maxDate]="todayDate"
         [placeholder]="data['label']"
@@ -76,13 +76,13 @@
 
     <p-dropdown
         *ngIf="data['type'] == 'dropdown'"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
         [ngModel]="model"
         [options]="options"
         [placeholder]="data['label']"
         [filter]="hasFilter"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         [inputId]="data['fieldName']"
         (ngModelChange)="onUpdate($event)"
         emptyFilterMessage="..."
@@ -97,15 +97,14 @@
         *ngIf="data['type'] == 'textarea'"
         [id]="data['fieldName']"
         [ngModel]="model"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [disabled]="isInputDisabled(data)"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         [autoResize]="true"
         [placeholder]="data['label']"
         (ngModelChange)="onUpdate($event)"
         rows="5"
-        cols="55
-        "
+        cols="55"
         pInputTextarea
     >
     </textarea>
@@ -114,9 +113,9 @@
         *ngIf="data['type'] == 'text'"
         [id]="data['fieldName']"
         [ngModel]="model"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [disabled]="isInputDisabled(data)"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         (ngModelChange)="onUpdate($event)"
         type="text"
         pInputText
@@ -126,9 +125,9 @@
         *ngIf="data['type'] == 'int'"
         [id]="data['fieldName']"
         [(ngModel)]="model"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         (ngModelChange)="onUpdate($event)"
         type="text"
         [placeholder]="data['label']"
@@ -141,9 +140,9 @@
         *ngIf="data['type'] == 'double'"
         [id]="data['fieldName']"
         [(ngModel)]="model"
-        [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-        [class.ng-invalid]="!isInputValid()"
-        [class.ng-dirty]="!isInputValid()"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         [maxFractionDigits]="2"
         (ngModelChange)="onUpdate($event)"
         type="text"
