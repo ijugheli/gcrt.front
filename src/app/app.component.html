@@ -1,4 +1,6 @@
 <main>
-    <left-menu *ngIf="menuExists"></left-menu>
+    <div [style.display]="!(isMenuVisible) ? 'none' : 'unset'">
+        <left-menu></left-menu>
+    </div>
     <router-outlet></router-outlet>
 </main>

@@ -240,13 +240,13 @@ export class CaseFormComponent implements OnInit {
 
   private initTree(treeKey: keyof CaseService, attrID: number): void {
     if (this.caseService[treeKey].length > 0) return;
-    this.attrService.treeMapChange.subscribe((treeMap) => {
+    this.attrService.treeMap$.subscribe((treeMap) => {
       this.caseService[treeKey] = treeMap.get(attrID);
     })
   }
 
   private initPageTitle() {
-    this.caseService.clientChanges.subscribe((_) => {
+    this.caseService.clients$.subscribe((_) => {
       this.pageTitle = `ქეისის რედაქტირება - #${this.caseID} - ${this.caseService.clients.get(this.Case.case.client_id!)?.name}`;
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -9,6 +9,7 @@ import { MProperty } from 'src/services/attributes/models/property.model';
 import { IProperty } from 'src/services/attributes/interfaces/property.interface';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { IAttribute } from 'src/services/attributes/interfaces/attribute.interface';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-add-section-property',
   templateUrl: './add-section-property.component.html',
@@ -16,7 +17,7 @@ import { IAttribute } from 'src/services/attributes/interfaces/attribute.interfa
   providers: [MessageService]
 })
 
-export class AddSectionPropertyComponent implements OnInit {
+export class AddSectionPropertyComponent implements OnInit, OnDestroy {
 
   public validation: boolean = false;
 
@@ -24,6 +25,7 @@ export class AddSectionPropertyComponent implements OnInit {
     'p_id': 0,
     'attr_id': 0,
     'source_attr_id': 0,
+    'status_id': true,
     'type': 1,
     'title': null,
     'input_data_type': 0,
@@ -75,7 +77,7 @@ export class AddSectionPropertyComponent implements OnInit {
   public property!: MProperty | undefined;
   public attrID!: number;
   public actionTitle: string = 'დამატება';
-
+  public onDestroy$: Subject<any> = new Subject();
 
   constructor(
     private spinner: NgxSpinnerService,
@@ -87,6 +89,11 @@ export class AddSectionPropertyComponent implements OnInit {
 
   ngOnInit() {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   public isValueSelected(key: string) {
@@ -151,7 +158,10 @@ export class AddSectionPropertyComponent implements OnInit {
 
     this.sectionProperty['p_id'] = this.property?.id || 0;
     this.sectionProperty['attr_id'] = this.attrID;
-    this.attrTitle = this.attrService.get(this.attrID)?.title!;
+
+    this.attrService.getMap().pipe(takeUntil(this.onDestroy$)).subscribe((attrs) => {
+      this.attrTitle = attrs.get(this.attrID)?.title!;
+    })
   }
 
   private showSuccess(msg: string) {
@@ -171,4 +181,6 @@ export class AddSectionPropertyComponent implements OnInit {
   private validate() {
     return this.isValidValue('title') && this.isValueSelected('input_data_type') && this.isValueSelected('input_view_type');
   }
+
+
 }

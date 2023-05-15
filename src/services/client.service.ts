@@ -17,7 +17,7 @@ import { MCase } from 'src/pages/case/case.model';
 @Injectable({
   providedIn: 'root'
 })
-export class ClientService extends GuardedService {
+export class ClientService {
   public isValidationEnabled: boolean = false;
   public isInputDisabled: boolean = false;
   public values: Map<number | string, string | Date | null | boolean | number> = new Map();
@@ -31,24 +31,23 @@ export class ClientService extends GuardedService {
     'destroy': API_URL + '/client/destroy/{id}',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService, private attrService: AttributesService) {
-    super(auth.getToken());
+  constructor(private http: HttpClient, private attrService: AttributesService) {
   }
 
   public store(data: any): Observable<APIResponse<IClient>> {
-    return this.http.post<APIResponse<IClient>>(this.urls['store'], data, { headers: this.headers });
+    return this.http.post<APIResponse<IClient>>(this.urls['store'], data,);
   }
 
   public index(): Observable<APIResponse<ParsedClients>> {
-    return this.http.get<APIResponse<any>>(this.urls['index'], { headers: this.headers }).pipe(map(data => this.mapClientResponse(data)));
+    return this.http.get<APIResponse<any>>(this.urls['index'],).pipe(map(data => this.mapClientResponse(data)));
   }
 
   public show(clientID: number): Observable<APIResponse<IClient>> {
-    return this.http.get<APIResponse<IClient>>(this.urls['show'].replace('{id}', clientID.toString()), { headers: this.headers });
+    return this.http.get<APIResponse<IClient>>(this.urls['show'].replace('{id}', clientID.toString()),);
   }
 
   public destroy(clientID: number): Observable<APIResponse<ParsedClients>> {
-    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', clientID.toString()), { headers: this.headers }).pipe(map(data => this.mapClientResponse(data)));
+    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', clientID.toString()),).pipe(map(data => this.mapClientResponse(data)));
   }
 
   public validate(): boolean {

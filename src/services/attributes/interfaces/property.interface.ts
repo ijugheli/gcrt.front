@@ -2,6 +2,7 @@ export interface IProperty {
     id: number;
     p_id: number | null;
     attr_id: number;
+    status_id: number;
     source_attr_id: number | null;
     type: number;
     title: string;

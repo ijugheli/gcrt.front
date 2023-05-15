@@ -11,7 +11,7 @@ import { AuthService } from './AuthService.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SurveyService extends GuardedService {
+export class SurveyService  {
   public list!: MSurvey;
   public cacheKey: string = 'survey';
   public urls: any = {
@@ -20,13 +20,13 @@ export class SurveyService extends GuardedService {
     'store': API_URL + '/survey/store',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService) {
-    super(auth.getToken());
+  constructor(private http: HttpClient, ) {
+    
   }
 
 
   public store(data: any): Observable<any> {
-    return this.http.post<APIResponse<ISurveyResult[]>>(this.urls['store'], data, { headers: this.headers });
+    return this.http.post<APIResponse<ISurveyResult[]>>(this.urls['store'], data, );
   }
 
   public getSurveyList(): Observable<MSurvey> {
@@ -34,7 +34,7 @@ export class SurveyService extends GuardedService {
       return this.loadCache();
     }
 
-    return this.http.get(this.urls['surveyList'], { headers: this.headers }).pipe(map((d: any) => {
+    return this.http.get(this.urls['surveyList'], ).pipe(map((d: any) => {
       this.saveCache(d.data);
       return this.list;
     }));

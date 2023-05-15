@@ -38,16 +38,16 @@ const routes: Routes = [
     component: AttributesStructureComponent,
     canActivate: [AuthGuard]
   },
-  {
-    path: 'edit/:attr_id/:value_id',
-    component: AttributeFormComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'add/:attr_id',
-    component: AttributeFormComponent,
-    canActivate: [AuthGuard]
-  },
+  // {
+  //   path: 'edit/:attr_id/:value_id',
+  //   component: AttributeFormComponent,
+  //   canActivate: [AuthGuard]
+  // },
+  // {
+  //   path: 'add/:attr_id',
+  //   component: AttributeFormComponent,
+  //   canActivate: [AuthGuard]
+  // },
   { path: 'client', component: ClientComponent, canActivate: [AuthGuard] },
   { path: 'client/add', component: ClientFormComponent, canActivate: [AuthGuard] },
   { path: 'client/edit/:id', component: ClientFormComponent, canActivate: [AuthGuard] },

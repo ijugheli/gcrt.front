@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../services/AuthService.service';
 import { Router } from '@angular/router';
 import { APIResponse } from 'src/app/app.interfaces';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -13,13 +14,14 @@ import { APIResponse } from 'src/app/app.interfaces';
   styleUrls: ['../login.component.css'],
   providers: [InputTextModule, MessageService]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   public showCaptcha: boolean = true;
   public googleKey = '6LejhuMiAAAAAC37fA8yLKFCzImVZo7tGtQXjifP';
 
   public username: string = '';
   public password: string = '';
   public validation: boolean = false;
+  public onDestroy$: Subject<any> = new Subject();
 
   constructor(
     private authService: AuthService,
@@ -29,10 +31,17 @@ export class LoginComponent implements OnInit {
   ) {
   }
 
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
+
   ngOnInit() {
-    if (this.authService.isAuthenticated()) {
-      window.location.href = '/home';
-    }
+    this.authService.authStatus$.subscribe((isAuth) => {
+      if (isAuth) {
+        this.router.navigate(['/home'], { replaceUrl: true });
+      }
+    });
   }
 
   showResponse(d: any) {
@@ -88,8 +97,8 @@ export class LoginComponent implements OnInit {
       });
 
 
-        this.authService.authorize(authData.data);
-        this.router.navigate(['/home'], { replaceUrl: true }).then(() => setTimeout(() => window.location.reload(), 500));
+      this.authService.authorize(authData.data);
+      this.router.navigate(['home'], { replaceUrl: true });
     }, (error) => {
       this.spinner.hide();
       this.messageService.add({

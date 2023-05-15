@@ -4,6 +4,7 @@ import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { VIEW_TYPE_ID } from './app.config';
 import { flattenTree, parseTree } from './app.func';
 import { CaseService } from 'src/services/case.service';
+import { AuthService } from 'src/services/AuthService.service';
 
 @Component({
   selector: 'app-root',
@@ -12,30 +13,25 @@ import { CaseService } from 'src/services/case.service';
 })
 export class AppComponent {
   title = 'project';
-  public menuExists: boolean = true;
-  private pages: string[] = [
-    'login',
-    'forgot-password',
-    'update-password',
-    'otp'
-  ];
+  public isMenuVisible: boolean = true;
 
-  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService, public caseService: CaseService) {
-    this.attrService.initSelectOptions();
-
-    this.attrService.initTreeSelect();
-
-    this.caseService.initCaseManagers();
-    this.caseService.initClients();
-    this.caseService.initSymptomOptions();
-
-    const url = window.location.href.toString();
-
-    console.log(activatedRoute.snapshot);
-
-    if (this.pages.some((page) => url.indexOf(page) > - 1)) {
-      this.menuExists = false;
-    }
-
+  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService, public caseService: CaseService, public authService: AuthService) {
+    this.authService.getToken();
+    // Load data for app when user is authorized;
+    this.authService.authStatus$.subscribe((isAuth) => {
+      if (isAuth) {
+        this.attrService.load();
+        this.attrService.initSelectOptions();
+        this.attrService.initTreeSelect();
+        this.caseService.initCaseManagers();
+        this.caseService.initClients();
+        this.caseService.initSymptomOptions();
+      }
+    });
+    this.authService.isMenuVisible$.subscribe((bool) => {
+      this.isMenuVisible = bool;
+    });
   }
+
+
 }

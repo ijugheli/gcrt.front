@@ -1,11 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, filter, map } from 'rxjs';
 import { API_URL } from 'src/app/app.config';
 import { APIResponse } from 'src/app/app.interfaces';
+import { CacheService } from './cache.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // import { JwtHelperService } from '@auth0/angular-jwt';
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-
   public urls: any = {
     'login': API_URL + '/user/login',
     'logout': API_URL + '/user/logout',
@@ -15,32 +19,34 @@ export class AuthService {
     'sendCode': API_URL + '/user/send-code',
     'validateCode': API_URL + '/user/validate-code',
   };
+  private pages: string[] = [
+    'login',
+    'forgot-password',
+    'update-password',
+    'otp'
+  ];
 
-  constructor(private http: HttpClient) {
-
+  public isMenuVisible$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public authStatus$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  constructor(private http: HttpClient, private cacheService: CacheService, private route: ActivatedRoute, private router: Router) {
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+    ).subscribe((event) => {
+      this.menuExists(event.url);
+    })
   }
 
-  public isAuthenticated(): boolean {
-    const auth = localStorage.getItem('auth')
-    if (auth == null) {
-      return false;
-    }
-
-    const info = JSON.parse(auth);
-    const token = info.access_token;
-
-    return token != null;
-  }
 
   public getToken() {
-    const auth = localStorage.getItem('auth')
+    const auth = this.cacheService.get('auth');
+
     if (auth == null) {
-      return false;
+      this.authStatus$.next(false);
+      return null;
     }
 
-    const info = JSON.parse(auth);
-
-    return info.access_token;
+    this.authStatus$.next(true);
+    return auth.access_token;
   }
 
   public getOTPEmail() {
@@ -68,13 +74,15 @@ export class AuthService {
       return;
     }
 
-    localStorage.setItem("auth", JSON.stringify(o));
+    this.cacheService.set('auth', o, o.expires_at);
+    this.authStatus$.next(true);
   }
 
   public sendCode(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
     return this.http.post<APIResponse>(this.urls['sendCode'], info, { headers: headers });
   }
+
   public validateCode(info: any) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
     return this.http.post<APIResponse>(this.urls['validateCode'], info, { headers: headers });
@@ -86,7 +94,16 @@ export class AuthService {
   }
 
   public logout() {
-    localStorage.removeItem('auth');
-    window.location.href = '/login';
+    this.cacheService.remove('auth');
+    this.authStatus$.next(false);
+    this.router.navigate(['login'], { replaceUrl: true });
+  }
+
+  public menuExists(url: string) {
+    this.isMenuVisible$.next(!this.pages.some((page) => url.indexOf(page) > - 1));
+  }
+
+  public disableMenu() {
+    this.isMenuVisible$.next(false);
   }
 }

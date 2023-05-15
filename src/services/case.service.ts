@@ -23,7 +23,7 @@ import { somaticSymptomMap } from 'src/pages/case/case-attrs/somatic-symptom';
 @Injectable({
   providedIn: 'root',
 })
-export class CaseService extends GuardedService {
+export class CaseService  {
   public carePlanTree: any[] = [];
   public formsOfViolenceTree: any[] = [];
   public diagnosisCols: ICaseCol[] = diagnosisCols;
@@ -35,8 +35,8 @@ export class CaseService extends GuardedService {
   // dropdown options for case manager and client 
   public caseManagers: Map<number, MOption> = new Map();
   public clients: Map<number, MOption> = new Map();
-  public caseManagerChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
-  public clientChanges: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+  public caseManagers$: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
+  public clients$: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
 
   public cases: Map<number, ICase> = new Map();
   public parsedCases: Map<number, MCase> = new Map();
@@ -68,71 +68,69 @@ export class CaseService extends GuardedService {
     'clients': API_URL + '/case/clients',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService, private attrService: AttributesService, private datePipe: DatePipe) {
-    super(auth.getToken());
+  constructor(private http: HttpClient, private cacheService: CacheService, private attrService: AttributesService) {
+    
   }
 
   public index(): Observable<APIResponse<ParsedCases>> {
-    return this.http.get<APIResponse<any>>(this.urls['index'], { headers: this.headers }).pipe(map(data => this.mapCaseResponse(data)));
+    return this.http.get<APIResponse<any>>(this.urls['index'], ).pipe(map(data => this.mapCaseResponse(data)));
   }
   public show(id: number): Observable<APIResponse<ICase>> {
-    return this.http.get<APIResponse<ICase>>(this.urls['show'].replace('{id}', id.toString()), { headers: this.headers });
+    return this.http.get<APIResponse<ICase>>(this.urls['show'].replace('{id}', id.toString()), );
   }
 
   public destroy(caseID: number): Observable<APIResponse<ParsedCases>> {
-    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', caseID.toString()), { headers: this.headers }).pipe(map(data => this.mapCaseResponse(data)));
+    return this.http.delete<APIResponse<any>>(this.urls['destroy'].replace('{id}', caseID.toString()), ).pipe(map(data => this.mapCaseResponse(data)));
   }
 
   public destroyReferral(id: number): Observable<APIResponse<any>> {
-    return this.http.delete<APIResponse<any>>(this.urls['destroyReferral'].replace('{id}', id.toString()), { headers: this.headers });
+    return this.http.delete<APIResponse<any>>(this.urls['destroyReferral'].replace('{id}', id.toString()), );
   }
 
   public destroyDiagnosis(id: number): Observable<APIResponse<any>> {
-    return this.http.delete<APIResponse<any>>(this.urls['destroyDiagnosis'].replace('{id}', id.toString()), { headers: this.headers });
+    return this.http.delete<APIResponse<any>>(this.urls['destroyDiagnosis'].replace('{id}', id.toString()), );
   }
 
   public destroyConsultation(id: number): Observable<APIResponse<any>> {
-    return this.http.delete<APIResponse<any>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), { headers: this.headers });
+    return this.http.delete<APIResponse<any>>(this.urls['destroyConsultation'].replace('{id}', id.toString()), );
   }
 
   public storeCase(data: ICase): Observable<APIResponse<ICase>> {
-    return this.http.post<APIResponse<ICase>>(this.urls['store'], data, { headers: this.headers });
+    return this.http.post<APIResponse<ICase>>(this.urls['store'], data, );
   }
 
   public updateDiagnosis(data: IDiagnosis[]): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['updateDiagnosis'], data, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateDiagnosis'], data, );
   }
 
   public updateConsultation(data: IConsultation[]): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['updateConsultation'], data, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateConsultation'], data, );
   }
 
   public updateReferral(data: IReferral[]): Observable<APIResponse> {
-    return this.http.post<APIResponse>(this.urls['updateReferral'], data, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateReferral'], data, );
   }
 
   public updateFormsOfViolences(data: IFormOfViolence[], caseID: number): Observable<APIResponse<any>> {
-    return this.http.post<APIResponse<any>>(this.urls['updateFormsOfViolences'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
+    return this.http.post<APIResponse<any>>(this.urls['updateFormsOfViolences'].replace('{case_id}', caseID.toString()), data, );
   }
   public updateCarePlans(data: ICarePlan[], caseID: number): Observable<APIResponse<any>> {
-    return this.http.post<APIResponse<any>>(this.urls['updateCarePlans'].replace('{case_id}', caseID.toString()), data, { headers: this.headers });
+    return this.http.post<APIResponse<any>>(this.urls['updateCarePlans'].replace('{case_id}', caseID.toString()), data, );
   }
 
   public getClients(): Observable<APIResponse<IClientMain[]>> {
-    return this.http.get<APIResponse<IClientMain[]>>(this.urls['clients'], { headers: this.headers });
+    return this.http.get<APIResponse<IClientMain[]>>(this.urls['clients'], );
   }
 
   public getCaseManagers(): Observable<APIResponse<User[]>> {
-    return this.http.get<APIResponse<User[]>>(this.urls['caseManagers'], { headers: this.headers });
+    return this.http.get<APIResponse<User[]>>(this.urls['caseManagers'], );
   }
 
   public async initClients(shouldRefresh: boolean = false): Promise<void> {
     const cache = this.cacheService.get('clients');
 
     if (cache != null && !shouldRefresh) {
-      this.clients = new Map(cache);
-      this.clientChanges.next(this.clients);
-      this.clientChanges.complete();
+      this.mapClients(cache);
       return;
     }
 
@@ -145,9 +143,7 @@ export class CaseService extends GuardedService {
         ];
       });
 
-      this.clients = new Map(response);
-      this.clientChanges.next(this.clients);
-      this.clientChanges.complete();
+      this.mapClients(response);
       this.cacheService.set('clients', Array.from(this.clients.entries()));
     });
   }
@@ -156,9 +152,7 @@ export class CaseService extends GuardedService {
     const cache = this.cacheService.get('case_managers');
 
     if (cache != null && !shouldRefresh) {
-      this.caseManagers = new Map(cache);
-      this.caseManagerChanges.next(this.caseManagers);
-      this.caseManagerChanges.complete();
+      this.mapCaseManagers(cache);
       return;
     }
 
@@ -171,17 +165,15 @@ export class CaseService extends GuardedService {
         ];
       });
 
-      this.caseManagers = new Map(response);
-      this.caseManagerChanges.next(this.caseManagers);
-      this.caseManagerChanges.complete();
+      this.mapCaseManagers(response);
       this.cacheService.set('case_managers', Array.from(this.caseManagers.entries()));
     })
   }
 
   public initSymptomOptions() {
-    this.attrService.propertyChange.subscribe((_) => {
-      this.mentalSymptomOptions = this.attrService.properties.get(mentalSymptomMap.get('symptom_id').propertyID)?.source.options;
-      this.somaticSymptomOptions = this.attrService.properties.get(somaticSymptomMap.get('symptom_id').propertyID)?.source.options;
+    this.attrService.getPropertyMap().subscribe((properties) => {
+      this.mentalSymptomOptions = properties.get(mentalSymptomMap.get('symptom_id').propertyID)?.source.options;
+      this.somaticSymptomOptions = properties.get(somaticSymptomMap.get('symptom_id').propertyID)?.source.options;
     })
   }
 
@@ -287,6 +279,18 @@ export class CaseService extends GuardedService {
   private mapCaseResponse(data: APIResponse<any>): APIResponse<ParsedCases> {
     data.data = this.mapCases(data.data!) as ParsedCases;
     return data as APIResponse<ParsedCases>;
+  }
+
+  private mapClients(cache: any) {
+    this.clients = new Map(cache);
+    this.clients$.next(this.clients);
+    this.clients$.complete();
+  }
+
+  private mapCaseManagers(cache: any) {
+    this.caseManagers = new Map(cache);
+    this.caseManagers$.next(this.caseManagers);
+    this.caseManagers$.complete();
   }
 
   public caseList() {

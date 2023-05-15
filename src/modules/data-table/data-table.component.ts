@@ -117,7 +117,7 @@ export class DataTableComponent implements OnInit {
       return;
     }
 
-    this.attr = this.attributes.get(this.attrID);
+    this.attr = this.records.attrs.get(this.attrID);
     // let records = this.records.get(this.attrID);
 
     this.attributes

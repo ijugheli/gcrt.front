@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IMenuItem } from 'src/app/app.interfaces';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,13 +7,14 @@ import { UserService } from 'src/services/user.service';
 import { MSurveyMenuItem, User } from 'src/app/app.models';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { SurveyService } from 'src/services/survey.service';
+import { Subject, Subscription, filter, map, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'left-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   // public items: IMenuItem[] = MENU_ITEMS as IMenuItem[];
   public items: any[] = [];
 
@@ -21,6 +22,7 @@ export class MenuComponent implements OnInit {
   public objects: any[] = [];
   public trees: any[] = [];
   public attributes: any[] = [];
+  private onDestroy$: Subject<any> = new Subject();
   public surveyList!: MSurveyMenuItem[] | null;
 
   public user: User | null = null;
@@ -195,19 +197,26 @@ export class MenuComponent implements OnInit {
   }
 
   private loadAttrs() {
-    const attributeList = this.attrsService.asList();
+    this.attrsService.getList().pipe(
+      takeUntil(this.onDestroy$),
+      map((attrs) => {
+        return attrs.filter((e) => e.status_id === true);
+      })).subscribe((attrs) => {
+        const attributeList: MAttribute[] = attrs;
 
-    this.attributes = attributeList.filter((i: any) => {
-      return i['type'] == 1;
-    }).map(this.mapAttributeType);
+        this.attributes = attributeList.filter((i: any) => {
+          return i['type'] == 1;
+        }).map(this.mapAttributeType);
 
-    this.trees = attributeList.filter((i: any) => {
-      return i['type'] == 2;
-    }).map(this.mapAttributeType);
+        this.trees = attributeList.filter((i: any) => {
+          return i['type'] == 2;
+        }).map(this.mapAttributeType);
 
-    // this.objects = attributeList.filter((i: any) => {
-    //   return i['type'] == 3;
-    // }).map(this.mapAttributeType);
+        // this.objects = attributeList.filter((i: any) => {
+        //   return i['type'] == 3;
+        // }).map(this.mapAttributeType);
+      });
+
   }
 
   private mapAttributeType(attr: MAttribute) {
@@ -236,6 +245,11 @@ export class MenuComponent implements OnInit {
 
   public navigate(attrID: number) {
     window.location.href = '/manage/' + attrID;
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   // private asMenuItem(attr: IMenuItem): IMenuItem {

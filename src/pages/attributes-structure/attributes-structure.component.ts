@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MAttribute } from '../../services/attributes/models/attribute.model';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { MProperty } from 'src/services/attributes/models/property.model';
@@ -6,13 +6,14 @@ import { MOption } from '../../services/attributes/models/option.model';
 import { APIResponse } from 'src/app/app.interfaces';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddAttributeComponent } from './add-attribute/add-attribute.component';
 import { ATTR_TYPE_ID, ATTR_TYPE_NAME } from 'src/app/app.config';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 import { MAttributeSection } from 'src/services/attributes/models/section.model';
 import { getRouteParam } from 'src/app/app.func';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -22,11 +23,12 @@ import { getRouteParam } from 'src/app/app.func';
   providers: [MessageService]
 })
 
-export class AttributesStructureComponent implements OnInit {
+export class AttributesStructureComponent implements OnInit, OnDestroy {
   public pageTitle: string = 'მონაცემთა სქემები';
   public isLoading: boolean = false;
   public addPropertyButton = false;
   public attributes: MAttribute[] = [];
+  private attrs$!: Subscription;
   public addPropertiesData: MProperty = new MProperty();
   public attrType: any = {
     'standard': 'სტანდარტული ატრიბუტები',
@@ -116,6 +118,10 @@ export class AttributesStructureComponent implements OnInit {
   public updateAttr(attr: MAttribute, value: any, isLazy?: boolean) {
     const oldAttr: MAttribute | undefined = this.attributes.find((val) => val.id == attr.id);
 
+    if (typeof value == 'boolean') {
+      oldAttr!.status_id = value;
+    }
+
     let newAttr = { ...attr };
 
     newAttr.children = newAttr.tabs = newAttr.properties = newAttr.columns = newAttr.sections = newAttr.tabs = newAttr.options = [];
@@ -124,6 +130,7 @@ export class AttributesStructureComponent implements OnInit {
       const response: APIResponse = data;
 
       this.showSuccess(response.message);
+      this.refreshAttrList();
     }, (error) => {
       this.showError(error.error.message);
 
@@ -141,7 +148,7 @@ export class AttributesStructureComponent implements OnInit {
           data.is_primary = false;
         });
       }
-
+      this.refreshAttrList();
       this.showSuccess(response.message);
     }, (error) => {
       this.showError(error.error.message);
@@ -160,6 +167,8 @@ export class AttributesStructureComponent implements OnInit {
 
           this.attributes = this.attributes.slice(this.attributes.findIndex((i) => i.id === attrID), 1);
 
+          this.refreshAttrList();
+
           this.showSuccess(response.message);
         }, (error) => {
           this.showError(error.error.message);
@@ -171,7 +180,6 @@ export class AttributesStructureComponent implements OnInit {
 
   public onDeleteProperty(propertyID: number, type: number, attrID: number) {
     const title = type == 1 ? 'პარამეტრის' : 'სექციის';
-    const attr = this.attributesService.attributes.get(attrID);
 
     this.confirmationService.confirm({
       header: title + 'წაშლა',
@@ -182,7 +190,7 @@ export class AttributesStructureComponent implements OnInit {
         this.attributesService.removeProperty(propertyID).subscribe((data) => {
           const response: APIResponse = data;
 
-          this.initializeAttrList();
+          this.refreshAttrList();
 
           this.showSuccess(response.message);
         }, (error) => {
@@ -205,17 +213,18 @@ export class AttributesStructureComponent implements OnInit {
   }
 
   public onAddAttrClick(type: number) {
-    this.dialogService.open(AddAttributeComponent, {
+    const ref: DynamicDialogRef = this.dialogService.open(AddAttributeComponent, {
       data: { type: type, },
       width: '30%',
       position: 'top',
     });
+    ref.onClose.subscribe(this.reloadOnAdd);
   }
 
   public onAddClick(property: MProperty | null, attrID: number, isSectionProperty: boolean = false) {
     const component = isSectionProperty ? AddSectionPropertyComponent : AddSectionComponent;
 
-    const ref = this.dialogService.open(component, {
+    const ref: DynamicDialogRef = this.dialogService.open(component, {
       data: { property: property, attrSources: this.attrSources, attrID: attrID },
       width: '30%',
       position: 'top',
@@ -234,24 +243,23 @@ export class AttributesStructureComponent implements OnInit {
 
     this.pageTitle = this.pageTitle + ' - ' + this.getAttrTypeName(this.typeID);
 
-    await this.initializeAttrList();
-
     this.initializeDataTypes();
     this.initializeViewTypes();
-    this.attrSources = this.attributesService.asList().map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
-
-    console.log(this.attributes);
-
+    this.initAttrs();
     this.isLoading = false;
     this.spinner.hide();
   }
 
-  private async initializeAttrList() {
-    let that = this;
-
-    await this.attributesService.reload().then((list: MAttribute[]) => {
-      that.attributes = list.filter((i) => i.type == this.typeID);
+  private initAttrs(): void {
+    this.refreshAttrList();
+    this.attrs$ = this.attributesService.getStructureList().subscribe((attrs) => {
+      this.attributes = attrs.filter((i) => i.type == this.typeID);
+      this.attrSources = attrs.map((attr: MAttribute) => MOption.from(attr.id, attr.title as string));
     });
+  }
+
+  private refreshAttrList(): void {
+    this.attributesService.load(true);
   }
 
   private initializeDataTypes() {
@@ -283,12 +291,16 @@ export class AttributesStructureComponent implements OnInit {
   private reloadOnAdd = (isSuccess: boolean) => {
     if (isSuccess) {
       this.spinner.show();
-      this.initializeAttrList();
+      this.refreshAttrList();
       this.spinner.hide();
     }
   };
 
   onRowReorder(event: any, id: any, propertyData: any) {
     this.reorderProperties(propertyData, id);
+  }
+
+  ngOnDestroy(): void {
+    this.attrs$.unsubscribe();
   }
 }

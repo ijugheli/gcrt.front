@@ -36,6 +36,7 @@ export class DataTableService {
   public selected: MRecord[] = [];
 
   public filterOptions: any = ACTION_SETTINGS;
+  public attrs: Map<number, MAttribute> = new Map();
 
   constructor(
     private filterService: FilterService,
@@ -95,7 +96,7 @@ export class DataTableService {
     if (!this.attrID)
       return;
 
-    this.attribute = await this.attributes.get(this.attrID);
+    this.attribute = this.recordsService.attrs.get(this.attrID);
   }
 
   private async loadRecords() {
@@ -120,7 +121,7 @@ export class DataTableService {
 
   public onAddRecord(attrID?: number) {
 
-    const attribute = (attrID) ? this.attributes.get(attrID) : this.attribute;
+    const attribute = (attrID) ? this.recordsService.attrs.get(attrID) : this.attribute;
 
     // if (attribute?.isEntity()) {
     //   this.router.navigateByUrl('/add/' + attribute.id);

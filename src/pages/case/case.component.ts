@@ -57,8 +57,8 @@ export class CaseComponent implements OnInit {
 
     forkJoin({
       response: this.caseService.index(),
-      clients: this.caseService.clientChanges,
-      caseManagers: this.caseService.caseManagerChanges
+      clients: this.caseService.clients$,
+      caseManagers: this.caseService.caseManagers$
     }
     ).subscribe({
       next: ({ response, clients, caseManagers }) => this.setData(response),
@@ -174,7 +174,7 @@ export class CaseComponent implements OnInit {
 
   private initTree(treeKey: keyof CaseService, attrID: number): void {
     if (this.caseService[treeKey].length > 0) return;
-    this.attrService.treeMapChange.subscribe((treeMap) => {
+    this.attrService.treeMap$.subscribe((treeMap) => {
       this.caseService[treeKey] = treeMap.get(attrID);
     })
   }

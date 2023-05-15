@@ -106,6 +106,26 @@ export const ACTION_SETTINGS = {
     { label: 'თარიღი ნაკლებია', value: 'custom-dateBefore' },
   ]
 }
+export const DISABLED_ATTRS = [27, 45, 43, 44, 42, 30, 48, 50, 51, 52, 58, 13,
+  15,
+  16,
+  17,
+  18,
+  20,
+  21,
+  22,
+  24,
+  25,
+  29,
+  32,
+  47,
+  57,
+  66,
+  67,
+  68,
+  69,
+  70,
+  71,];
 
 export enum AttrPermissionTypes {
   CAN_VIEW = 1,

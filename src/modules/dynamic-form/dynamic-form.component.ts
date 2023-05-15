@@ -87,7 +87,7 @@ export class DynamicFormComponent implements OnInit {
   private load() {
 
     /////////BODY//////////////
-    let attribute = this.attributes.find(this.attrID);
+    let attribute = this.records.attrs.get(this.attrID);
     if (attribute == null) return;
 
     // this.form.record ? this.form.withAttribute(attribute);
