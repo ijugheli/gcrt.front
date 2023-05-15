@@ -22,7 +22,7 @@ import { APIResponse } from 'src/app/app.interfaces';
 @Injectable({
     providedIn: 'root'
 })
-export class RecordsService  {
+export class RecordsService {
 
     private cacheKey = 'records';
     /**
@@ -47,8 +47,8 @@ export class RecordsService  {
     constructor(
         private http: HttpClient,
         private attributes: AttributesService,
-        ) {
-        
+    ) {
+
         this.attributes.getMap().subscribe((attrs) => {
             this.attrs = attrs;
         });
@@ -63,7 +63,7 @@ export class RecordsService  {
         console.log('Current Records');
     }
 
-    private save(response: any) {
+    public save(response: any) {
         if (!response || !response.hasOwnProperty('record') || !response.record) {
             return;
         }
@@ -90,7 +90,7 @@ export class RecordsService  {
         const attribute = this.attrs.get(attrID);
         await this.http.get<APIResponse<MRecord[]>>(
             this.urls['records'].replace('{attr_id}', attrID.toString()
-            ), ).pipe(first()).toPromise().then((response) => {
+            ),).pipe(first()).toPromise().then((response) => {
                 if (!response || !response.hasOwnProperty('data') || !response.data) {
                     return;
                 }
@@ -127,7 +127,7 @@ export class RecordsService  {
     public async add(attrID: number, values: any, func?: Function) {
         this.http.post(
             this.urls['add'].replace('{attr_id}', attrID.toString()
-            ), values, ).subscribe((response) => {
+            ), values,).subscribe((response) => {
                 if (response && response.hasOwnProperty('record')) {
                     this.save(response);
                 }
@@ -140,7 +140,7 @@ export class RecordsService  {
     public async edit(attrID: number, valueID: number, values: any, func?: Function) {
         this.http.post(this.urls['edit']
             .replace('{attr_id}', attrID.toString())
-            .replace('{value_id}', valueID.toString()), values, ).subscribe((response) => {
+            .replace('{value_id}', valueID.toString()), values,).subscribe((response) => {
                 if (response && response.hasOwnProperty('record')) {
                     this.save(response);
                 }
@@ -152,6 +152,6 @@ export class RecordsService  {
 
     //Should be updating concrete
     public editValueItem(values: any) {
-        return this.http.post(this.urls['editValueItem'], values, );
+        return this.http.post(this.urls['editValueItem'], values,);
     }
 }

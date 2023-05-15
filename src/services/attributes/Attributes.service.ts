@@ -118,7 +118,7 @@ export class AttributesService {
         this.attributes$.next(this.attributes);
     }
 
-    private getStatic(f?: Function): Observable<APIResponse<IAttribute[]>> {
+    private getStatic(): Observable<APIResponse<IAttribute[]>> {
         return this.http.get<APIResponse<IAttribute[]>>(this.urls['static'],);
     }
 
@@ -275,26 +275,7 @@ export class AttributesService {
 
     private parseAttributes(data: IAttribute[]) {
         data.forEach((source: IAttribute) => {
-            let properties: MProperty[] = [];
-            let columns: MProperty[] = [];
-            //assigns created property objects to properties column; 
-            source.properties.forEach((source: IProperty) => {
-                let property = this.properties.get(source.id);
-                if (!property || property == null || property === undefined) {
-                    return;
-                }
-
-                properties.push(property);
-            });
-
-            properties = properties.sort((a, b) => a.order_id - b.order_id);
-            columns = properties.filter((prop) => !prop.isSection());
-
-            const attribute: MAttribute = new MAttribute(source, properties);
-            // attribute.withProps(properties);
-            attribute.withColumns(columns);
-
-            this.attributes.set(attribute.id, attribute);
+            this.parseAttribute(source);
         });
 
         console.log('----------Attributes----------');
@@ -410,6 +391,29 @@ export class AttributesService {
                 ? (a.property?.order_id > b.property?.order_id ? 1 : -1)
                 : 1;
         });
+    }
+
+    private parseAttribute(source: IAttribute) {
+        let properties: MProperty[] = [];
+        let columns: MProperty[] = [];
+        //assigns created property objects to properties column; 
+        source.properties.forEach((source: IProperty) => {
+            let property = this.properties.get(source.id);
+            if (!property || property == null || property === undefined) {
+                return;
+            }
+
+            properties.push(property);
+        });
+
+        properties = properties.sort((a, b) => a.order_id - b.order_id);
+        columns = properties.filter((prop) => !prop.isSection());
+
+        const attribute: MAttribute = new MAttribute(source, properties);
+        // attribute.withProps(properties);
+        attribute.withColumns(columns);
+
+        this.attributes.set(attribute.id, attribute);
     }
 
     /* For Case and Client  

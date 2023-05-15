@@ -167,7 +167,7 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
         takeUntil(this.onDestroy$),
         map(properties => properties.get(this.data['propertyID'])?.source.options
         ),
-        tap(options => this.hasFilter = options.length > 5)
+        tap(options => this.hasFilter = options?.length > 5)
       ).subscribe(options => {
         this.options = options;
         this.initialized = true;

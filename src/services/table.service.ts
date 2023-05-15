@@ -159,6 +159,8 @@ export class DataTableService {
 
     dialogReference.onClose.subscribe((d: any) => {
       this.reload();
+      this.attributes.load(true); // refresh static
+
     });
   }
 
@@ -194,6 +196,7 @@ export class DataTableService {
     dialogReference.onClose.subscribe((d: any) => {
       this.selected = [];
       this.reload();
+      this.attributes.load(true); // refresh static
     });
   }
 
@@ -220,7 +223,9 @@ export class DataTableService {
             severity: 'success',
             summary: 'შერჩეული ჩანაწერების წაშლა წარმატებით დასრულდა'
           });
-          // this.load();
+          this.reload();
+          this.attributes.load(true); // refresh static
+
         });
       }, reject: () => {
 
@@ -364,7 +369,7 @@ export class DataTableService {
     }
 
     let columns = [this.attribute.properties.map((item) => item.title)];
-    let body = Object.values(this.attribute.rows).map<RowInput>((item) => Object.values(item));
+    let body = Object.values(this.attribute.rows as Map<number, MRecord>).map<RowInput>((item) => Object.values(item));
 
     import("jspdf").then(jsPDF => {
       import("jspdf-autotable").then(x => {
