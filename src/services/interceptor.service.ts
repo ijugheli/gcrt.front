@@ -11,8 +11,7 @@ export class InterceptorService implements HttpInterceptor {
     public token: string | null = null;
     constructor(
         private router: Router,
-        private authService: AuthService,
-        private cacheService: CacheService,
+        private cacheService: CacheService
     ) {
     }
 

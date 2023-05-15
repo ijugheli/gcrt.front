@@ -9,7 +9,8 @@ export class AuthGuardService implements CanActivate {
   constructor(public auth: AuthService, public router: Router) { }
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this.auth.authStatus$.pipe(map((isAuth: boolean) => {
+    return this.auth.authStatus$.pipe(
+      map((isAuth: boolean) => {
       if(!isAuth) {
         this.router.navigateByUrl('/login');
       }
