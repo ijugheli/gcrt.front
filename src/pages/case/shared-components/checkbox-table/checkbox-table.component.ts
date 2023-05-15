@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CaseSharedInterface, ICaseSharedSymptom, MCheckboxTableItem, MTreeCheckboxTableItem } from '../../case.model';
+import {ICaseSharedSymptom, MCheckboxTableItem } from '../../case.model';
 import { MOption } from 'src/services/attributes/models/option.model';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
 import { ICustomInput } from 'src/app/app.interfaces';
