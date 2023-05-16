@@ -36,6 +36,7 @@ export class AttributesService {
 
     public urls: any = {
         'static': API_URL + '/attrs/static',
+        'staticAttr': API_URL + '/attrs/static/{attr_id}',
         'list': API_URL + '/attrs/',
         'withProperties': API_URL + '/attrs/{attr_id}',
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
@@ -109,6 +110,12 @@ export class AttributesService {
         });
     }
 
+    public getNewStaticAttr(attrID: number) {
+        this.getAttrStatic(attrID).subscribe((response) => {
+            this.parseNewAttr(response.data!);
+        });
+    }
+
     public parseStaticAttrs(data: IAttribute[]): void {
         this.attributes = new Map();
         this.properties = new Map();
@@ -121,6 +128,9 @@ export class AttributesService {
     private getStatic(): Observable<APIResponse<IAttribute[]>> {
         return this.http.get<APIResponse<IAttribute[]>>(this.urls['static'],);
     }
+    private getAttrStatic(attrID: number): Observable<APIResponse<IAttribute>> {
+        return this.http.get<APIResponse<IAttribute>>(this.urls['staticAttr'].replace('{attr_id}', attrID.toString()),);
+    }
 
     private parse(data: IAttribute[]) {
         this.parseProperties(data);
@@ -130,6 +140,27 @@ export class AttributesService {
         this.appendTabs();
         this.appendValues();
         this.appendSources();
+    }
+
+    private parseNewAttr(attribute: IAttribute) {
+        const attrs: IAttribute[] = this.cacheService.get(this.cacheKey);
+        const attrIndex: number = attrs.findIndex((e: IAttribute) => e.id == attribute.id);
+        attrs[attrIndex] = attribute;
+        this.saveCache(attrs);
+        this.parseAttrProperties(attribute);
+        this.parseAttribute(attribute);
+
+        const parsedAttr: MAttribute | undefined = this.attributes.get(attribute.id);
+
+        this.appendAttrChildren(parsedAttr!);
+        this.appendSection(parsedAttr!);
+        this.appendTab(parsedAttr!);
+        this.appendAttrValues(parsedAttr!);
+
+        this.appendSources();
+
+        this.attributes$.next(this.attributes);
+        this.properties$.next(this.properties);
     }
 
 
@@ -263,13 +294,7 @@ export class AttributesService {
     //Parsers
     private parseProperties(data: IAttribute[]) {
         data.map((item) => {
-            if (!item.properties || item.properties.length <= 0) {
-                return;
-            }
-
-            item.properties.map((property: IProperty) => {
-                this.properties.set(property.id, new MProperty(property));
-            });
+            this.parseAttrProperties(item);
         });
     }
 
@@ -285,52 +310,25 @@ export class AttributesService {
 
     private appendChildren() {
         this.attributes.forEach((attribute: MAttribute) => {
-            if (!attribute.hasParent()) {
-                return;
-            }
-
-            this.attributes.get(attribute.parentID())?.appendChild(attribute);
+            this.appendAttrChildren(attribute);
         });
     }
 
     private appendValues() {
         this.attributes.forEach((attribute: MAttribute) => {
-            if (!attribute.hasValues()) {
-                return;
-            }
-
-            attribute.values.forEach((value: MPropertyValue) => {
-                this.values.set(value.id, value.setProperty(this.properties.get(value.id)));
-            });
+            this.appendAttrValues(attribute);
         });
     }
 
     public appendSources() {
         this.properties.forEach((property: MProperty) => {
-            if (!property.hasSource() || !property.source_attr_id) {
-                return;
-            }
-
-            let attribute = this.find(property.source_attr_id);
-            if (attribute)
-                property = property.withSource(attribute);
+            this.appendSource(property);
         });
     }
 
     private appendTabs() {
         this.attributes.forEach((attribute: MAttribute) => {
-            let initial = (new MAttributeTab()).set({
-                title: 'მონაცემები',
-                id: attribute.id
-            });
-
-            if (attribute.hasChildren()) {
-                attribute.tabs = [
-                    initial,
-                    ...attribute.children.map((child: MAttribute) => new MAttributeTab(child))
-                ]
-                return;
-            }
+            this.appendTab(attribute);
         });
     }
 
@@ -393,6 +391,16 @@ export class AttributesService {
         });
     }
 
+    private parseAttrProperties(item: IAttribute) {
+        if (!item.properties || item.properties.length <= 0) {
+            return;
+        }
+
+        item.properties.map((property: IProperty) => {
+            this.properties.set(property.id, new MProperty(property));
+        });
+    }
+
     private parseAttribute(source: IAttribute) {
         let properties: MProperty[] = [];
         let columns: MProperty[] = [];
@@ -410,11 +418,54 @@ export class AttributesService {
         columns = properties.filter((prop) => !prop.isSection());
 
         const attribute: MAttribute = new MAttribute(source, properties);
-        // attribute.withProps(properties);
         attribute.withColumns(columns);
 
         this.attributes.set(attribute.id, attribute);
     }
+
+    private appendAttrChildren(source: MAttribute) {
+        if (!source.hasParent()) {
+            return;
+        }
+
+        this.attributes.get(source.parentID())?.appendChild(source);
+    }
+
+    private appendTab(source: MAttribute) {
+        let initial = (new MAttributeTab()).set({
+            title: 'მონაცემები',
+            id: source.id
+        });
+
+        if (source.hasChildren()) {
+            source.tabs = [
+                initial,
+                ...source.children.map((child: MAttribute) => new MAttributeTab(child))
+            ]
+            return;
+        }
+    }
+
+    private appendAttrValues(source: MAttribute) {
+        if (!source.hasValues()) {
+            return;
+        }
+
+        source.values.forEach((value: MPropertyValue) => {
+            this.values.set(value.id, value.setProperty(this.properties.get(value.id)));
+        });
+    }
+
+    private appendSource(property: MProperty) {
+        if (!property.hasSource() || !property.source_attr_id) {
+            return;
+        }
+
+        let attribute = this.find(property.source_attr_id);
+        if (attribute)
+            property = property.withSource(attribute);
+    }
+
 
     /* For Case and Client  
         AsyncSubjects for updating inputs(treeselect,dropdown) on data (options)

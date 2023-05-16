@@ -159,7 +159,7 @@ export class DataTableService {
 
     dialogReference.onClose.subscribe((d: any) => {
       this.reload();
-      this.attributes.load(true); // refresh static
+      this.attributes.getNewStaticAttr(attribute!.id); // refresh static
 
     });
   }
@@ -196,7 +196,7 @@ export class DataTableService {
     dialogReference.onClose.subscribe((d: any) => {
       this.selected = [];
       this.reload();
-      this.attributes.load(true); // refresh static
+      this.attributes.getNewStaticAttr(this.attribute!.id); // refresh static
     });
   }
 
@@ -224,7 +224,7 @@ export class DataTableService {
             summary: 'შერჩეული ჩანაწერების წაშლა წარმატებით დასრულდა'
           });
           this.reload();
-          this.attributes.load(true); // refresh static
+          this.attributes.getNewStaticAttr(this.attribute!.id); // refresh static
 
         });
       }, reject: () => {
