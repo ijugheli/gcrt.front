@@ -160,6 +160,9 @@ export class DynamicFormComponent implements OnInit {
       if (value && field && field['key'] && field['value'])
         value[field['key']] = field['value'];
       this.values.set(key, value);
+      console.log('this.values');
+      console.log(this.values);
+      console.log('this.values');
     });
   }
 

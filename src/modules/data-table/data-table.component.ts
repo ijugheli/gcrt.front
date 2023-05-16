@@ -430,6 +430,9 @@ export class DataTableComponent implements OnInit {
         }
       ];
     }
+    console.log('row');
+    console.log(row);
+    console.log('row');
     this.formService.withAttribute(this.attr!);
 
     const dialogReference = this.dialogService.open(DynamicFormComponent, {

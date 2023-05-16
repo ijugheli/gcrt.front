@@ -13,11 +13,15 @@
 ></custom-input>
 <p-table
   [value]="parsedOptions"
+  [rows]="10"
+  [paginator]="true"
+  [showCurrentPageReport]="true"
   styleClass="p-datatable-sm p-datatable-gridlines mt-4"
   sortField="title"
   sortMode="single"
   dataKey="title"
   responsiveLayout="scroll"
+  currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
 >
   <ng-template pTemplate="header">
     <tr>
