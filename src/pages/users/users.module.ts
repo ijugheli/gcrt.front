@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersComponent } from './users.component';
-import { MenuModule } from 'src/modules/menu/menu.module';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +20,6 @@ import { PanelModule } from 'primeng/panel';
 @NgModule({
   imports: [
     CommonModule,
-    MenuModule,
     ConfirmDialogModule,
     DividerModule,
     MultiSelectModule,

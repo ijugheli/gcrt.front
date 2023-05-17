@@ -570,128 +570,6 @@ $border: 1px solid $lightgrey;
     }
 }
 
-.menu {
-    width: 250px;
-    border-right: 1px solid #D3DFEB;
-    vertical-align: top;
-    display: inline-block;
-    height: 100vh;
-
-    .list {
-        padding: 20px;
-
-        li {
-            margin-bottom: 20px;
-
-            .sub-list {
-                padding: 0 20px;
-                border-left: $border;
-                max-height: 0px;
-                overflow: hidden;
-                transition: 0.4s;
-            }
-
-            .arrow {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                right: 0;
-                transition: 0.2s;
-            }
-
-            &.active {
-                .arrow {
-                    transform: rotate(180deg);
-                }
-
-                .drop {
-                    color: $green;
-
-                    img {
-                        filter: $greenicon;
-                    }
-                }
-
-                .sub-list {
-                    margin-top: 20px;
-                    max-height: 500px;
-                    overflow-y: auto;
-
-                    &::-webkit-scrollbar {
-                        display: none;
-                    }
-                }
-            }
-        }
-
-        .drop,
-        a {
-            .frame {
-                width: 20px;
-                height: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-right: 10px;
-
-                img {
-                    transition: 0.2s;
-                    max-width: 100%;
-                    max-height: 100%;
-                }
-            }
-
-            position: relative;
-            font-family: light;
-            font-size: 12px;
-            color: $grey;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            transition: 0.2s;
-
-            &:hover {
-                color: $green;
-
-                img {
-                    filter: $greenicon;
-                }
-            }
-        }
-
-        .drop {
-            padding-right: 20px;
-        }
-    }
-
-    .logout {
-        border-top: $border;
-        padding: 20px;
-
-        img {
-            margin-right: 10px;
-        }
-
-        a {
-            font-family: light;
-            font-size: 12px;
-            color: $grey;
-            display: flex;
-            align-items: center;
-            transition: 0.2s;
-
-            &:hover {
-                color: $green;
-
-                img {
-                    transition: 0.2s;
-                    filter: $greenicon;
-                }
-            }
-        }
-    }
-}
-
 section {
     padding: 0px 0px 0px 0px;
     display: inline-block;
@@ -1574,6 +1452,6 @@ app-attribute-form .p-panel .p-panel-content {
     font-family: roman;
 }
 
-.p-ripple.p-element.p-button.p-component  span.p-button-label {
+.p-ripple.p-element.p-button.p-component span.p-button-label {
     width: max-content;
 }

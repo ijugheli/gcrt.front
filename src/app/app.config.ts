@@ -127,6 +127,115 @@ export const DISABLED_ATTRS = [27, 45, 43, 44, 42, 30, 48, 50, 51, 52, 58, 13,
   70,
   71,];
 
+export const MENU_ITEMS = [
+  {
+    label: 'მონაცემთა ბაზა',
+    icon: 'pi pi-fw pi-server',
+    items: [
+      {
+        label: 'კლიენტი',
+        routerLink: '/client',
+        routerLinkActiveOptions: { exact: true },
+      },
+      {
+        label: 'ქეისი',
+        routerLink: '/case',
+        routerLinkActiveOptions: { exact: true },
+      },
+    ]
+  },
+  {
+    label: 'პარამეტრები',
+    icon: 'pi pi-fw pi-wrench',
+    items: [
+      {
+        label: 'სტანდარტული ატრიბუტები',
+        icon: 'pi pi-fw pi-list',
+        items: []
+      },
+      {
+        label: 'მრავალდონიანი ატრიბუტები',
+        icon: 'pi pi-fw pi-sitemap',
+        items: []
+      }
+    ]
+  },
+  {
+    label: 'რეპორტინგი',
+    icon: 'pi pi-fw pi-chart-line',
+    disabled: true
+  },
+  {
+    label: 'მონაცემთა სქემები',
+    icon: 'pi pi-fw pi-chart-bar',
+    items: [{
+      label: 'სტანდარტული ატრიბუტები',
+      icon: 'pi pi-fw pi-list',
+      routerLink: '/structure/1',
+      routerLinkActiveOptions: { exact: true },
+    },
+    {
+      label: 'ხისებრი ატრიბუტები',
+      icon: 'pi pi-fw pi-sitemap',
+      routerLink: '/structure/2',
+      routerLinkActiveOptions: { exact: true },
+    },
+    {
+      label: 'ობიექტები',
+      routerLink: '/structure/3',
+      icon: 'pi pi-fw pi-box',
+      routerLinkActiveOptions: { exact: true },
+    },
+    ]
+  },
+  {
+    label: 'კითხვარები',
+    icon: 'pi pi-fw pi-book',
+    items: []
+  },
+  {
+    label: 'ადმინისტრაცია',
+    icon: 'pi pi-fw pi-users',
+    items: [
+      {
+        label: 'დამატება',
+        routerLink: '/users/add',
+        icon: 'pi pi-fw pi-user-plus',
+        routerLinkActiveOptions: { exact: true },
+      },
+      {
+        label: 'ადმინისტრატორები',
+        routerLink: '/users',
+        icon: 'pi pi-fw pi-list',
+        routerLinkActiveOptions: { exact: true },
+      },
+    ]
+  },
+  {
+    label: '',
+    title: 'user',
+    icon: 'pi pi-fw pi-user',
+    items: [
+      {
+        label: 'პირადი აქტივობა',
+        routerLink: '/reports/users',
+        icon: 'pi pi-fw pi-chart-bar',
+        routerLinkActiveOptions: { exact: true },
+      },
+      {
+        label: 'პაროლის შეცვლა',
+        routerLink: '/change-password',
+        icon: 'pi pi-fw pi-lock-open',
+        routerLinkActiveOptions: { exact: true },
+      },
+      {
+        label: 'გასვლა',
+        icon: 'pi pi-fw pi-sign-out',
+      },
+    ]
+  },
+];
+
 export enum AttrPermissionTypes {
   CAN_VIEW = 1,
   CAN_UPDATE = 2,

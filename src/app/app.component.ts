@@ -1,21 +1,30 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
-import { VIEW_TYPE_ID } from './app.config';
-import { flattenTree, parseTree } from './app.func';
 import { CaseService } from 'src/services/case.service';
 import { AuthService } from 'src/services/AuthService.service';
+import { SurveyService } from 'src/services/survey.service';
+import { UserService } from 'src/services/user.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'project';
-  public isMenuVisible: boolean = true;
 
-  constructor(private activatedRoute: ActivatedRoute, public attrService: AttributesService, public caseService: CaseService, public authService: AuthService) {
+  constructor(
+    public attrService: AttributesService,
+    public caseService: CaseService,
+    public authService: AuthService,
+    public surveyService: SurveyService,
+    public userService: UserService
+  ) {
+
+  }
+
+  ngOnInit() {
+
     this.authService.getToken();
     // Load data for app when user is authorized;
     this.authService.authStatus$.subscribe((isAuth) => {
@@ -28,10 +37,5 @@ export class AppComponent {
         this.caseService.initSymptomOptions();
       }
     });
-    this.authService.isMenuVisible$.subscribe((bool) => {
-      this.isMenuVisible = bool;
-    });
   }
-
-
 }

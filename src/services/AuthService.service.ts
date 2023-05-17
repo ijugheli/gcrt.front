@@ -19,23 +19,10 @@ export class AuthService {
     'sendCode': API_URL + '/user/send-code',
     'validateCode': API_URL + '/user/validate-code',
   };
-  private pages: string[] = [
-    'login',
-    'forgot-password',
-    'update-password',
-    'otp'
-  ];
-
-  public isMenuVisible$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public authStatus$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  constructor(private http: HttpClient, private cacheService: CacheService, private route: ActivatedRoute, private router: Router) {
-    this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-    ).subscribe((event) => {
-      this.menuExists(event.url);
-    })
-  }
 
+  constructor(private http: HttpClient, private cacheService: CacheService, private router: Router) {
+  }
 
   public getToken() {
     const auth = this.cacheService.get('auth');
@@ -97,13 +84,5 @@ export class AuthService {
     this.cacheService.remove('auth');
     this.authStatus$.next(false);
     this.router.navigate(['login'], { replaceUrl: true });
-  }
-
-  public menuExists(url: string) {
-    this.isMenuVisible$.next(!this.pages.some((page) => url.indexOf(page) > - 1));
-  }
-
-  public disableMenu() {
-    this.isMenuVisible$.next(false);
   }
 }
