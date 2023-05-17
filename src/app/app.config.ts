@@ -214,6 +214,8 @@ export const MENU_ITEMS = [
   {
     label: '',
     title: 'user',
+    styleClass: 'border-solid surface-border border-top-1 border-bottom-none border-left-none border-right-none',
+
     icon: 'pi pi-fw pi-user',
     items: [
       {
