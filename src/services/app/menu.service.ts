@@ -7,6 +7,8 @@ import { MenuItem } from 'primeng/api';
 import { MENU_ITEMS } from 'src/app/app.config';
 import { MAttribute } from '../attributes/models/attribute.model';
 import { SurveyService } from '../survey.service';
+import { AuthService } from '../AuthService.service';
+import { User } from 'src/app/app.models';
 
 
 @Injectable({
@@ -27,7 +29,8 @@ export class MenuService {
         private router: Router,
         private attrService: AttributesService,
         private userService: UserService,
-        private surveyService: SurveyService
+        private surveyService: SurveyService,
+        private authService: AuthService,
     ) {
         this.router.events.pipe(
             filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -53,9 +56,8 @@ export class MenuService {
 
     public loadMenuItems(): void {
         this.items = MENU_ITEMS;
-        const user = this.userService.me();
-        const index: number = this.items.findIndex((e: MenuItem) => e.title === 'user');
-        this.items[index].label = `${user?.name} ${user?.lastname}`;
+        this.updateMenuItemProperties();
+
         this.attrService.getList().pipe(
             map((attrs) => attrs.filter((e) => e.status_id === true))
         ).subscribe((attrs) => {
@@ -72,6 +74,14 @@ export class MenuService {
             this.items$.next(this.items);
         });
 
+    }
+
+    private updateMenuItemProperties(): void {
+        const user: User | null = this.userService.me();
+        const userMenuItem = this.items.find((item: any) => item.title === 'user');
+        const logoutMenuItem = userMenuItem.items.find((item: any) => item.label === 'გასვლა');
+        userMenuItem.label = `${user?.name} ${user?.lastname}`;
+        logoutMenuItem.command = () => this.authService.logout();
     }
 
     private parseAttrs(attrs: MAttribute[]): void {
