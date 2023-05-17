@@ -36,22 +36,22 @@ export class MenuService {
         })
     }
 
-    public menuExists(url: string) {
+    public menuExists(url: string): void {
         this.isMenuVisible$.next(!this.pages.some((page) => url.indexOf(page) > - 1));
     }
 
-    public hideMenu() {
+    public hideMenu(): void {
         this.isMenuVisible$.next(false);
     }
-    public showMenu() {
+    public showMenu(): void {
         this.isMenuVisible$.next(true);
     }
 
-    public toggleMenu() {
+    public toggleMenu(): void {
         this.isMenuVisible$.next(!this.isMenuVisible$.getValue());
     }
 
-    public loadMenuItems() {
+    public loadMenuItems(): void {
         this.items = MENU_ITEMS;
         const user = this.userService.me();
         const index: number = this.items.findIndex((e: MenuItem) => e.title === 'user');
@@ -74,7 +74,7 @@ export class MenuService {
 
     }
 
-    private parseAttrs(attrs: MAttribute[]) {
+    private parseAttrs(attrs: MAttribute[]): void {
         const standardAttrs = attrs.filter((i: any) => {
             return i['type'] == 1;
         }).map((e) => this.mapAttributeType(e));
