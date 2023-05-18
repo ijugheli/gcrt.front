@@ -79,9 +79,12 @@ export class CaseFormComponent implements OnInit {
         } else {
           let model: any[] = this.Case[this.CaseConfig.detailTypes[type]];
           const index = model.findIndex((e: any) => e.generated_id == event.data.generated_id);
+          const newParsedArray: any[] = [];
           model.splice(index, 1);
+          model = model.length > 0 ? [...model].map((e) => this.parseNewDetails(e, newParsedArray)) : [];
+          this.parsedCase[this.CaseConfig.detailTypes[type]] = newParsedArray;
+          this.showMsg(event.successMessage!, 'success');
         }
-        this.showMsg(event.successMessage!, 'success');
       }
     });
   }
