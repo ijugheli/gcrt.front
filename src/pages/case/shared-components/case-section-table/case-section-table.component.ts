@@ -9,6 +9,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ICaseCol } from 'src/app/app.interfaces';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MOnSectionEvent } from '../../case.model';
+import { MenuService } from 'src/services/app/menu.service';
 // For diagnosis, consultation, referral,
 @Component({
   standalone: true,
@@ -32,6 +33,7 @@ export class CaseSectionTable implements OnInit {
 
   constructor(
     public attrService: AttributesService,
+    public menuService: MenuService,
     public ref: DynamicDialogRef,
     public dialog: DynamicDialogConfig,
 

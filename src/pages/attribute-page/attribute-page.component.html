@@ -1,4 +1,4 @@
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
     <data-table
         [attrID]="attrID"
         [title-editable]="true"

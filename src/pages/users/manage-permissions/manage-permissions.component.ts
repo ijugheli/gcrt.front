@@ -5,6 +5,7 @@ import { AttrPermissionTypes, ATTR_TYPES_IDS_NAME } from 'src/app/app.config';
 import { getRouteParam } from 'src/app/app.func';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { MUserPermission, User } from 'src/app/app.models';
+import { MenuService } from 'src/services/app/menu.service';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { UserService } from 'src/services/user.service';
@@ -22,6 +23,8 @@ export class ManageUserPermissionsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private attrService: AttributesService,
     private messageService: MessageService,
+    public menuService: MenuService,
+
 
   ) { }
 

@@ -9,6 +9,7 @@ import { formsOfViolenceTreeID } from '../case-attrs/forms-of-violence';
 import * as caseConfig from '../case.config';
 import { Router } from '@angular/router';
 import { generateRandomNumber, getRouteParam } from 'src/app/app.func';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'app-case-form',
@@ -32,12 +33,12 @@ export class CaseFormComponent implements OnInit {
   public id: string | null | undefined = getRouteParam('id');
 
 
-
   constructor(
     private messageService: MessageService,
     private attrService: AttributesService,
     private confirmationService: ConfirmationService,
     public caseService: CaseService,
+    public menuService: MenuService,
     private router: Router
   ) { }
 

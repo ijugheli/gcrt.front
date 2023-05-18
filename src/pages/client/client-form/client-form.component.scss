@@ -2,13 +2,33 @@ input,
 ::ng-deep p-calendar input.p-inputtext,
 ::ng-deep .p-dropdown,
 ::ng-deep .p-treeselect,
-::ng-deep p-inputnumber .p-inputtext    {
+::ng-deep p-inputnumber .p-inputtext {
     border-radius: 0 6px 6px 0;
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 500px;
+    max-width: 500px;
     border: 1px solid #D3DFEB;
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     height: 40px;
+}
+
+// for label inside dropdown
+label,
+::ng-deep .p-inputtext {
+    font-size: 1rem;
+}
+
+::ng-deep .p-treenode-label {
+    font-size: .8rem;
+}
+
+// for float label
+.p-float-label input:focus~label,
+.p-float-label input.p-filled~label,
+.p-float-label textarea:focus~label,
+.p-float-label textarea.p-filled~label,
+.p-float-label .p-inputwrapper-focus~label,
+.p-float-label .p-inputwrapper-filled~label {
+    font-size: .875rem;
 }
 
 textarea {
@@ -27,25 +47,26 @@ textarea {
     ::ng-deep .p-dropdown,
     ::ng-deep .p-treeselect {
         max-width: unset;
-        width: calc(300px + 38px) !important;
+        width: calc(500px + 38px) !important;
     }
 }
 
 ::ng-deep .p-ripple.p-element.p-dropdown-item {
     font-family: roman;
-    font-size: .8rem;
+    font-size: 1rem;
 }
 
 ::ng-deep .p-dropdown-label,
 ::ng-deep .p-treeselect-label-container {
     display: flex !important;
     font-family: roman;
+    font-size: 1rem;
     align-items: center;
     justify-content: flex-start;
 }
 
 ::ng-deep .p-treeselect-label-container .p-treeselect-label {
-    font-size: .8rem;
+    font-size: 1rem;
     padding: 0;
     font-family: roman;
     margin-left: 6px;
@@ -90,8 +111,7 @@ textarea {
     color: var(--green-500) !important;
 }
 
-::ng-deep .p-selectbutton .p-button span,
-label {
+::ng-deep .p-selectbutton .p-button span {
     margin-left: 2px;
     text-align: left;
     font-size: .875rem;
@@ -106,5 +126,5 @@ label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 333px;
+    max-width: 555px;
 }

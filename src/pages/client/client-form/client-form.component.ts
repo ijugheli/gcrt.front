@@ -8,6 +8,7 @@ import { ClientService } from 'src/services/client.service';
 import * as ClientConfig from '../client.config';
 import { IFormMenuOption } from 'src/app/app.interfaces';
 import { CaseService } from 'src/services/case.service';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'app-client-form',
@@ -36,6 +37,7 @@ export class ClientFormComponent implements OnInit {
     public caseService: CaseService,
     private messageService: MessageService,
     private attrService: AttributesService,
+    public menuService: MenuService,
     public router: Router
   ) { }
 

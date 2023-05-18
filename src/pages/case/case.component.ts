@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AttributesService } from '../../services/attributes/Attributes.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
@@ -8,8 +8,9 @@ import { CaseService } from 'src/services/case.service';
 import * as caseConfig from './case.config';
 import { carePlanTreeID } from './case-attrs/care-plan';
 import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
-import { forkJoin } from 'rxjs';
+import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { generateRandomNumber } from 'src/app/app.func';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'app-case-page',
@@ -26,7 +27,6 @@ export class CaseComponent implements OnInit {
   public tableData: MCase[] = [];
   public loadingArray: number[] = Array(10);
   public CaseConfig = caseConfig;
-
   // for case section detail table (diagnoses, consultations, referrals)
   public isModalVisible: boolean = false;
   public detailData!: any;
@@ -38,13 +38,16 @@ export class CaseComponent implements OnInit {
   public isTreeModalVisible: boolean = false;
   public tree: any = [];
 
+
   constructor(
     public attrService: AttributesService,
     private messageService: MessageService,
-    private router: Router,
     public caseService: CaseService,
     public confirmationService: ConfirmationService,
+    public menuService: MenuService,
+    private router: Router,
   ) { }
+
 
   ngOnInit() {
     this.init();
@@ -54,6 +57,7 @@ export class CaseComponent implements OnInit {
 
   private init(): void {
     this.isLoading = true;
+
 
     forkJoin({
       response: this.caseService.index(),

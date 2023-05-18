@@ -1,4 +1,4 @@
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
   <p-toast></p-toast>
 
   <!-- ATTRIBUTE TITLE BLOCK -->
@@ -47,7 +47,7 @@
       <ng-template pTemplate="body" let-userPermission>
         <tr>
           <td></td>
-          <td>{{userPermission.attr_title}}</td>
+          <td><span class="text-sm">{{userPermission.attr_title}}</span></td>
           <td>
             <p-inputSwitch [(ngModel)]="userPermission.can_view" 
               (onChange)="updateAttrPermission(userPermission.attr_id, attrPermissionTypes.CAN_VIEW,$event.checked)"></p-inputSwitch>

@@ -1,8 +1,19 @@
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
   <p-toast position="top-right"></p-toast>
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
       <div class="flex flex-row font-medium align-items-center justify-content-start gap-3">
+        <a
+          class="border-btn icon-only-btn"
+          style="cursor:pointer"
+          routerLink="/client"
+        >
+          <i
+            class="pi pi-arrow-left"
+            style="margin: 0!important"
+          >
+          </i>
+        </a>
         <span>{{pageTitle}}</span>
         <button
           type="button"
@@ -55,17 +66,7 @@
         >
           <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
             animation-duration-200">
-            <div *ngFor="let item of ClientAttrs.mainFirstCol">
-              <custom-input
-                [model]="client.main[item.fieldName]"
-                [data]="item"
-                (onChange)="onUpdate(client.main[(item.fieldName)] = $event)"
-              ></custom-input>
-            </div>
-          </div>
-          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
-            animation-duration-200">
-            <div *ngFor="let item of ClientAttrs.mainSecondCol">
+            <div *ngFor="let item of ClientAttrs.mainList">
               <custom-input
                 [model]="client.main[item.fieldName]"
                 [data]="item"

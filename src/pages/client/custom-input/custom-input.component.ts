@@ -16,7 +16,8 @@ import { ClientService } from 'src/services/client.service';
 import { CaseService } from 'src/services/case.service';
 import { isCaseKey } from 'src/pages/case/case.model';
 import { ICustomInput } from 'src/app/app.interfaces';
-import { switchMap, map, tap, Subscription, Subject, takeUntil } from 'rxjs';
+import { switchMap, map,Subject, takeUntil } from 'rxjs';
+import { MOption } from 'src/services/attributes/models/option.model';
 @Component({
   standalone: true,
   selector: 'custom-input',
@@ -151,26 +152,19 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
   private initOptions(): void {
     if (this.data['fieldName'] === 'case_manager_id') {
       this.caseService.caseManagers$.subscribe((data) => {
-        this.options = Array.from(data.values());
-        this.hasFilter = this.options.length > 5;
-        this.initialized = true;
+        this.setVariables(Array.from(data.values()));
       })
     } else if (this.data['fieldName'] === 'client_id') {
-      this.caseService.caseManagers$.subscribe((data) => {
-        this.options = Array.from(data.values());
-        this.hasFilter = this.options.length > 5;
-        this.initialized = true;
+      this.caseService.clients$.subscribe((data) => {
+        this.setVariables(Array.from(data.values()));
       })
     } else {
       this.attrService.dropdownOptions$.pipe(
         switchMap(() => this.attrService.getPropertyMap()),
         takeUntil(this.onDestroy$),
-        map(properties => properties.get(this.data['propertyID'])?.source.options
-        ),
-        tap(options => this.hasFilter = options?.length > 5)
+        map(properties => properties.get(this.data['propertyID'])?.source.options),
       ).subscribe(options => {
-        this.options = options;
-        this.initialized = true;
+        this.setVariables(options);
       });
     }
   }
@@ -179,6 +173,7 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
   private initTreeOptions(): void {
     this.attrService.treeMap$.subscribe((data) => {
       this.options = data.get(this.data['propertyID']);
+      this.hasFilter = true;
       this.selectedNode = this.getTreeNode(this.model);
       this.initialized = true;
     });
@@ -201,6 +196,12 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
 
   private setDate(value: Date): string | null {
     return value ? formatDate(value) : null;
+  }
+
+  private setVariables(options: MOption[]) {
+    this.options = options;
+    this.hasFilter = options?.length > 5;
+    this.initialized = true;
   }
 
   public isInputDisabled(data: ICustomInput): boolean {

@@ -19,6 +19,7 @@ import { CaseSectionTable } from "./shared-components/case-section-table/case-se
 import { CaseSectionForm } from "./shared-components/case-section-form/case-section-form.component";
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table.component";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
     declarations: [CaseComponent, CaseFormComponent],
@@ -41,6 +42,7 @@ import { CheckboxTable } from "./shared-components/checkbox-table/checkbox-table
         CaseSectionTable,
         SkeletonModule,
         CheckboxTable,
+        RouterModule,
     ]
 })
 

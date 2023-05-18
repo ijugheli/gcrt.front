@@ -1,6 +1,10 @@
 span.font-bold.ml-2 {
-    font-size: .8rem;
+    font-size: .875rem;
     font-family: roman;
+}
+
+td>span {
+    font-size: 0.9rem;
 }
 
 .p-editable-column input {
@@ -8,6 +12,6 @@ span.font-bold.ml-2 {
     border: 1px solid #D3DFEB;
     max-width: unset;
     width: 100%;
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     height: 40px;
 }

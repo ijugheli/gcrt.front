@@ -6,9 +6,10 @@ label {
 }
 
 span {
-    font-size: 13px;
+    font-size: 0.9rem;
     font-weight: 500;
     font-family: 'roman';
+    color: black;
 }
 
 .structure-switch {

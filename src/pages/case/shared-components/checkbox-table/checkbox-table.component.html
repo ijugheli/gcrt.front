@@ -71,14 +71,17 @@
       <td
         width="75%"
         [class.p-disabled]="!option.isSelected"
-      >{{option.title}}</td>
+      >
+        <span>{{option.title}}</span>
+      </td>
       <td width="20%"><custom-input
           [isTableInput]="true"
           [isDisabled]="!option.isSelected"
           [model]="option.symptom_severity"
           [data]="symptomSeverityAttr"
           (onChange)="option.symptom_severity = $event"
-        ></custom-input></td>
+        ></custom-input>
+      </td>
     </tr>
   </ng-template>
 </p-table>

@@ -4,7 +4,7 @@
   icon="pi pi-exclamation-triangle"
 ></p-confirmDialog>
 
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
   <!-- ATTRIBUTE TITLE BLOCK -->
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
@@ -29,24 +29,30 @@
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="blue-border-btn"
           (click)="onEditClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-pencil"></i>
+          <i
+            class="pi pi-pencil"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           რედაქტირება
         </button>
       </li>
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="red-border-btn"
           (click)="onDeleteClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-trash"></i>
+          <i
+            class="pi pi-trash"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           წაშლა
         </button>
       </li>
@@ -125,12 +131,12 @@
           </th>
           <th>
             <p-columnFilter
-            field="case.project_id"
-            type="text"
-            matchMode="contains"
-            [showClearButton]="false"
-            [showMenu]="false"
-          ></p-columnFilter>
+              field="case.project_id"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
           </th>
           <th></th>
           <th></th>
@@ -194,19 +200,19 @@
             <p-tableRadioButton [value]="data"></p-tableRadioButton>
           </td>
           <td>
-            {{data.case.id}}
+            <span>{{data.case.id}}</span>
           </td>
           <td>
-            {{ data.case.client_id }}
+            <span>{{ data.case.client_id }}</span>
           </td>
           <td>
-            {{ data.case.case_manager_id }}
+            <span>{{ data.case.case_manager_id }}</span>
           </td>
           <td>
-            {{data.case.project_id}}
+            <span>{{data.case.project_id}}</span>
           </td>
           <td>
-            {{data.case.registration_date}}
+            <span>{{data.case.registration_date}}</span>
           </td>
           <!-- types in caseConfig -->
           <td>

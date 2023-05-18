@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { first, map, Observable, of, switchMap } from 'rxjs';
+import { getRouteParam } from 'src/app/app.func';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'attribute-page',
@@ -8,18 +10,21 @@ import { first, map, Observable, of, switchMap } from 'rxjs';
   styleUrls: ['./attribute-page.component.css']
 })
 export class AttributePageComponent implements OnInit {
-  public attrID: any;
+  public attrID: any = getRouteParam('attr_id');;
 
   // public attrID : any;
   // public navigationEnd : Observable<NavigationEnd>;
-  
-  constructor(private router: Router, private route: ActivatedRoute) {
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    public menuService: MenuService,
+
+  ) {
 
   }
 
   ngOnInit() {
-    this.attrID = this.route.snapshot.paramMap.get('attr_id');
-    
     // this.attrID = this.navigationEnd.pipe(
     //   map(() => this.route.root),
     //   map(root => root.firstChild),
@@ -31,7 +36,7 @@ export class AttributePageComponent implements OnInit {
     //       return of(null);
     //     }
     //   })
-    
+
     // )
   }
 

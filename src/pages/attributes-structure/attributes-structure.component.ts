@@ -14,6 +14,7 @@ import { AddSectionPropertyComponent } from './add-section-property/add-section-
 import { MAttributeSection } from 'src/services/attributes/models/section.model';
 import { getRouteParam } from 'src/app/app.func';
 import { Subscription } from 'rxjs';
+import { MenuService } from 'src/services/app/menu.service';
 
 
 @Component({
@@ -84,6 +85,7 @@ export class AttributesStructureComponent implements OnInit, OnDestroy {
     private attributesService: AttributesService,
     private messageService: MessageService,
     private dialogService: DialogService,
+    public menuService: MenuService,
     private spinner: NgxSpinnerService,
     private confirmationService: ConfirmationService,
   ) { }

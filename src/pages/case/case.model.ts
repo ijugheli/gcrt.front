@@ -71,6 +71,7 @@ export class ICaseMain {
     public incident_text!: string | null;
     public social_status!: string | null;
     public legal_status!: string | null;
+    public health_condition!: string | null;
     [key: string]: any;
     public setNodeID?: any = (node: any, key: 'referral_body') => {
         this[key] = node.data.id;
@@ -90,6 +91,7 @@ export class MCaseMain {
     public incident_text!: string | null;
     public social_status!: string | null;
     public legal_status!: string | null;
+    public health_condition!: string | null;
     [key: string]: any;
 }
 

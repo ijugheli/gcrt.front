@@ -11,6 +11,7 @@ import { addressList } from './client-attrs/client.address';
 import * as ClientConfig from './client.config';
 import { APIResponse } from 'src/app/app.interfaces';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'app-client-page',
@@ -36,6 +37,7 @@ export class ClientComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     public clientService: ClientService,
+    public menuService: MenuService,
     public confirmationService: ConfirmationService,
     private clipboard: Clipboard,
   ) { }
