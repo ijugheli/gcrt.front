@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <button
   type="button"
   class="border-btn mb-4"
@@ -69,12 +70,12 @@
         ></p-checkbox>
       </td>
       <td
-        width="75%"
+        width="90%"
         [class.p-disabled]="!option.isSelected"
       >
         <span>{{option.title}}</span>
       </td>
-      <td width="20%"><custom-input
+      <td width="5%"><custom-input
           [isTableInput]="true"
           [isDisabled]="!option.isSelected"
           [model]="option.symptom_severity"

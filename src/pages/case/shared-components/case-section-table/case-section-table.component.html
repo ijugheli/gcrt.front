@@ -14,7 +14,7 @@
     </ng-container>
     <button
       type="button"
-      class="blue-border-btn mb-2"
+      class="orange-border-btn mb-2"
       (click)="onEditClick()"
       [class.p-disabled]="!selectedRow"
       [disabled]="!selectedRow"
@@ -93,9 +93,12 @@
           <p-tableRadioButton [value]="model"></p-tableRadioButton>
         </td>
         <td *ngFor="let col of columns">
-          {{
-          model[col.fieldName]
-          }}
+          <span>
+            {{
+            model[col.fieldName]
+            }}
+          </span>
+
         </td>
       </tr>
     </ng-template>

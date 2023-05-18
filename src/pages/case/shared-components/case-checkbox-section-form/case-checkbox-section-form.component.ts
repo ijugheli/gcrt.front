@@ -26,7 +26,7 @@ export class CaseSectionForm implements OnInit {
   @Input() inputAttrs: ICustomInput[] = [];
   @Input() tableCols: ICaseCol[] = [];
   @Input() sectionType!: number;
-  @Input() model: IDiagnosis | IConsultation | IReferral = this.getModel(); // if user clicks edit/add in main case section table
+  @Input() model: IDiagnosis | IConsultation | IReferral = new IReferral(); // if user clicks edit/add in main case section table
   @Output() onSave = new EventEmitter<MOnSectionEvent>();
   @Output() onDelete = new EventEmitter<MOnSectionEvent>();
 
@@ -36,9 +36,6 @@ export class CaseSectionForm implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.model === null) {
-      this.model = this.getModel();
-    }
   }
 
   public onSaveClick() {
@@ -68,27 +65,6 @@ export class CaseSectionForm implements OnInit {
     onSectionSave.data = this.data;
     onSectionSave.model = this.model;
     onSectionSave.successMessage = 'წარმატებით დაემატა';
-    this.model = Object.assign({}, this.getModel());
     this.onSave.emit(onSectionSave);
-  }
-
-  public onDeleteClick(selectedRow: any): void {
-    if (selectedRow == undefined) return;
-
-    const event = new MOnSectionEvent();
-    event.data = selectedRow;
-    event.successMessage = 'ჩანაწერი წარმატებით წაიშალა';
-
-    this.onDelete.emit(event);
-  }
-
-  private getModel(): IDiagnosis | IConsultation | IReferral {
-    if (detailTypes[this.sectionType] == 'diagnoses') {
-      return new IDiagnosis();
-    } else if (detailTypes[this.sectionType] == 'referrals') {
-      return new IReferral();
-    }
-
-    return new IConsultation();
   }
 }

@@ -19,8 +19,8 @@ export const otherSymptomMap: Map<string, any> = new Map(
             isRequired: false,
             isDisabled: false,
         }],
-        ['registration_date', {
-            fieldName: 'registration_date',
+        ['record_date', {
+            fieldName: 'record_date',
             label: 'რეგისტრაციის თარიღი',
             type: 'date',
             icon: 'pi-calendar',

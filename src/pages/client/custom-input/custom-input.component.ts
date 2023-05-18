@@ -16,13 +16,13 @@ import { ClientService } from 'src/services/client.service';
 import { CaseService } from 'src/services/case.service';
 import { isCaseKey } from 'src/pages/case/case.model';
 import { ICustomInput } from 'src/app/app.interfaces';
-import { switchMap, map,Subject, takeUntil } from 'rxjs';
+import { switchMap, map, Subject, takeUntil } from 'rxjs';
 import { MOption } from 'src/services/attributes/models/option.model';
 @Component({
   standalone: true,
   selector: 'custom-input',
   templateUrl: './custom-input.component.html',
-  styleUrls: ['../client-form/client-form.component.scss'],
+  styleUrls: ['./custom-input.component.scss'],
   imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, InputNumberModule, InputTextareaModule, InputSwitchModule, CalendarModule, TreeSelectModule]
 })
 export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {

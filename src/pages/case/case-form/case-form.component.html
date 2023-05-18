@@ -175,6 +175,7 @@
           <app-checkbox-table
             [initialOptions]="caseService.mentalSymptomOptions"
             [caseSectionModel]="Case.mental_symptoms"
+            [caseID]="Case.case.id"
             (onSave)="onSave(Case.mental_symptoms = $event)"
           ></app-checkbox-table>
         </div>
@@ -182,6 +183,7 @@
           <app-checkbox-table
             [initialOptions]="caseService.somaticSymptomOptions"
             [caseSectionModel]="Case.somatic_symptoms"
+            [caseID]="Case.case.id"
             (onSave)="onSave(Case.somatic_symptoms = $event)"
           ></app-checkbox-table>
         </div>

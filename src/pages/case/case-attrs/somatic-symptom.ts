@@ -18,8 +18,8 @@ export const somaticSymptomMap: Map<string, any> = new Map(
             isRequired: true,
             isDisabled: false,
         }],
-        ['registration_date', {
-            fieldName: 'registration_date',
+        ['record_date', {
+            fieldName: 'record_date',
             label: 'რეგისტრაციის თარიღი',
             type: 'date',
             icon: 'pi-calendar',

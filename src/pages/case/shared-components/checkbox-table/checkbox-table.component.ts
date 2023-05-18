@@ -7,20 +7,22 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { SkeletonModule } from 'primeng/skeleton';
-import {ICaseSharedSymptom, MCheckboxTableItem } from '../../case.model';
+import { ICaseSharedSymptom, MCheckboxTableItem } from '../../case.model';
 import { MOption } from 'src/services/attributes/models/option.model';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
 import { ICustomInput } from 'src/app/app.interfaces';
 import { mentalSymptomMap } from '../../case-attrs/mental-symptom';
 import { CaseService } from 'src/services/case.service';
 import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 // For Forms_of_violence and care_plan
 @Component({
   standalone: true,
   selector: 'app-checkbox-table',
   templateUrl: './checkbox-table.component.html',
   styleUrls: ['./checkbox-table.component.scss'],
-  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule, CustomInputComponent, CalendarModule]
+  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule, CustomInputComponent, CalendarModule, ToastModule]
 })
 
 export class CheckboxTable<T extends ICaseSharedSymptom> implements OnInit, OnChanges {
@@ -29,10 +31,11 @@ export class CheckboxTable<T extends ICaseSharedSymptom> implements OnInit, OnCh
   @Input() caseID: number | null = null;
   @Output() onSave = new EventEmitter<any[]>();
   public caseService: CaseService = inject(CaseService);
+  public messageService: MessageService = inject(MessageService);
   public parsedOptions: MCheckboxTableItem[] = [];
   public isLoading: boolean = true;
   public symptomSeverityAttr: ICustomInput = mentalSymptomMap.get('symptom_severity');
-  public dateAttr: ICustomInput = mentalSymptomMap.get('registration_date');
+  public dateAttr: ICustomInput = mentalSymptomMap.get('record_date');
   public dateModel: any;
   public todayDate: Date = new Date();
 
@@ -64,6 +67,7 @@ export class CheckboxTable<T extends ICaseSharedSymptom> implements OnInit, OnCh
 
       if (model !== undefined) {
         temp.id = model.id ?? null;
+        temp.symptom_severity = model.symptom_severity ?? null;
         temp.isSelected = true;
       }
 
@@ -85,6 +89,12 @@ export class CheckboxTable<T extends ICaseSharedSymptom> implements OnInit, OnCh
   public onComplete() {
     const parsedModel = this.parsedOptions.filter(e => e.isSelected);
 
-    this.onSave.emit(parsedModel);
+
+    this.isValid(parsedModel) ? this.onSave.emit(parsedModel) : this.messageService.add({summary: 'აირჩიეთ სიმპტომის დონე და რეგისტრაციის თარიღი', severity: 'error'});
+  }
+
+  private isValid(data: MCheckboxTableItem[]) {
+    this.caseService.isValidationEnabled = true;
+    return data.filter(e => e.symptom_severity === null).length === 0 && this.dateModel;
   }
 }
