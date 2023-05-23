@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
@@ -15,17 +15,22 @@ import { isClientKey } from '../client.model';
 import { ClientService } from 'src/services/client.service';
 import { CaseService } from 'src/services/case.service';
 import { isCaseKey } from 'src/pages/case/case.model';
+import { ICustomInput } from 'src/app/app.interfaces';
+import { switchMap, map, Subject, takeUntil } from 'rxjs';
+import { MOption } from 'src/services/attributes/models/option.model';
 @Component({
   standalone: true,
   selector: 'custom-input',
   templateUrl: './custom-input.component.html',
-  styleUrls: ['../client-form/client-form.component.scss'],
+  styleUrls: ['./custom-input.component.scss'],
   imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, InputNumberModule, InputTextareaModule, InputSwitchModule, CalendarModule, TreeSelectModule]
 })
-export class CustomInputComponent implements OnInit, OnChanges {
-  @Input('data') public data!: any;
-  @Input('model') public model?: any;
-  @Output('onChange') public onChange = new EventEmitter<any>();
+export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() public data!: any;
+  @Input() public isTableInput: boolean = false;
+  @Input() public isDisabled: boolean = false;
+  @Input() public model?: any;
+  @Output() public onChange = new EventEmitter<any>();
 
   public initialized: boolean = false;
   public options: any;
@@ -35,6 +40,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   public selectedNode!: TreeNode | undefined;
   public todayDate: Date = new Date();
   public hasFilter!: boolean;
+  private onDestroy$: Subject<any> = new Subject();
 
   constructor(
     private attrService: AttributesService,
@@ -50,6 +56,11 @@ export class CustomInputComponent implements OnInit, OnChanges {
     if (this.data['type'] == 'tree') {
       this.selectedNode = this.getTreeNode(this.model);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   public isInputValid(): boolean {
@@ -140,32 +151,32 @@ export class CustomInputComponent implements OnInit, OnChanges {
   // dropdownOptionChange listens to data for init
   private initOptions(): void {
     if (this.data['fieldName'] === 'case_manager_id') {
-      this.caseService.caseManagerChanges.subscribe((data) => {
-        this.options = Array.from(data.values());
-        this.hasFilter = this.options.length > 5;
+      this.caseService.caseManagers$.subscribe((data) => {
+        this.setVariables(Array.from(data.values()));
       })
     } else if (this.data['fieldName'] === 'client_id') {
-      this.caseService.clientChanges.subscribe((data) => {
-        this.options = Array.from(data.values());
-        this.hasFilter = this.options.length > 5;
+      this.caseService.clients$.subscribe((data) => {
+        this.setVariables(Array.from(data.values()));
       })
     } else {
-      this.attrService.dropdownOptionChange.subscribe(data => {
-        this.options = this.attrService.properties.get(this.data['propertyID'])?.source.options;
-        this.hasFilter = this.options.length > 5;
+      this.attrService.dropdownOptions$.pipe(
+        switchMap(() => this.attrService.getPropertyMap()),
+        takeUntil(this.onDestroy$),
+        map(properties => properties.get(this.data['propertyID'])?.source.options),
+      ).subscribe(options => {
+        this.setVariables(options);
       });
     }
-
-    this.initialized = true;
   }
 
   // treeMapChange listens to data for init
   private initTreeOptions(): void {
-    this.attrService.treeMapChange.subscribe((data) => {
+    this.attrService.treeMap$.subscribe((data) => {
       this.options = data.get(this.data['propertyID']);
+      this.hasFilter = true;
       this.selectedNode = this.getTreeNode(this.model);
+      this.initialized = true;
     });
-    this.initialized = true;
   }
 
   // get tree node for setting selectedTreeNode
@@ -185,5 +196,15 @@ export class CustomInputComponent implements OnInit, OnChanges {
 
   private setDate(value: Date): string | null {
     return value ? formatDate(value) : null;
+  }
+
+  private setVariables(options: MOption[]) {
+    this.options = options;
+    this.hasFilter = options?.length > 5;
+    this.initialized = true;
+  }
+
+  public isInputDisabled(data: ICustomInput): boolean {
+    return this.isDisabled || data['isDisabled'] || this.clientService.isInputDisabled || this.caseService.isInputDisabled;
   }
 }

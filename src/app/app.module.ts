@@ -16,7 +16,6 @@ import { SurveyPageModule } from 'src/pages/survey-page/survey.module';
 import { AuthGuardService } from 'src/services/AuthGuardService.service';
 import { AuthService } from 'src/services/AuthService.service';
 import { InterceptorService } from 'src/services/interceptor.service';
-import { MenuModule } from '../modules/menu/menu.module';
 import { AttributeFormModule } from '../pages/attribute-form/attribute-form.module';
 import { AttributesStructureModule } from '../pages/attributes-structure/attributes-structure.module';
 import { ChangePasswordModule } from '../pages/change-password/change-password.module';
@@ -27,7 +26,7 @@ import { UsersModule } from '../pages/users/users.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DatePipe } from '@angular/common';
-
+import { MenuComponent } from 'src/modules/menu/menu.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,11 +35,8 @@ import { DatePipe } from '@angular/common';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MenuModule,
     AttributePageModule,
     AttributeFormModule,
-    TableModule,
-    TreeTableModule,
     HomeModule,
     LoginModule,
     ClientModule,
@@ -49,11 +45,10 @@ import { DatePipe } from '@angular/common';
     ChangePasswordModule,
     CaseModule,
     DynamicFormModule,
-    TableModule,
-    ConfirmDialogModule,
     AppRoutingModule,
     AttributesStructureModule,
     SurveyPageModule,
+    MenuComponent,
   ],
   providers: [ConfirmationService, DialogService, MessageService, AuthGuardService, AuthService, DatePipe,
     {

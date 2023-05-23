@@ -4,7 +4,7 @@
   icon="pi pi-exclamation-triangle"
 ></p-confirmDialog>
 
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
   <!-- ATTRIBUTE TITLE BLOCK -->
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
@@ -29,24 +29,30 @@
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="orange-border-btn"
           (click)="onEditClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-pencil"></i>
+          <i
+            class="pi pi-pencil"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           რედაქტირება
         </button>
       </li>
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="red-border-btn"
           (click)="onDeleteClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-trash"></i>
+          <i
+            class="pi pi-trash"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           წაშლა
         </button>
       </li>
@@ -194,16 +200,16 @@
             <p-tableRadioButton [value]="client"></p-tableRadioButton>
           </td>
           <td>
-            {{client.main.client_code}}
+            <span>{{client.main.client_code}}</span>
           </td>
           <td>
-            {{client.main.name}}
+            <span>{{client.main.name}}</span>
           </td>
           <td>
-            {{client.main.surname}}
+            <span>{{client.main.surname}}</span>
           </td>
           <td>
-            {{client.main.registration_date}}
+            <span>{{client.main.registration_date}}</span>
           </td>
           <!-- types in clientService -->
 

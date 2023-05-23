@@ -8,7 +8,7 @@ import { API_URL } from '../app/app.config';
 @Injectable({
   providedIn: 'root'
 })
-export class AttributesService extends GuardedService {
+export class AttributesService  {
 
   public urls: any = {
     'list': API_URL + '/attrs/',
@@ -27,14 +27,14 @@ export class AttributesService extends GuardedService {
 
   private attrs : any;
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(private http: HttpClient, ) {
     console.log('Service Generated');
-    super(auth.getToken());
+    
     this.load();
   }
 
   private load() {
-    this.http.get(this.urls['list'], { headers: this.headers }).subscribe((d) => {
+    this.http.get(this.urls['list'], ).subscribe((d) => {
       console.log(d);
     }, (e) => {
 
@@ -59,58 +59,58 @@ export class AttributesService extends GuardedService {
   // Individual Requests
 
   public list() {
-    return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
+    return this.http.get<Attribute[]>(this.urls['list'], );
   }
 
   public delete(attrID: number, values: any) {
-    return this.http.post(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+    return this.http.post(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, );
   }
 
   public related(attrID: number, valueID: number) {
     console.log('VALUE IS');
     console.log(valueID);
     console.log('VALUE IS');
-    return this.http.get<Attribute[]>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
+    return this.http.get<Attribute[]>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), );
   }
 
   public full(attrID: number) {
-    return this.http.get<Attribute[]>(this.urls['full'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+    return this.http.get<Attribute[]>(this.urls['full'].replace('{attr_id}', attrID.toString()), );
   }
 
   public attribute(attrID: number) {
-    return this.http.get<Attribute>(this.urls['withProperties'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+    return this.http.get<Attribute>(this.urls['withProperties'].replace('{attr_id}', attrID.toString()), );
   }
 
   public attributeWithValue(attrID: number, valueID: number) {
     return this.http.get<Attribute>(this.urls['withValue']
       .replace('{attr_id}', attrID.toString())
-      .replace('{value_id}', valueID), { headers: this.headers }
+      .replace('{value_id}', valueID), 
     );
   }
 
   public treeNodes(attrID: number, valueID: number) {
     return this.http.get<Attribute>(this.urls['tree']
       .replace('{attr_id}', attrID.toString())
-      .replace('{value_id}', valueID.toString()), { headers: this.headers }
+      .replace('{value_id}', valueID.toString()), 
     );
   }
 
   public addValueCollection(attrID: number, values: any) {
-    return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+    return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, );
   }
 
   public setTitle(attrID: number, values: any) {
-    return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+    return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values, );
   }
 
   public editValueCollection(attrID: number, valueID: number, values: any) {
     return this.http.post(this.urls['editValueCollection']
       .replace('{attr_id}', attrID.toString())
-      .replace('{value_id}', valueID.toString()), values, { headers: this.headers });
+      .replace('{value_id}', valueID.toString()), values, );
   }
 
   public editValueItem(values: any) {
-    return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
+    return this.http.post(this.urls['editValueItem'], values, );
   }
 
 }

@@ -1,0 +1,108 @@
+<button
+  type="button"
+  class="border-btn mb-2"
+  (click)="onComplete()"
+>
+  <i class="pi pi-check mr-2"></i>
+  შენახვა
+</button>
+<p-table
+  [value]="parents"
+  styleClass="p-datatable-sm p-datatable-gridlines"
+  sortField="title"
+  sortMode="single"
+  dataKey="title"
+  rowExpandMode="single"
+  rowGroupMode="subheader"
+  groupRowsBy="value_id"
+  responsiveLayout="scroll"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th width="5%"></th>
+      <th width="45%">დასახელება</th>
+      <th width="50%">კომენტარი</th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    *ngIf="isLoading"
+  >
+    <tr style="height:46px">
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+      <td>
+        <p-skeleton></p-skeleton>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template
+    *ngIf="!isLoading"
+    pTemplate="groupheader"
+    let-parent  
+    let-rowIndex="rowIndex"
+    let-expanded="expanded"
+  >
+    <tr>
+      <td colspan="3">
+        <div class="flex flex-row align-items-center">
+          <button
+            type="button"
+            pButton
+            pRipple
+            [pRowToggler]="parent"
+            class="p-button-text p-button-rounded p-button-plain mr-2"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+          <span class="font-bold ml-2">{{parent.title}}</span>
+          <p-badge
+            class="ml-4"
+            styleClass="bg-teal-500"
+            size="small"
+            [value]="getSelectedNodeCount(parent.value_id)"
+          ></p-badge>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template
+    *ngIf="!isLoading"
+    pTemplate="rowexpansion"
+    let-parent
+  >
+    <tr *ngFor="let node of getNodes(parent.value_id)">
+      <td width="5%">
+        <p-checkbox
+          [binary]="true"
+          [(ngModel)]="node.isSelected"
+        ></p-checkbox>
+      </td>
+      <td width="45%" [class.p-disabled]="!node.isSelected">
+        <span>{{node.title}}</span>
+      </td>
+      <td
+        width="50%"
+        [pEditableColumn]="node.comment"
+        pEditableColumnField="care.title"
+      >
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <ng-container *ngIf="node.isSelected">
+              <input
+                type="text"
+                [(ngModel)]="node.comment"
+              >
+            </ng-container>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{node.comment}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

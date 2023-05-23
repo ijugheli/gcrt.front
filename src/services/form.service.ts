@@ -90,6 +90,7 @@ export class FormService {
   public async onSubmit(before: Function, after: Function) {
     if (!this.attribute) return;
     this.enableValidation();
+
     if (!this.validate()) {
       return;
     }
@@ -98,7 +99,7 @@ export class FormService {
     // this.appendPreDefined();
     const object = Array.from(this.values.entries());
     console.log(object);
-
+    
     if (this.initialsProvided() && this.record) {
       await this.records.edit(this.attribute.id, this.record.valueID, object, after);
       return;

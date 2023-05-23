@@ -1,0 +1,127 @@
+::ng-deep .p-panelmenu-header {
+    margin: 0 6px;
+}
+
+::ng-deep .p-panelmenu-header>a,
+::ng-deep .p-panelmenu-content {
+    padding: 1rem;
+    border: 0px !important;
+    color: #333333;
+    background: #ffffff !important;
+    font-weight: 600;
+    border-radius: 3px;
+    transition: box-shadow 0.2s;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-header.p-highlight:not(.p-disabled)>a:hover,
+::ng-deep .p-panelmenu .p-panelmenu-header:not(.p-highlight):not(.p-disabled)>a:hover,
+::ng-deep .p-menuitem-link-active {
+    background: var(--surface-100) !important;
+    border-radius: 6px !important;
+    color: #333333 !important;
+}
+
+::ng-deep .p-panelmenu-icon {
+    order: 1; // to be the first item on right side.
+}
+
+::ng-deep .p-menuitem-text {
+    font-family: roman !important;
+    font-size: .875rem;
+    color: #333333;
+    flex-grow: 1; // to fill the whole space and push the icon to the end
+}
+
+::ng-deep .p-menuitem {
+    margin: 4px 6px;
+    border-radius: 12px;
+}
+
+
+::ng-deep .p-menuitem-text {
+    font-weight: 700 !important;
+    font-family: "roman" !important;
+}
+
+::ng-deep .p-menuitem>a:nth-last-child(1) {
+    margin: 0 6px;
+
+    .p-menuitem-text {
+        font-weight: 500 !important;
+        font-family: "roman" !important;
+        font-size: 13px;
+    }
+}
+
+::ng-deep .p-menuitem>a:nth-last-child(2) {
+    margin: 0 6px;
+
+    .p-panelmenu-icon {
+        font-size: 1.25rem;
+    }
+
+    .p-menuitem-text {
+        font-size: .875rem;
+        font-weight: 500 !important;
+        font-family: "roman" !important;
+    }
+}
+
+::ng-deep li>p-panelmenusub>ul {
+    display: block;
+    height: 250px;
+    overflow-y: scroll;
+    overflow-x: hidden !important;
+}
+
+
+::ng-deep .p-panelmenu .p-panelmenu-header>a:focus,
+::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:focus {
+    outline: unset;
+    outline-offset: unset;
+    box-shadow: unset !important;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:not(.p-disabled):hover,
+::ng-deep .p-panelmenu .p-panelmenu-header.p-highlight {
+    background: var(--surface-100);
+    border-radius: 6px;
+}
+
+.menu {
+    width: 250px;
+    border-right: 1px solid #D3DFEB;
+    vertical-align: top;
+    height: 100vh;
+}
+
+.menu-count {
+    font-family: roman !important;
+}
+
+.floating-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #afcdd2;
+    color: #333333;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.floating-button i {
+    font-size: 16px;
+    line-height: 36px;
+}
+
+.scrollable-list {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+}

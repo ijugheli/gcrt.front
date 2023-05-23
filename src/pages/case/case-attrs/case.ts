@@ -133,6 +133,18 @@ export const caseMap: Map<string, any> = new Map(
                 isDisabled: false,
             }
         ],
+        [
+            'health_condition',
+            {
+                fieldName: 'health_condition',
+                label: 'ჯანმრთელობის მდგომარეობა',
+                type: 'textarea',
+                icon: 'pi-pencil',
+                propertyID: null,
+                isRequired: false,
+                isDisabled: false,
+            }
+        ],
     ]
 );
 

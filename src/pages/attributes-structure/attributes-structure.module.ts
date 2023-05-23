@@ -16,9 +16,9 @@ import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { AddAttributeComponent } from './add-attribute/add-attribute.component';
-import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 import { AddSectionComponent } from './add-section/add-section.component';
 import { AttributesStructureComponent } from './attributes-structure.component';
+import { AddSectionPropertyComponent } from './add-section-property/add-section-property.component';
 
 @NgModule({
     declarations: [AttributesStructureComponent, AddAttributeComponent, AddSectionComponent, AddSectionPropertyComponent],

@@ -52,8 +52,6 @@ export class AttributeFormComponent implements OnInit {
     let attrID: any = this.activatedRoute.snapshot.paramMap.get('attr_id');
     this.attrID = attrID == null ? null : parseInt(attrID);
 
-    this.attribute = this.attributes.get(this.attrID);
-
     let valueID: any = this.activatedRoute.snapshot.paramMap.get('value_id');
     this.valueID = valueID == null ? null : parseInt(valueID);
 

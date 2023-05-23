@@ -71,7 +71,7 @@ export class AddAttributeComponent implements OnInit {
         this.showSuccess(response.message);
 
         setTimeout(() => {
-          this.dialogRef.close();
+          this.dialogRef.close(true);
         }, 1000);
       }, (error) => {
         this.spinner.hide();

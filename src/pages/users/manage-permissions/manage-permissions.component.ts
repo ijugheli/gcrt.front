@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Observable, Subscription } from 'rxjs';
 import { AttrPermissionTypes, ATTR_TYPES_IDS_NAME } from 'src/app/app.config';
+import { getRouteParam } from 'src/app/app.func';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { MUserPermission, User } from 'src/app/app.models';
+import { MenuService } from 'src/services/app/menu.service';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { UserService } from 'src/services/user.service';
@@ -15,19 +17,21 @@ import { UserService } from 'src/services/user.service';
   providers: [MessageService],
 })
 
-export class ManageUserPermissionsComponent implements OnInit {
+export class ManageUserPermissionsComponent implements OnInit, OnDestroy {
 
   constructor(
-    private attributes: AttributesService,
     private userService: UserService,
+    private attrService: AttributesService,
     private messageService: MessageService,
-    private route: ActivatedRoute
+    public menuService: MenuService,
+
+
   ) { }
 
-  public userID: number = 0;
+
+  public userID: number = parseInt(getRouteParam('user_id'));
   public selectedTypes: any;
   public user!: User | null;
-  public attributesList: MAttribute[] = [];
   public attrTypeFilter: any;
   public attrPermissionTypes = AttrPermissionTypes;
   public initialUserPermissions: MUserPermission[] = []; // If we have error we can restore old Data
@@ -35,6 +39,7 @@ export class ManageUserPermissionsComponent implements OnInit {
   public filteredData: MUserPermission[] = [];
   public isLoading: boolean = false;
   public pageTitle: string = 'წვდომების მართვა';
+  public attributes$!: Subscription;
 
   public filters: { [key: string]: number | string | null } = {
     'title': ''
@@ -79,12 +84,10 @@ export class ManageUserPermissionsComponent implements OnInit {
   private async init() {
     this.isLoading = true;
 
-    this.userID = parseInt(this.route.snapshot.paramMap.get('user_id')!);
     this.user = await this.userService.getUser(this.userID);
 
     this.pageTitle = this.pageTitle + ' - ' + this.user.name + ' ' + this.user.lastname;
 
-    this.attributesList = this.attributes.asList();
 
     this.parseData();
 
@@ -92,14 +95,20 @@ export class ManageUserPermissionsComponent implements OnInit {
   }
 
   private parseData() {
-    for (const attribute of this.attributesList) {
-      const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
+    this.attributes$ = this.attrService.getList().subscribe((attrs) => {
+      for (const attribute of attrs) {
+        const attrPermission: IUserPermission | null = this.user?.permissions.find((permission) => permission.attr_id == attribute.id) || null;
 
-      const permission: MUserPermission = MUserPermission.from(attribute, attrPermission);
+        const permission: MUserPermission = MUserPermission.from(attribute, attrPermission);
 
-      this.userPermissions.push(permission);
-    }
+        this.userPermissions.push(permission);
+      }
 
-    this.filteredData = this.userPermissions;
+      this.filteredData = this.userPermissions;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.attributes$.unsubscribe();
   }
 }

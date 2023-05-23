@@ -9,7 +9,7 @@
             ></p-inputSwitch>
         </div>
     </ng-container>
-    <ng-container *ngIf="data['type'] != 'switch'">
+    <ng-container *ngIf="data['type'] != 'switch' && !isTableInput">
         <div class="flex flex-row">
             <span
                 class="p-inputgroup-addon"
@@ -30,109 +30,132 @@
                 class="p-float-label"
                 [class.is-not-mandatory]="!data['isRequired']"
             >
-                <p-treeSelect
-                    *ngIf="data['type'] == 'tree'"
-                    [inputId]="data['fieldName']"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [ngModel]="selectedNode"
-                    [options]="options"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    [filter]="hasFilter"
-                    (onNodeExpand)="onNodeExpand($event)"
-                    (ngModelChange)="onUpdate($event)"
-                ></p-treeSelect>
-                <p-calendar
-                    *ngIf="data['type'] == 'date'"
-                    [ngModel]="model"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    [inputId]="data['fieldName']"
-                    [maxDate]="todayDate"
-                    (ngModelChange)="onUpdate($event)"
-                    dateFormat="dd/mm/yy"
-                ></p-calendar>
-
-                <p-dropdown
-                    *ngIf="data['type'] == 'dropdown'"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [ngModel]="model"
-                    [options]="options"
-                    [placeholder]="data['label']"
-                    [filter]="hasFilter"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    [inputId]="data['fieldName']"
-                    (ngModelChange)="onUpdate($event)"
-                    emptyFilterMessage="..."
-                    optionLabel="name"
-                    optionValue="id"
-                    filterBy="name"
-                >
-                </p-dropdown>
-
-                <textarea
-                    *ngIf="data['type'] == 'textarea'"
-                    [id]="data['fieldName']"
-                    [ngModel]="model"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    [autoResize]="true"
-                    (ngModelChange)="onUpdate($event)"
-                    rows="5"
-                    cols="55"
-                    pInputTextarea
-                >
-                </textarea>
-
-                <input
-                    *ngIf="data['type'] == 'text'"
-                    [id]="data['fieldName']"
-                    [ngModel]="model"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    (ngModelChange)="onUpdate($event)"
-                    type="text"
-                    pInputText
-                >
-
-                <p-inputNumber
-                    *ngIf="data['type'] == 'int'"
-                    [id]="data['fieldName']"
-                    [(ngModel)]="model"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    (ngModelChange)="onUpdate($event)"
-                    type="text"
-                    mode="decimal"
-                    pInputText
-                >
-                </p-inputNumber>
-
-                <p-inputNumber
-                    *ngIf="data['type'] == 'double'"
-                    [id]="data['fieldName']"
-                    [(ngModel)]="model"
-                    [disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
-                    [class.ng-invalid]="!isInputValid()"
-                    [class.ng-dirty]="!isInputValid()"
-                    [maxFractionDigits]="2"
-                    (ngModelChange)="onUpdate($event)"
-                    type="text"
-                    mode="decimal"
-                    pInputText
-                >
-                </p-inputNumber>
-
+                <ng-container *ngTemplateOutlet="inputs">
+                </ng-container>
                 <label
-                    [class.p-disabled]="data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+                    [class.p-disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
                     [for]="data['fieldName']"
                 >{{data['label']}}</label>
             </span>
         </div>
     </ng-container>
+    <ng-container *ngIf="data['type'] != 'switch' && isTableInput">
+        <div class="is-table-input">
+
+        <ng-container *ngTemplateOutlet="inputs">
+        </ng-container>
+    </div>
+
+    </ng-container>
 </ng-container>
+
+<ng-template #inputs>
+    <p-treeSelect
+        *ngIf="data['type'] == 'tree'"
+        [inputId]="data['fieldName']"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [ngModel]="selectedNode"
+        [options]="options"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        [filter]="hasFilter"
+        [placeholder]="data['label']"
+        (onNodeExpand)="onNodeExpand($event)"
+        (ngModelChange)="onUpdate($event)"
+        appendTo="body"
+    ></p-treeSelect>
+    <p-calendar
+        *ngIf="data['type'] == 'date'"
+        [ngModel]="model"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        [inputId]="data['fieldName']"
+        [maxDate]="todayDate"
+        [placeholder]="data['label']"
+        (ngModelChange)="onUpdate($event)"
+        dateFormat="dd/mm/yy"
+        appendTo="body"
+    ></p-calendar>
+
+    <p-dropdown
+        *ngIf="data['type'] == 'dropdown'"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [ngModel]="model"
+        [options]="options"
+        [placeholder]="data['label']"
+        [filter]="hasFilter"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        [inputId]="data['fieldName']"
+        (ngModelChange)="onUpdate($event)"
+        emptyFilterMessage="..."
+        optionLabel="name"
+        optionValue="id"
+        filterBy="name"
+        appendTo="body"
+    >
+    </p-dropdown>
+
+    <textarea
+        *ngIf="data['type'] == 'textarea'"
+        [id]="data['fieldName']"
+        [ngModel]="model"
+        [style]="{
+            'max-width': data['isRequired'] ? '538px' : '578px'
+        }"
+        [disabled]="isInputDisabled(data)"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        [autoResize]="true"
+        [placeholder]="data['label']"
+        (ngModelChange)="onUpdate($event)"
+        rows="5"
+        cols="75"
+        pInputTextarea
+    >
+    </textarea>
+
+    <input
+        *ngIf="data['type'] == 'text'"
+        [id]="data['fieldName']"
+        [ngModel]="model"
+        [disabled]="isInputDisabled(data)"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        (ngModelChange)="onUpdate($event)"
+        type="text"
+        pInputText
+    >
+
+    <p-inputNumber
+        *ngIf="data['type'] == 'int'"
+        [id]="data['fieldName']"
+        [(ngModel)]="model"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        (ngModelChange)="onUpdate($event)"
+        type="text"
+        [placeholder]="data['label']"
+        mode="decimal"
+        pInputText
+    >
+    </p-inputNumber>
+
+    <p-inputNumber
+        *ngIf="data['type'] == 'double'"
+        [id]="data['fieldName']"
+        [(ngModel)]="model"
+        [disabled]="isDisabled || data['isDisabled'] || clientService.isInputDisabled || caseService.isInputDisabled"
+        [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
+        [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
+        [maxFractionDigits]="2"
+        (ngModelChange)="onUpdate($event)"
+        type="text"
+        [placeholder]="data['label']"
+        mode="decimal"
+        pInputText
+    >
+    </p-inputNumber>
+</ng-template>

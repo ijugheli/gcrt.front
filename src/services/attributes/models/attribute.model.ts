@@ -15,7 +15,7 @@ export class MAttribute {
     public count: number;
     public type: number;
     public lazy: boolean = false;
-    public status_id: number | null = null;
+    public status_id: number | null | boolean = null;
     public status: boolean = true;
     public title: string | null = null;
     public children: MAttribute[] = [];
@@ -37,8 +37,7 @@ export class MAttribute {
         this.p_id = o.p_id;
         this.count = o.count;
         this.type = o.type;
-        this.status_id = o.status_id;
-        this.status = this.status_id == 1;
+        this.status_id = o.status_id == 1;
         this.title = o.title;
         this.lazy = o.lazy;
 

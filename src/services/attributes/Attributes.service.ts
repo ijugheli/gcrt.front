@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Attribute, GuardedService } from 'src/app/app.models';
-import { API_URL, VIEW_TYPE_ID } from 'src/app/app.config';
+import { API_URL, DISABLED_ATTRS, VIEW_TYPE_ID } from 'src/app/app.config';
 import { AuthService } from '../AuthService.service';
 import { IAttribute } from './interfaces/attribute.interface';
-import { AsyncSubject, Observable, first } from 'rxjs';
+import { AsyncSubject, BehaviorSubject, Observable, map, mergeMap, toArray } from 'rxjs';
 import { MAttribute } from './models/attribute.model';
 import { IProperty } from './interfaces/property.interface';
 import { MProperty } from './models/property.model';
-import { flattenTree, parseTree, storageItemExists } from '../../app/app.func';
+import { flattenTree, parseTree } from '../../app/app.func';
 import { MAttributeSection } from './models/section.model';
 import { MAttributeTab } from './models/tab.model';
 import { MPropertyValue } from './models/property.value.model';
@@ -20,22 +20,23 @@ import { CacheService } from '../cache.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AttributesService extends GuardedService {
-
+export class AttributesService {
     private cacheKey = 'props';
-    public attributes: Map<number, MAttribute> = new Map();
-    public properties: Map<number, MProperty> = new Map();
+    private attributes$: BehaviorSubject<Map<number, MAttribute>> = new BehaviorSubject<Map<number, MAttribute>>(new Map());
+    private attributes: Map<number, MAttribute> = new Map();
+    private properties$: BehaviorSubject<Map<number, MProperty>> = new BehaviorSubject<Map<number, MProperty>>(new Map());
+    private properties: Map<number, MProperty> = new Map();
     public dropdownOptions: Map<number, MOption> = new Map();
     public values: Map<number, MPropertyValue> = new Map();
     public flatTreeMap: Map<number, TreeNode> = new Map();
     public treeMap: Map<number, TreeNode[]> = new Map();
 
-    treeMapChange: AsyncSubject<Map<number, TreeNode[]>> = new AsyncSubject<Map<number, TreeNode[]>>();
-    dropdownOptionChange: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
-    propertyChange: AsyncSubject<number> = new AsyncSubject<number>();
+    public treeMap$: AsyncSubject<Map<number, TreeNode[]>> = new AsyncSubject<Map<number, TreeNode[]>>();
+    public dropdownOptions$: AsyncSubject<Map<number, MOption>> = new AsyncSubject<Map<number, MOption>>();
 
     public urls: any = {
         'static': API_URL + '/attrs/static',
+        'staticAttr': API_URL + '/attrs/static/{attr_id}',
         'list': API_URL + '/attrs/',
         'withProperties': API_URL + '/attrs/{attr_id}',
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
@@ -60,65 +61,75 @@ export class AttributesService extends GuardedService {
         'removeProperty': API_URL + '/attrs/properties/{property_id}',
     };
 
-    constructor(private http: HttpClient, private auth: AuthService, private cacheService: CacheService) {
-        super(auth.getToken());
-        this.load();
+    constructor(private http: HttpClient, private cacheService: CacheService) {
+
+    }
+
+
+    public getMap(): Observable<Map<number, MAttribute>> {
+        return this.attributes$;
+    }
+
+    public getList(): Observable<MAttribute[]> {
+        return this.attributes$.pipe((map((attrs: Map<number, MAttribute>) => Array.from(attrs.values()))));
+    }
+
+    // Disabled attrs for dropdowns
+    public getStructureList(): Observable<MAttribute[]> {
+        return this.attributes$.pipe((map((attrs: Map<number, MAttribute>) => {
+            return Array.from(attrs.values()).filter((e) => {
+                return !DISABLED_ATTRS.includes(e.id);
+            });
+        }
+        )));
+    }
+
+    public getPropertyMap(): Observable<Map<number, MProperty>> {
+        return this.properties$;
+    }
+
+    public getPropertyList(): Observable<MProperty[]> {
+        return this.properties$.pipe((map((properties: Map<number, MProperty>) => Array.from(properties.values()))));
     }
 
     //Loader/Parser Methods
     private saveCache(data: IAttribute[]) {
-        localStorage.setItem(this.cacheKey, JSON.stringify(data));
+        this.cacheService.set(this.cacheKey, data);
     }
 
-    private loadCache(): void {
-        if (!this.hasCache()) {
+    public load(shouldRefresh?: boolean) {
+        const cache = this.cacheService.get(this.cacheKey);
+
+        if (cache != null && !shouldRefresh) {
+            this.parseStaticAttrs(cache);
             return;
         }
 
-        let data: IAttribute[] = JSON.parse(localStorage.getItem(this.cacheKey) as string) as IAttribute[];
+        this.getStatic().subscribe((response) => {
+            this.parseStaticAttrs(response.data!);
+        });
+    }
 
+    public getNewStaticAttr(attrID: number) {
+        this.getAttrStatic(attrID).subscribe((response) => {
+            this.parseNewAttr(response.data!);
+        });
+    }
+
+    public parseStaticAttrs(data: IAttribute[]): void {
+        this.attributes = new Map();
+        this.properties = new Map();
+        this.saveCache(data);
         this.parse(data);
+        this.properties$.next(this.properties);
+        this.attributes$.next(this.attributes);
     }
 
-    private hasCache(): boolean {
-        return storageItemExists(this.cacheKey);
+    private getStatic(): Observable<APIResponse<IAttribute[]>> {
+        return this.http.get<APIResponse<IAttribute[]>>(this.urls['static'],);
     }
-
-    public load(onLoad?: Function) {
-        if (this.hasCache()) {
-            this.loadCache();
-            return this.asList();
-        }
-
-        this.request((response: APIResponse<IAttribute[]>) => {
-            const attributes: IAttribute[] = response.data!;
-
-            this.saveCache(attributes);
-            this.parse(attributes);
-            if (onLoad) onLoad();
-        });
-
-        return this.asList();
-    }
-
-    public async reload() {
-        return new Promise<MAttribute[]>((resolve, reject) => {
-            this.request((response: APIResponse<IAttribute[]>) => {
-                const attributes: IAttribute[] = response.data!;
-
-                this.saveCache(attributes);
-                this.parse(attributes);
-                resolve(this.asList());
-            });
-        });
-    }
-
-    private async request(f?: Function) {
-        this.http.get<APIResponse[]>(this.urls['static'], { headers: this.headers }).pipe(first()).subscribe((data) => {
-            if (f) f(data)
-        }, (e) => {
-
-        });
+    private getAttrStatic(attrID: number): Observable<APIResponse<IAttribute>> {
+        return this.http.get<APIResponse<IAttribute>>(this.urls['staticAttr'].replace('{attr_id}', attrID.toString()),);
     }
 
     private parse(data: IAttribute[]) {
@@ -131,6 +142,27 @@ export class AttributesService extends GuardedService {
         this.appendSources();
     }
 
+    private parseNewAttr(attribute: IAttribute) {
+        const attrs: IAttribute[] = this.cacheService.get(this.cacheKey);
+        const attrIndex: number = attrs.findIndex((e: IAttribute) => e.id == attribute.id);
+        attrs[attrIndex] = attribute;
+        this.saveCache(attrs);
+        this.parseAttrProperties(attribute);
+        this.parseAttribute(attribute);
+
+        const parsedAttr: MAttribute | undefined = this.attributes.get(attribute.id);
+
+        this.appendAttrChildren(parsedAttr!);
+        this.appendSection(parsedAttr!);
+        this.appendTab(parsedAttr!);
+        this.appendAttrValues(parsedAttr!);
+
+        this.appendSources();
+
+        this.attributes$.next(this.attributes);
+        this.properties$.next(this.properties);
+    }
+
 
 
 
@@ -138,11 +170,11 @@ export class AttributesService extends GuardedService {
 
 
     //ORM Method
-    public find(attrID: number): MAttribute | undefined {
+    private find(attrID: number): MAttribute | undefined {
         return this.get(attrID);
     }
 
-    public get(attrID: number): MAttribute | undefined {
+    private get(attrID: number): MAttribute | undefined {
         if (!this.attributes.has(attrID)) {
             return undefined;
         }
@@ -152,68 +184,64 @@ export class AttributesService extends GuardedService {
         return attribute ? attribute : undefined;
     }
 
-    public property(propertyID: number) {
-        if (!this.properties.has(propertyID)) {
-            return false;
-        }
+    // public property(propertyID: number) {
+    //     if (!this.properties.has(propertyID)) {
+    //         return false;
+    //     }
 
-        return this.properties.get(propertyID);
-    }
-
-    public asList(): MAttribute[] {
-        return Array.from(this.attributes.values());
-    }
+    //     return this.properties.get(propertyID);
+    // }
 
     // Individual Requests
     public add(data: any) {
-        return this.http.post<APIResponse>(this.urls['addAttr'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addAttr'], data,);
     }
 
     public addSection(data: any) {
-        return this.http.post<APIResponse>(this.urls['addSection'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addSection'], data,);
     }
 
     public addProperty(data: any) {
-        return this.http.post<APIResponse>(this.urls['addProperty'], data, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['addProperty'], data,);
     }
 
     public removeAttribute(attrID: number) {
-        return this.http.delete<APIResponse>(this.urls['removeAttr'].replace('{attr_id}', attrID), { headers: this.headers });
+        return this.http.delete<APIResponse>(this.urls['removeAttr'].replace('{attr_id}', attrID),);
     }
 
     public removeProperty(propertyID: number) {
-        return this.http.delete<APIResponse>(this.urls['removeProperty'].replace('{property_id}', propertyID), { headers: this.headers });
+        return this.http.delete<APIResponse>(this.urls['removeProperty'].replace('{property_id}', propertyID),);
     }
 
     public list() {
-        return this.http.get<Attribute[]>(this.urls['list'], { headers: this.headers });
+        return this.http.get<Attribute[]>(this.urls['list'],);
     }
 
     public getTreeselectOptions(): Observable<APIResponse<any>> {
-        return this.http.get<APIResponse<any>>(this.urls['treeselectOptions'], { headers: this.headers });
+        return this.http.get<APIResponse<any>>(this.urls['treeselectOptions'],);
     }
 
     public delete(attrID: number, values: any) {
-        return this.http.post<APIResponse>(this.urls['delete'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+        return this.http.post<APIResponse>(this.urls['delete'].replace('{attr_id}', attrID.toString()), values,);
     }
 
     public related(attrID: number, valueID: number) {
-        return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()), { headers: this.headers });
+        return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()),);
     }
 
     public full(attrID: number, isTreeSelect: boolean = false) {
         const url = isTreeSelect ? 'fullWithSelect' : 'full';
-        return this.http.get<APIResponse<Attribute[]>>(this.urls[url].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+        return this.http.get<APIResponse<Attribute[]>>(this.urls[url].replace('{attr_id}', attrID.toString()),);
     }
 
     public attribute(attrID: number) {
-        return this.http.get<Attribute>(this.urls['withProperties'].replace('{attr_id}', attrID.toString()), { headers: this.headers });
+        return this.http.get<Attribute>(this.urls['withProperties'].replace('{attr_id}', attrID.toString()),);
     }
 
     public attributeWithValue(attrID: number, valueID: number) {
         return this.http.get<Attribute>(this.urls['withValue']
             .replace('{attr_id}', attrID.toString())
-            .replace('{value_id}', valueID), { headers: this.headers }
+            .replace('{value_id}', valueID),
         );
     }
 
@@ -221,86 +249,58 @@ export class AttributesService extends GuardedService {
         const url = isTreeSelect ? 'treeSelect' : 'tree';
         return this.http.get<Attribute>(this.urls[url]
             .replace('{attr_id}', attrID.toString())
-            .replace('{value_id}', valueID.toString()), { headers: this.headers }
+            .replace('{value_id}', valueID.toString()),
         );
     }
 
     public setTitle(attrID: number, values: any) {
-        return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+        return this.http.post(this.urls['title'].replace('{attr_id}', attrID.toString()), values,);
     }
 
     public addValueCollection(attrID: number, values: any) {
-        return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values, { headers: this.headers });
+        return this.http.post(this.urls['addValueCollection'].replace('{attr_id}', attrID.toString()), values,);
     }
 
     public editValueCollection(attrID: number, valueID: number, values: any) {
         return this.http.post(this.urls['editValueCollection']
             .replace('{attr_id}', attrID.toString())
-            .replace('{value_id}', valueID.toString()), values, { headers: this.headers });
+            .replace('{value_id}', valueID.toString()), values,);
     }
 
     public editValueItem(values: any) {
-        return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
+        return this.http.post(this.urls['editValueItem'], values,);
     }
 
-    public reorderProperties(attrID: number, values: any, func?: Function) {
+    public reorderProperties(attrID: number, values: any) {
         this.http.post(
             this.urls['reorderProperties'].replace('{attr_id}', attrID.toString()
-            ), values, { headers: this.headers }).subscribe((response) => {
-
-                this.request();
-                if (func)
-                    func(response);
+            ), values,).subscribe((response) => {
+                this.load();
             });
     }
 
     public updateAttr(attrID: number, values: any) {
         return this.http.post<APIResponse>(
             this.urls['updateAttr'].replace('{attr_id}', attrID.toString()
-            ), values, { headers: this.headers });
+            ), values,);
     }
 
     public updateProperty(propertyID: number, property: MProperty) {
         return this.http.post<APIResponse>(
             this.urls['updateProperty'].replace('{property_id}', propertyID.toString()
-            ), { 'data': property }, { headers: this.headers });
+            ), { 'data': property },);
     }
 
     //Parsers
     private parseProperties(data: IAttribute[]) {
         data.map((item) => {
-            if (!item.properties || item.properties.length <= 0) {
-                return;
-            }
-
-            item.properties.map((property: IProperty) => {
-                this.properties.set(property.id, new MProperty(property));
-            });
+            this.parseAttrProperties(item);
         });
     }
 
     private parseAttributes(data: IAttribute[]) {
         data.forEach((source: IAttribute) => {
-            let properties: MProperty[] = [];
-            let columns: MProperty[] = [];
-            //assigns created property objects to properties column; 
-            source.properties.forEach((source: IProperty) => {
-                let property = this.properties.get(source.id);
-                if (!property || property == null || property === undefined) {
-                    return;
-                }
-
-                properties.push(property);
-            });
-
-            properties = properties.sort((a, b) => a.order_id - b.order_id);
-            columns = properties.filter((prop) => !prop.isSection());
-
-            const attribute: MAttribute = new MAttribute(source, properties);
-            // attribute.withProps(properties);
-            attribute.withColumns(columns);
-
-            this.attributes.set(attribute.id, attribute);
+            this.parseAttribute(source);
         });
 
         console.log('----------Attributes----------');
@@ -310,55 +310,25 @@ export class AttributesService extends GuardedService {
 
     private appendChildren() {
         this.attributes.forEach((attribute: MAttribute) => {
-            if (!attribute.hasParent()) {
-                return;
-            }
-
-            this.attributes.get(attribute.parentID())?.appendChild(attribute);
+            this.appendAttrChildren(attribute);
         });
     }
 
     private appendValues() {
         this.attributes.forEach((attribute: MAttribute) => {
-            if (!attribute.hasValues()) {
-                return;
-            }
-
-            attribute.values.forEach((value: MPropertyValue) => {
-                this.values.set(value.id, value.setProperty(this.properties.get(value.id)));
-            });
+            this.appendAttrValues(attribute);
         });
     }
 
     public appendSources() {
         this.properties.forEach((property: MProperty) => {
-            if (!property.hasSource() || !property.source_attr_id) {
-                return;
-            }
-
-            let attribute = this.find(property.source_attr_id);
-            if (attribute)
-                property = property.withSource(attribute);
+            this.appendSource(property);
         });
-
-        this.propertyChange.next(this.properties.size);
-        this.propertyChange.complete();
     }
 
     private appendTabs() {
         this.attributes.forEach((attribute: MAttribute) => {
-            let initial = (new MAttributeTab()).set({
-                title: 'მონაცემები',
-                id: attribute.id
-            });
-
-            if (attribute.hasChildren()) {
-                attribute.tabs = [
-                    initial,
-                    ...attribute.children.map((child: MAttribute) => new MAttributeTab(child))
-                ]
-                return;
-            }
+            this.appendTab(attribute);
         });
     }
 
@@ -421,6 +391,82 @@ export class AttributesService extends GuardedService {
         });
     }
 
+    private parseAttrProperties(item: IAttribute) {
+        if (!item.properties || item.properties.length <= 0) {
+            return;
+        }
+
+        item.properties.map((property: IProperty) => {
+            this.properties.set(property.id, new MProperty(property));
+        });
+    }
+
+    private parseAttribute(source: IAttribute) {
+        let properties: MProperty[] = [];
+        let columns: MProperty[] = [];
+        //assigns created property objects to properties column; 
+        source.properties.forEach((source: IProperty) => {
+            let property = this.properties.get(source.id);
+            if (!property || property == null || property === undefined) {
+                return;
+            }
+
+            properties.push(property);
+        });
+
+        properties = properties.sort((a, b) => a.order_id - b.order_id);
+        columns = properties.filter((prop) => !prop.isSection());
+
+        const attribute: MAttribute = new MAttribute(source, properties);
+        attribute.withColumns(columns);
+
+        this.attributes.set(attribute.id, attribute);
+    }
+
+    private appendAttrChildren(source: MAttribute) {
+        if (!source.hasParent()) {
+            return;
+        }
+
+        this.attributes.get(source.parentID())?.appendChild(source);
+    }
+
+    private appendTab(source: MAttribute) {
+        let initial = (new MAttributeTab()).set({
+            title: 'მონაცემები',
+            id: source.id
+        });
+
+        if (source.hasChildren()) {
+            source.tabs = [
+                initial,
+                ...source.children.map((child: MAttribute) => new MAttributeTab(child))
+            ]
+            return;
+        }
+    }
+
+    private appendAttrValues(source: MAttribute) {
+        if (!source.hasValues()) {
+            return;
+        }
+
+        source.values.forEach((value: MPropertyValue) => {
+            this.values.set(value.id, value.setProperty(this.properties.get(value.id)));
+        });
+    }
+
+    private appendSource(property: MProperty) {
+        if (!property.hasSource() || !property.source_attr_id) {
+            return;
+        }
+
+        let attribute = this.find(property.source_attr_id);
+        if (attribute)
+            property = property.withSource(attribute);
+    }
+
+
     /* For Case and Client  
         AsyncSubjects for updating inputs(treeselect,dropdown) on data (options)
         FlatTreeMap for getting title for Treeselect Columns
@@ -440,14 +486,12 @@ export class AttributesService extends GuardedService {
         const cache = this.cacheService.get('dropdown_options');
 
         if (cache != null) {
-            this.dropdownOptions = new Map(cache);
-            this.dropdownOptionChange.next(this.dropdownOptions);
-            this.dropdownOptionChange.complete();
+            this.parseDropdownOptions(cache);
             return;
         }
 
-        this.propertyChange.subscribe((propertyMapSize) => {
-            const tempOptions: MProperty[] = Array.from(this.properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
+        this.properties$.subscribe((properties) => {
+            const tempOptions: MProperty[] = Array.from(properties.values()).filter(e => e.source_attr_id !== null && VIEW_TYPE_ID('select') && e.source?.options.length > 0).flatMap(e => e.source.options);
             this.parseDropdownOptions(tempOptions.map(element => [element.id, element]));
             this.cacheService.set('dropdown_options', Array.from(this.dropdownOptions.entries()));
         })
@@ -480,13 +524,13 @@ export class AttributesService extends GuardedService {
                 this.flatTreeMap.set(tree.data.id, tree);
             }
         }
-        this.treeMapChange.next(this.treeMap);
-        this.treeMapChange.complete();
+        this.treeMap$.next(this.treeMap);
+        this.treeMap$.complete();
     }
 
     private parseDropdownOptions(options: any) {
         this.dropdownOptions = new Map(options);
-        this.dropdownOptionChange.next(this.dropdownOptions);
-        this.dropdownOptionChange.complete();
+        this.dropdownOptions$.next(this.dropdownOptions);
+        this.dropdownOptions$.complete();
     }
 }

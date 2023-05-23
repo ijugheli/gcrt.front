@@ -22,7 +22,7 @@ import { APIResponse } from 'src/app/app.interfaces';
 @Injectable({
     providedIn: 'root'
 })
-export class RecordsService extends GuardedService {
+export class RecordsService {
 
     private cacheKey = 'records';
     /**
@@ -30,7 +30,8 @@ export class RecordsService extends GuardedService {
      */
     public records: Map<number, MRecord> = new Map();
 
-    public attrs: Map<number, number[]> = new Map();
+    public attrs: Map<number, MAttribute> = new Map();
+    public properties: Map<number, MProperty> = new Map();
 
     public attrID?: number;
 
@@ -46,8 +47,14 @@ export class RecordsService extends GuardedService {
     constructor(
         private http: HttpClient,
         private attributes: AttributesService,
-        private auth: AuthService) {
-        super(auth.getToken());
+    ) {
+
+        this.attributes.getMap().subscribe((attrs) => {
+            this.attrs = attrs;
+        });
+        this.attributes.getPropertyMap().subscribe((properties) => {
+            this.properties = properties;
+        });
     }
 
     private log() {
@@ -56,13 +63,13 @@ export class RecordsService extends GuardedService {
         console.log('Current Records');
     }
 
-    private save(response: any) {
+    public save(response: any) {
         if (!response || !response.hasOwnProperty('record') || !response.record) {
             return;
         }
 
         const record: MRecord = (new MRecord()).append(this.generateRecord(response.record));
-        let attribute = this.attributes.get(record.attrID);
+        let attribute = this.attrs.get(record.attrID);
         if (attribute) record.withAttribute(attribute);
         this.records.set(record.valueID, record);
 
@@ -72,7 +79,7 @@ export class RecordsService extends GuardedService {
     private generateRecord(record: IPropertyValue[]) {
         return record.map((value: IPropertyValue) => {
             const propValue = new MPropertyValue(value);
-            const prop = this.attributes.property(propValue.property_id)
+            const prop = this.properties.get(propValue.property_id)
             if (prop) propValue.setProperty(prop);
             return propValue;
         });
@@ -80,10 +87,10 @@ export class RecordsService extends GuardedService {
 
     public async get(attrID: number, func?: Function) {
         const records: MRecord[] = [];
-        const attribute = this.attributes.get(attrID);
+        const attribute = this.attrs.get(attrID);
         await this.http.get<APIResponse<MRecord[]>>(
             this.urls['records'].replace('{attr_id}', attrID.toString()
-            ), { headers: this.headers }).pipe(first()).toPromise().then((response) => {
+            ),).pipe(first()).toPromise().then((response) => {
                 if (!response || !response.hasOwnProperty('data') || !response.data) {
                     return;
                 }
@@ -120,7 +127,7 @@ export class RecordsService extends GuardedService {
     public async add(attrID: number, values: any, func?: Function) {
         this.http.post(
             this.urls['add'].replace('{attr_id}', attrID.toString()
-            ), values, { headers: this.headers }).subscribe((response) => {
+            ), values,).subscribe((response) => {
                 if (response && response.hasOwnProperty('record')) {
                     this.save(response);
                 }
@@ -133,7 +140,7 @@ export class RecordsService extends GuardedService {
     public async edit(attrID: number, valueID: number, values: any, func?: Function) {
         this.http.post(this.urls['edit']
             .replace('{attr_id}', attrID.toString())
-            .replace('{value_id}', valueID.toString()), values, { headers: this.headers }).subscribe((response) => {
+            .replace('{value_id}', valueID.toString()), values,).subscribe((response) => {
                 if (response && response.hasOwnProperty('record')) {
                     this.save(response);
                 }
@@ -145,6 +152,6 @@ export class RecordsService extends GuardedService {
 
     //Should be updating concrete
     public editValueItem(values: any) {
-        return this.http.post(this.urls['editValueItem'], values, { headers: this.headers });
+        return this.http.post(this.urls['editValueItem'], values,);
     }
 }

@@ -1,93 +1,121 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { flattenTree } from 'src/app/app.func';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { BadgeModule } from 'primeng/badge';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CaseSharedInterface, MCheckboxTableItem } from '../../case.model';
+import { ICaseSharedSymptom, MCheckboxTableItem, MOnSectionEvent } from '../../case.model';
+import { MOption } from 'src/services/attributes/models/option.model';
+import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
+import { ICustomInput } from 'src/app/app.interfaces';
+import { mentalSymptomMap } from '../../case-attrs/mental-symptom';
+import { CaseService } from 'src/services/case.service';
+import { CalendarModule } from 'primeng/calendar';
+import * as _ from 'lodash';
 // For Forms_of_violence and care_plan
 @Component({
   standalone: true,
   selector: 'app-checkbox-table',
   templateUrl: './checkbox-table.component.html',
   styleUrls: ['./checkbox-table.component.scss'],
-  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, BadgeModule, SkeletonModule]
+  imports: [CommonModule, TableModule, FormsModule, ButtonModule, CheckboxModule, SkeletonModule, CustomInputComponent, CalendarModule]
 })
 
-export class CheckboxTable<T extends CaseSharedInterface> implements OnInit, OnChanges {
-  @Input() initialTree: any[] = [];
+export class CheckboxTable<T extends ICaseSharedSymptom> implements OnInit, OnChanges {
+  @Input() initialOptions: MOption[] = [];
   @Input() caseSectionModel: T[] = [];
   @Input() caseID: number | null = null;
-  @Output() onSave = new EventEmitter<T[]>();
-  public parsedTree: MCheckboxTableItem[] = [];
-  public parents: MCheckboxTableItem[] = [];
+  @Output() onSave = new EventEmitter<MOnSectionEvent>();
+  public caseService: CaseService = inject(CaseService);
+  public parsedOptions: MCheckboxTableItem[] = [];
   public isLoading: boolean = true;
-
-  constructor() { }
+  public symptomSeverityAttr: ICustomInput = mentalSymptomMap.get('symptom_severity');
+  public dateAttr: ICustomInput = mentalSymptomMap.get('record_date');
+  public dateModel: any;
+  public todayDate: Date = new Date();
 
   ngOnInit() {
     this.init();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['caseSectionModel'].currentValue.length > 0) {
-      this.parsedTree = this.parseModel(flattenTree(this.initialTree));
+    if (changes['caseSectionModel'].currentValue !== undefined) {
+      this.init();
     }
   }
 
-  private init() {
-    this.parsedTree = this.parseModel(flattenTree(this.initialTree));
-    this.parents = this.filterParents();
+  private init(shouldRefresh: boolean = false): void {
+    this.isLoading = true;
+    this.dateModel = undefined;
+    this.caseSectionModel = shouldRefresh ? [] : _.cloneDeep(this.caseSectionModel);
+    if (!_.isArray(this.caseSectionModel)) {
+      this.caseSectionModel = [];
+    }
+    this.parsedOptions = this.parseModels(this.initialOptions);
     this.isLoading = false;
   }
 
-  public getNodes(id: number) {
-    return this.parsedTree.filter(e => e.p_value_id == id);
-  }
-
-  public getSelectedNodeCount(id: number): string {
-    return this.parsedTree.filter(e => e.p_value_id == id && e.isSelected).length.toString();
-  }
-
-  private filterParents() {
-    return this.parsedTree.filter(e => e.p_value_id == 0);
-  }
-
-  private parseModel(tree: any[]): any[] {
-    return tree.map((node: any) => {
+  private parseModels(options: any[]): any[] {
+    return options.map((option: any) => {
       const temp = new MCheckboxTableItem();
-      temp.category = node.data.id;
-      temp.p_value_id = node.data.p_value_id;
-      temp.value_id = node.data.value_id;
-      temp.title = node.data.title;
-      temp.p_title = this.initialTree.find((e: any) => e.data.value_id == temp.p_value_id)?.data.title ?? '';
-
-      const model = this.caseSectionModel.find(e => e.category == temp.category);
+      temp.symptom_id = option.id;
+      temp.symptom_severity = null;
+      temp.title = option.name;
+      temp.case_id = this.caseID ?? null;
+      temp.isSelected = false;
+      const model = this.caseSectionModel?.find(e => e.symptom_id === temp.symptom_id);
 
       if (model !== undefined) {
+        this.dateModel = model.record_date;
+        temp.record_date = model.record_date;
         temp.id = model.id ?? null;
-        temp.case_id = this.caseID ?? model.case_id ?? null;
+        temp.symptom_severity = model.symptom_severity ?? null;
         temp.isSelected = true;
-        temp.comment = model.comment;
       }
 
       return temp;
     });
   }
 
-  public onComplete() {
-    const parsedModel = this.parsedTree.filter(e => e.isSelected && e.p_value_id !== 0).map((e) => {
-      let model: any = {};
-      model.id = e.id;
-      model.category = e.category;
-      model.case_id = this.caseID ?? e.case_id ?? null;
-      model.comment = e.comment;
-      return model;
-    }) as T[];
+  public isInputValid(): boolean {
+    return this.dateModel != null;
+  }
 
-    this.onSave.emit(parsedModel);
+  public onDateChange(event: any) {
+    this.dateModel = event;
+  }
+
+  public onComplete() {
+    const onSectionSave: MOnSectionEvent = new MOnSectionEvent();
+    const parsedModel = this.parseSaveData();
+
+    this.caseService.isValidationEnabled = true;
+
+    if (parsedModel.length === 0) {
+      onSectionSave.errorMessage = 'მონიშნეთ მინიმუმ 1 სიმპტომი';
+      this.onSave.emit(onSectionSave);
+      return;
+    } else if (!this.isValid(parsedModel)) {
+      onSectionSave.errorMessage = 'აირჩიეთ სიმპტომის დონე და რეგისტრაციის თარიღი';
+      this.onSave.emit(onSectionSave);
+      return;
+    }
+
+    onSectionSave.data = parsedModel;
+    this.onSave.emit(onSectionSave);
+    this.init(true);
+  }
+
+  private parseSaveData() {
+    const data: MCheckboxTableItem[] = _.cloneDeep(this.parsedOptions).filter(e => e.isSelected);
+    data.forEach((e) => {
+      e.record_date = this.dateModel;
+    });
+    return data;
+  }
+
+  private isValid(data: MCheckboxTableItem[]) {
+    return data.filter(e => e.symptom_severity === null).length === 0 && this.dateModel;
   }
 }

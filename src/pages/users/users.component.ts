@@ -8,6 +8,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ManageUserComponent } from './manage-user/manage-user.component';
 import { APIResponse } from 'src/app/app.interfaces';
 import { CaseService } from 'src/services/case.service';
+import { MenuService } from 'src/services/app/menu.service';
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -37,6 +38,7 @@ export class UsersComponent implements OnInit {
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
     private router: Router,
+    public menuService: MenuService,
     private confirmationService: ConfirmationService,) {
 
   }

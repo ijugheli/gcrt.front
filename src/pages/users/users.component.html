@@ -1,27 +1,44 @@
 <p-toast position="top-right"></p-toast>
-<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog
+    header="Confirmation"
+    icon="pi pi-exclamation-triangle"
+></p-confirmDialog>
 
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
     <div class="surface-section heading-section">
         <div class="border-bottom-1 surface-border">
-          <div class="heading-section-title font-medium align-items-center">
-            <span>{{pageTitle}}</span>
-          </div>
+            <div class="heading-section-title font-medium align-items-center">
+                <span>{{pageTitle}}</span>
+            </div>
         </div>
-      </div>
+    </div>
     <ng-container>
-        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.3)" type="ball-scale-multiple"
-            [fullScreen]="false">
+        <ngx-spinner
+            size="medium"
+            color="#fff"
+            bdColor="rgba(51,51,51,0.3)"
+            type="ball-scale-multiple"
+            [fullScreen]="false"
+        >
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <p-table styleClass="p-datatable-sm p-datatable-gridlines" dataKey="id" sortField="email" [value]="users">
+    <p-table
+        styleClass="p-datatable-sm p-datatable-gridlines"
+        dataKey="id"
+        sortField="email"
+        [value]="users"
+    >
         <ng-template pTemplate="caption">
             <div class="header">
                 <ul class="list">
                     <ng-container>
                         <li>
-                            <button (click)="onEdit()" type="button" class="border-btn">
+                            <button
+                                (click)="onEdit()"
+                                type="button"
+                                class="border-btn"
+                            >
                                 <i class="pi pi-plus-circle"></i>
                                 დამატება
                             </button>
@@ -43,54 +60,105 @@
             </tr>
             <tr>
                 <th>
-                    <input pInputText type="text" (input)="data.filter(filters['email'], 'email', 'contains')"
-                        [(ngModel)]="filters['email']" placeholder="ელ-ფოსტა" class="w-full">
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="data.filter(filters['email'], 'email', 'contains')"
+                        [(ngModel)]="filters['email']"
+                        placeholder="ელ-ფოსტა"
+                        class="w-full"
+                    >
                 </th>
                 <th>
-                    <input pInputText type="text" (input)="data.filter(filters['name'], 'name', 'contains')"
-                        [(ngModel)]="filters['name']" placeholder="სახელი" class="w-full">
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="data.filter(filters['name'], 'name', 'contains')"
+                        [(ngModel)]="filters['name']"
+                        placeholder="სახელი"
+                        class="w-full"
+                    >
                 </th>
                 <th>
-                    <input pInputText type="text" (input)="data.filter(filters['lastname'], 'lastname', 'contains')"
-                        [(ngModel)]="filters['lastname']" placeholder="გვარი" class="w-full">
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="data.filter(filters['lastname'], 'lastname', 'contains')"
+                        [(ngModel)]="filters['lastname']"
+                        placeholder="გვარი"
+                        class="w-full"
+                    >
                 </th>
                 <th>
-                    <input pInputText type="text" (input)="data.filter(filters['phone'], 'phone', 'contains')"
-                        [(ngModel)]="filters['phone']" placeholder="ტელ.ნომერი" class="w-full">
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="data.filter(filters['phone'], 'phone', 'contains')"
+                        [(ngModel)]="filters['phone']"
+                        placeholder="ტელ.ნომერი"
+                        class="w-full"
+                    >
                 </th>
                 <th>
-                    <input pInputText type="text" (input)="data.filter(filters['address'], 'address', 'contains')"
-                        [(ngModel)]="filters['address']" placeholder="მისამართი" class="w-full">
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="data.filter(filters['address'], 'address', 'contains')"
+                        [(ngModel)]="filters['address']"
+                        placeholder="მისამართი"
+                        class="w-full"
+                    >
                 </th>
                 <th></th>
                 <th></th>
                 <th></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-user>
+        <ng-template
+            pTemplate="body"
+            let-user
+        >
             <tr>
-                <td>{{user.email}}</td>
-                <td>{{user.name}}</td>
-                <td>{{user.lastname}}</td>
-                <td>{{user.phone}}</td>
-                <td>{{user.address}}</td>
+                <td><span class="text-sm">{{user.email}}</span></td>
+                <td><span class="text-sm">{{user.name}}</span></td>
+                <td><span class="text-sm">{{user.lastname}}</span></td>
+                <td><span class="text-sm">{{user.phone}}</span></td>
+                <td><span class="text-sm">{{user.address}}</span></td>
                 <td style="width: 12%;">
-                    <button type="button" (click)="onPermissions(user.id)" class="icon-border-btn">
+                    <button
+                        type="button"
+                        (click)="onPermissions(user.id)"
+                        class="icon-border-btn"
+                    >
                         <i class="pi pi-bars"></i>
                     </button>
-                    <button type="button" (click)="onEdit(user.id)" class="icon-border-btn">
+                    <button
+                        type="button"
+                        (click)="onEdit(user.id)"
+                        class="icon-border-btn"
+                    >
                         <i class="pi pi-pencil"></i>
                     </button>
-                    <button type="button" (click)="onDelete(user.id)" class="icon-border-btn">
+                    <button
+                        type="button"
+                        (click)="onDelete(user.id)"
+                        class="icon-border-btn"
+                    >
                         <i class="pi pi-trash"></i>
                     </button>
                 </td>
-                <td >
-                    <p-inputSwitch [(ngModel)]="user.status_id" (onChange)="updateBooleanColumns(user, $event)">
+                <td>
+                    <p-inputSwitch
+                        [(ngModel)]="user.status_id"
+                        (onChange)="updateBooleanColumns(user, $event)"
+                    >
                     </p-inputSwitch>
                 </td>
                 <td>
-                    <p-inputSwitch [(ngModel)]="user.otp_enabled" (onChange)="updateBooleanColumns(user, $event)">
+                    <p-inputSwitch
+                        [(ngModel)]="user.otp_enabled"
+                        (onChange)="updateBooleanColumns(user, $event)"
+                    >
                     </p-inputSwitch>
                 </td>
             </tr>

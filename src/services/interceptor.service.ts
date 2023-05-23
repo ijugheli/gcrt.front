@@ -1,49 +1,61 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AttributesService } from './attributes/Attributes.service';
-import { RecordsService } from './attributes/Records.service';
-import { UserService } from './user.service';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { AuthService } from './AuthService.service';
+import { CacheService } from './cache.service';
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
-
+    public token: string | null = null;
     constructor(
-        private userService: UserService,
-        // private attrService: AttributesService,
-        // private recordsService: RecordsService
-    ) { }
-
-    intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        return next.handle(request).pipe(map((event: HttpEvent<any>) => {
-            if (event instanceof HttpResponse) {
-                const refreshToken: string | undefined = event.body['refresh_token'];
-
-                if (typeof refreshToken !== 'undefined') {
-                    const auth = localStorage.getItem('auth');
-
-                    this.refreshTokens(refreshToken);
-
-                    // Update Auth cache
-                    if (auth !== null) {
-                        const info = JSON.parse(auth);
-                        info['access_token'] = refreshToken;
-                        localStorage.setItem('auth', JSON.stringify(info));
-                        delete event.body['refresh_token'];
-                    }
-
-                    return event;
-                }
-            }
-            return event;
-        }));
+        private router: Router,
+        private cacheService: CacheService
+    ) {
     }
 
-    // Set refreshToken for services using guardedService
-    private refreshTokens(refreshToken: string): void {
-        this.userService.refreshToken(refreshToken);
-        // this.attrService.refreshToken(refreshToken);
-        // this.recordsService.refreshToken(refreshToken);
+    private handleAuthError(err: any) {
+        if (err.status === 401 || err.status === 403) {
+
+            this.router.navigate(['login'], { 'replaceUrl': true })
+
+            return of(err.message);
+        }
+        return throwError(err);
+    }
+
+    intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+        this.token = this.cacheService.get('auth')?.access_token;
+        if (this.token) {
+            request = request.clone({
+                setHeaders: {
+                    'Content-type': 'application/json; charset=utf-8',
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+        }
+
+        return next.handle(request).pipe(
+            catchError(x => this.handleAuthError(x)),
+            map((event: HttpEvent<any>) => {
+                if (event instanceof HttpResponse) {
+                    let refreshToken: string | undefined = event.body['refresh_token'];
+
+                    if (typeof refreshToken !== 'undefined') {
+                        const auth = this.cacheService.get('auth');
+
+                        // Update Auth cache
+                        if (auth !== null) {
+                            auth['access_token'] = refreshToken;
+                            this.cacheService.set('auth', auth, auth.expires_at);
+                            delete event.body['refresh_token'];
+                        }
+
+                        return event;
+                    }
+                }
+                return event;
+            }));
     }
 }

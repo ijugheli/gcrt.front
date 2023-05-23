@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../../case.model';
+import { IConsultation, IDiagnosis, IOtherSymptom, IReferral, MOnSectionEvent } from '../../case.model';
 import { ICaseCol, ICustomInput } from 'src/app/app.interfaces';
 import { detailTypes } from '../../case.config';
 import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
@@ -19,18 +18,19 @@ import { CaseService } from 'src/services/case.service';
 })
 
 export class CaseSectionForm implements OnInit {
+  // IOtherSymptom[] | ISomaticSymptom[] | IMentalSymptom[] | IReferral[] | IConsultation[] | IDiagnosis[]
   @Input() data: any[] = [];
+  // MOtherSymptom[] | MSomaticSymptom[] | MMentalSymptom[] | MReferral[] | MConsultation[] | MDiagnosis[]
   @Input() parsedData: any[] = [];
   @Input() caseID: number | null = null;
   @Input() inputAttrs: ICustomInput[] = [];
   @Input() tableCols: ICaseCol[] = [];
   @Input() sectionType!: number;
-  @Input() model: IDiagnosis | IConsultation | IReferral = this.getModel(); // if user clicks edit/add in main case section table
+  @Input() model: IDiagnosis | IConsultation | IReferral | IOtherSymptom = this.getModel(); // if user clicks edit/add in main case section table
   @Output() onSave = new EventEmitter<MOnSectionEvent>();
   @Output() onDelete = new EventEmitter<MOnSectionEvent>();
 
   constructor(
-    private attrService: AttributesService,
     private caseService: CaseService,
   ) { }
 
@@ -40,19 +40,23 @@ export class CaseSectionForm implements OnInit {
     }
   }
 
-  public onSaveClick() {    
+  public onSaveClick() {
+    const onSectionSave = new MOnSectionEvent();
+    // Check if it has atleast 1 field even if it doesnt have required fields
     if (!this.caseService.isValidNewModel(this.model)) {
+      onSectionSave.errorMessage = 'შეავსეთ მინიმუმ 1 ველი';
+      this.onSave.emit(onSectionSave);
       return;
     }
 
-    const onSectionSave = new MOnSectionEvent();
-
+    // Validate Required Fields
     if (!this.caseService.isValidModel(this.model, this.inputAttrs)) {
       onSectionSave.errorMessage = 'შეავსეთ სავალდებულო ველები';
       this.onSave.emit(onSectionSave);
       return;
     }
 
+    // Edit/Add local data before saving
     const id = this.model.id ?? this.model.generated_id;
     const index = this.data.findIndex(e => e.generated_id == id || e.id == id);
     this.caseService.isValidationEnabled = false;
@@ -81,11 +85,14 @@ export class CaseSectionForm implements OnInit {
     this.onDelete.emit(event);
   }
 
-  private getModel(): IDiagnosis | IConsultation | IReferral {
+  private getModel(): IDiagnosis | IConsultation | IReferral | IOtherSymptom {
+    // To set fields for inputs
     if (detailTypes[this.sectionType] == 'diagnoses') {
       return new IDiagnosis();
     } else if (detailTypes[this.sectionType] == 'referrals') {
       return new IReferral();
+    } else if (detailTypes[this.sectionType] == 'other_symptoms') {
+      return new IOtherSymptom();
     }
 
     return new IConsultation();

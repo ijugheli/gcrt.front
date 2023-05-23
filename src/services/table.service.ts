@@ -36,6 +36,7 @@ export class DataTableService {
   public selected: MRecord[] = [];
 
   public filterOptions: any = ACTION_SETTINGS;
+  public attrs: Map<number, MAttribute> = new Map();
 
   constructor(
     private filterService: FilterService,
@@ -95,7 +96,7 @@ export class DataTableService {
     if (!this.attrID)
       return;
 
-    this.attribute = await this.attributes.get(this.attrID);
+    this.attribute = this.recordsService.attrs.get(this.attrID);
   }
 
   private async loadRecords() {
@@ -120,7 +121,7 @@ export class DataTableService {
 
   public onAddRecord(attrID?: number) {
 
-    const attribute = (attrID) ? this.attributes.get(attrID) : this.attribute;
+    const attribute = (attrID) ? this.recordsService.attrs.get(attrID) : this.attribute;
 
     // if (attribute?.isEntity()) {
     //   this.router.navigateByUrl('/add/' + attribute.id);
@@ -158,6 +159,8 @@ export class DataTableService {
 
     dialogReference.onClose.subscribe((d: any) => {
       this.reload();
+      this.attributes.getNewStaticAttr(attribute!.id); // refresh static
+
     });
   }
 
@@ -193,6 +196,7 @@ export class DataTableService {
     dialogReference.onClose.subscribe((d: any) => {
       this.selected = [];
       this.reload();
+      this.attributes.getNewStaticAttr(this.attribute!.id); // refresh static
     });
   }
 
@@ -219,7 +223,9 @@ export class DataTableService {
             severity: 'success',
             summary: 'შერჩეული ჩანაწერების წაშლა წარმატებით დასრულდა'
           });
-          // this.load();
+          this.reload();
+          this.attributes.getNewStaticAttr(this.attribute!.id); // refresh static
+
         });
       }, reject: () => {
 
@@ -363,7 +369,7 @@ export class DataTableService {
     }
 
     let columns = [this.attribute.properties.map((item) => item.title)];
-    let body = Object.values(this.attribute.rows).map<RowInput>((item) => Object.values(item));
+    let body = Object.values(this.attribute.rows as Map<number, MRecord>).map<RowInput>((item) => Object.values(item));
 
     import("jspdf").then(jsPDF => {
       import("jspdf-autotable").then(x => {

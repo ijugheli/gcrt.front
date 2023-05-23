@@ -10,6 +10,7 @@ export class MProperty {
     public attr_id!: number;
     public source_attr_id: number | null = null;
     public type!: number;
+    public status_id!: number | boolean;
     public title!: string;
     public input_data_type!: number;
     public input_view_type!: number;
@@ -33,10 +34,11 @@ export class MProperty {
 
 
     public constructor(o?: IProperty) {
-        if(!o) return;
+        if (!o) return;
         this.id = o.id;
         this.p_id = o.p_id;
         this.attr_id = o.attr_id;
+        this.status_id = o.status_id == 1;
         this.source_attr_id = o.source_attr_id;
         this.type = o.type;
         this.title = o.title;

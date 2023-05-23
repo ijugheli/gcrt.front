@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { IClient, IClientAttrs } from '../client.model';
-import { calculateAge } from 'src/app/app.func';
+import { calculateAge, getRouteParam } from 'src/app/app.func';
 import { ClientService } from 'src/services/client.service';
 import * as ClientConfig from '../client.config';
 import { IFormMenuOption } from 'src/app/app.interfaces';
 import { CaseService } from 'src/services/case.service';
+import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
   selector: 'app-client-form',
@@ -28,13 +29,15 @@ export class ClientFormComponent implements OnInit {
   public hasInsurance: boolean = false;
   public selectedSection: IFormMenuOption = ClientConfig.menuOptions[0];
   public todayDate!: Date;
+  public id = getRouteParam('id');
+
 
   constructor(
     public clientService: ClientService,
     public caseService: CaseService,
     private messageService: MessageService,
     private attrService: AttributesService,
-    private route: ActivatedRoute,
+    public menuService: MenuService,
     public router: Router
   ) { }
 
@@ -97,15 +100,14 @@ export class ClientFormComponent implements OnInit {
   }
 
   private initClient(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    if (!this.id) {
       this.pageTitle = 'კლიენტის დამატება';
       return
     };
 
-    this.clientID = parseInt(id);
+    this.clientID = parseInt(this.id);
     this.isLoading = true;
-    this.clientService.values.set('client_id', id);
+    this.clientService.values.set('client_id', this.id);
     if (this.clientService.clients.has(this.clientID)) {
       this.client = this.clientService.clients.get(this.clientID)!;
       this.isLoading = false;

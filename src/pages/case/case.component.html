@@ -4,7 +4,7 @@
   icon="pi pi-exclamation-triangle"
 ></p-confirmDialog>
 
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
   <!-- ATTRIBUTE TITLE BLOCK -->
   <div class="surface-section heading-section">
     <div class="border-bottom-1 surface-border">
@@ -29,24 +29,30 @@
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="orange-border-btn"
           (click)="onEditClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-pencil"></i>
+          <i
+            class="pi pi-pencil"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           რედაქტირება
         </button>
       </li>
       <li>
         <button
           type="button"
-          class="border-btn"
+          class="red-border-btn"
           (click)="onDeleteClick()"
           [disabled]="!selectedRow"
           [class.p-disabled]="!selectedRow"
         >
-          <i class="pi pi-trash"></i>
+          <i
+            class="pi pi-trash"
+            [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+          ></i>
           წაშლა
         </button>
       </li>
@@ -94,13 +100,10 @@
               field="case.case_manager_id"></p-sortIcon></th>
           <th pSortableColumn="case.project_id">პროექტის დასახელება <p-sortIcon field="case.project_id"></p-sortIcon>
           </th>
+          <th pSortableColumn="case.referral_body">რეფერალი<p-sortIcon field="case.referral_body"></p-sortIcon>
+          <th pSortableColumn="case.recommender">რეკომენდატორი <p-sortIcon field="case.recommender"></p-sortIcon>
           <th>რეგისტრაციის თარიღი</th>
-          <th style="text-align: center !important">დიაგნოზები</th>
-          <th style="text-align: center !important">რეფერალები</th>
-          <th style="text-align: center !important">კონსულტაციები</th>
-          <th style="text-align: center !important">მოვლის გეგმა</th>
-          <th style="text-align: center !important">ძალადობის ფორმები</th>
-          <th style="text-align: center !important">ფსიქოდიაგნოსტირება</th>
+          <th style="text-align: center !important">დეტალები</th>
         </tr>
         <tr>
           <th></th>
@@ -125,18 +128,27 @@
           </th>
           <th>
             <p-columnFilter
-            field="case.project_id"
-            type="text"
-            matchMode="contains"
-            [showClearButton]="false"
-            [showMenu]="false"
-          ></p-columnFilter>
+              field="case.project_id"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter>
           </th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th> <p-columnFilter
+              field="case.referral_body"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter></th>
+          <th> <p-columnFilter
+              field="case.recommender"
+              type="text"
+              matchMode="contains"
+              [showClearButton]="false"
+              [showMenu]="false"
+            ></p-columnFilter></th>
           <th></th>
           <th></th>
           <!-- <th></th> -->
@@ -171,18 +183,6 @@
           <td>
             <p-skeleton></p-skeleton>
           </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
         </tr>
       </ng-template>
       <ng-template
@@ -194,64 +194,34 @@
             <p-tableRadioButton [value]="data"></p-tableRadioButton>
           </td>
           <td>
-            {{data.case.id}}
+            <span>{{data.case.id}}</span>
           </td>
           <td>
-            {{ data.case.client_id }}
+            <span>{{ data.case.client_id }}</span>
           </td>
           <td>
-            {{ data.case.case_manager_id }}
+            <span>{{ data.case.case_manager_id }}</span>
           </td>
           <td>
-            {{data.case.project_id}}
+            <span>{{data.case.project_id}}</span>
+          </td>
+
+          <td>
+            <span>{{data.case.referral_body}}</span>
           </td>
           <td>
-            {{data.case.registration_date}}
+            <span>{{data.case.recommender}}</span>
+          </td>
+          <td>
+            <span>{{data.case.registration_date}}</span>
           </td>
           <!-- types in caseConfig -->
           <td>
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
-                (click)="onDetailClick(CaseConfig.detailTypeIDS['diagnoses'],data.diagnoses, data.case.id)"
+                (click)="onDetailClick(data.case.id)"
               >დეტალები</button>
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(CaseConfig.detailTypeIDS['referrals'],data.referrals, data.case.id)"
-              >დეტალები</button>
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(CaseConfig.detailTypeIDS['consultations'],data.consultations, data.case.id)"
-              >დეტალები</button>
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(CaseConfig.detailTypeIDS['care_plans'],data.care_plans,data.case.id, true)"
-              >დეტალები</button>
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(CaseConfig.detailTypeIDS['forms_of_violences'],data.forms_of_violences, data.case.id, true)"
-              >დეტალები</button>
-            </div>
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button class="border-btn">დეტალები</button>
             </div>
           </td>
         </tr>
@@ -268,38 +238,62 @@
       [resizable]="false"
       (onHide)="onModalHide($event)"
     >
-      <app-case-section-table
-        *ngIf="isModalVisible"
-        [data]="detailData"
-        [parsedData]="parsedDetailData"
-        [columns]="detailCols"
-        [isFormTable]="false"
-        (onAdd)="onDetailAdd()"
-        (onEdit)="onDetailEdit($event)"
-        (onDelete)="onDetailDelete($event)"
-      >
-      </app-case-section-table>
-    </p-dialog>
-    <p-dialog
-      header="დეტალები"
-      [(visible)]="isTreeModalVisible"
-      [modal]="true"
-      position="top"
-      [style]="{ width: '70vw' }"
-      [maximizable]="true"
-      [draggable]="false"
-      [resizable]="false"
-      (onHide)="onModalHide($event, true)"
-    >
-      <app-checkbox-table
-        *ngIf="isTreeModalVisible && tree.length > 0"
-        [initialTree]="tree"
-        [caseID]="caseID"
-        [caseSectionModel]="detailData"
-        (onSave)="onTreeSave($event)"
-      ></app-checkbox-table>
-    </p-dialog>
+      <ng-template pTemplate="header">
+        <div class="detail-dropdown">
+          <p-dropdown
+            [style]="{
+              'border-radius': '0 6px 6px 0',
+              'min-width': '300px',
+              'max-width': '300px',
+              'border': '1px solid #D3DFEB',
+              'font-size': '1rem !important',
+              'height': '40px'
+            }"
+            [options]="CaseConfig.detailDropdownOptions"
+            (onChange)="onDetailDropdownChange($event)"
+          ></p-dropdown>
 
+        </div>
+
+      </ng-template>
+      <ng-container *ngIf="isSectionModalVisible">
+        <ng-container *ngIf="isSymptomSection()">
+          <app-case-section-table
+            [data]="detailData"
+            [parsedData]="parsedDetailData"
+            [columns]="detailCols"
+            [isFormTable]="false"
+            [shouldGroupBy]="true"
+            (onAdd)="onDetailAdd()"
+            (onEdit)="onDetailEdit($event)"
+            (onDelete)="onDetailDelete($event)"
+          >
+          </app-case-section-table>
+        </ng-container>
+        <ng-container *ngIf="!isSymptomSection()">
+          <app-case-section-table
+            [data]="detailData"
+            [parsedData]="parsedDetailData"
+            [columns]="detailCols"
+            [isFormTable]="false"
+            [shouldGroupBy]="false"
+            (onAdd)="onDetailAdd()"
+            (onEdit)="onDetailEdit($event)"
+            (onDelete)="onDetailDelete($event)"
+          >
+          </app-case-section-table>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isTreeModalVisible">
+        <app-tree-checkbox-table
+          *ngIf="isTreeModalVisible && tree.length > 0"
+          [initialTree]="tree"
+          [caseID]="caseID"
+          [caseSectionModel]="detailData"
+          (onSave)="onTreeSave($event)"
+        ></app-tree-checkbox-table>
+      </ng-container>
+    </p-dialog>
   </div>
 
 </section>

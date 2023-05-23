@@ -69,6 +69,7 @@ export class DynamicFormComponent implements OnInit {
     //preDefined for adding/editing tree values.
     this.preDefined = this.config.data?.preDefined;
 
+    
     if (this.preDefined) {
       console.log('Predefined Value for Dynamic form');
       console.log(this.preDefined);
@@ -78,7 +79,6 @@ export class DynamicFormComponent implements OnInit {
     //Related value ID for sub entities
     this.relatedValueID = this.config.data?.relatedValueID;
     //if we are in editing mode we should have initial values provided
-    // this.initialValuesProvided = this.valueID != null;
     this.initialValuesProvided = this.form.record != null && this.form.record != undefined;
 
     this.load();
@@ -87,7 +87,7 @@ export class DynamicFormComponent implements OnInit {
   private load() {
 
     /////////BODY//////////////
-    let attribute = this.attributes.find(this.attrID);
+    let attribute = this.records.attrs.get(this.attrID);
     if (attribute == null) return;
 
     // this.form.record ? this.form.withAttribute(attribute);
@@ -160,6 +160,9 @@ export class DynamicFormComponent implements OnInit {
       if (value && field && field['key'] && field['value'])
         value[field['key']] = field['value'];
       this.values.set(key, value);
+      console.log('this.values');
+      console.log(this.values);
+      console.log('this.values');
     });
   }
 

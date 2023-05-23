@@ -20,6 +20,7 @@ export class AddSectionComponent implements OnInit {
   public validation: boolean = false;
   public values: { [key: string]: string | number | boolean } = {
     'attr_id': 0,
+    'status_id': true,
     'title': '',
   };
 

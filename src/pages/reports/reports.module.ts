@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReportsComponent } from './reports.component';
 import { DataTableModule } from 'src/modules/data-table/data-table.module';
-import { MenuModule } from 'src/modules/menu/menu.module';
 import { StyleClassModule } from 'primeng/styleclass';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -20,7 +19,6 @@ import { UserReportComponent } from '../users/users/user-report.component';
     InputTextareaModule,
     DividerModule,
     StyleClassModule,
-    MenuModule,
     CheckboxModule,
   ],
   declarations: [ReportsComponent]

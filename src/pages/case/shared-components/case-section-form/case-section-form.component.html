@@ -1,25 +1,23 @@
 <div
-  class="flex flex-column align-content-center lg:justify-content-start gap-4 fadeindown animation-ease-in animation-duration-200"
+  class="inline-flex flex-row align-content-center lg:justify-content-start gap-2 fadeindown animation-ease-in animation-duration-200"
 >
-  <button
-    type="button"
-    class="border-btn mb-2 w-min"
-    (click)="onSaveClick()"
-  >
-    <i class="pi pi-check mr-2"></i>
-    შენახვა
-  </button>
-  <div *ngFor="let item of inputAttrs">
-    <custom-input
-      [model]="model[item.fieldName]"
-      [data]="item"
-      (onChange)="model[item.fieldName] = $event"
-    ></custom-input>
+  <div class="flex flex-column gap-4">
+    <button
+      type="button"
+      class="border-btn mb-2 w-min"
+      (click)="onSaveClick()"
+    >
+      <i class="pi pi-check mr-2"></i>
+      შენახვა
+    </button>
+    <div *ngFor="let item of inputAttrs">
+      <custom-input
+        [model]="model[item.fieldName]"
+        [data]="item"
+        (onChange)="model[item.fieldName] = $event"
+      ></custom-input>
+    </div>
   </div>
-</div>
-<div
-  class="flex flex-column align-content-center fadeindown animation-ease-in animation-duration-200 flex-shrink-1 flex-grow-0"
->
   <app-case-section-table
     [data]="data"
     [parsedData]="parsedData"

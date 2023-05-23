@@ -1,102 +1,151 @@
-  <div [style.max-width]="isFormTable ? 'calc(100vw - 275px - 280px - 400px - 48px)' : '100%' ">
-
-
-    <div class="header justify-content-start gap-2">
-      <ng-container *ngIf="!isFormTable">
-        <button
-          type="button"
-          class="border-btn mb-2"
-          (click)="onAddClick()"
-        >
-          <i class="pi pi-file mr-2"></i>
-          დამატება
-        </button>
-      </ng-container>
+<div
+  [style.max-width]="isFormTable ? ((menuService.isMenuVisible$ | async) ? 'calc(100vw - 450px - 280px - 400px - 48px)' : 'calc(100vw - 450px - 400px - 48px)') : '100%' "
+>
+  <div class="header justify-content-start gap-2">
+    <ng-container>
       <button
         type="button"
         class="border-btn mb-2"
-        (click)="onEditClick()"
-        [class.p-disabled]="!selectedRow"
-        [disabled]="!selectedRow"
+        (click)="onAddClick()"
       >
-        <i class="pi pi-file-edit mr-2"></i>
-        რედაქტირება
+        <i class="pi pi-file mr-2"></i>
+        დამატება
       </button>
-      <button
-        type="button"
-        class="border-btn mb-2"
-        [class.p-disabled]="!selectedRow"
-        (click)="onDeleteClick()"
-        [disabled]="!selectedRow"
-      >
-        <i class="pi pi-trash mr-2"></i>
-        წაშლა
-      </button>
-    </div>
-    <p-table
-      [value]="parsedData"
-      [responsive]="true"
-      [selection]="selectedRow"
-      styleClass="p-datatable-sm p-datatable-gridlines"
-      [style.max-width]="isFormTable ? 'calc(100vw - 280px - 280px - 400px - 48px)' : '100%' "
-      responsiveLayout="scroll"
-      selectionMode="single"
-      (onRowSelect)="onRowSelect($event)"
-      (onRowUnselect)="onRowUnselect($event)"
-      dataKey="generated_id"
+    </ng-container>
+    <button
+      type="button"
+      class="orange-border-btn mb-2"
+      (click)="onEditClick()"
+      [class.p-disabled]="!selectedRow"
+      [disabled]="!selectedRow"
     >
-      <ng-template pTemplate="header">
-        <tr>
+      <i
+        class="pi pi-file-edit mr-2"
+        [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+      ></i>
+      რედაქტირება
+    </button>
+    <button
+      type="button"
+      class="red-border-btn mb-2"
+      [class.p-disabled]="!selectedRow"
+      (click)="onDeleteClick()"
+      [disabled]="!selectedRow"
+    >
+      <i
+        class="pi pi-trash mr-2"
+        [style.color]="!selectedRow ? '#000000' : 'var(--gray-50)'"
+      ></i>
+      წაშლა
+    </button>
+  </div>
+  <p-table
+    [value]="parsedData"
+    [showLoader]="false"
+    [responsive]="true"
+    [selection]="selectedRow"
+    [rowGroupMode]="'subheader'"
+    [groupRowsBy]="shouldGroupBy ? 'record_date' : null"
+    (onRowSelect)="onRowSelect($event)"
+    (onRowUnselect)="onRowUnselect($event)"
+    rowExpandMode="single"
+    styleClass="p-datatable-sm p-datatable-gridlines"
+    [dataKey]="shouldGroupBy ? 'record_date' : 'generated_id'"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <ng-container *ngIf="shouldGroupBy">
+          <th *ngFor="let col of columns">
+            {{col.label}}
+          </th>
+        </ng-container>
+        <ng-container *ngIf="!shouldGroupBy">
           <th></th>
           <th
             *ngFor="let col of columns"
             [pSortableColumn]="col['fieldName']"
           >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
           </th>
-        </tr>
-        <tr>
-          <th></th>
-          <th *ngFor="let col of columns">
-            <p-columnFilter
-              *ngIf="!col.fieldName.includes('date')"
-              [field]="col.fieldName"
-              type="text"
-              matchMode="contains"
-              [showClearButton]="false"
-              [showMenu]="false"
-            ></p-columnFilter>
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template
-        pTemplate="body"
-        *ngIf="loading == true"
-      >
-        <tr style="height:46px">
-          <td *ngFor="let col of columns">
-            <p-skeleton></p-skeleton>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template
-        pTemplate="body"
-        let-model
-      >
-        <tr>
-          <td>
+        </ng-container>
+      </tr>
+      <tr *ngIf="!shouldGroupBy">
+        <th></th>
+        <th *ngFor="let col of columns">
+          <p-columnFilter
+            *ngIf="!col.fieldName.includes('date')"
+            [field]="col.fieldName"
+            type="text"
+            matchMode="contains"
+            [showClearButton]="false"
+            [showMenu]="false"
+          ></p-columnFilter>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      *ngIf="shouldGroupBy"
+      pTemplate="groupheader"
+      let-model
+      let-expanded="expanded"
+    >
+      <tr pRowGroupHeader>
+        <td [colSpan]="columns.length + 1">
+          <div class="flex flex-row align-items-center">
+            <button
+              type="button"
+              pButton
+              pRipple
+              class="p-button-text p-button-rounded p-button-plain mr-2"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              [pRowToggler]="model"
+            ></button>
+            <span class="font-bold ml-2 mr-2">{{model.record_date}}</span>
             <p-tableRadioButton [value]="model"></p-tableRadioButton>
-          </td>
-          <td *ngFor="let col of columns">
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template
+      *ngIf="!shouldGroupBy"
+      pTemplate="body"
+      let-model
+    >
+      <tr>
+        <td>
+          <p-tableRadioButton [value]="model"></p-tableRadioButton>
+        </td>
+        <td *ngFor="let col of columns">
+          <span>
             {{
             model[col.fieldName]
             }}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="rowexpansion"
+      let-model
+    >
+      <ng-container *ngIf="shouldGroupBy">
+        <tr *ngFor="let item of model.records">
+          <td *ngFor="let col of columns">
+            <span>
+              {{
+              item[col.fieldName]
+              }}
+            </span>
           </td>
         </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-          <tr>
-            <td [colSpan]="columns.length + 1"><span class="text-xl text-center flex justify-content-center m-5" style="font-family: roman;">ჩანაწერები არ მოიძებნა</span></td>
-        </tr>
+      </ng-container>
     </ng-template>
-    </p-table>
-  </div>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [colSpan]="columns.length + 1"><span
+            class="text-xl text-center flex justify-content-center m-5"
+            style="font-family: roman;"
+          >ჩანაწერები არ მოიძებნა</span></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

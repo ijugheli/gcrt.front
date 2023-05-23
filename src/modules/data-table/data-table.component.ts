@@ -18,6 +18,7 @@ import { TreeNode } from 'primeng/api';
 import { Router } from '@angular/router';
 import { RecordsService } from '../../services/attributes/Records.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
+import { FormService } from 'src/services/form.service';
 
 
 @Component({
@@ -95,6 +96,7 @@ export class DataTableComponent implements OnInit {
     private records: RecordsService,
     private router: Router,
     public dialogService: DialogService,
+    private formService: FormService,
     private spinner: NgxSpinnerService) {
 
   }
@@ -117,7 +119,7 @@ export class DataTableComponent implements OnInit {
       return;
     }
 
-    this.attr = this.attributes.get(this.attrID);
+    this.attr = this.records.attrs.get(this.attrID);
     // let records = this.records.get(this.attrID);
 
     this.attributes
@@ -428,6 +430,10 @@ export class DataTableComponent implements OnInit {
         }
       ];
     }
+    console.log('row');
+    console.log(row);
+    console.log('row');
+    this.formService.withAttribute(this.attr!);
 
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
       data: {
@@ -444,6 +450,7 @@ export class DataTableComponent implements OnInit {
 
     dialogReference.onClose.subscribe((d: any) => {
       this.load();
+      this.attributes.load(true); // refresh static
     });
   }
 
@@ -458,6 +465,7 @@ export class DataTableComponent implements OnInit {
       this.router.navigateByUrl('/edit/' + this.attrID + '/' + valueID);
       return;
     }
+
     const dialogReference = this.dialogService.open(DynamicFormComponent, {
       data: { attrID: this.attrID, valueID: valueID, relatedValueID: this.valueID },
       header: 'მნიშვნელობის რედაქტირება',
@@ -469,6 +477,7 @@ export class DataTableComponent implements OnInit {
 
     dialogReference.onClose.subscribe((d: any) => {
       this.load();
+      this.attributes.load(true); // refresh static
     });
   }
 
@@ -492,6 +501,8 @@ export class DataTableComponent implements OnInit {
         this.attributes.delete(this.attrID, JSON.stringify(valueIDs)).subscribe((d) => {
           this.messageService.add({ severity: 'success', summary: 'შერჩეული ჩანაწერების წაშლა წარმატებით დასრულდა' });
           this.load();
+          this.attributes.load(true); // refresh static
+
         });
       }, reject: () => {
 

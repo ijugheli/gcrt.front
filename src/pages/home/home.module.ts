@@ -6,14 +6,12 @@ import { TabViewModule } from 'primeng/tabview';
 import { FieldsetModule } from 'primeng/fieldset';
 import { DynamicInputModule } from 'src/modules/dynamic-input/dynamic-input.module';
 import { DynamicFormModule } from 'src/modules/dynamic-form/dynamic-form.module';
-import { MenuModule } from 'src/modules/menu/menu.module';
 
 @NgModule({
   declarations: [HomeComponent],
   imports: [
     CommonModule,
     DataTableModule,
-    MenuModule,
   ],
   exports: [
     HomeComponent

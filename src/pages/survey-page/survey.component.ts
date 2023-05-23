@@ -1,11 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Model } from "survey-core";
-import "./survey.component.css";
-import "survey-core/defaultV2.min.css";
 import { SurveyService } from "src/services/survey.service";
-import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ISurveyResult } from "src/app/app.interfaces";
+import { getRouteParam } from "src/app/app.func";
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "component-survey",
@@ -15,13 +13,12 @@ import { ISurveyResult } from "src/app/app.interfaces";
 
 export class SurveyComponent implements OnInit {
   public model!: Model;
-  public surveyID!: number;
+  public surveyID: number = parseInt(getRouteParam('survey_id'));
   public resultData: ISurveyResult[] = [];
 
   constructor(
     public spinner: NgxSpinnerService,
     private surveyService: SurveyService,
-    private activatedRoute: ActivatedRoute,
   ) { };
 
   ngOnInit() {
@@ -30,14 +27,12 @@ export class SurveyComponent implements OnInit {
   }
 
   private init() {
-    this.surveyID = parseInt(this.activatedRoute.snapshot.paramMap.get('survey_id')!);
-
     const that = this;
     this.surveyService.getSurveyList().subscribe((data) => {
       const survey = new Model(data.surveys.get(this.surveyID));
       survey.showCompletedPage = false;
 
-      survey.onComplete.add((sender, options) => {
+      survey.onComplete.add((sender: any, options: any) => {
         that.surveyService.store({ surveyID: this.surveyID, data: sender.data }).subscribe((data) => {
           this.resultData = data.data;
         });
@@ -45,7 +40,7 @@ export class SurveyComponent implements OnInit {
       });
 
       if (this.surveyID != 7) {
-        survey.onValueChanged.add((sender, options) => {
+        survey.onValueChanged.add((sender: any, options: any) => {
           that.surveyService.store({ surveyID: this.surveyID, data: sender.data }).subscribe((data) => {
             this.resultData = data.data;
           });

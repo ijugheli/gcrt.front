@@ -6,11 +6,12 @@ import { API_URL } from 'src/app/app.config';
 import { APIResponse, IUserPermission } from 'src/app/app.interfaces';
 import { GuardedService, User } from '../app/app.models';
 import { AuthService } from './AuthService.service';
+import { CacheService } from './cache.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService extends GuardedService {
+export class UserService {
 
   public users: User[] = [];
 
@@ -27,62 +28,60 @@ export class UserService extends GuardedService {
     'getReport': API_URL + '/user/report',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService) {
-    super(auth.getToken());
+  constructor(private http: HttpClient,private cacheService: CacheService) {
+
   }
 
   public list(): Observable<APIResponse<User[]>> {
-    return this.http.get<APIResponse<User[]>>(this.urls['list'], { headers: this.headers });
+    return this.http.get<APIResponse<User[]>>(this.urls['list'],);
   }
 
   public details(userID: number): Observable<User> {
-    return this.http.get<User>(this.urls['details'].replace('{user_id}', userID), { headers: this.headers });
+    return this.http.get<User>(this.urls['details'].replace('{user_id}', userID),);
   }
 
   public add(values: any) {
-    return this.http.post<APIResponse>(this.urls['add'], values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['add'], values,);
   }
 
   public edit(userID: number, values: any) {
-    return this.http.post<APIResponse>(this.urls['edit'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['edit'].replace('{user_id}', userID), values,);
   }
 
   public getReport() {
-    return this.http.get(this.urls['getReport'], { headers: this.headers });
+    return this.http.get(this.urls['getReport'],);
   }
 
   public changePassword(values: any) {
-    return this.http.post(this.urls['changePassword'], values, { headers: this.headers }).pipe(
+    return this.http.post(this.urls['changePassword'], values,).pipe(
       catchError(this.handleError)
     );
   }
 
   public delete(userID: number) {
-    return this.http.delete(this.urls['delete'].replace('{user_id}', userID), { headers: this.headers });
+    return this.http.delete(this.urls['delete'].replace('{user_id}', userID),);
   }
 
   public saveAttrPermission(userID: number, attrID: number, values: any) {
-    return this.http.post<APIResponse<IUserPermission>>(this.urls['updatePermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values, { headers: this.headers });
+    return this.http.post<APIResponse<IUserPermission>>(this.urls['updatePermission'].replace('{user_id}', userID).replace('{attr_id}', attrID), values,);
   }
 
   public updateBooleanColumns(userID: number, values: any) {
-    return this.http.post<APIResponse>(this.urls['updateBooleanProperties'].replace('{user_id}', userID), values, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updateBooleanProperties'].replace('{user_id}', userID), values,);
   }
 
   public updatePassword(data: any) {
-    return this.http.post<APIResponse>(this.urls['updatePassword'], data, { headers: this.headers });
+    return this.http.post<APIResponse>(this.urls['updatePassword'], data,);
   }
 
   public me() {
-    const auth = localStorage.getItem('auth');
+    const auth = this.cacheService.get('auth');
 
     if (auth == null) {
       return null;
     }
 
-    const info = JSON.parse(auth);
-
-    return info.user as User;
+    return auth!.user as User;
   }
 
   private handleError(error: HttpErrorResponse) {

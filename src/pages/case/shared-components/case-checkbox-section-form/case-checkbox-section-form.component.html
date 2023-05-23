@@ -1,0 +1,21 @@
+<div
+  class="inline-flex flex-row align-content-center lg:justify-content-start gap-4 fadeindown animation-ease-in animation-duration-200"
+>
+  <app-checkbox-table
+    [initialOptions]="initialOptions"
+    [caseID]="caseID"
+    [caseSectionModel]="model"
+    (onSave)="onSaveClick($event)"
+  >
+  </app-checkbox-table>
+  <app-case-section-table
+    [data]="data"
+    [parsedData]="parsedData"
+    [shouldGroupBy]="true"
+    [columns]="tableCols"
+    (onEdit)="onEditClick($event)"
+    (onAdd)="onAddClick($event)"
+    (onDelete)="onDeleteClick($event)"
+  >
+  </app-case-section-table>
+</div>
