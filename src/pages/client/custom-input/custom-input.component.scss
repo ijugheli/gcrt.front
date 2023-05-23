@@ -49,6 +49,30 @@ textarea {
     }
 }
 
+:where(.is-table-input) {
+
+    input,
+    ::ng-deep .p-inputnumber,
+    ::ng-deep p-calendar input.p-inputtext,
+    ::ng-deep .p-dropdown,
+    ::ng-deep .p-treeselect {
+        min-width: unset;
+
+        max-width: unset;
+        width: calc(300px + 38px) !important;
+    }
+
+    ::ng-deep .p-treeselect-panel {
+        min-width: 300px;
+        max-width: 338px;
+    }
+}
+
+::ng-deep .p-treeselect-panel {
+    min-width: 500px;
+    max-width: 538px;
+}
+
 ::ng-deep .p-ripple.p-element.p-dropdown-item {
     font-family: roman;
     font-size: 1rem;

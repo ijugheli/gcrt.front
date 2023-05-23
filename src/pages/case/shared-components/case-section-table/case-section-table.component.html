@@ -1,8 +1,8 @@
 <div
-  [style.max-width]="isFormTable ? (menuService.isMenuVisible$ | async) ? 'calc(100vw - 275px - 280px - 400px - 48px)' : 'calc(100vw - 280px - 400px - 48px)' : '100%' "
+  [style.max-width]="isFormTable ? ((menuService.isMenuVisible$ | async) ? 'calc(100vw - 450px - 280px - 400px - 48px)' : 'calc(100vw - 450px - 400px - 48px)') : '100%' "
 >
   <div class="header justify-content-start gap-2">
-    <ng-container *ngIf="!isFormTable">
+    <ng-container>
       <button
         type="button"
         class="border-btn mb-2"
@@ -41,26 +41,34 @@
   </div>
   <p-table
     [value]="parsedData"
+    [showLoader]="false"
     [responsive]="true"
     [selection]="selectedRow"
-    styleClass="p-datatable-sm p-datatable-gridlines"
-    [style.max-width]="isFormTable ? (menuService.isMenuVisible$ | async) ? 'calc(100vw - 275px - 280px - 400px - 48px)' : 'calc(100vw - 280px - 400px - 48px)' : '100%' "
-    responsiveLayout="scroll"
-    selectionMode="single"
+    [rowGroupMode]="'subheader'"
+    [groupRowsBy]="shouldGroupBy ? 'record_date' : null"
     (onRowSelect)="onRowSelect($event)"
     (onRowUnselect)="onRowUnselect($event)"
-    dataKey="generated_id"
+    rowExpandMode="single"
+    styleClass="p-datatable-sm p-datatable-gridlines"
+    [dataKey]="shouldGroupBy ? 'record_date' : 'generated_id'"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th></th>
-        <th
-          *ngFor="let col of columns"
-          [pSortableColumn]="col['fieldName']"
-        >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
-        </th>
+        <ng-container *ngIf="shouldGroupBy">
+          <th *ngFor="let col of columns">
+            {{col.label}}
+          </th>
+        </ng-container>
+        <ng-container *ngIf="!shouldGroupBy">
+          <th></th>
+          <th
+            *ngFor="let col of columns"
+            [pSortableColumn]="col['fieldName']"
+          >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
+          </th>
+        </ng-container>
       </tr>
-      <tr>
+      <tr *ngIf="!shouldGroupBy">
         <th></th>
         <th *ngFor="let col of columns">
           <p-columnFilter
@@ -75,16 +83,30 @@
       </tr>
     </ng-template>
     <ng-template
-      pTemplate="body"
-      *ngIf="loading == true"
+      *ngIf="shouldGroupBy"
+      pTemplate="groupheader"
+      let-model
+      let-expanded="expanded"
     >
-      <tr style="height:46px">
-        <td *ngFor="let col of columns">
-          <p-skeleton></p-skeleton>
+      <tr pRowGroupHeader>
+        <td [colSpan]="columns.length + 1">
+          <div class="flex flex-row align-items-center">
+            <button
+              type="button"
+              pButton
+              pRipple
+              class="p-button-text p-button-rounded p-button-plain mr-2"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              [pRowToggler]="model"
+            ></button>
+            <span class="font-bold ml-2 mr-2">{{model.record_date}}</span>
+            <p-tableRadioButton [value]="model"></p-tableRadioButton>
+          </div>
         </td>
       </tr>
     </ng-template>
     <ng-template
+      *ngIf="!shouldGroupBy"
       pTemplate="body"
       let-model
     >
@@ -98,9 +120,24 @@
             model[col.fieldName]
             }}
           </span>
-
         </td>
       </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="rowexpansion"
+      let-model
+    >
+      <ng-container *ngIf="shouldGroupBy">
+        <tr *ngFor="let item of model.records">
+          <td *ngFor="let col of columns">
+            <span>
+              {{
+              item[col.fieldName]
+              }}
+            </span>
+          </td>
+        </tr>
+      </ng-container>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>

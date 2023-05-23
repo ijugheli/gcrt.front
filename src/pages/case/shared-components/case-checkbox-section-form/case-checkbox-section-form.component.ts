@@ -1,70 +1,70 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { IConsultation, IDiagnosis, IReferral, MOnSectionEvent } from '../../case.model';
-import { ICaseCol, ICustomInput } from 'src/app/app.interfaces';
-import { detailTypes } from '../../case.config';
-import { CustomInputComponent } from 'src/pages/client/custom-input/custom-input.component';
+import { MOnSectionEvent, MSymptom } from '../../case.model';
+import { ICaseCol } from 'src/app/app.interfaces';
 import { CaseSectionTable } from '../case-section-table/case-section-table.component';
-import { CaseService } from 'src/services/case.service';
 import { CheckboxTable } from '../checkbox-table/checkbox-table.component';
-// For diagnosis, consultation, referral,
+import * as _ from 'lodash';
+// For symptoms
 @Component({
   standalone: true,
   selector: 'app-case-checkbox-section-form',
   templateUrl: './case-checkbox-section-form.component.html',
   styleUrls: ['./case-checkbox-section-form.component.scss', '../../../client/client-form/client-form.component.scss'],
-  imports: [CommonModule, FormsModule, ButtonModule, CheckboxTable]
+  imports: [CommonModule, FormsModule, ButtonModule, CheckboxTable, CaseSectionTable]
 })
 
-export class CaseSectionForm implements OnInit {
+export class CaseCheckboxSectionForm implements OnInit {
+  // Initial model data
   @Input() data: any[] = [];
-  @Input() parsedData: any[] = [];
+  // Somatic/Mental TableOptions
+  @Input() initialOptions: any[] = [];
+  // Table Data
+  @Input() parsedData: MSymptom[] = [];
   @Input() caseID: number | null = null;
-  @Input() inputAttrs: ICustomInput[] = [];
   @Input() tableCols: ICaseCol[] = [];
   @Input() sectionType!: number;
-  @Input() model: IDiagnosis | IConsultation | IReferral = new IReferral(); // if user clicks edit/add in main case section table
+  @Input() model: any[] = []; // for initializing case section in case table instead of form
   @Output() onSave = new EventEmitter<MOnSectionEvent>();
   @Output() onDelete = new EventEmitter<MOnSectionEvent>();
-
-  constructor(
-    private attrService: AttributesService,
-    private caseService: CaseService,
-  ) { }
+  // For local data (if caseID is null)
+  public isAddMode: boolean = true;
 
   ngOnInit() {
+    if (this.model !== null && this.model.length > 0) {
+      this.isAddMode = false;
+    }
   }
 
-  public onSaveClick() {
-    if (!this.caseService.isValidNewModel(this.model)) {
-      return;
+  public onSaveClick(event: MOnSectionEvent) {
+    if (this.isAddMode && event.data !== undefined && this.parsedData.some((symptoms: any) => event.data[0].record_date === symptoms.record_date)) {
+      event.errorMessage = 'არჩეულ თარიღში ჩანაწერი არსებობს';
     }
 
-    const onSectionSave = new MOnSectionEvent();
+    this.isAddMode = true;
+    this.onSave.emit(event);
+  }
 
-    if (!this.caseService.isValidModel(this.model, this.inputAttrs)) {
-      onSectionSave.errorMessage = 'შეავსეთ სავალდებულო ველები';
-      this.onSave.emit(onSectionSave);
-      return;
-    }
+  public onEditClick(event: any) {
+    this.model = event;
+    this.isAddMode = false;
+  }
 
-    const id = this.model.id ?? this.model.generated_id;
-    const index = this.data.findIndex(e => e.generated_id == id || e.id == id);
-    this.caseService.isValidationEnabled = false;
-    this.model.case_id = this.caseID;
+  public onDeleteClick(selectedRow: any) {
+    if (selectedRow == undefined) return;
 
-    if (index !== -1) {
-      this.data[index] = Object.assign({}, this.model);
-    } else {
-      this.data.push(this.model);
-    }
+    const event = new MOnSectionEvent();
+    event.data = selectedRow;
+    event.successMessage = 'ჩანაწერი წარმატებით წაიშალა';
+    this.isAddMode = true;
 
-    onSectionSave.data = this.data;
-    onSectionSave.model = this.model;
-    onSectionSave.successMessage = 'წარმატებით დაემატა';
-    this.onSave.emit(onSectionSave);
+    this.onDelete.emit(event);
+  }
+
+  public onAddClick(event: any) {
+    this.model = event;
+    this.isAddMode = true;
   }
 }

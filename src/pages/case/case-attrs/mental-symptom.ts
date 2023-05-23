@@ -1,3 +1,5 @@
+import { ICaseCol } from "src/app/app.interfaces";
+
 export const mentalSymptomMap: Map<string, any> = new Map(
     [
         ['symptom_id', {
@@ -30,3 +32,9 @@ export const mentalSymptomMap: Map<string, any> = new Map(
         ],
     ]
 );
+
+export const mentalSymptomCols =[
+    {fieldName: 'record_date', label : 'რეგისტრაციის თარიღი'},
+    {fieldName: 'symptom_id', label : 'სიმპტომი'},
+    {fieldName: 'symptom_severity', label : 'დონე'},
+];

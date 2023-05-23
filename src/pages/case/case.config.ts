@@ -2,16 +2,18 @@ import { IFormMenuOption } from "src/app/app.interfaces";
 
 export const menuOptions: IFormMenuOption[] = [
     { anchor: 'case', label: 'ქეისი', value: 0, icon: 'pi pi-briefcase' },
-    { anchor: 'forms_of_violences', label: 'ძალადობის ფორმები', value: 1, icon: 'pi pi-sitemap' },
-    { anchor: 'care_plans', label: 'მოვლის გეგმა', value: 2, icon: 'pi pi-sitemap' },
-    { anchor: 'diagnoses', label: 'დიაგნოზი', value: 3, icon: 'pi pi-copy' },
-    { anchor: 'referrals', label: 'რეფერალი', value: 4, icon: 'pi pi-building' },
-    { anchor: 'consultations', label: 'კონსულტაცია', value: 5, icon: 'pi pi-users' },
+    { anchor: 'diagnoses', label: 'დიაგნოზები', value: 3, icon: 'pi pi-copy' },
+    { anchor: 'referrals', label: 'რეფერალები', value: 4, icon: 'pi pi-building' },
+    { anchor: 'consultations', label: 'კონსულტაციები', value: 5, icon: 'pi pi-users' },
     { anchor: 'mental_symptoms', label: 'მენტალური სიმპტომები', value: 6, icon: 'pi pi-list' },
     { anchor: 'somatic_symptoms', label: 'სომატური სიმპტომები', value: 7, icon: 'pi pi-list' },
     { anchor: 'other_symptoms', label: 'სხვა სიმპტომები', value: 8, icon: 'pi pi-align-center' },
+    { anchor: 'forms_of_violences', label: 'ძალადობის ფორმები', value: 1, icon: 'pi pi-sitemap' },
+    { anchor: 'care_plans', label: 'მოვლის გეგმა', value: 2, icon: 'pi pi-sitemap' },
     { anchor: 'psycho_diagnoses', label: 'ფსიქოდიაგნოსტირება', value: 9, icon: 'pi pi-book' },
 ];
+// for Case Detail dropdown options
+export const detailDropdownOptions: IFormMenuOption[] = menuOptions.slice(1);
 
 export const detailTypes: Record<number, string> = {
     1: 'forms_of_violences',
@@ -24,6 +26,15 @@ export const detailTypes: Record<number, string> = {
     8: 'other_symptoms',
     9: 'psycho_diagnoses',
 }
+
+export const sections: string[] = [
+    'diagnoses',
+    'referrals',
+    'consultations',
+    'other_symptoms',
+    'mental_symptoms',
+    'somatic_symptoms',
+];
 
 export const detailTypeIDS: Record<string, number> = {
     forms_of_violences: 1,

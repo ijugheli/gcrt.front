@@ -40,8 +40,12 @@
         </div>
     </ng-container>
     <ng-container *ngIf="data['type'] != 'switch' && isTableInput">
+        <div class="is-table-input">
+
         <ng-container *ngTemplateOutlet="inputs">
         </ng-container>
+    </div>
+
     </ng-container>
 </ng-container>
 
@@ -97,6 +101,9 @@
         *ngIf="data['type'] == 'textarea'"
         [id]="data['fieldName']"
         [ngModel]="model"
+        [style]="{
+            'max-width': data['isRequired'] ? '538px' : '578px'
+        }"
         [disabled]="isInputDisabled(data)"
         [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
         [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"

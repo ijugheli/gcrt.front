@@ -11,6 +11,12 @@ import { formsOfViolenceTreeID } from './case-attrs/forms-of-violence';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { generateRandomNumber } from 'src/app/app.func';
 import { MenuService } from 'src/services/app/menu.service';
+import { diagnosisCols } from './case-attrs/diagnosis';
+import { consultationCols } from './case-attrs/consultation';
+import { referralCols } from './case-attrs/referral';
+import * as _ from 'lodash';
+import { mentalSymptomCols } from './case-attrs/mental-symptom';
+import { otherSymptomCols } from './case-attrs/other-symptom';
 
 @Component({
   selector: 'app-case-page',
@@ -27,8 +33,10 @@ export class CaseComponent implements OnInit {
   public tableData: MCase[] = [];
   public loadingArray: number[] = Array(10);
   public CaseConfig = caseConfig;
-  // for case section detail table (diagnoses, consultations, referrals)
   public isModalVisible: boolean = false;
+  // for case section detail table (diagnoses, consultations, referrals, symptoms)
+  public isSectionModalVisible: boolean = false;
+  public isSectionSymptom: boolean = false;
   public detailData!: any;
   public parsedDetailData!: any;
   public detailCols: any;
@@ -56,8 +64,8 @@ export class CaseComponent implements OnInit {
   }
 
   private init(): void {
+    this.caseService.isValidationEnabled = false;
     this.isLoading = true;
-
 
     forkJoin({
       response: this.caseService.index(),
@@ -99,22 +107,41 @@ export class CaseComponent implements OnInit {
     });
   }
 
-  public onDetailClick(type: number, data: any, caseID: number, isTree: boolean = false): void {
-    const types: Record<number, string> = this.CaseConfig.detailTypes;
+  public onDetailClick(caseID: number): void {
     this.caseID = caseID;
-    this.caseService.selectedSection = type;
-    this.parsedDetailData = data;
-    this.detailData = this.caseService.cases.get(this.caseID)![types[type]];
+    this.caseService.selectedSection = this.CaseConfig.detailTypeIDS['diagnoses'];
+    this.parsedDetailData = this.caseService.parsedCases.get(this.caseID!)!['diagnoses'];
+    this.detailCols = diagnosisCols;
+    this.detailData = this.caseService.cases.get(this.caseID!)!['diagnoses'];
+    this.isModalVisible = true;
+    this.isSectionModalVisible = true;
+  }
 
-    switch (types[type]) {
+  public onDetailDropdownChange(event: any): void {
+    const types: Record<number, string> = this.CaseConfig.detailTypes;
+    this.caseService.selectedSection = event.value;
+    this.parsedDetailData = this.caseService.parsedCases.get(this.caseID!)![types[event.value]]; // for Table
+    this.detailData = this.caseService.cases.get(this.caseID!)![types[event.value]]; // for Form
+
+    // Tables use columns for showing fields dynamically
+    switch (types[event.value]) {
       case 'diagnoses':
-        this.detailCols = this.caseService.diagnosisCols;
+        this.detailCols = diagnosisCols;
         break;
       case 'referrals':
-        this.detailCols = this.caseService.referralCols;
+        this.detailCols = referralCols;
         break;
       case 'consultations':
-        this.detailCols = this.caseService.consultationCols;
+        this.detailCols = consultationCols;
+        break;
+      case 'mental_symptoms':
+        this.detailCols = mentalSymptomCols;
+        break;
+      case 'somatic_symptoms':
+        this.detailCols = mentalSymptomCols;
+        break;
+      case 'other_symptoms':
+        this.detailCols = otherSymptomCols;
         break;
       case 'forms_of_violences':
         this.tree = this.caseService.formsOfViolenceTree;
@@ -124,7 +151,13 @@ export class CaseComponent implements OnInit {
         break;
     }
 
-    isTree ? this.isTreeModalVisible = true : this.isModalVisible = true;
+    if (this.isTreeSection()) {
+      this.isTreeModalVisible = true;
+      this.isSectionModalVisible = false;
+    } else {
+      this.isTreeModalVisible = false;
+      this.isSectionModalVisible = true;
+    }
   }
 
   public onDetailAdd() {
@@ -137,9 +170,11 @@ export class CaseComponent implements OnInit {
     this.router.navigate([`/case/edit/${this.caseID}`]);
   }
 
-  public onModalHide(event: any, isTree: boolean = false) {
+  public onModalHide(event: any) {
     this.caseService.selectedSection = null;
-    isTree ? this.isTreeModalVisible = false : this.isModalVisible = false;
+    this.isTreeModalVisible = false;
+    this.isSectionModalVisible = false;
+    this.isModalVisible = false;
   }
 
   public onDetailDelete(event: MOnSectionEvent) {
@@ -149,19 +184,27 @@ export class CaseComponent implements OnInit {
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
       accept: () => {
-        this.deleteSection(event.data.id, this.caseService.selectedSection!);
-
+        // onDelete sends {record_date: '', records: []} if somatic or mental symptoms section
+        const isSymptomSection: boolean = this.isSymptomSection();
+        this.deleteSection(isSymptomSection ? event.data.records.map((e: any) => e.id) : event.data.id, this.caseService.selectedSection!);
         this.showMsg(event.successMessage!, 'success');
       }
     });
   }
 
+  public isSymptomSection() {
+    return this.caseService.isSymptomSection(this.CaseConfig.detailTypes[this.caseService.selectedSection!]);
+  }
+
+  public isTreeSection() {
+    return this.caseService.isTreeSection(this.CaseConfig.detailTypes[this.caseService.selectedSection!]);
+  }
+
   public onTreeSave(event: any[]) {
     const sectionType = this.CaseConfig.detailTypes[this.caseService.selectedSection!];
-    const method =
-      sectionType == "forms_of_violences"
-        ? 'updateFormsOfViolences'
-        : 'updateCarePlans'
+    const method = sectionType == "forms_of_violences"
+      ? 'updateFormsOfViolences'
+      : 'updateCarePlans';
 
     this.caseService[method](event, this.caseID!).subscribe((data) => {
       this.updateSections(data, this.caseService.selectedSection!);
@@ -183,16 +226,13 @@ export class CaseComponent implements OnInit {
     })
   }
 
-  private deleteSection(id: number, type: number): void {
-    const sectionType = this.CaseConfig.detailTypes[type];
-    const method =
-      sectionType == "diagnoses"
-        ? 'destroyDiagnosis'
-        : sectionType == "referrals"
-          ? 'destroyReferral'
-          : 'destroyConsultation';
+  private deleteSection(id: number & number[], type: number): void {
+    const sectionType: string = this.CaseConfig.detailTypes[type];
+    // isSymptomSection for somatic and mental symptoms
+    const isSymptomSection: boolean = this.caseService.isSymptomSection(sectionType);
+    const method = isSymptomSection ? this.caseService.getSymptomDestroyMethod(sectionType) : this.caseService.getSectionDestroyMethod(sectionType);
 
-    this.caseService[method](id).subscribe((data) => {
+    this.caseService[method](id, this.caseID!).subscribe((data) => {
       this.updateSections(data, type);
     });
   }
@@ -208,27 +248,30 @@ export class CaseComponent implements OnInit {
     const sectionType = this.CaseConfig.detailTypes[type];
     const ICase: ICase = this.caseService.cases.get(this.caseID!)!;
     const MCase: MCase = this.caseService.parsedCases.get(this.caseID!)!;
+    // isSymptomSection for somatic and mental symptoms, we only need to parse data for MCase
+    const isSymptomSection: boolean = this.caseService.isSymptomSection(sectionType);
     let newParsedArray: any[] = [];
 
-    if (sectionType == 'diagnoses' || 'referrals' || 'consultations') {
+    if (this.CaseConfig.sections.includes(sectionType)) {
       ICase[sectionType] = response.data.map((value: any) => {
-        return this.parseNewDetails(value, newParsedArray);
+        return isSymptomSection ? value : this.parseNewDetails(value, newParsedArray);
       });
     } else if (sectionType == 'forms_of_violences' || 'care_plans') {
       ICase[sectionType] = response.data;
       newParsedArray = response.data;
     }
 
-    MCase[sectionType] = newParsedArray;
+    MCase[sectionType] = isSymptomSection ? this.caseService.parseSymptoms(ICase[sectionType]) : newParsedArray;
     this.data = Array.from(this.caseService.cases.values());
     this.detailData = ICase[sectionType];
     this.parsedDetailData = MCase[sectionType];
   }
 
+
   private parseNewDetails(value: any, newParsedArray: any[]) {
-    const item = Object.assign({}, value);
+    const item = _.cloneDeep(value);
     item.generated_id = Date.now() + generateRandomNumber();
-    const copy = Object.assign({}, item);
+    const copy = _.cloneDeep(item);
     newParsedArray.push(this.caseService.parseSection(copy));
     return item;
   }
