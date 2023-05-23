@@ -363,7 +363,7 @@ export class CaseService {
   }
 
   public isTreeSection(sectionType: string): boolean {
-    return sectionType === 'forms_of_violences' || sectionType === 'care_plans`';
+    return sectionType === 'forms_of_violences' || sectionType === 'care_plans';
   }
 
   private mapCaseResponse(data: APIResponse<any>): APIResponse<ParsedCases> {
