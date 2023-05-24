@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Attribute, GuardedService } from 'src/app/app.models';
+import { Attribute } from 'src/app/app.models';
 import { API_URL, DISABLED_ATTRS, VIEW_TYPE_ID } from 'src/app/app.config';
-import { AuthService } from '../AuthService.service';
 import { IAttribute } from './interfaces/attribute.interface';
-import { AsyncSubject, BehaviorSubject, Observable, map, mergeMap, toArray } from 'rxjs';
+import { AsyncSubject, BehaviorSubject, Observable, map } from 'rxjs';
 import { MAttribute } from './models/attribute.model';
 import { IProperty } from './interfaces/property.interface';
 import { MProperty } from './models/property.model';
@@ -42,7 +41,6 @@ export class AttributesService {
         'reorderProperties': API_URL + '/attrs/{attr_id}/properties/reorder',
         'withValue': API_URL + '/attrs/{attr_id}/values/{value_id}',
         'full': API_URL + '/attrs/{attr_id}/values',
-        'fullWithSelect': API_URL + '/attrs/tree-select/{attr_id}/values',
         'treeselectOptions': API_URL + '/attrs/tree-select-options',
         'related': API_URL + '/attrs/{attr_id}/related/{value_id}',
         'tree': API_URL + '/attrs/{attr_id}/values/tree/{value_id}',
@@ -229,9 +227,8 @@ export class AttributesService {
         return this.http.get<APIResponse<Attribute[]>>(this.urls['related'].replace('{attr_id}', attrID.toString()).replace('{value_id}', valueID.toString()),);
     }
 
-    public full(attrID: number, isTreeSelect: boolean = false) {
-        const url = isTreeSelect ? 'fullWithSelect' : 'full';
-        return this.http.get<APIResponse<Attribute[]>>(this.urls[url].replace('{attr_id}', attrID.toString()),);
+    public full(attrID: number) {
+        return this.http.get<APIResponse<Attribute[]>>(this.urls['full'].replace('{attr_id}', attrID.toString()),);
     }
 
     public attribute(attrID: number) {

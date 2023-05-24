@@ -18,6 +18,7 @@ import { isCaseKey } from 'src/pages/case/case.model';
 import { ICustomInput } from 'src/app/app.interfaces';
 import { switchMap, map, Subject, takeUntil } from 'rxjs';
 import { MOption } from 'src/services/attributes/models/option.model';
+import * as _ from 'lodash';
 @Component({
   standalone: true,
   selector: 'custom-input',
@@ -114,7 +115,7 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
 
     this.attrService.treeNodes(this.data['propertyID'], node.data.value_id, true).subscribe((items) => {
       node.children = parseTree(items as any);
-      this.options = [...this.options];
+      this.options = _.cloneDeep(this.options);
       this.saveFlatTreeNodes(node.children);
     });
   }
@@ -185,9 +186,10 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
 
     return this.attrService.flatTreeMap.get(nodeID) as TreeNode;
   }
+
   // saving new treenodes for getTreeNode() 
   private saveFlatTreeNodes(items: any): void {
-    for (let tree of flattenTree(items)) {
+    for (let tree of flattenTree(_.cloneDeep(items))) {
       if (!this.attrService.flatTreeMap.has(tree.data.id)) {
         this.attrService.flatTreeMap.set(tree.data.id, tree);
       }
