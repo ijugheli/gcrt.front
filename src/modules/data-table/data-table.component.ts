@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { RecordsService } from '../../services/attributes/Records.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { FormService } from 'src/services/form.service';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -198,16 +199,16 @@ export class DataTableComponent implements OnInit {
 
   public onNodeExpand(event: any) {
     const node = event.node;
+    node.expanded = true;
     if (node.children.length > 0) {
       return;
     }
 
     this.loading = true;
-    node.expanded = true;
 
     this.attributes.treeNodes(this.attrID, node.data.value_id).subscribe((items) => {
       node.children = this.parseTree(items);
-      this.tree = [...this.tree];
+      this.tree = _.cloneDeep(this.tree);
       this.loading = false;
     });
   }
