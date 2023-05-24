@@ -27,6 +27,12 @@ span {
     margin: 10px 0px 0px 0px;
 }
 
+::ng-deep .p-inputtext {
+    font-family: roman;
+    font-size: 1rem;
+}
+
+
 /* :host ::ng-deep .p-datatable-sm.p-datatable-gridlines.p-datatable.p-component { */
 /* width: calc(100vw - 500px); */
 /* } */

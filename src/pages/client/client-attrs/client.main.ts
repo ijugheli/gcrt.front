@@ -1,4 +1,4 @@
-import { ICustomInput } from "src/app/app.interfaces";
+import { ICaseCol, ICustomInput } from "src/app/app.interfaces";
 
 export const mainMap: Map<string, any> = new Map(
     [
@@ -145,3 +145,4 @@ export const mainList: ICustomInput[] = Array.from(mainMap.values());
 export const half: number = Math.ceil(mainList.length / 2);
 export const mainFirstCol: ICustomInput[] = mainList.slice(0, half);
 export const mainSecondCol: ICustomInput[] = mainList.slice(half);
+export const mainCols: ICaseCol[] = mainList.map((e) => new ICaseCol(e));

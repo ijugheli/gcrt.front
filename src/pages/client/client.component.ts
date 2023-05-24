@@ -4,12 +4,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ClientService } from 'src/services/client.service';
 import { IClient, MClient, ParsedClients } from './client.model';
-import { mainList } from './client-attrs/client.main';
+import { mainCols, mainList } from './client-attrs/client.main';
 import { additionalList } from './client-attrs/client.additional';
 import { contactList } from './client-attrs/client.contact';
 import { addressList } from './client-attrs/client.address';
 import * as ClientConfig from './client.config';
-import { APIResponse } from 'src/app/app.interfaces';
+import { APIResponse, ICaseCol, IFormMenuOption } from 'src/app/app.interfaces';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MenuService } from 'src/services/app/menu.service';
 
@@ -25,12 +25,15 @@ export class ClientComponent implements OnInit {
   public isLoading: boolean = false;
   public selectedRow!: IClient;
   public clients: IClient[] = [];
+  public clientID: number | null = null;
+  public ClientConfig: any = ClientConfig;
   public parsedClients: MClient[] = [];
   public loadingArray: number[] = Array(10);
-
+  public columns: ICaseCol[] = mainCols;
   public isSidebarVisible: boolean = false;
   public sidebarData!: any;
   public sidebarCols: any;
+  public detailModel: number = ClientConfig.menuOptions[1].value;
 
   constructor(
     public attrService: AttributesService,
@@ -84,11 +87,18 @@ export class ClientComponent implements OnInit {
     });
   }
 
-  public onDetailClick(type: number, data: any): void {
-    this.sidebarData = data;
-    const types: Record<number, string> = ClientConfig.detailTypes;
+  public onDetailClick(clientID: number): void {
+    const oldID: number | null = this.clientID;
+    this.clientID = clientID;
+    this.sidebarData = this.clientService.parsedClients.get(this.clientID!)!['additional'];
+    this.sidebarCols = additionalList;
+    this.isSidebarVisible = oldID === clientID ? !this.isSidebarVisible : true;
+  }
 
-    switch (types[type]) {
+  public onDetailSelect(event: any) {
+    const types: Record<number, string> = ClientConfig.detailTypes;
+    this.sidebarData = this.clientService.parsedClients.get(this.clientID!)![types[event.value]];
+    switch (types[event.value]) {
       case 'main':
         this.sidebarCols = mainList;
         break;
@@ -102,7 +112,6 @@ export class ClientComponent implements OnInit {
         this.sidebarCols = addressList;
         break;
     }
-    this.isSidebarVisible = true;
   }
 
   public copyToClipboard(text: string): void {

@@ -89,72 +89,27 @@
         let-attr
       >
         <tr>
-          <!-- <th style="width: 5rem"></th> -->
-          <!-- <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th> -->
-          <!-- <th pSortableColumn="title">დასახელება <p-sortIcon field="title"></p-sortIcon></th> -->
-          <!-- <th>სტატუსი</th> -->
-          <th pSortableColumn="main.id">ID <p-sortIcon field="main.id"></p-sortIcon></th>
-          <th pSortableColumn="main.client_code">
-            კლიენტის კოდი
-            <p-sortIcon field="main.client_code"></p-sortIcon>
+          <th></th>
+          <th></th>
+          <th
+            *ngFor="let col of columns"
+            [pSortableColumn]="col['fieldName']"
+          >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
           </th>
-          <th pSortableColumn="main.name">
-            სახელი
-            <p-sortIcon field="main.name"></p-sortIcon>
-          </th>
-          <th pSortableColumn="main.surname">
-            გვარი
-            <p-sortIcon field="main.surname"></p-sortIcon>
-          </th>
-          <th pSortableColumn="main.registration_date">
-            რეგისტრაციის თარიღი
-            <p-sortIcon field="main.registration_date"></p-sortIcon>
-          </th>
-          <th style="text-align: center !important">ძირითადი მახასიათებლები</th>
-          <th style="text-align: center !important">დამატებითი ინფორმაცია</th>
-          <th style="text-align: center !important">საკონტაქტო ინფორმაცია</th>
-          <th style="text-align: center !important">სამისამართო ინფორმაცია</th>
         </tr>
         <tr>
           <th></th>
-          <th>
+          <th></th>
+          <th *ngFor="let col of columns">
             <p-columnFilter
-              field="main.client_code"
+              *ngIf="!col.fieldName.includes('date')"
+              [field]="col.fieldName"
               type="text"
               matchMode="contains"
               [showClearButton]="false"
               [showMenu]="false"
             ></p-columnFilter>
           </th>
-          <th>
-            <p-columnFilter
-              field="main.name"
-              type="text"
-              matchMode="contains"
-              [showClearButton]="false"
-              [showMenu]="false"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              field="main.surname"
-              type="text"
-              matchMode="contains"
-              [showClearButton]="false"
-              [showMenu]="false"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <!-- <p-columnFilter
-              field="main.registration_date"
-              type="date"
-            ></p-columnFilter> -->
-          </th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <!-- <th></th> -->
         </tr>
       </ng-template>
       <ng-template pTemplate="loadingbody">
@@ -168,25 +123,7 @@
           <td>
             <p-skeleton></p-skeleton>
           </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
-            <p-skeleton></p-skeleton>
-          </td>
-          <td>
+          <td *ngFor="let col of columns">
             <p-skeleton></p-skeleton>
           </td>
         </tr>
@@ -200,54 +137,19 @@
             <p-tableRadioButton [value]="client"></p-tableRadioButton>
           </td>
           <td>
-            <span>{{client.main.client_code}}</span>
-          </td>
-          <td>
-            <span>{{client.main.name}}</span>
-          </td>
-          <td>
-            <span>{{client.main.surname}}</span>
-          </td>
-          <td>
-            <span>{{client.main.registration_date}}</span>
-          </td>
-          <!-- types in clientService -->
-
-          <td>
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
-                (click)="onDetailClick(0,client.main)"
+                (click)="onDetailClick(client.main.id)"
               >დეტალები</button>
             </div>
-
           </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(1,client.additional)"
-              >დეტალები</button>
-            </div>
-
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(2,client.contact)"
-              >დეტალები</button>
-            </div>
-
-          </td>
-          <td>
-            <div class="flex justify-content-center">
-              <button
-                class="border-btn"
-                (click)="onDetailClick(3,client.address)"
-              >დეტალები</button>
-            </div>
-
+          <td *ngFor="let col of columns">
+            <span>
+              {{
+              client.main[col.fieldName]
+              }}
+            </span>
           </td>
         </tr>
       </ng-template>
@@ -257,6 +159,21 @@
       style="background:#f7f6f9; height: 100vh"
       class="w-20rem border-left-1 border-top-1 surface-border p-1 pt-2"
     >
+      <div class="flex justify-content-center mb-2">
+        <p-dropdown
+          [(ngModel)]="detailModel"
+          [style]="{
+            'border-radius': '0 6px 6px 0',
+            'min-width': '250px',
+            'max-width': '250px',
+            'border': '1px solid #D3DFEB',
+            'font-size': '1rem !important',
+            'height': '40px'
+          }"
+          [options]="ClientConfig.menuOptions"
+          (onChange)="onDetailSelect($event)"
+        ></p-dropdown>
+      </div>
       <div
         *ngFor="let col of sidebarCols"
         class="flex flex-column justify-content-center align-items-between gap-1 w-full"

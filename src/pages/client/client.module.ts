@@ -14,6 +14,7 @@ import { CustomInputComponent } from './custom-input/custom-input.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RouterModule } from '@angular/router';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [ClientComponent, ClientFormComponent],
@@ -30,7 +31,8 @@ import { RouterModule } from '@angular/router';
         InputSwitchModule,
         FormsModule,
         SkeletonModule,
-        RouterModule
+        RouterModule,
+        DropdownModule
     ]
 })
 
