@@ -239,9 +239,8 @@
       (onHide)="onModalHide($event)"
     >
       <ng-template pTemplate="header">
-        <div class="detail-dropdown">
-          <p-dropdown
-            [style]="{
+        <p-dropdown
+          [style]="{
               'border-radius': '0 6px 6px 0',
               'min-width': '300px',
               'max-width': '300px',
@@ -249,12 +248,9 @@
               'font-size': '1rem !important',
               'height': '40px'
             }"
-            [options]="CaseConfig.detailDropdownOptions"
-            (onChange)="onDetailDropdownChange($event)"
-          ></p-dropdown>
-
-        </div>
-
+          [options]="CaseConfig.detailDropdownOptions"
+          (onChange)="onDetailDropdownChange($event)"
+        ></p-dropdown>
       </ng-template>
       <ng-container *ngIf="isSectionModalVisible">
         <ng-container *ngIf="isSymptomSection()">

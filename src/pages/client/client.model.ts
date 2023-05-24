@@ -12,6 +12,8 @@ export class IClient {
     public additional!: IClientAdditional;
     public contact!: IClientContact;
     public address!: IClientAddress;
+    [key: string]: any;
+
 
     constructor(data?: any) {
         this.main = new IClientMain();
@@ -43,6 +45,8 @@ export class MClient {
     public additional!: MClientAdditional;
     public contact!: MClientContact;
     public address!: MClientAddress;
+    [key: string]: any;
+
 }
 
 export class IClientMain {
