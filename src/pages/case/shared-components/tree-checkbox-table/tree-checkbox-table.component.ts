@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { BadgeModule } from 'primeng/badge';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CaseSharedInterface, MCheckboxTableItem, MTreeCheckboxTableItem } from '../../case.model';
+import { CaseSharedInterface, MTreeCheckboxTableItem } from '../../case.model';
 // For Forms_of_violence and care_plan
 @Component({
   standalone: true,
@@ -34,17 +34,17 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['caseSectionModel'].currentValue.length > 0) {
-      this.parsedTree = this.parseModel(flattenTree(this.initialTree));
+      this.init();
     }
   }
 
-  private init() {
+  private init(): void {
     this.parsedTree = this.parseModel(flattenTree(this.initialTree));
     this.parents = this.filterParents();
     this.isLoading = false;
   }
 
-  public getNodes(id: number) {
+  public getNodes(id: number): MTreeCheckboxTableItem[] {
     return this.parsedTree.filter(e => e.p_value_id == id);
   }
 
@@ -52,7 +52,7 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
     return this.parsedTree.filter(e => e.p_value_id == id && e.isSelected).length.toString();
   }
 
-  private filterParents() {
+  private filterParents(): MTreeCheckboxTableItem[] {
     return this.parsedTree.filter(e => e.p_value_id == 0);
   }
 
@@ -78,7 +78,7 @@ export class TreeCheckboxTable<T extends CaseSharedInterface> implements OnInit,
     });
   }
 
-  public onComplete() {
+  public onComplete(): void {
     const parsedModel = this.parsedTree.filter(e => e.isSelected && e.p_value_id !== 0).map((e) => {
       let model: any = {};
       model.id = e.id;

@@ -284,9 +284,8 @@
           </app-case-section-table>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="isTreeModalVisible">
+      <ng-container *ngIf="isTreeModalVisible  && tree.length > 0">
         <app-tree-checkbox-table
-          *ngIf="isTreeModalVisible && tree.length > 0"
           [initialTree]="tree"
           [caseID]="caseID"
           [caseSectionModel]="detailData"
