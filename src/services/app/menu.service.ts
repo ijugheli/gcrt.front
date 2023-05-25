@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AttributesService } from '../attributes/Attributes.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map } from 'rxjs';
+import { BehaviorSubject, filter, map, takeWhile } from 'rxjs';
 import { UserService } from '../user.service';
 import { MenuItem } from 'primeng/api';
 import { MENU_ITEMS } from 'src/app/app.config';
@@ -77,11 +77,15 @@ export class MenuService {
     }
 
     private updateMenuItemProperties(): void {
-        const user: User | null = this.userService.me();
-        const userMenuItem = this.items.find((item: any) => item.title === 'user');
-        const logoutMenuItem = userMenuItem.items.find((item: any) => item.label === 'გასვლა');
-        userMenuItem.label = `${user?.name} ${user?.lastname}`;
-        logoutMenuItem.command = () => this.authService.logout();
+        this.authService.authStatus$.pipe(takeWhile((status) => status)).subscribe((status) => {
+            if (!status) return;
+
+            const user: User | null = this.userService.me();
+            const userMenuItem = this.items.find((item: any) => item.title === 'user');
+            const logoutMenuItem = userMenuItem.items.find((item: any) => item.label === 'გასვლა');
+            userMenuItem.label = `${user?.name} ${user?.lastname}`;
+            logoutMenuItem.command = () => this.authService.logout();
+        })
     }
 
     private parseAttrs(attrs: MAttribute[]): void {

@@ -5,6 +5,7 @@ import { API_URL } from 'src/app/app.config';
 import { APIResponse } from 'src/app/app.interfaces';
 import { CacheService } from './cache.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { UserService } from './user.service';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AuthService {
   };
   public authStatus$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private http: HttpClient, private cacheService: CacheService, private router: Router) {
+  constructor(private http: HttpClient, private cacheService: CacheService, private router: Router, private userService: UserService) {
   }
 
   public getToken() {
