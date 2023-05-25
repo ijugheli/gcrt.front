@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AttributesService } from '../attributes/Attributes.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, takeWhile } from 'rxjs';
+import { BehaviorSubject, filter, map } from 'rxjs';
 import { UserService } from '../user.service';
 import { MenuItem } from 'primeng/api';
 import { MENU_ITEMS } from 'src/app/app.config';
@@ -77,7 +77,7 @@ export class MenuService {
     }
 
     private updateMenuItemProperties(): void {
-        this.authService.authStatus$.pipe(takeWhile((status) => status)).subscribe((status) => {
+        this.authService.authStatus$.subscribe((status) => {
             if (!status) return;
 
             const user: User | null = this.userService.me();
