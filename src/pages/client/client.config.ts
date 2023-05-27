@@ -8,7 +8,7 @@ export const ageGroups: Record<string, number>[] = [
         'id': 234,
     },
     {
-        'from': 16,
+        'from': 16, 
         'to': 35,
         'id': 236,
     },

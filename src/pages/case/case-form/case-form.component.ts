@@ -233,8 +233,10 @@ export class CaseFormComponent implements OnInit {
         this.showMsg(e.e.message, 'error');
         this.isLoading = false;
         this.caseService.isInputDisabled = false;
+        this.caseService.isValidationEnabled = false;
       },
       complete: () => {
+        this.caseService.isValidationEnabled = false;
         this.caseService.isInputDisabled = false;
         this.isLoading = false;
       }

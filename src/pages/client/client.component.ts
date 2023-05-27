@@ -23,7 +23,7 @@ import { MenuService } from 'src/services/app/menu.service';
 export class ClientComponent implements OnInit {
   public pageTitle: string = 'კლიენტი';
   public isLoading: boolean = false;
-  public selectedRow!: IClient;
+  public selectedRow!: IClient | undefined | null;
   public clients: IClient[] = [];
   public clientID: number | null = null;
   public ClientConfig: any = ClientConfig;
@@ -75,10 +75,11 @@ export class ClientComponent implements OnInit {
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
       accept: () => {
-        this.clientService.destroy(this.selectedRow.main.id!).subscribe({
+        this.clientService.destroy(this.selectedRow!.main.id!).subscribe({
           next: (data) => {
             this.setData(data);
             this.showMsg(data.message, 'success');
+            this.selectedRow = undefined;
           },
           error: (e: any) => this.showMsg(e.error.message, 'error'),
           complete: () => { }

@@ -230,7 +230,7 @@ export class CaseService {
     const invalids: ICustomInput[] = attrs.filter((attr: any) => {
       let value = model[attr['fieldName']];
 
-      if (!attr['isRequired']) return false;
+      if (!attr['isRequired'] && attr['type'] !== 'tree') return false;
 
       return value === null || value === undefined;
     });
@@ -243,18 +243,23 @@ export class CaseService {
     this.isValidationEnabled = true;
     const list: ICustomInput[] = Array.from(caseList);
 
-    let invalids: ICustomInput[] = list.filter((attr: any) => {
-      if (!attr['isRequired']) return false;
+    let invalids = list.filter((attr: any) => {
+      if (!attr['isRequired'] && attr['type'] !== 'tree') return false;
 
       const value = this.values.get(attr['fieldName']);
+      const isNull: boolean = value === null || value === undefined;
 
       if (attr['type'] === 'text') {
-        return value === null || value === undefined || value === '';
+        return isNull || value === '';
+      } else if (attr['type'] === 'tree') {
+        console.log(this.attrService.flatTreeMap.get(value as number));
+        return isNull || !this.attrService.flatTreeMap.get(value as number)?.leaf;
       }
 
-      return value === null || value === undefined;
+      return isNull;
     });
 
+    console.log(invalids);
     return invalids.length <= 0;
   }
 

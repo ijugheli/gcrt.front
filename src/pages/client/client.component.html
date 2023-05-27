@@ -74,7 +74,7 @@
       styleClass="p-datatable-sm p-datatable-gridlines"
       [paginator]="parsedClients.length > 24"
       [rows]="25"
-      [style.width]="isSidebarVisible ? 'calc(98vw - 500px) !important' : '100% !important'"
+      [style.width]="isSidebarVisible ? (menuService.isMenuVisible$ | async) ? 'calc(98vw - 500px) !important': 'calc(98vw - 250px) !important'  : '100% !important'"
       currentPageReportTemplate="ნაჩვენებია {first} - დან {last} - მდე. სულ {totalRecords} ჩანაწერი"
       [rowsPerPageOptions]="[10, 25, 50]"
       [showCurrentPageReport]="true"
