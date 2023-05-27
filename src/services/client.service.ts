@@ -83,7 +83,17 @@ export class ClientService {
       categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);
     }
 
-    return (categoryGroupID || '') + this.concatClientCode([genderCode, ageGroup, repeating, clientID]);
+    const tempCode = genderCode === undefined ? '' : genderCode + this.getAgeGroup();
+    return (categoryGroupID || '') + this.concatClientCode([tempCode, ageGroup, repeating, clientID]);
+  }
+
+  // a or b
+  private getAgeGroup(): string {
+    if (this.values.get('age') !== undefined) {
+      return (this.values.get('age') as number) >= 18 ? 'b' : 'a';
+    } else {
+      return '';
+    }
   }
 
   // get parent category and its group title
