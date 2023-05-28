@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
   imports: [CommonModule, FormsModule, ButtonModule, CheckboxTable, CaseSectionTable]
 })
 
-export class CaseCheckboxSectionForm implements OnInit {
+export class CaseCheckboxSectionForm implements OnInit, OnChanges {
   // Initial model data
   @Input() data: any[] = [];
   // Somatic/Mental TableOptions
@@ -33,12 +33,20 @@ export class CaseCheckboxSectionForm implements OnInit {
   public isAddMode: boolean = true;
 
   ngOnInit() {
-    if (this.model !== null && this.model.length > 0) {
+    if (this.model !== null) {
+      this.isAddMode = false;
+    }
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    console.log(this.isAddMode);
+    if (this.model !== null) {
       this.isAddMode = false;
     }
   }
 
   public onSaveClick(event: MOnSectionEvent) {
+    console.log({ addmode: this.isAddMode, data: event.data !== undefined, some: this.parsedData.some((symptoms: any) => event.data[0].record_date === symptoms.record_date) });
     if (this.isAddMode && event.data !== undefined && this.parsedData.some((symptoms: any) => event.data[0].record_date === symptoms.record_date)) {
       event.errorMessage = 'არჩეულ თარიღში ჩანაწერი არსებობს';
     }
