@@ -28,7 +28,7 @@ import { otherSymptomCols } from './case-attrs/other-symptom';
 export class CaseComponent implements OnInit {
   public pageTitle: string = 'ქეისი';
   public isLoading: boolean = false;
-  public selectedRow!: MCase;
+  public selectedRow!: MCase | undefined | null;
   public data: ICase[] = [];
   public tableData: MCase[] = [];
   public loadingArray: number[] = Array(10);
@@ -96,10 +96,11 @@ export class CaseComponent implements OnInit {
       rejectLabel: 'გაუქმება',
       message: 'დარწმუნებული ხართ რომ გსურთ არჩეული ჩანაწერის წაშლა?',
       accept: () => {
-        this.caseService.destroy(this.selectedRow.case.id!).subscribe({
+        this.caseService.destroy(this.selectedRow!.case.id!).subscribe({
           next: (data) => {
             this.setData(data);
             this.showMsg(data.message, 'success');
+            this.selectedRow = undefined;
           },
           error: (e: any) => this.showMsg(e.error.message, 'error'),
         });

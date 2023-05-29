@@ -58,12 +58,15 @@ export class ClientService {
       if (!attr['isRequired']) return false;
 
       const value = this.values.get(attr['fieldName']);
+      const isNull: boolean = value === null || value === undefined;
 
       if (attr['type'] === 'text') {
-        return value === null || value === undefined || value === '';
+        return isNull || value === '';
+      } else if (attr['type'] === 'tree') {
+        return isNull || !this.attrService.flatTreeMap.get(value as number)?.leaf;
       }
 
-      return value === null || value === undefined;
+      return isNull;
     });
     return invalids.length <= 0;
   }
@@ -80,7 +83,17 @@ export class ClientService {
       categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);
     }
 
-    return (categoryGroupID || '') + this.concatClientCode([genderCode, ageGroup, repeating, clientID]);
+    const tempCode = genderCode === undefined ? '' : genderCode + this.getAgeGroup();
+    return (categoryGroupID || '') + this.concatClientCode([tempCode, ageGroup, repeating, clientID]);
+  }
+
+  // a or b
+  private getAgeGroup(): string {
+    if (this.values.get('age') !== undefined) {
+      return (this.values.get('age') as number) >= 18 ? 'b' : 'a';
+    } else {
+      return '';
+    }
   }
 
   // get parent category and its group title

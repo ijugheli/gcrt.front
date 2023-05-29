@@ -4,11 +4,12 @@ import { SurveyService } from "src/services/survey.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ISurveyResult } from "src/app/app.interfaces";
 import { getRouteParam } from "src/app/app.func";
+import { MenuService } from "src/services/app/menu.service";
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "component-survey",
   templateUrl: "./survey.component.html",
-  styleUrls: ["./survey.component.css"],
+  styleUrls: ["./survey.component.scss"],
 })
 
 export class SurveyComponent implements OnInit {
@@ -19,12 +20,15 @@ export class SurveyComponent implements OnInit {
   constructor(
     public spinner: NgxSpinnerService,
     private surveyService: SurveyService,
+    public menuService: MenuService
   ) { };
 
   ngOnInit() {
     this.spinner.show();
     this.init();
   }
+
+
 
   private init() {
     const that = this;

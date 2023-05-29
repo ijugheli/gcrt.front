@@ -9,7 +9,6 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ICaseCol } from 'src/app/app.interfaces';
 import { MOnSectionEvent } from '../../case.model';
 import { MenuService } from 'src/services/app/menu.service';
-import { ChangeDetectorRef } from '@angular/core';
 import * as _ from 'lodash';
 
 // For diagnosis, consultation, referral, symptoms
@@ -38,8 +37,6 @@ export class CaseSectionTable implements OnInit {
   constructor(
     public attrService: AttributesService,
     public menuService: MenuService,
-    private cdRef: ChangeDetectorRef
-
   ) { }
 
   ngOnInit() {
@@ -50,7 +47,7 @@ export class CaseSectionTable implements OnInit {
   }
 
   public onAddClick(): void {
-    this.onEdit.emit(this.shouldGroupBy ? [] : {});
+    this.onAdd.emit(this.shouldGroupBy ? [] : {});
   }
 
   public onRowUnselect(event: any): void {

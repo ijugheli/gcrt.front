@@ -19,6 +19,7 @@ import { ICustomInput } from 'src/app/app.interfaces';
 import { switchMap, map, Subject, takeUntil } from 'rxjs';
 import { MOption } from 'src/services/attributes/models/option.model';
 import * as _ from 'lodash';
+import { Router } from '@angular/router';
 @Component({
   standalone: true,
   selector: 'custom-input',
@@ -41,12 +42,14 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
   public selectedNode!: TreeNode | undefined;
   public todayDate: Date = new Date();
   public hasFilter!: boolean;
+  public isTouched: boolean = false;
   private onDestroy$: Subject<any> = new Subject();
 
   constructor(
     private attrService: AttributesService,
     public clientService: ClientService,
     public caseService: CaseService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -65,13 +68,19 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public isInputValid(): boolean {
-    if ((!this.data['isRequired'] || !this.clientService.isValidationEnabled) && (!this.data['isRequired'] || !this.caseService.isValidationEnabled)) return true;
+    const isValidationNotEnabled: boolean = this.router.url.includes('client') ? !this.clientService.isValidationEnabled : !this.caseService.isValidationEnabled;
+
+    if ((isValidationNotEnabled || !this.data['isRequired']) && this.data['type'] !== 'tree') return true;
+    if (!this.isTouched && this.data['type'] === 'tree' && isValidationNotEnabled) return true;
+
 
     switch (this.data['type']) {
       case 'dropdown':
         return this.model != null;
       case 'date':
         return this.model != null;
+      case 'tree':
+        return this.model !== null && this.model !== undefined && this.attrService.flatTreeMap.get(this.model)?.leaf!;
       default:
         return this.model !== null &&
           this.model !== '' &&
@@ -88,11 +97,7 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.model = event;
     }
-
-    if (!this.isInputValid()) {
-      this.onChange.emit(null);
-      return;
-    }
+    this.isTouched = true;
 
     if (this.isClientKey) {
       this.clientService.values.set(this.data['fieldName'], this.model);
@@ -102,7 +107,11 @@ export class CustomInputComponent implements OnInit, OnChanges, OnDestroy {
       this.caseService.values.set(this.data['fieldName'], this.model);
     }
 
-    this.onChange.emit(this.model);
+    if (!this.isInputValid()) {
+      this.onChange.emit(null);
+    } else {
+      this.onChange.emit(this.model)
+    }
   }
 
   public onNodeExpand(event: any): void {

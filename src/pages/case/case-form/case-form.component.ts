@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AttributesService } from 'src/services/attributes/Attributes.service';
 import { APIResponse, IFormMenuOption } from 'src/app/app.interfaces';
 import { CaseAttrs, ICase, ISymptom, MCase, MOnSectionEvent } from '../case.model';
@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-case-form',
   templateUrl: './case-form.component.html',
-  styleUrls: ['./case-form.component.css', '../../client/client-form/client-form.component.scss'],
+  styleUrls: ['./case-form.component.scss', '../../client/client-form/client-form.component.scss'],
   providers: [MessageService]
 })
 
@@ -49,6 +49,10 @@ export class CaseFormComponent implements OnInit {
     this.initTree('formsOfViolenceTree', formsOfViolenceTreeID);
   }
 
+  public onChange(event: any) {
+    console.log(event);
+    this.selectedSection = event.item;
+  }
   public onSectionSave(event: MOnSectionEvent, type: any): void {
     if (event.errorMessage !== undefined) {
       this.showMsg(event.errorMessage, 'error');
@@ -171,7 +175,7 @@ export class CaseFormComponent implements OnInit {
   private initCase(): void {
     // for initializing selected section and its model when user clicks edit/add from main case table
     if (this.caseService.selectedSection !== null) {
-      this.selectedSection = this.menuOptions.find((e: IFormMenuOption) => e.value === this.caseService.selectedSection)!;
+      // this.selectedSection = this.menuOptions.find((e: IFormMeMenuItemnuOption) => e.value === this.caseService.selectedSection)!;
       this.selectedSectionModel = this.caseService.selectedSectionModel;
       this.caseService.selectedSection = this.caseService.selectedSectionModel = null;
     }
@@ -233,8 +237,10 @@ export class CaseFormComponent implements OnInit {
         this.showMsg(e.e.message, 'error');
         this.isLoading = false;
         this.caseService.isInputDisabled = false;
+        this.caseService.isValidationEnabled = false;
       },
       complete: () => {
+        this.caseService.isValidationEnabled = false;
         this.caseService.isInputDisabled = false;
         this.isLoading = false;
       }
