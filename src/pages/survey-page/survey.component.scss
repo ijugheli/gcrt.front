@@ -1,0 +1,9 @@
+    tr {
+        background: #f9f9f9;
+        /* Set the background color for rows */
+
+        &:nth-child(2n+1) {
+            background: #ffffff;
+            /* Set the background color for odd rows */
+        }
+    }

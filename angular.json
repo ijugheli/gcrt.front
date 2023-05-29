@@ -29,7 +29,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/survey-core/defaultV2.min.css"
+              "node_modules/survey-core/modern.min.css"
             ],
             "scripts": [
               "node_modules/quill/dist/quill.js"
@@ -42,7 +42,6 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false,
-              
               "budgets": [
                 {
                   "type": "initial",

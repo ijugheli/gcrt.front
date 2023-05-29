@@ -1,19 +1,33 @@
-<section>
+<section [style.width]="(menuService.isMenuVisible$ | async) ? 'calc(100% - 250px)' : '100%'">
     <ng-container style="position: relative;">
-        <ngx-spinner size="medium" color="#fff" bdColor="rgba(51,51,51,0.3)" type="ball-scale-multiple"
-            [fullScreen]="false">
+        <ngx-spinner
+            size="medium"
+            color="#fff"
+            bdColor="rgba(51,51,51,0.3)"
+            type="ball-scale-multiple"
+            [fullScreen]="false"
+        >
             <p style="font-size: 20px; color: white">გთხოვთ დაელოდოთ...</p>
         </ngx-spinner>
     </ng-container>
-    <survey [model]="model"></survey>
+    <div class="survey-style">
+        <survey [model]="model"></survey>
+    </div>
     <ng-container *ngIf="resultData.length > 0">
-        <p-card header="შედეგები" class="survey-card" [class.w-700]="surveyID == 7">
+        <p-card
+            header="შედეგები"
+            class="survey-card"
+            [class.w-700]="surveyID == 7"
+        >
             <ul>
                 <li *ngFor="let data of resultData; index as i;">
                     <ng-container *ngIf="surveyID == 7">
                         <div class="flex justify-content-between">
                             <span>{{data.group_title}} </span>
-                            <p-triStateCheckbox [(ngModel)]="data.result" [disabled]="true"></p-triStateCheckbox>
+                            <p-triStateCheckbox
+                                [(ngModel)]="data.result"
+                                [disabled]="true"
+                            ></p-triStateCheckbox>
                         </div>
                         <ng-container *ngIf="data.sum !=null">
                             <span>ქულა: </span>
@@ -47,5 +61,4 @@
             </ul>
         </p-card>
     </ng-container>
-
 </section>

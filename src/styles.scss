@@ -1470,14 +1470,57 @@ app-attribute-form .p-panel .p-panel-content {
     padding: 0 !important;
 }
 
-.sd-table span {
-    font-size: 12px !important;
-    font-family: roman !important;
+.sv-container-modern__title {
+    padding-top: 2em !important;
+    padding-bottom: .5em;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.sv-matrix-row {
+    background-color: #f9f9f9 !important;
+    /* Set the background color for even rows */
+}
+
+.sv-matrix-row:nth-child(2n+1) {
+    background-color: #ffffff !important;
+    /* Set the background color for odd rows */
+}
+
+@media only screen and (min-width: 1000px) {
+
+    .sv-body__timer,
+    .sv-body__page,
+    .sv-body__footer.sv-footer.sv-action-bar {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+}
+
+.sv-table {
+    border: 1px solid var(--surface-border);
+    span {
+        font-size: 18px !important;
+        font-family: roman !important;
+    }
+    tr {
+        padding: 24px;
+        background-color: #f9f9f9;
+        /* Set the background color for rows */
+
+        &:nth-child(2n+1) {
+            background-color: #ffffff;
+            /* Set the background color for odd rows */
+        }
+    }
 }
 
 .sd-row {
     margin-top: 0 !important;
 }
+
+
 
 .survey-card {
     font-family: caps !important;
