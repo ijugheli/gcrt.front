@@ -8,20 +8,30 @@ export const ageGroups: Record<string, number>[] = [
         'id': 234,
     },
     {
-        'from': 16, 
-        'to': 35,
+        'from': 16,
+        'to': 25,
         'id': 236,
     },
     {
-        'from': 36,
-        'to': 55,
+        'from': 26,
+        'to': 35,
         'id': 238,
     },
     {
-        'from': 56,
-        'to': 100,
+        'from': 36,
+        'to': 45,
         'id': 240,
-    }
+    },
+    {
+        'from': 46,
+        'to': 60,
+        'id': 126863,
+    },
+    {
+        'from': 60,
+        'to': 110,
+        'id': 126865,
+    },
 ];
 
 export const menuOptions: IFormMenuOption[] = [
