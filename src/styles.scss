@@ -510,6 +510,7 @@ $lightgreen: rgba(#46AB44, 0.35);
 $darkgreen: #2D972B;
 $red: #C62323;
 $main: #333333;
+$orange: #D3C797;
 $grey: #6E747B;
 $lightgrey: #D3DFEB;
 $greenicon: brightness(0) saturate(100%) invert(59%) sepia(11%) saturate(2337%) hue-rotate(70deg) brightness(93%) contrast(93%);
@@ -800,7 +801,7 @@ section {
     border-radius: 5px;
     transition: 0.2s;
     color: var(--gray-50);
-    background: #fca130;
+    background: $orange;
 
     i {
         margin-right: 5px !important;
