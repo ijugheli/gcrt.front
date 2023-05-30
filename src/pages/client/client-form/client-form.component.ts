@@ -116,10 +116,7 @@ export class ClientFormComponent implements OnInit {
     } else {
       this.clientService.show(this.clientID).subscribe({
         next: (data) => {
-          const client = new IClient();
-          this.client = data.data! as IClient;
-          this.client.setAgeGroupID = client.setAgeGroupID;
-          this.client.setCategory = client.setCategory;
+          this.client = new IClient(data.data);
           this.initSwitchModels();
         },
         error: (e) => {

@@ -125,8 +125,9 @@ export class ClientService {
   public mapClients(clients: IClient[]): ParsedClients {
     this.parsedClients = new Map();
     this.clients = new Map(clients.map(e => {
-      this.parsedClients.set(e.main.id!, this.parseClient(e))
-      return [e.main.id!, e as IClient];
+      const client: IClient = new IClient(e);
+      this.parsedClients.set(e.main.id!, this.parseClient(client))
+      return [e.main.id!, client];
     }));
 
     return { clients: this.clientList(), parsedClients: this.parsedClientList() };
