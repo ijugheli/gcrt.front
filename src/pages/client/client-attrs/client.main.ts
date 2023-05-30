@@ -133,7 +133,7 @@ export const mainMap: Map<string, any> = new Map(
                 type: 'text',
                 icon: 'pi-pencil',
                 propertyID: null,
-                isRequired: true,
+                isRequired: false,
                 isDisabled: false,
             }
         ],
