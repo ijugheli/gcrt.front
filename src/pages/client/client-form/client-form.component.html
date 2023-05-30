@@ -69,6 +69,8 @@
             animation-duration-200">
             <div *ngFor="let item of ClientAttrs.mainList">
               <custom-input
+                [class.is-not-visible]="item.fieldName === 'gender_field' ? !shouldShowGenderInput() : false"
+                [class.fadeinup]="item.fieldName === 'gender_field' ? !shouldShowGenderInput() : false"
                 [model]="client.main[item.fieldName]"
                 [data]="item"
                 (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.fieldName)] = $event) : onUpdate(client.main[(item.fieldName)] = $event))"

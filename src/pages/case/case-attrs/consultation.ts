@@ -62,6 +62,16 @@ export const consultationMap: Map<string, any> = new Map(
             isDisabled: false,
         }
         ],
+        ['client_status', {
+            fieldName: 'client_status',
+            label: 'კლიენტის მდგომარეობა',
+            type: 'dropdown',
+            icon: 'pi-pencil',
+            propertyID: 223,
+            isRequired: true,
+            isDisabled: false,
+        }
+        ],
     ]
 );
 export const consultationList: ICustomInput[] = Array.from(consultationMap.values());

@@ -94,6 +94,13 @@ export class ClientFormComponent implements OnInit {
     this.onUpdate(event);
   }
 
+
+  public shouldShowGenderInput() {
+    const gender = this.clientService.values.get('gender');
+    if (gender === undefined) return false;
+    return this.attrService.getOptionTitle(gender as number).includes('სხვა');
+  }
+
   private init(): void {
     this.clientService.values.clear();
     this.initClient();

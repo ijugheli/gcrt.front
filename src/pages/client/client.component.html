@@ -93,8 +93,8 @@
           <th></th>
           <th
             *ngFor="let col of columns"
-            [pSortableColumn]="col['fieldName']"
-          >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
+            [pSortableColumn]="'main.' + col['fieldName']"
+          >{{col.label}}<p-sortIcon [field]="'main.' + col['fieldName']"></p-sortIcon>
           </th>
         </tr>
         <tr>
@@ -103,7 +103,7 @@
           <th *ngFor="let col of columns">
             <p-columnFilter
               *ngIf="!col.fieldName.includes('date')"
-              [field]="col.fieldName"
+              [field]="'main.' + col['fieldName']"
               type="text"
               matchMode="contains"
               [showClearButton]="false"

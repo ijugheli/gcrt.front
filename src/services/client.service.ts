@@ -61,6 +61,14 @@ export class ClientService {
       const isNull: boolean = value === null || value === undefined;
 
       if (attr['type'] === 'text') {
+        if (attr['fieldName'] === 'gender_field') {
+          const gender = this.values.get('gender') as number;
+          if (gender === undefined) {
+            return false;
+          }
+          return this.attrService.getOptionTitle(gender as number)?.includes('სხვა') ? (isNull || value === '') : false;
+        }
+
         return isNull || value === '';
       } else if (attr['type'] === 'tree') {
         return isNull || !this.attrService.flatTreeMap.get(value as number)?.leaf;
@@ -71,55 +79,30 @@ export class ClientService {
     return invalids.length <= 0;
   }
 
-  /// For generating client code  Category(parent)/category_Group(child)/gender/age_group/repeatingClient/id
+
+  /// For generating client code  Client_group/client_subgroup/sex+ ageGroup(other)/age_group/client_type/id
   public getClientCode(): string {
-    let categoryGroupID: any = this.values.get('category_group_id') as number;
-    const genderCode = this.attrService.dropdownOptions.get(this.values.get('gender') as number)?.value!.value;
-    const ageGroup = this.attrService.dropdownOptions.get(this.values.get('age_group') as number)?.value!.value;
-    const clientID = (this.values.get('client_id') as number);
-    const repeating = (this.values.get('repeating_client') as boolean) ? 'მეორადი' : 'პირველადი';
+    const code = ['client_group', 'client_subgroup', `[${this.getOptionCode('sex')}${this.getAgeGroup()}]`, 'age_group', 'client_type', `[${this.values.get('client_id')}]`]
+      .map(key => {
+        if (key.includes('undefined')) return '';
+        return key.includes('[') ? key : this.formatClientCode(key);
+      });
 
-    if (categoryGroupID) {
-      categoryGroupID = this.getCategoryGroupTitle(categoryGroupID);
-    }
-
-    const tempCode = genderCode === undefined ? '' : genderCode + this.getAgeGroup();
-    return (categoryGroupID || '') + this.concatClientCode([tempCode, ageGroup, repeating, clientID]);
+    return code.join('');
   }
 
-  // a or b
   private getAgeGroup(): string {
-    if (this.values.get('age') !== undefined) {
-      return (this.values.get('age') as number) >= 18 ? 'b' : 'a';
-    } else {
-      return '';
-    }
+    const age = this.values.get('age') as number;
+    if (age === undefined) return '';
+
+    return (age as number) >= 18 ? 'b' : 'a';
+  }
+  private formatClientCode(key: string): string {
+    return `[${this.getOptionCode(key) ?? ''}]`;
   }
 
-  // get parent category and its group title
-  private getCategoryGroupTitle(id: number): string {
-    const categoryGroup: any = this.attrService.flatTreeMap.get(id);
-    const array: any[] = Array.from(this.attrService.flatTreeMap.values());
-    const category: any = array.find(e => e.data.value_id == categoryGroup.data.p_value_id)?.data.title;
-
-    // if parent doesnt exist
-    if (!categoryGroup.data.p_value_id) {
-      return `[${categoryGroup.data.title}]`;
-    }
-
-    return `[${category}][${categoryGroup.data.title}]`;
-  }
-
-  private concatClientCode(strings: any[]): string {
-    let result = '';
-    for (const string of strings) {
-      if (string == undefined) {
-        result += '';
-      } else {
-        result += '[' + string + ']'
-      }
-    }
-    return result;
+  private getOptionCode(key: string) {
+    return this.attrService.dropdownOptions.get(this.values.get(key) as number)?.value?.value ?? '';
   }
 
   public mapClients(clients: IClient[]): ParsedClients {

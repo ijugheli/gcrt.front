@@ -106,7 +106,8 @@ export const ACTION_SETTINGS = {
     { label: 'თარიღი ნაკლებია', value: 'custom-dateBefore' },
   ]
 }
-export const DISABLED_ATTRS = [27, 45, 43, 44, 42, 30, 48, 50, 51, 52, 58, 13,
+export const DISABLED_ATTRS: number[] = [
+  27, 45, 43, 44, 42, 30, 48, 50, 51, 52, 58, 13,
   15,
   16,
   17,
@@ -125,7 +126,14 @@ export const DISABLED_ATTRS = [27, 45, 43, 44, 42, 30, 48, 50, 51, 52, 58, 13,
   68,
   69,
   70,
-  71,];
+  71,
+  72,
+  73,
+  74,
+  75,
+  76,
+  77
+];
 
 export const MENU_ITEMS = [
   {
