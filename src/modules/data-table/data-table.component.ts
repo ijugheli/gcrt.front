@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmationService, FilterService, MenuItem, SelectItem } from 'primeng/api';
 import * as FileSaver from 'file-saver';
 import autoTable, { RowInput } from 'jspdf-autotable';
@@ -20,6 +20,7 @@ import { RecordsService } from '../../services/attributes/Records.service';
 import { MAttribute } from 'src/services/attributes/models/attribute.model';
 import { FormService } from 'src/services/form.service';
 import * as _ from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -28,7 +29,7 @@ import * as _ from 'lodash';
   styleUrls: ['./data-table.component.css'],
   providers: [DialogService, MessageService]
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent implements OnInit, OnDestroy {
   @Input('attrID') public attrID!: any;
   @Input('valueID') public valueID!: any;
   @Input('title-editable') public titleEditable: boolean = false;
@@ -88,10 +89,9 @@ export class DataTableComponent implements OnInit {
 
   public loading: boolean = false;
   public totalRecords = 1000;
-
+  public onDestroy$: Subject<any> = new Subject();
   constructor(
     private confirmationService: ConfirmationService,
-    private filterService: FilterService,
     private messageService: MessageService,
     private attributes: AttributesService,
     private records: RecordsService,
@@ -103,9 +103,13 @@ export class DataTableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initializeFilterOptions();
     this.attrID = parseInt(this.attrID);
     this.load();
+  }
+
+  ngOnDestroy() {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   public attr?: MAttribute;
@@ -120,7 +124,9 @@ export class DataTableComponent implements OnInit {
       return;
     }
 
-    this.attr = this.records.attrs.get(this.attrID);
+    this.attributes.getMap().pipe(takeUntil(this.onDestroy$)).subscribe((attrs) => {
+      this.attr = attrs.get(this.attrID);
+    });
     // let records = this.records.get(this.attrID);
 
     this.attributes
@@ -236,55 +242,6 @@ export class DataTableComponent implements OnInit {
     });
 
   }
-
-  //Row controls and Filtering
-  private initializeFilterOptions() {
-    //String Services
-    this.filterService.register('custom-contains', (value: any, filter: any): boolean => this.filterService.filters.contains(value, filter));
-    this.filterService.register('custom-notContains', (value: any, filter: any): boolean => this.filterService.filters.notContains(value, filter));
-    this.filterService.register('custom-equals', (value: any, filter: any): boolean => this.filterService.filters.equals(value, filter));
-    this.filterService.register('custom-notEquals', (value: any, filter: any): boolean => this.filterService.filters.notEquals(value, filter));
-    this.filterService.register('custom-startsWith', (value: any, filter: any): boolean => this.filterService.filters.startsWith(value, filter));
-    this.filterService.register('custom-endsWith', (value: any, filter: any): boolean => this.filterService.filters.endsWith(value, filter));
-    //Date Services
-    this.filterService.register('custom-dateIs', (value: any, filter: any): boolean => this.filterService.filters.dateIs(value, filter));
-    this.filterService.register('custom-dateIsNot', (value: any, filter: any): boolean => this.filterService.filters.dateIsNot(value, filter));
-    this.filterService.register('custom-dateAfter', (value: any, filter: any): boolean => this.filterService.filters.dateAfter(value, filter));
-    this.filterService.register('custom-dateBefore', (value: any, filter: any): boolean => this.filterService.filters.dateBefore(value, filter));
-    //Integer Services
-    this.filterService.register('custom-greaterThen', (value: any, filter: any): boolean => {
-      if (filter == undefined || filter == null || (typeof filter == 'string' && filter.trim() == '')) {
-        return true;
-      }
-
-      if (value == undefined || value == null) {
-        return false;
-      }
-
-      if (parseInt(filter) < parseInt(value)) {
-        return true;
-      }
-
-      return false;
-    });
-    this.filterService.register('custom-lessThen', (value: any, filter: any): boolean => {
-      if (filter == undefined || filter == null || (typeof filter == 'string' && filter.trim() == '')) {
-        return true;
-      }
-
-      if (value == undefined || value == null) {
-        return false;
-      }
-
-      if (parseInt(filter) > parseInt(value)) {
-        return true;
-      }
-
-      return false;
-    });
-    // this.filterService.register('custom-lessThen', (value: any, filter: any): boolean => this.filterService.filters.dateBefore(value, filter));
-  }
-
   public onRowSelect(event: any) {
     console.log(this.selectedRows);
   }

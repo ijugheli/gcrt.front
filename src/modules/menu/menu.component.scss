@@ -2,6 +2,8 @@
     margin: 0 6px;
 }
 
+$hoverColor: #e8f2f4;
+
 ::ng-deep .p-panelmenu-header>a,
 ::ng-deep .p-panelmenu-content {
     padding: 1rem;
@@ -16,7 +18,7 @@
 ::ng-deep .p-panelmenu .p-panelmenu-header.p-highlight:not(.p-disabled)>a:hover,
 ::ng-deep .p-panelmenu .p-panelmenu-header:not(.p-highlight):not(.p-disabled)>a:hover,
 ::ng-deep .p-menuitem-link-active {
-    background: var(--surface-100) !important;
+    background: $hoverColor !important;
     border-radius: 6px !important;
     color: #333333 !important;
 }
@@ -84,7 +86,7 @@
 
 ::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:not(.p-disabled):hover,
 ::ng-deep .p-panelmenu .p-panelmenu-header.p-highlight {
-    background: var(--surface-100);
+    background: $hoverColor;
     border-radius: 6px;
 }
 

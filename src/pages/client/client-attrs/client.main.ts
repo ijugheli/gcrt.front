@@ -196,8 +196,8 @@ export const mainMap: Map<string, any> = new Map(
 );
 export const mainList: ICustomInput[] = Array.from(mainMap.values());
 
-const hiddenCols = ['birth_date', 'repeating_client', 'client_group', 'client_group','gender', 'sex', 'gender_field'];
-export const half: number = Math.ceil(mainList.length / 2);
+const hiddenCols = ['birth_date', 'repeating_client', 'client_group', 'client_subgroup', 'gender', 'sex', 'gender_field', 'personal_id', 'age_group'];
+const half: number = Math.ceil(mainList.length / 2);
 export const mainFirstCol: ICustomInput[] = mainList.slice(0, half);
 export const mainSecondCol: ICustomInput[] = mainList.slice(half);
 export const mainCols: ICaseCol[] = mainList.map((e) => new ICaseCol(e)).filter((e) => !hiddenCols.includes(e.fieldName));

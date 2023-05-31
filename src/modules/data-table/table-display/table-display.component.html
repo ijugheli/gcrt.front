@@ -12,28 +12,26 @@
         responsiveLayout="scroll"
         [(selection)]="table.selected"
     >
-        <ng-template
-            pTemplate="caption"
-            *ngIf="attribute"
-        >
-            <datatable-header [attribute]="attribute"></datatable-header>
+        <ng-template pTemplate="caption">
+            <ng-container *ngIf="attribute">
+                <datatable-header [attribute]="attribute"></datatable-header>
+            </ng-container>
         </ng-template>
 
-        <ng-template
-            pTemplate="header"
-            *ngIf="attribute"
-        >
-            <tr
-                *ngIf="table.settings['header']"
-                [attribute]="attribute"
-                datatable-captions
-            ></tr>
+        <ng-template pTemplate="header">
+            <ng-container *ngIf="attribute">
+                <tr
+                    *ngIf="table.settings['header']"
+                    [attribute]="attribute"
+                    datatable-captions
+                ></tr>
 
-            <tr
-                *ngIf="table.settings['filter']"
-                [attribute]="attribute"
-                datatable-filters
-            ></tr>
+                <tr
+                    *ngIf="table.settings['filter']"
+                    [attribute]="attribute"
+                    datatable-filters
+                ></tr>
+            </ng-container>
         </ng-template>
 
         <ng-template
@@ -51,7 +49,7 @@
                     *ngFor="let property of attribute?.columns"
                 >
                     <ng-container *ngIf="property.isDate()">
-                        {{row.propValueMap[property.id] |  date:'d/M/yy H:mm' }}
+                        {{row.propValueMap[property.id] | date:'d/M/yy H:mm' }}
                     </ng-container>
                     <ng-container *ngIf="property.isBoolean()">
                         <ng-container *ngIf="row.propValueMap[property.id] == 0">
@@ -68,7 +66,8 @@
                         </ng-container>
                     </ng-container>
                     <ng-container *ngIf="property.isNumber()">{{row.propValueMap[property.id]}}</ng-container>
-                    <ng-container *ngIf="property.isString() && !property.isSelect() && !property.isMultiselect()">{{row.propValueMap[property.id]}}</ng-container>
+                    <ng-container
+                        *ngIf="property.isString() && !property.isSelect() && !property.isMultiselect()">{{row.propValueMap[property.id]}}</ng-container>
                     <ng-container *ngIf="property.isSelect() || property.isMultiselect()">
                         <ng-container *ngFor="let tag of row.propValueMap[property.id]">
                             <div class="tag-item">

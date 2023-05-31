@@ -91,20 +91,6 @@ export class ClientService {
     return code.join('');
   }
 
-  private getAgeGroup(): string {
-    const age = this.values.get('age') as number;
-    if (age === undefined) return '';
-
-    return (age as number) >= 18 ? 'b' : 'a';
-  }
-  private formatClientCode(key: string): string {
-    return `[${this.getOptionCode(key) ?? ''}]`;
-  }
-
-  private getOptionCode(key: string) {
-    return this.attrService.dropdownOptions.get(this.values.get(key) as number)?.value?.value ?? '';
-  }
-
   public mapClients(clients: IClient[]): ParsedClients {
     this.parsedClients = new Map();
     this.clients = new Map(clients.map(e => {
@@ -150,4 +136,19 @@ export class ClientService {
       return item;
     }, {});
   }
+
+  private getAgeGroup(): string {
+    const age = this.values.get('age') as number;
+    if (age === undefined) return '';
+
+    return (age as number) >= 18 ? 'b' : 'a';
+  }
+  private formatClientCode(key: string): string {
+    return `[${this.getOptionCode(key) ?? ''}]`;
+  }
+
+  private getOptionCode(key: string) {
+    return this.attrService.dropdownOptions.get(this.values.get(key) as number)?.value?.value ?? '';
+  }
+
 }
