@@ -13,7 +13,7 @@
       </div>
     </div>
   </div>
-  <div class="header p-2">
+  <div class="header p-2 table-animation">
     <ul class="list">
       <!-- SETTINGS -->
       <li>
@@ -101,7 +101,7 @@
           <th pSortableColumn="case.recommender">რეკომენდატორი <p-sortIcon field="case.recommender"></p-sortIcon>
           <th>რეგისტრაციის თარიღი</th>
         </tr>
-        <tr>
+        <tr class="table-animation">
           <th></th>
           <th></th>
           <th></th>
@@ -152,13 +152,14 @@
       </ng-template>
       <ng-template pTemplate="loadingbody">
         <tr
+          class="table-animation"
           *ngFor="let item of loadingArray"
           style="height:46px"
         >
           <td>
             <p-tableRadioButton></p-tableRadioButton>
           </td>
-          <td>
+          <td style="width: 100px">
             <p-skeleton></p-skeleton>
           </td>
           <td>
@@ -185,7 +186,7 @@
         pTemplate="body"
         let-data
       >
-        <tr>
+        <tr class="table-animation">
           <td>
             <p-tableRadioButton [value]="data"></p-tableRadioButton>
           </td>

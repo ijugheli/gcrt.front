@@ -1,5 +1,10 @@
 <button
     class="floating-button"
+    pStyleClass=".menu"
+    enterClass="hidden"
+    enterActiveClass="fadeinleft"
+    leaveActiveClass="fadeoutleft"
+    leaveToClass="hidden"
     (click)="toggleMenu()"
 >
     <i
@@ -8,10 +13,7 @@
         [class.pi-chevron-right]="isMenuVisible"
     ></i>
 </button>
-<div
-    class="menu"
-    [style.display]="!(isMenuVisible) ? 'none' : 'inline-block'"
->
+<div class="menu">
     <div
         class="flex align-items-center px-4 flex-shrink-0"
         style="height:60px"

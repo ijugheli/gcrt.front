@@ -15,7 +15,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { SkeletonModule } from 'primeng/skeleton';
 import { RouterModule } from '@angular/router';
 import { DropdownModule } from 'primeng/dropdown';
-
+import { StyleClassModule } from 'primeng/styleclass';
 @NgModule({
     declarations: [ClientComponent, ClientFormComponent],
     imports: [
@@ -32,7 +32,8 @@ import { DropdownModule } from 'primeng/dropdown';
         FormsModule,
         SkeletonModule,
         RouterModule,
-        DropdownModule
+        DropdownModule,
+        StyleClassModule,
     ]
 })
 
