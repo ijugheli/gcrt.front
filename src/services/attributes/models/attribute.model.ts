@@ -72,7 +72,7 @@ export class MAttribute {
 
 
     public withOptions(values: MPropertyValue[]) {
-        const hasCodeProperty = this.properties.length > 1 && this.properties.find(e => e.title.includes('კოდი'));
+        const hasCodeProperty = this.properties.length > 1 && this.properties.find(e => e.title.includes('კოდი') || e.title.includes('დონე'));
         this.options = values
             .filter((value: MPropertyValue) => (this.properties.some((prop: MProperty) => {
                 if (hasCodeProperty) {

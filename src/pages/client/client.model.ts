@@ -16,10 +16,10 @@ export class IClient {
 
 
     constructor(data?: any) {
-        this.main = new IClientMain();
-        this.additional = new IClientAdditional();
-        this.contact = new IClientContact();
-        this.address = new IClientAddress();
+        this.main = data?.main ?? new IClientMain();
+        this.additional = data?.additional ?? new IClientAdditional();
+        this.contact = data?.contact ?? new IClientContact();
+        this.address = data?.address ?? new IClientAddress();
     }
 
     public setCategory(node: any) {
@@ -29,7 +29,6 @@ export class IClient {
     public setAgeGroupID() {
         const age: number = this.main.age!;
 
-        console.log(age);
         for (let group of ageGroups) {
             if (age >= group['from'] && age <= group['to']) {
                 this.main.age_group = group['id'];
@@ -37,8 +36,6 @@ export class IClient {
             }
         }
     }
-
-
 }
 export class MClient {
     public main!: MClientMain;
@@ -183,6 +180,11 @@ const clientKeys = [
     'client_code',
     'category_group_id',
     'gender',
+    'gender_field',
+    'client_type',
+    'sex',
+    'client_group',
+    'client_subgroup',
     'repeating_client',
     'name',
     'surname',

@@ -57,23 +57,20 @@
       <div class="col-fixed w-min">
         <p-divider layout="vertical"></p-divider>
       </div>
-      <div
-        class="col-fixed"
-        style="width: 400px;"
-      >
+      <div class="col">
         <div
-          class="flex flex-row gap-8"
           [class.is-not-visible]="selectedSection.value != 0"
+          class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
+            animation-duration-200"
         >
-          <div class="flex flex-column align-content-center gap-4 fadeindown animation-ease-in
-            animation-duration-200">
-            <div *ngFor="let item of ClientAttrs.mainList">
-              <custom-input
-                [model]="client.main[item.fieldName]"
-                [data]="item"
-                (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.fieldName)] = $event) : onUpdate(client.main[(item.fieldName)] = $event))"
-              ></custom-input>
-            </div>
+          <div *ngFor="let item of ClientAttrs.mainList">
+            <custom-input
+              [class.is-not-visible]="item.fieldName === 'gender_field' ? !shouldShowGenderInput() : false"
+              [class.fadeinup]="item.fieldName === 'gender_field' ? !shouldShowGenderInput() : false"
+              [model]="client.main[item.fieldName]"
+              [data]="item"
+              (onChange)="(item.type == 'date' ?  onSelect(client.main[(item.fieldName)] = $event) : onUpdate(client.main[(item.fieldName)] = $event))"
+            ></custom-input>
           </div>
         </div>
         <div

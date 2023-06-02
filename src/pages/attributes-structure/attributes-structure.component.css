@@ -1,11 +1,16 @@
-input {
-    border-radius: 6px;
-    width: 250px;
+input,
+::ng-deep p-calendar input.p-inputtext,
+::ng-deep .p-dropdown,
+::ng-deep .p-treeselect,
+::ng-deep p-inputnumber .p-inputtext {
+    border-radius: 0 6px 6px 0;
+    min-width: 300px;
+    max-width: 400px;
     border: 1px solid #D3DFEB;
-    font-size: 12px;
+    font-size: 1rem !important;
     height: 40px;
-    margin-right: 10px;
 }
+
 .structure-switch {
     display: grid;
     margin-top: 30px !important;

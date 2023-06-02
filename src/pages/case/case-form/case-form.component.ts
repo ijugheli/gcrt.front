@@ -175,7 +175,7 @@ export class CaseFormComponent implements OnInit {
   private initCase(): void {
     // for initializing selected section and its model when user clicks edit/add from main case table
     if (this.caseService.selectedSection !== null) {
-      // this.selectedSection = this.menuOptions.find((e: IFormMeMenuItemnuOption) => e.value === this.caseService.selectedSection)!;
+      this.selectedSection = this.menuOptions.find((e: IFormMenuOption) => e.value === this.caseService.selectedSection)!;
       this.selectedSectionModel = this.caseService.selectedSectionModel;
       this.caseService.selectedSection = this.caseService.selectedSectionModel = null;
     }

@@ -94,6 +94,13 @@ export class ClientFormComponent implements OnInit {
     this.onUpdate(event);
   }
 
+
+  public shouldShowGenderInput() {
+    const gender = this.clientService.values.get('gender');
+    if (gender === undefined) return false;
+    return this.attrService.getOptionTitle(gender as number).includes('სხვა');
+  }
+
   private init(): void {
     this.clientService.values.clear();
     this.initClient();
@@ -116,10 +123,7 @@ export class ClientFormComponent implements OnInit {
     } else {
       this.clientService.show(this.clientID).subscribe({
         next: (data) => {
-          const client = new IClient();
-          this.client = data.data! as IClient;
-          this.client.setAgeGroupID = client.setAgeGroupID;
-          this.client.setCategory = client.setCategory;
+          this.client = new IClient(data.data);
           this.initSwitchModels();
         },
         error: (e) => {

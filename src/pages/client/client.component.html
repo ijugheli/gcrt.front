@@ -13,7 +13,7 @@
       </div>
     </div>
   </div>
-  <div class="header p-2">
+  <div class="header p-2 table-animation">
     <ul class="list">
       <!-- SETTINGS -->
       <li>
@@ -59,7 +59,7 @@
       <li>
         <button
           type="button"
-          class="border-btn icon-only-btn"
+          class="icon-border-btn"
         >
           <i class="pi pi-refresh"></i>
         </button>
@@ -93,8 +93,8 @@
           <th></th>
           <th
             *ngFor="let col of columns"
-            [pSortableColumn]="col['fieldName']"
-          >{{col.label}}<p-sortIcon [field]="col['fieldName']"></p-sortIcon>
+            [pSortableColumn]="'main.' + col['fieldName']"
+          >{{col.label}}<p-sortIcon [field]="'main.' + col['fieldName']"></p-sortIcon>
           </th>
         </tr>
         <tr>
@@ -103,7 +103,7 @@
           <th *ngFor="let col of columns">
             <p-columnFilter
               *ngIf="!col.fieldName.includes('date')"
-              [field]="col.fieldName"
+              [field]="'main.' + col['fieldName']"
               type="text"
               matchMode="contains"
               [showClearButton]="false"
@@ -114,13 +114,14 @@
       </ng-template>
       <ng-template pTemplate="loadingbody">
         <tr
+          class="table-animation"
           *ngFor="let item of loadingArray"
           style="height:46px"
         >
           <td>
             <p-tableRadioButton></p-tableRadioButton>
           </td>
-          <td>
+          <td style="width: 100px">
             <p-skeleton></p-skeleton>
           </td>
           <td *ngFor="let col of columns">
@@ -132,7 +133,7 @@
         pTemplate="body"
         let-client
       >
-        <tr>
+        <tr class="table-animation">
           <td>
             <p-tableRadioButton [value]="client"></p-tableRadioButton>
           </td>
@@ -140,6 +141,11 @@
             <div class="flex justify-content-center">
               <button
                 class="border-btn"
+                pStyleClass=".sidebar"
+                enterClass="hidden"
+                enterActiveClass="fadeinright"
+                leaveActiveClass="fadeoutright"
+                leaveToClass="hidden"
                 (click)="onDetailClick(client.main.id)"
               >დეტალები</button>
             </div>
@@ -155,12 +161,12 @@
       </ng-template>
     </p-table>
     <div
-      *ngIf="isSidebarVisible"
       style="background:#f7f6f9; height: 100vh"
-      class="w-20rem border-left-1 border-top-1 surface-border p-1 pt-2"
+      class="sidebar hidden w-20rem border-left-1 border-top-1 surface-border p-1 pt-2 "
     >
-      <div class="flex justify-content-center mb-2">
+      <div class="flex flex-row justify-content-center mb-2 ">
         <p-dropdown
+          styleClass="flip"
           [(ngModel)]="detailModel"
           [style]="{
             'border-radius': '0 6px 6px 0',
@@ -173,10 +179,18 @@
           [options]="ClientConfig.menuOptions"
           (onChange)="onDetailSelect($event)"
         ></p-dropdown>
+        <p-button
+          (click)="onHideClick()"
+          pStyleClass=".sidebar"
+          leaveActiveClass="fadeoutright"
+          leaveToClass="hidden"
+          icon="pi pi-times"
+          styleClass="p-button-rounded p-button-secondary p-button-outlined ml-1"
+        ></p-button>
       </div>
       <div
         *ngFor="let col of sidebarCols"
-        class="flex flex-column justify-content-center align-items-between gap-1 w-full"
+        class="flex flex-column justify-content-center align-items-between gap-1 w-full flip  animation-duration-300"
       >
         <div class="flex flex-row justify-content-between align-items-center gap-3">
           <label
@@ -186,7 +200,7 @@
           <p-button
             (click)="copyToClipboard(sidebarData[(col['fieldName'])])"
             icon="pi pi-copy"
-            styleClass="p-button-rounded p-button-secondary p-button-outlined mr-5"
+            styleClass="p-button-rounded p-button-secondary p-button-outlined mr-4 mt-1"
           ></p-button>
         </div>
         <span style="margin-left: 6px; min-height: 20px ;">
@@ -194,7 +208,7 @@
           col['type'] == 'switch' ? (sidebarData[(col['fieldName'])] ? 'კი':'არა') : sidebarData[(col['fieldName'])]
           }}
         </span>
-        <div style="width: calc(100% - 24px);">
+        <div style="width: 100%;">
           <p-divider></p-divider>
         </div>
       </div>

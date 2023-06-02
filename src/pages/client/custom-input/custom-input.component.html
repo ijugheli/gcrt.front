@@ -121,6 +121,7 @@
         [id]="data['fieldName']"
         [ngModel]="model"
         [disabled]="isInputDisabled(data)"
+        [class.p-disabled]="isInputDisabled(data)"
         [class.ng-invalid]="!isInputValid() && !isInputDisabled(data)"
         [class.ng-dirty]="!isInputValid() && !isInputDisabled(data)"
         (ngModelChange)="onUpdate($event)"

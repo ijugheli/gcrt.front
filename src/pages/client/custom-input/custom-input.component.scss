@@ -1,8 +1,11 @@
+$hoverColor: #e8f2f4;
+$logoGreen: #006873;
+
 input,
-::ng-deep p-calendar input.p-inputtext,
-::ng-deep .p-dropdown,
-::ng-deep .p-treeselect,
-::ng-deep p-inputnumber .p-inputtext {
+:host ::ng-deep p-calendar input.p-inputtext,
+:host ::ng-deep .p-dropdown,
+:host ::ng-deep .p-treeselect,
+:host ::ng-deep p-inputnumber .p-inputtext {
     border-radius: 0 6px 6px 0;
     min-width: 500px;
     max-width: 500px;
@@ -13,11 +16,11 @@ input,
 
 // for label inside dropdown
 label,
-::ng-deep .p-inputtext {
+:host ::ng-deep .p-inputtext {
     font-size: 1rem;
 }
 
-::ng-deep .p-treenode-label {
+:host ::ng-deep .p-treenode-label {
     font-size: .8rem;
 }
 
@@ -34,8 +37,6 @@ label,
 textarea {
     min-height: 100px;
 }
-
-
 
 :where(.is-not-mandatory) {
 
@@ -57,29 +58,28 @@ textarea {
     ::ng-deep .p-dropdown,
     ::ng-deep .p-treeselect {
         min-width: unset;
-
         max-width: unset;
         width: calc(300px + 38px) !important;
     }
 
-    ::ng-deep .p-treeselect-panel {
+    :host ::ng-deep .p-treeselect-panel {
         min-width: 300px;
         max-width: 338px;
     }
 }
 
-::ng-deep .p-treeselect-panel {
+:host ::ng-deep .p-treeselect-panel {
     min-width: 500px;
     max-width: 538px;
 }
 
-::ng-deep .p-ripple.p-element.p-dropdown-item {
+:host ::ng-deep .p-ripple.p-element.p-dropdown-item {
     font-family: roman;
     font-size: 1rem;
 }
 
-::ng-deep .p-dropdown-label,
-::ng-deep .p-treeselect-label-container {
+:host ::ng-deep .p-dropdown-label,
+:host ::ng-deep .p-treeselect-label-container {
     display: flex !important;
     font-family: roman;
     font-size: 1rem;
@@ -87,14 +87,14 @@ textarea {
     justify-content: flex-start;
 }
 
-::ng-deep .p-treeselect-label-container .p-treeselect-label {
+:host ::ng-deep .p-treeselect-label-container .p-treeselect-label {
     font-size: 1rem;
     padding: 0;
     font-family: roman;
     margin-left: 6px;
 }
 
-::ng-deep .p-inputswitch {
+:host ::ng-deep .p-inputswitch {
     display: flex !important;
 }
 
@@ -111,9 +111,9 @@ textarea {
 
 ::ng-deep .p-selectbutton .p-button.p-highlight,
 ::ng-deep .p-buttonset .p-button.p-highlight:not(:last-of-type) {
-    background: var(--green-50);
-    border: 1px solid var(--green-100);
-    color: var(--green-500) !important;
+    background: $hoverColor;
+    border: 1px solid $logoGreen;
+    color: $logoGreen !important;
 }
 
 ::ng-deep .p-selectbutton .p-button:focus {
@@ -122,15 +122,19 @@ textarea {
 }
 
 ::ng-deep .p-selectbutton .p-button.p-highlight:hover {
-    background: var(--green-500);
+    background: $logoGreen !important;
 }
 
 ::ng-deep .p-selectbutton .p-button.p-highlight:hover * {
-    color: var(--green-50) !important;
+    color: $hoverColor !important;
 }
 
 ::ng-deep .p-selectbutton .p-button.p-highlight span {
-    color: var(--green-500) !important;
+    color: $logoGreen !important;
+}
+
+::ng-deep .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+    background: $hoverColor;
 }
 
 ::ng-deep .p-selectbutton .p-button span {
@@ -144,7 +148,7 @@ textarea {
     margin-bottom: 4px !important;
 }
 
-::ng-deep p-dropdownitem li {
+:host ::ng-deep p-dropdownitem li {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

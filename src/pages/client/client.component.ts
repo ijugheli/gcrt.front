@@ -88,6 +88,9 @@ export class ClientComponent implements OnInit {
     });
   }
 
+  public onHideClick(): void {
+    this.isSidebarVisible = false;
+  }
   public onDetailClick(clientID: number): void {
     const oldID: number | null = this.clientID;
     this.clientID = clientID;

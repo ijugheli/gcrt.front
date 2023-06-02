@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import { StyleClassModule } from 'primeng/styleclass';
 import { Subject, takeUntil } from 'rxjs';
 import { MenuService } from 'src/services/app/menu.service';
 
@@ -11,7 +12,7 @@ import { MenuService } from 'src/services/app/menu.service';
   selector: 'left-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
-  imports: [CommonModule, DividerModule, PanelMenuModule]
+  imports: [CommonModule, DividerModule, PanelMenuModule, StyleClassModule]
 })
 export class MenuComponent implements OnInit, OnDestroy {
   public items: any[] = [];
