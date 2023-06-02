@@ -13,7 +13,10 @@
         [class.pi-chevron-right]="isMenuVisible"
     ></i>
 </button>
-<div class="menu">
+<div
+    class="menu"
+    [class.hidden]="!(this.authService.authStatus$ |async)"
+>
     <div
         class="flex align-items-center px-4 flex-shrink-0"
         style="height:60px"

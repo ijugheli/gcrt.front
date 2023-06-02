@@ -5,6 +5,7 @@ import { DividerModule } from 'primeng/divider';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { StyleClassModule } from 'primeng/styleclass';
 import { Subject, takeUntil } from 'rxjs';
+import { AuthService } from 'src/services/AuthService.service';
 import { MenuService } from 'src/services/app/menu.service';
 
 @Component({
@@ -21,6 +22,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private menuService: MenuService,
+    public authService: AuthService,
     private router: Router) {
   }
 
