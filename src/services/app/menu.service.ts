@@ -36,6 +36,7 @@ export class MenuService {
             filter((e): e is NavigationEnd => e instanceof NavigationEnd),
         ).subscribe((event) => {
             this.menuExists(event.url);
+            console.log(this.isMenuVisible$.getValue());
         })
     }
 
